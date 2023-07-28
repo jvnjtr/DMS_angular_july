@@ -1,0 +1,134 @@
+<!--===Page Title===-->
+<div class="page-title">
+
+    <h4>{{title | langReplace}}</h4>
+  </div>
+  <!--===Page Title===-->
+  <!--===controle section===-->
+  <div class="page-controls-section" id="page-content">
+  
+    <div class="card">
+      <div class="controls-section-header">
+        <ul class="nav nav-tabs nav-fill" role="tablist">
+          <app-tabs *ngFor="let tablist of tablist" [tabMessage]="tablist"></app-tabs>
+        </ul>
+        <div class="indicatorslist">
+          <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"
+              [sendIds]="letterIdArray" [funType]="sevName" (callfunction)="viewItems()"
+              (callfunction2)='selectAll($event)'></app-utils>
+
+      </div>
+  
+      </div>
+      <div class="card-body">
+        <div class="controls-section">
+          <!-- Search Panel -->
+          <div class="search-container active">
+  
+            <div class="search-sec">
+              <div class="row">
+  
+                <div class="col-12 col-md-3 col-lg-3">
+                  <div class="form-group">
+                    <input type="text" class="form-control"  name="formName" id="formName" placeholder="{{'Enter English label'| langReplace}}">
+                  </div>
+                </div>
+  
+                <div class="col-12 col-md-3 col-lg-3">
+                  <div class="form-group">
+                    <button class="btn btn-primary" (click)="searchDetails()">
+                      
+                      {{"Search"| langReplace}}
+                    </button>
+                    <button class="btn btn-danger ml-1" (click)="resetMe()">
+                      {{"Reset"| langReplace}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+  
+            </div>
+  
+          </div>
+          <!-- Search Panel -->
+         
+          <div >
+        
+            <div class="d-flex justify-content-end mb-3">
+  
+              <div>
+  
+                {{"Per Page"| langReplace}} :
+                
+                <select (change)="onTableSizeChange($event)">
+                    <!-- <option  [value]="10">1</option> -->
+                  <option *ngFor="let size of pageSizes" [value]="size">
+                    {{ size }}
+                  </option>
+                </select>
+              </div>
+  
+            </div>
+  
+            <div class="table-responsive  print-section">
+              <table data-toggle="table" class="table  table-bordered valign-middle">
+                <thead>
+                  
+                <tr>     
+                  <tr>
+                    <!-- for select box -->
+                    <th scope="col" width="40px" class="noPrint">
+                      <div>
+                            <input class="form-check-input checkAll" type="checkbox"
+                                (click)='selectAll($event)' id="checkall" name="checkall"
+                                value="checkall">
+                        </div>
+                    </th> 
+                                      <!-- ---------end-------------------- -->
+                        <th scope="col" style="width:50px"> {{"Sl No"| langReplace}} </th>
+                         <th *ngFor="let details of language; let i = index">
+                        
+                          {{details.vchLanguageName| langReplace}}
+                        </th> 
+                       <th scope="col">
+                        {{"Action"| langReplace}}
+                      </th>
+                    </tr> 
+                </thead>
+                <tbody>
+                    <tr *ngFor="let details of allLanguage | paginate
+                    : {
+                        itemsPerPage: tableSize,
+                        currentPage: page,
+                        totalItems: count
+                      };index as i">
+                      <!-- For selct box -->
+                      <td class="noPrint "
+                                            [ngClass]="{'border-left-danger': details.tinPublishStatus == 0 , 'border-left-success': details.tinPublishStatus == 1 }">
+                                            <div>
+                                                <input class="form-check-input rowCheck" type="checkbox"
+                                                    (change)="onChange(details.intId, $event)" name="{{details.intId }}"
+                                                    [id]="details.intId" [value]="details.intId">
+                                            </div>
+                                        </td>
+                                        <!-- --------------end---------------------- -->
+                        <td>{{i+1+indexNumber}}  </td>
+                  <td *ngFor="let lang of language"> {{ (details.vchOtherLabel[lang.vchAliasName]!="") ?
+                    details.vchOtherLabel[lang.vchAliasName] : '--' }}
+                  </td>
+                  <td class="noPrint" width="60px"><a class="text-primary" data-toggle="tooltip" title="" data-original-title="Edit"
+                      (click)='editForm(details.intId)'><i class="icon-edit-solid"></i></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-end">
+              <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+              </pagination-controls>
+            </div>
+          </div>
+        </div>
+        <ng-template #norecord>
+          <h6 class="no-content">  {{"No Record Found"| langReplace}} </h6>
+        </ng-template>
+      </div>

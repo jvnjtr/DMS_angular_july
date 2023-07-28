@@ -1,0 +1,37 @@
+[
+      {
+        "pagetitle":"Modify File",
+        "tabList":[
+        
+        
+         
+                  
+                  ],
+        "utils":[
+          {"utilName":"mandatory"},
+          {"utilName":"back"}
+         
+          ],
+        "messages":{
+          "successMsg":"File Modified Successfully",
+          "updatesuccessMsg":"Updated Successfully",
+          "errorMsg":"Error in File updation",
+          "filename":"Enter File Name",
+          "folderName":"folder",
+          "subject":"Enter Subject of the file",
+          "metaitems":" Meta type",
+          "fileindexing":"Select index",
+          "selMeta":"Meta Type",
+           "entermetadesc":"Enter Meta Details",
+           "addMeta":"Add Meta Details",
+           "selectRole":"Please Select role",
+           "chkrolename":"Select the role name",
+  "chkrolepermission":"Select the Permission type",
+  "chkusername":"user name",
+  "chkuserpermission":" the Permission type",
+   "selectuser":" User"
+         }
+      }
+    ]
+
+

@@ -1,0 +1,287 @@
+
+        <!--===controle section===-->
+
+                        
+                      
+                        <!-- {{folderid}} -->
+                     
+                        <div class="controls-section">
+                        
+                                   <!--*ngFor="let f of files_dropped"
+                                        -->
+
+                                        <div *ngIf="scanfileeList?.length == 0">
+                                            <div class="text-center p-4 d-flex align-items-center">
+                                              <a href="{{ apkpath }}" download class="btn btn-info"> {{"Download Scanner"| langReplace}}</a>
+                                              <div class="py-3 px-3">or</div>
+                                              <a (click)="scanImage(folderid)" class="btn btn-primary"> {{"Scan"| langReplace}}</a>
+                                            </div>
+                                  
+                                            <div class="p-4 bg-light">
+                                              <h6> {{"Note"| langReplace}}</h6>
+                                              <div class="row">
+                                                <div class="col-md-12">
+                                                  <ol>
+                                                    <li class="mb-2">
+                                  
+                                                      1. {{"Click on the Download Scanner APK file to download those have not installed the scanner apk"| langReplace}} .
+                                                    </li>
+                                                    <li class="mb-2">
+                                                      2. {{"Install the Scanner APK in your local system"| langReplace}}.
+                                                    </li>
+                                                    <li class="mb-2">
+                                                      3. {{"Click on the Scan button to Scan the document or images after installation of Scanner apk"| langReplace}}
+                                                    </li>
+                                                    <li class="mb-2">
+                                                      4. {{"If you have already installed then click on the Scan button to scan the document or images"| langReplace}} 
+                                                    </li>
+                                                  </ol>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+
+                                     <div class=""  *ngIf="scanfileeList?.length > 0" >
+
+                                       
+                                     <div class="row">
+                                         <div class="col-md-6">
+
+                                           <div class="mb-3">
+                                           <div class="files-list" href="javascript:void(0)" *ngFor="let f of scanfileeList" (click)="loadDocPreview(f.fileType,f.filePath)">
+                                               <div>
+                                                <i class="h6 mr-1" [ngClass]="getfiletypeicon(f.fileType)" ></i>
+                                               <span>{{f.fileName}}</span>
+                                           </div>
+                                               <a (click)="onRemove(f)" class="text-danger" ngbTooltip="Back to upload" title=""  data-original-title="Cancel"><i class="bi bi-trash"></i></a>
+                                           </div>
+                                       </div>
+                                           <div class="row">
+                                               <div class="col-md-6 d-none">
+                                                   <div class="form-group">
+                                                       <label>*  {{"File Name"| langReplace}} </label>
+                                                       <input type="hidden"  class="form-control" readonly [(ngModel)]="txtFileName">
+                                                       <input type="hidden" class="form-control" readonly [(ngModel)]="folderName">
+                                                       <input type="hidden" class="form-control" readonly [(ngModel)]="folderid">
+                                                   </div>
+                                               </div>
+                                              
+
+                                               
+                                               
+                                               <div class="col-md-6">
+                                                   <div class="form-group">
+                                                       <label> {{"OCR Language"| langReplace}} </label>
+                                                       <select class="form-select" [(ngModel)]="selOcrLang">
+                                                               <option value="0">{{"Select"| langReplace}} </option>
+                                                               <option value="1">English</option>
+                                                               <option value="2">Hindi</option>
+                                                               <option value="3">Odia</option>
+                                                           </select>
+                                                    </div>
+                                               </div>
+                                               <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label> {{"Set retention period of a file"| langReplace}} </label>
+                                                    <div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="rdoSetretention" (click)="rtrdoClick($event)" [(ngModel)]="rdoSetretention" id="rdoSetretention1" value="1">
+                                                            <label class="form-check-label" for="rdoSetretention1">{{"Yes"| langReplace}}</label>
+                                                          </div>
+                                                          <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="rdoSetretention" (click)="rtrdoClick($event)"  [(ngModel)]="rdoSetretention" id="rdoSetretention2" value="2" checked>
+                                                            <label class="form-check-label" for="rdoSetretention2">{{"No"| langReplace}}</label>
+                                                          </div>
+                                                    </div>
+
+
+                                                 
+                                                 </div>
+                                            </div>
+
+                                            
+                                            <div class="col-md-6" *ngIf="rdoSetretention == 1">
+                                                   <div class="form-group">
+                                                          <label>*  {{"Retention Date"| langReplace}} </label>
+                                                          <input type="date"  placeholder="DD-MM-YYYY" id="expiryDate" min="{{currenttime | date:'yyyy-MM-dd'}}" class="form-control" [(ngModel)]="txtExpDate" >
+                                                          <!-- <div class="input-group ">
+                                                                  <input type="text" readonly placeholder="DD-MM-YYYY" class="form-control" [(ngModel)]="txtExpDate" [minDate]="txtEfminDate" 
+                                                                  #dp="bsDatepicker"
+                                                                     bsDatepicker [bsConfig]="{showWeekNumbers: false, isAnimated: true,dateInputFormat: 'DD-MM-YYYY',customTodayClass:'custom-today-class' }">
+                                                                     <span (click)="dp.toggle()" class="input-group-text" id="basic-addon2"><i class="icon-calendar-alt"></i></span>
+                                                                  </div>  -->
+
+<!-- {{txtExpDate}} -->
+
+                                                       </div>
+                                                      </div>
+                                               <div class="col-md-12">
+                                                   <div class="form-group">
+                                                       <label>*  {{"Subject"| langReplace}} </label>
+                                                       <textarea class="form-control" id="txtSubject" [(ngModel)]="txtSubject" cols="3" rows="3">
+
+                                                       </textarea>
+                                                      
+                                            </div>
+                                               </div>
+
+                                               <div class="col-md-12">
+                                                   <div class="form-group">
+                                                       <label> {{"Tags"| langReplace}}</label>
+                                                       <!-- <tag-input [(ngModel)]="txtTags" class="form-control" (onRemove)="onLikeRemove($event)">
+                                                           </tag-input> -->
+                                                           <ngx-tags-input class="form-control input-lg" [(ngModel)]="txtTags" ></ngx-tags-input>
+                                                           <small class="text-danger">{{"Please press enter to set the tag"| langReplace}} </small>
+                                                      <!-- //<input type="text" class="form-control" [(ngModel)]="txtTags"> -->
+
+                                                      <!-- (onTagsChange)="onTagsChanged($event)" -->
+                                                     
+
+                                   </div>
+                                               </div>
+
+                                              
+                                               <div class="col-md-12">
+                                                   <div class="form-group">
+                                                          
+
+                                                       <div class="row">
+                                                           <div class="col-6">
+                                                                   <label>*  {{"Meta Type"| langReplace}}</label>
+                                                               <select class="form-select" [(ngModel)]="selMeta" id="selMetaType" (change)="getMetaType(selMeta)">
+                                                                   <option value="0">{{"Select"| langReplace}} </option>
+                                                                   <option *ngFor="let flist of metalist" [value]="flist.intMetaId">{{flist.metaName}}</option>
+                                                                 </select>    
+                                                           </div>
+                                                           <div class="col-5" *ngIf="metaDesable">
+                                                                   
+                                                                <div *ngIf="getmetaType==1">
+                                                                       <label>*  {{"Details"| langReplace}}</label>
+                                                                   <input type="text" class="form-control" [(ngModel)]="metatype">
+                                                                </div>
+                                                                <div *ngIf="getmetaType==2">
+                                                                       <label>*  {{"Details"| langReplace}}</label>
+                                                                       <input type="date" class="form-control" max="2100-12-31" [(ngModel)]="metatype">
+                                                                   </div>
+                                                                   <div *ngIf="getmetaType==3">
+                                                                           <label>*  {{"Details"| langReplace}}</label>
+                                                                       <input type="number" class="form-control" [(ngModel)]="metatype">
+                                                                       </div>
+                                                               
+
+                                                           </div>
+                                                           <div class="col-1 pt-4" *ngIf="metaDesable">
+                                                                   <a class="btn btn-info px-2" (click)="addMetaVals()"><i class="icon-plus-solid"></i></a>
+                                                           </div>
+                                                       </div>    
+
+
+                                                       <!-- <angular2-multiselect [data]="metalist"  
+                                                       [settings]="dropdownSettings" 
+                                                       (onSelect)="onItemSelect($event)" 
+                                                       (onDeSelect)="OnItemDeSelect($event)"
+                                                       (onSelectAll)="onSelectAll($event)"
+                                                       (onDeSelectAll)="onDeSelectAll($event)">
+                                                   </angular2-multiselect> -->
+
+                                                    
+                                       </div>
+                                       <div class="table-responsive" *ngIf="metaListDetails?.length > 0">
+                                           <table class="table table-bordered">
+                                                   <thead>
+                                                       <tr><th width="50px"> {{"Sl No"| langReplace}}</th>
+                                                        <th> {{"Meta Name"| langReplace}}</th>
+                                                        <th> {{"Details"| langReplace}}</th>
+                                                        <th width="50px">{{"Action"| langReplace}} </th> </tr>
+                                                   </thead>
+                                                   <tbody>
+                                                           <!-- <td *ngFor="let colName of dataCols">
+                                                                   {{ rows[colName.colName] }}
+                                                                 </td> -->
+                                                       <tr *ngFor="let mListD of metaListDetails;let i=index">
+                                                           <td>{{i+1}}</td>
+
+                                                           <!-- <td *ngFor="let colName of metalist">
+                                                               {{ mListD[colName.intMetaId] }}
+                                                             </td> -->
+                                                           <td>{{mListD.metaName}}</td>
+                                                           <td>{{mListD.metaDetails}}</td>
+                                                           
+                                                           <td><a class="text-danger px-2" (click)="removeSectionval(i)"><i class="icon-trash-alt"></i></a></td>
+                                                       </tr>
+                                                   </tbody>
+                                           </table>
+                                       </div>
+
+                                               </div>
+                                               
+<div class="col-md-12 d-none">
+   <div class="form-group">
+       <div class="form-check">
+               <input class="form-check-input" type="checkbox" value="" [(ngModel)]="chkIndexing"  id="flexCheckChecked" checked>
+               <label class="form-check-label" for="flexCheckChecked">
+                 Set Indexing
+               </label>
+             </div>
+</div>
+</div>
+
+
+                                           </div>
+
+                                         
+                                       
+                                          
+                                        
+
+
+                                         
+                                         
+                                           <div class="">
+                                                   <button  class="btn btn-success" (click)="finalfileupload()" > {{"Submit"| langReplace}}</button>&nbsp; 
+                                                    <button  type="button" class="btn btn-danger" (click)="resetform()"> {{"Reset"| langReplace}}</button>  
+
+                                               </div>
+                                           </div>
+                                           <div class="col-md-6" >
+                                               <div class="d-flex justify-content-between align-items-center">
+                                             <h5> {{"Preview File"| langReplace}}</h5>
+                                           
+                                           </div>
+                                             
+                                                
+                                               
+
+
+                                                 <div class="previewdiv"  *ngIf="!(getfiletype =='mp4' || getfiletype =='mp3' || getfiletype =='zip')" id="previewdiv">
+                                                       <iframe [src]="publicurl"></iframe>
+
+
+                                                      
+                                                   <div class="loader loader2" *ngIf="fileLoading">
+                                                       <div class="loader-item"></div>
+                                                       <p>Loading...</p>
+                                                     </div>
+                                                 </div>
+                                                 <div class="videopreviewdiv" *ngIf="getfiletype =='mp4' || getfiletype =='MP4' ||  getfiletype =='WebM' || getfiletype =='mkv' ||  getfiletype =='avi' ||  getfiletype =='webm'" id="videopreviewdiv">
+                                                 </div>
+                                                 <div class="audiopreviewdiv" *ngIf="getfiletype =='mp3' || getfiletype =='MP3'" id="audiopreviewdiv">
+                                                   </div>
+                                                    <div class="zipdiv" *ngIf="getfiletype =='zip' || getfiletype =='ZIP'" id="zipdiv">
+                                                   </div>
+                                                   
+                                               </div>
+                                         </div>
+                                       
+                                     </div>
+                                   
+
+
+                           </div>
+                      
+
+       <div class="loader" *ngIf="loading">
+               <div class="loader-item"></div>
+               <p>Loading...</p>
+             </div> 
+       

@@ -1,0 +1,28 @@
+
+<div class="row">
+        <div class="col-lg-12 col-xl-9">
+<div class="table-responsive">
+  
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>{{"Old Number" | langReplace }}</th>
+            <th width="200px">{{"New Number" | langReplace }}  *</th>
+            <th>{{"Document Name" | langReplace }} </th>
+            <th>{{"Uploaded Date" | langReplace }} </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr valign="middle">
+            <td>{{fileRefNo}}</td>
+            <td>{{fsplitVal}}  <input class="form-control width-80 form-control-sm d-inline" id="fsplitId" [(ngModel)]="fsplitId" type="text" maxlength="8" (keypress)="vldChkLst.isNumberKey($event)"></td>
+            <td>{{fileName}}</td>
+            <td>{{updatedate}}</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+<button  class="btn btn-success mr-1" (click)="saveNumber()"  >{{"Save" | langReplace }}</button>
+<button  class="btn btn-danger" (click)="formReset()">{{"Reset" | langReplace }} </button>

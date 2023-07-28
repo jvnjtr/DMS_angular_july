@@ -1,0 +1,72 @@
+
+
+
+<div *ngIf="prevstatus">
+
+
+
+    <div class="previewdiv" id="previewdiv" *ngIf="!(fileType =='mp3' || fileType =='mp4' || fileType =='zip')">
+             <iframe [src]="publicurl"></iframe>
+    
+           
+                <div class="loader loader2" *ngIf="fileLoading">
+                    <div class="loader-item"></div>
+                    <p>Loading...</p>
+                  </div>
+        
+            </div> 
+    
+            <div class="videopreviewdiv" id="videopreviewdiv1" *ngIf="fileType =='mp4' || fileType =='MP4' ||  fileType =='WebM' || fileType =='mkv' ||  fileType =='avi' ||  fileType =='webm'">
+               
+                    <div class="loader loader2" *ngIf="fileLoading">
+                        <div class="loader-item"></div>
+                        <p>Loading...</p>
+                      </div>
+             
+               
+              </div>
+    
+              <div class="audiopreviewdiv" *ngIf="fileType =='mp3' || fileType =='MP3'" id="audiopreviewdiv">
+                  <div class="loader loader2" *ngIf="fileLoading">
+                      <div class="loader-item"></div>
+                      <p>Loading...</p>
+                    </div>
+                </div>
+    
+     <div class="zipdiv" *ngIf="fileType =='zip' || fileType =='ZIP'" id="zipdiv">
+    
+                    <div class="loader loader2" *ngIf="fileLoading">
+                      <div class="loader-item"></div>
+                      <p>Loading...</p>
+                    </div>
+        </div>
+    
+    
+    </div>
+    
+    
+    <div class="lockmodaldiv" *ngIf="!prevstatus">
+        <div class="div-body">
+            <h5 class="modal-title mb-2" id="lockModalLabel"> {{"Lock File" | langReplace}}</h5>
+            <div class="text-center">
+                    <div class="form-group">
+                                       
+                            <div class="input-group ">
+                                            <input type="password" placeholder="Enter File Password" class="form-control" id="txtPassword" [(ngModel)]="txtPassword">
+                                            
+                                          
+                                          
+                                           
+                                          </div>
+    
+                         </div>
+                      
+                          
+                                   
+                                        <button class="btn btn-primary" (click)="unsetPassword()"> {{"Submit" | langReplace}} </button>
+                                        <!--  -->
+                                    
+            </div>
+        </div>
+    </div>
+    

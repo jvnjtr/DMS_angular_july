@@ -1,0 +1,153 @@
+<!-- ===Page Title=== -->
+<!-- <div class="page-title">
+   
+                <h4>{{title}}</h4>
+                </div> -->
+                <!--===Page Title===-->
+                <!--===controle section===-->
+                <!-- <div class="page-controls-section" id="page-content">
+                                <div class="card">
+                                <div class="controls-section-header">
+                                   <ul class="nav nav-tabs nav-fill" role="tablist" >
+                                                <a class="nav-item nav-link tab-link active"  > Share</a>
+                                                <a class="nav-item nav-link tab-link" routerLink="" > Bookmark</a>
+                                                <a class="nav-item nav-link tab-link" routerLink="" > E-sign</a>
+                                                <a class="nav-item nav-link tab-link" routerLinkActive="active" routerLink="../../comments/1" > Comment</a>
+                                                <a class="nav-item nav-link tab-link" routerLink="" > Insert</a>
+                                   </ul>
+                                <div class="indicatorslist">
+                                   <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils> 
+                                      </div>
+                                      </div>
+                                
+                                <div class="card-body"> -->
+                                   <div class="controls-section">
+                                                <div class="row form-group">
+                                                                <label class="col-lg-2 col-md-4">*  {{"Document Name"| langReplace }}</label>
+                                                                <div class="col-lg-4 col-md-8"><input type="text" class="form-control" [value]="fileName" readonly ></div>
+                                                            </div>
+                                                            <div class="row form-group">
+                                                                    <label class="col-lg-2 col-md-4">*  {{"Share Through"| langReplace }}</label>
+                                                                    <div class="col-md-8">
+                                                                            <div class="form-check form-check-inline">
+                                                                                    <input class="form-check-input" [(ngModel)]="rdoSharethrough" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1" checked>
+                                                                                    <label class="form-check-label" for="inlineRadio1"> {{"User Name"| langReplace }}</label>
+                                                                                  </div>
+                                                                                  <div class="form-check form-check-inline">
+                                                                                    <input class="form-check-input" [(ngModel)]="rdoSharethrough" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="2">
+                                                                                    <label class="form-check-label" for="inlineRadio2"> {{"Email"| langReplace }}</label>
+                                                                                  </div>
+                                                                         </div>
+                                                            </div>
+                                                            <div *ngIf="rdoSharethrough == '1'">
+                                                            
+                                                            
+                                                            <div class="row form-group">
+                                                                    <label class="col-lg-2 col-md-4"></label>
+                                                                    <div class="col-lg-4 col-md-8">
+                                                                            <angular2-multiselect [data]="nameList" id="selectedItems" [(ngModel)]="selectedItems" 
+                                                                            [settings]="dropdownSettings" 
+                                                                            (onSelect)="onItemSelect($event)" 
+                                                                            (onDeSelect)="OnItemDeSelect($event)"
+                                                                            (onSelectAll)="onSelectAll($event)"
+                                                                            (onDeSelectAll)="onDeSelectAll($event)">
+                                                                        </angular2-multiselect>
+                                                                    </div>
+                                                            </div>
+                                                            
+                                                            <!-- <div class="row form-group">
+                                                                    <label class="col-lg-2 col-md-4">* Permission Type</label>
+                                                                    <div class="col-lg-4 col-md-8">
+                                                                                <div class="form-check form-check-inline">
+                                                                                                <input class="form-check-input"  [value]="1" [(ngModel)]="rdofileper"   name="rdoPerRole" type="radio" id="rdoPerRole_1" />
+                                                                                                <label class="form-check-label" for="rdoPerRole_1">Read</label>
+                                                                                              </div>
+                                                                                              <div class="form-check form-check-inline">
+                                                                                                <input class="form-check-input"  [value]="2" [(ngModel)]="rdofileper"  name="rdoPerRole" type="radio" id="rdoPerRole_2" />
+                                                                                                <label class="form-check-label" for="rdoPerRole_2">Read/Write</label>
+                                                                                              </div>
+                                                            
+                                                                    </div>
+                                                            </div> -->
+                                                            <div class="row form-group">
+                                                                    <label class="col-lg-2 col-md-4">*  {{"Expiry Date"| langReplace }} </label>
+                                                                    <div class="col-lg-4 col-md-8">
+                                                                                <input type="date" class="form-control" id="txtExpireDate" [(ngModel)]="txtExpireDate">
+                                                                            <!-- <div class="input-group ">
+                                                                                   
+                                                                                    <input type="text" readonly placeholder="DD-MM-YYYY" class="form-control" [minDate]="txtEfminDate" [(ngModel)]="txtEffeciveFrom"
+                                                                                    
+                                                                                       bsDatepicker [bsConfig]="{showWeekNumbers: false, isAnimated: true,dateInputFormat: 'DD-MM-YYYY',customTodayClass:'custom-today-class' }">
+                                                                                       <span class="input-group-text" id="basic-addon2"><i class="icon-calendar-alt"></i></span>
+                                                                                    </div> -->
+                                                                    </div>
+                                                            </div>
+                                                            </div>
+                                                            <div class="border bg-light p-3 mb-3" *ngIf="rdoSharethrough == '2'">
+                                                                            <div class="row form-group">
+                                                                                            <label class="col-lg-2 col-md-4">*  {{"To"| langReplace }}</label>
+                                                                                            <div class="col-lg-10 col-md-8">
+                                                                                                    <angular2-multiselect [data]="tonameList" [(ngModel)]="toselectedItems" 
+                                                                                                    [settings]="todropdownSettings" 
+                                                                                                    (onSelect)="toonItemSelect($event)" 
+                                                                                                    (onDeSelect)="toOnItemDeSelect($event)"
+                                                                                                    >
+                                                                                                </angular2-multiselect>
+                                                                                            </div>
+                                                                                    </div>
+                                                                                    <div class="row form-group">
+                                                                                                    <label class="col-lg-2 col-md-4"> &nbsp;&nbsp;  {{"CC"| langReplace }}</label>
+                                                                                                    <div class="col-lg-10 col-md-8">
+                                                                                                            <angular2-multiselect [data]="ccnameList" [(ngModel)]="ccselectedItems" 
+                                                                                                            [settings]="ccdropdownSettings" 
+                                                                                                            (onSelect)="cconItemSelect($event)" 
+                                                                                                            (onDeSelect)="ccOnItemDeSelect($event)"
+                                                                                                            >
+                                                                                                        </angular2-multiselect>
+                                                                                                    </div>
+                                                                                            </div>
+                                                                                              <div class="row form-group">
+                                                                                                    <label class="col-lg-2 col-md-4"> &nbsp;&nbsp;  {{"BCC"| langReplace }}</label>
+                                                                                                    <div class="col-lg-10 col-md-8">
+                                                                                                            <angular2-multiselect [data]="bccnameList" [(ngModel)]="bccselectedItems" 
+                                                                                                            [settings]="bccdropdownSettings" 
+                                                                                                            (onSelect)="bcconItemSelect($event)" 
+                                                                                                            (onDeSelect)="bccOnItemDeSelect($event)"
+                                                                                                           >
+                                                                                                        </angular2-multiselect>
+                                                                                                    </div>
+                                                                                            </div>
+                                                                                            <div class="row form-group">
+                                                                                                            <label class="col-lg-2 col-md-4">*  {{"Subject"| langReplace }}</label>
+                                                                                                            <div class="col-lg-10 col-md-8">
+                                                                                                            <input class="form-control" type="text" id="txtSubject" [(ngModel)]="txtSubject" >
+                                                                                                            </div>
+                                                                                                    </div>
+                                                                                                      <div class="row form-group">
+                                                                                                            <label class="col-lg-2 col-md-4">&nbsp;&nbsp;  {{"Attachment"| langReplace }}</label>
+                                                                                                            <div class="col-lg-10 col-md-8">
+                                                                                                           <a  class="text-primary"  (click)="downloadfils(fileId,filepath)"  >
+                                              <i class="icon-file-pdf text-danger h5"></i> {{fileName}}</a>
+                                                                                                            </div>
+                                                                                                    </div>
+                                                                                                    <div class="row form-group">
+                                                                                                                    <label class="col-lg-2 col-md-4">*  {{"Message"| langReplace }}</label>
+                                                                                                                    <div class="col-lg-10 col-md-8">
+                                                                                                                           <angular-editor [(ngModel)]="ckdesc" id="ckdesc"  [config]="config"></angular-editor>
+                                                                                                                    
+                                                                                                                    </div>
+                                                                                                            </div>
+                                                            </div>
+                                                            <div class="row form-group">
+                                                                    <label class="col-lg-2 col-md-4"> </label>
+                                                                    <div class="col-lg-4 col-md-8"> <button  class="btn btn-success" (click)="shareFile(fileId)">{{ rdoSharethrough == '1' ? btntext :  "Send"| langReplace }}</button> &nbsp; </div>
+                                                            </div>
+                                                            
+
+                                           </div>
+                                           <!-- </div>
+                                           </div>
+                                           </div> -->
+
+
+

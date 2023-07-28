@@ -1,0 +1,102 @@
+   
+           
+           <div class="controls-section">
+                             <div class="row">
+                                        <label class="col-md-4 col-lg-3">* {{"Parent Folder" | langReplace}} </label>
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="form-group">
+
+                                                    <input type="text" class="form-control" readonly [(ngModel)]="folderName">
+                                                    <input type="hidden" class="form-control" readonly [(ngModel)]="parentfolderid">
+                                             
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-4">
+                                            <div *ngIf="parentfolderid > 1">
+                                                <div class="mb-1">
+                                                    {{"Folder Space" | langReplace}}  :
+                                                
+                                                                                            <span class="text-primary" >
+                                                                                                {{formatBytes(parentSizeinKb,2)}}
+                                                                                           </span>
+                                                                                          
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            {{"Available Space" | langReplace}}  :
+                                                
+                                                <span class="text-success" >
+
+                                                    {{formatBytes(parentSizeinKb - childSizeInKb,2)}}
+                                                    
+                                                </span>
+                                               
+                                                </div>
+                                                
+                                                                                           </div>
+                                        </div>
+
+
+                                        </div> 
+
+                                     
+
+
+                                        <div class="row">
+                                                <label class="col-md-4 col-lg-3" >* {{"Folder Name" | langReplace}}</label>
+                                                <div class="col-md-6 col-lg-4">
+                                                    <div class="form-group">
+                                                        <input type="text" id="txtFolderName" [(ngModel)]="txtFolderName" class="form-control">
+                                                    </div>
+                                                </div>
+                                                </div> 
+
+    <div class="row">
+                                                                <label class="col-md-4 col-lg-3" >*  {{"Max Allow Folder Size" | langReplace}}</label>
+                                                                <div class="col-md-6 col-lg-4">
+                                                                    <div class="form-group">
+                                                                        <div class="d-flex">
+                                                                                <input type="text" id="txtAllowSize" [(ngModel)]="txtAllowSize" maxlength="3" (keypress)="vldChkLst.isNumberKey($event)" class="form-control">
+                                                                                <select class="form-select ml-2 w-50" id="selSizeType"  [(ngModel)]="selSizeType">
+                                                                                        <option value="0">{{"Select" | langReplace}}</option>
+                                                                                    <option value="1">KB</option>
+                                                                                    <option value="2">MB</option>
+                                                                                    <option value="3">GB</option>
+                                                                                    <option value="4">TB</option>
+                                                                                </select>
+                                                                        </div>
+                                                                       
+                                                                    </div>
+                                                                </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                        <label class="col-md-4 col-lg-3" >* {{"Max Allow File Size" | langReplace}}</label>
+                                                                        <div class="col-md-6 col-lg-4">
+                                                                            <div class="form-group">
+                                                                                <div class="d-flex">
+                                                                                        <input type="text" id="txtAllowFileSize" [(ngModel)]="txtAllowFileSize" maxlength="2" (keypress)="vldChkLst.isNumberKey($event)" class="form-control">
+                                                                                        <select class="form-select ml-2 w-50"  id="selFileSizeType" [(ngModel)]="selFileSizeType">
+                                                                                                <option value="0">{{"Select" | langReplace}}</option>
+                                                                                            <option value="1">KB</option>
+                                                                                            <option value="2">MB</option>
+                                                                                           
+                                                                                            
+                                                                                        </select>
+                                                                                </div>
+                                                                               
+                                                                            </div>
+                                                                        </div>
+                                                                        </div>
+                              
+                                    <div class="row ">
+                                            <label class="col-md-4 col-lg-3"> </label>
+                                            <div class="col-md-9">
+                                                 <button (click)="crateFolder()" class="btn btn-success " > {{"Save" | langReplace}}</button> 
+                                                 <button (click)="resetform()" class="btn btn-danger ml-2" > {{"Reset" | langReplace}} </button> 
+                                            </div>
+                                    </div>
+                            </div>
+
+
+                            
+                      
+                       

@@ -1,0 +1,28 @@
+<div [ngSwitch]="childMessage.utilName">
+        <div *ngSwitchCase="'mandatory'">
+              <p class="ml-2">( * ) {{'Indicates Mandatory Fields' | langReplace }} </p>
+          </div>
+          <div *ngSwitchCase="'search'">
+                  <a  id="searchicon" href="javascript:void(0)" ngbTooltip="{{'Search' | langReplace }} " (click)="opensearch()" ><i class="icon-search1"></i></a>
+              </div>
+          <div *ngSwitchCase="'print'">
+                  <a  id="printicon" href="javascript:void(0)" ngbTooltip="{{'Print' | langReplace }}"  (click)="printTable()"  ><i class="icon-print-solid"></i></a>   
+          </div>
+         
+          <div *ngSwitchCase="'delete'">
+                  <a  id="deleteicon" href="javascript:void(0)" ngbTooltip="{{'Delete' | langReplace }}"  (click)="deleteAll(sendIds,funType)"  ><i class="icon-trash-solid"></i></a>
+          </div>
+          <div *ngSwitchCase="'publish'">
+              <a  id="publishicon" href="javascript:void(0)" ngbTooltip="{{'Publish' | langReplace }}"  (click)="publishAll(sendIds,funType,pubUnpubStatus)"  ><i class="icon-volume-up-solid"></i></a>
+          </div>
+          <div *ngSwitchCase="'unpublish'">
+              <a  id="unpublishicon" href="javascript:void(0)" ngbTooltip="{{'Unpublish' | langReplace }}"  (click)="unpublishAll(sendIds,funType,pubUnpubStatus)" ><i class="icon-volume-off-solid"></i></a>
+          </div>
+          <div *ngSwitchCase="'download'">
+                  <a   href="javascript:void(0)" id="downloadicon" ngbTooltip="{{'Download' | langReplace }}" ><i class="icon-download-solid"></i></a>
+              </div>
+              <div *ngSwitchCase="'back'">
+                  <a   href="javascript:void(0)" id="backicon" ngbTooltip="{{'Back' | langReplace }}" (click)="backClicked()" ><i class="icon-arrow-left-solid"></i></a>
+              </div>
+          <div *ngSwitchDefault></div>
+        </div>

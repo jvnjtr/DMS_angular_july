@@ -1,0 +1,23 @@
+[
+      {
+        "pagetitle":"Archive Files",
+        "tabList":[
+          {"tabName":"View","tabUrl":"../archiveFiles","tabClass":"active"}
+        ],
+        "utils":[
+          {"utilName":"back"},
+          {"utilName":"print"}
+       
+         
+          ],
+        "messages":{
+          "successMsg":"New Letter Generated Successfully",
+          "deleteWarn":"You want to permanently delete this file",
+          "deleteMsg":"File Deleted Successfully",
+           "errorMsg":"Something Went Wrong",
+            "restoreSuccess":"File Restored Successfully"
+         }
+      }
+    ]
+
+

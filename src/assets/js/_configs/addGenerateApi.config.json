@@ -1,0 +1,27 @@
+[
+      {
+        "pagetitle":"Generate API",
+        "tabList":[
+          {"tabName":"Add","tabUrl":"../generateapi","tabClass":"active add d-none"},
+          {"tabName":"Edit","tabUrl":"","tabClass":"active edit d-none"},
+          {"tabName":"View","tabUrl":"../viewapi"}
+         
+          
+                  
+                  ],
+        "utils":[
+          {"utilName":"mandatory"}
+         
+         
+          ],
+        "messages":{
+          "successMsg":"Form Data Inserted Successfully",
+          "updatesuccessMsg":"Updated Successfully",
+          "errorMsg":"Error in letter creation",
+          "msgFormtype":"Please Select Form Name"
+         
+         }
+      }
+    ]
+
+

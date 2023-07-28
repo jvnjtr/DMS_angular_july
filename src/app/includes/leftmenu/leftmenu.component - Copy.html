@@ -1,0 +1,191 @@
+<div class="sidemenu-container">
+    <a class="navbar-brand" routerLink="../admin/dashboard" title="CSM Technologies">
+       
+        <img src="{{siteUrl}}assets/img/logo.png" alt="Logo">
+      <p>Document Management System</p>
+    </a>
+  
+    <nav class="navbar">
+      <div class="navbar-collapse justify-content-end" id="basicExampleNav">
+
+          
+
+        <ul class="navbar-nav">
+          <li class="nav-item" routerLinkActive="active">
+            <a class="nav-link route-link" routerLink="../admin/dashboard"
+              ><i class="icon-Dashboard1"
+              ><span class="path1"></span><span class="path2"></span></i
+            ><span>Dashboard</span></a
+            >
+          </li>
+
+    <li class="nav-item" *ngFor="let item of folderarr;let j = index " [ngClass]="item.expand ? 'active' : ''">
+              <a class="nav-link route-link"  (click)="loadFolderData(1+':'+'0')"  > 
+              
+                <i class="tree-icon"  [ngClass]="item.expand ? 'bi bi-folder2-open' : 'bi bi-folder-fill text-warning'" ></i>
+                <span class="" >{{item.folderName}}</span> 
+                </a>
+ <ul class="sub-menu nav tree-submenu" [class.d-none]="!item.expand">
+  <ng-container
+    *ngFor="let node of item.children"
+    [ngTemplateOutlet]="treeNode"
+    [ngTemplateOutletContext]="{ $implicit: node }">
+  </ng-container>
+  </ul>
+  </li>
+   <li class="nav-item" *ngFor="let item of folderarr;let j = index " [ngClass]="item.expand ? 'active' : ''">
+              <a class="nav-link route-link"  (click)="loadFolderData(1+':'+'0')"  > 
+              
+                <i class="tree-icon"  [ngClass]="item.expand ? 'bi bi-folder2-open' : 'bi bi-folder-fill text-warning'" ></i>
+                <span class="" >{{item.folderName}}</span> 
+                </a>
+           
+
+          
+
+            <ul class="sub-menu nav tree-submenu" [class.d-none]="!item.expand">
+              <li *ngFor="let child of item.folderDetails;let k = index">
+                
+                  
+                   <a
+                  class="dropdown-item route-link"
+              
+                  routerLinkActive="active" (click)="child.expand = !child.expand; loadFolderData(child.folderId+':'+'0');"  > 
+                  <i class="bi expandicon" [ngClass]="child.expand ? 'bi-dash-square' : 'bi-plus-square'"></i>
+                  <span class="caret"  [ngClass]="child.expand ? 'bi bi-folder2-open' : 'bi bi-folder-fill text-warning'" ></span> &nbsp;
+                  <span class="" >{{child.folderName}}</span> 
+               
+                  <!-- <pre>{{child | json}}</pre> -->
+                  </a> 
+               
+                <!-- (click)="checkChild(i, j, k)" -->
+
+        
+                <ul class="sub-menu nav " [class.d-none]="!child.expand">
+                    <li *ngFor="let schild of child.children;let j = index">
+                      
+                        <a
+                        class="dropdown-item route-link" 
+                        
+                        routerLinkActive="active" 
+                        (click)="schild.expand = !schild.expand; loadFolderData(schild.folderId+':'+'0');"
+                        >
+                        <i class="bi expandicon" [ngClass]="schild.expand ? 'bi-dash-square' : 'bi-plus-square'"></i>
+                        
+                        <span class="caret"  [ngClass]="schild.expand ? 'bi bi-folder2-open' : 'bi bi-folder-fill text-warning'" ></span> &nbsp;
+                        <span class="">{{schild.folderName}} </span> </a
+                      >
+                     
+                      <!--  (click)="checkChild(i, j, k)" -->
+                       <ul class="sub-menu nav " [class.d-none]="!schild.expand">
+                          <li *ngFor="let supchild of schild.children;let j = index">
+                            
+                              <a
+                              class="dropdown-item route-link"
+                              
+                              routerLinkActive="active" (click)="supchild.expand = !supchild.expand; loadFolderData(supchild.folderId+':'+'0');"
+                              >
+                               <i class="bi expandicon" [ngClass]="schild.expand ? 'bi-dash-square' : 'bi-plus-square'"></i>
+                              
+                              <span class="caret"  [ngClass]="schild.expand ? 'bi bi-folder2-open' : 'bi bi-folder-fill text-warning'" ></span> &nbsp; 
+                              <span class="">{{supchild.folderName}} </span> </a
+                            >
+                           
+                          
+                       
+            
+                            
+                          </li>
+                        </ul> 
+     
+                      
+                    </li>
+                  </ul>
+              </li>
+            </ul>
+          </li>
+
+
+
+
+      
+          <li class="nav-item" routerLinkActive="active">
+            <a class="nav-link route-link"  (click)=" loadFolderData(1+':'+'1')"
+              ><i class="icon-bookmark" ></i
+              ><span>Bookmark Files</span></a
+            >
+          </li> 
+
+          <li class="nav-item" routerLinkActive="active">
+            <a class="nav-link route-link" routerLink="../admin/recentFiles"
+              ><i class="icon-history-solid" ></i
+              ><span>Recent Files</span></a
+            >
+          </li>
+          <li class="nav-item" routerLinkActive="active" >
+              <a class="nav-link route-link" [routerLink]="[roleId == 1 ? '../workflow/summarydocs' : '../workflow/pendingdocs']"
+                ><i class="bi bi-diagram-3" ></i
+                ><span>{{roleId == 1 ? "Task" : "My Task"}}</span></a
+              >
+            </li>
+          <li class="nav-item" routerLinkActive="active">
+            <a class="nav-link route-link" routerLink="../admin/sharedfiles"
+              ><i class="icon-share-alt-solid" ></i
+              ><span>Shared Files</span></a
+            >
+          </li>
+
+
+  <li class="nav-item" routerLinkActive="active" *ngIf="roleId == 1">
+            <a class="nav-link route-link" routerLink="../admin/userlist" 
+              ><i class="icon-address-book" ></i
+              ><span>Contact Address</span></a
+            >
+          </li>  
+          <li class="nav-item" routerLinkActive="active">
+              <a class="nav-link" aria-current="page"   routerLink="../admin/addMeta"  ><i class="icon-tags-solid"></i> Meta</a>
+            </li>
+         
+           <li class="nav-item" routerLinkActive="active">
+              <a class="nav-link" routerLink="../admin/recentactivities"><i class="icon-file-image"></i>Activity Log</a>
+            </li> 
+            <li class="nav-item" routerLinkActive="active">
+              <a class="nav-link"  routerLink="../admin/archivefiles"><i class="icon-archive-solid"></i> Archive</a> 
+            </li>
+
+        </ul>
+
+
+
+
+      </div>
+    </nav>
+
+    <footer>
+      <p>Copyright {{ currentYear }} CSM</p>
+    </footer>
+  </div>
+
+
+<ng-template #treeNode let-data>
+
+  <li >
+  <a  class="dropdown-item route-link" (click)="data.expand = !data.expand; loadFolderData(data.folderId+':'+'0');" >
+      <i class="bi expandicon" [ngClass]="data.expand ? 'bi-dash-square' : 'bi-plus-square'"></i>
+      <span class="caret"  [ngClass]="data.expand ? 'bi bi-folder2-open' : 'bi bi-folder-fill text-warning'" ></span> &nbsp;
+  <span class="" >{{data.folderName}}</span>
+</a>
+  <ng-container *ngIf="data.children">
+    <ul class="sub-menu nav" [class.d-none]="!data.expand">
+      <ng-container
+        *ngFor="let child of data.children"
+        [ngTemplateOutlet]="treeNode"
+        [ngTemplateOutletContext]="{ $implicit: child }">
+      </ng-container>
+    </ul>
+  </ng-container>
+  </li>
+
+</ng-template>
+
+ 

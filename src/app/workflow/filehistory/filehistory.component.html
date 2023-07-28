@@ -1,0 +1,54 @@
+<!--===Page Title===-->
+<div class="page-title">
+   
+        <h4>{{title | langReplace}}</h4>
+        </div>
+        <!--===Page Title===-->
+        <!--===controle section===-->
+        <div class="page-controls-section" id="page-content">
+                        <div class="card">
+                        <div class="controls-section-header">
+                           <ul class="nav nav-tabs nav-fill" role="tablist" >
+                              <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="letterID" [tabMessage]="tablist"></app-tabs>  
+                           </ul>
+                        <div class="indicatorslist">
+                           <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils> 
+                              </div>
+                              </div>
+                        
+                        <div class="card-body">
+                           <div class="controls-section">
+                                        <div class="row">
+                                                        <div class="col-md-6 col-lg-6">
+                                <app-filedetails [fileid]="fileId" ></app-filedetails>
+                              
+                                       
+                                        <app-notinglist [fileid]="fileId"></app-notinglist>
+                                </div>
+                                <div class="col-md-6 col-lg-6">
+                                                <div class="position-relative">
+                                                <app-doc-prev-only [fileId]="fileId" [logid]="logid" [filetype]="filetype" [lockstatus]="lockstatus" [vfilepath]="filePath"></app-doc-prev-only>
+                                               </div>
+                                               
+                                        </div>
+                                </div>
+
+                                
+                            
+    
+                        
+                                 
+                               </div>
+                        </div>
+                        </div>
+     </div>
+    
+    
+    
+    <!--  -->
+    
+    
+    <div class="loader" *ngIf="loading">
+            <div class="loader-item"></div>
+            <p>Loading...</p>
+          </div> 

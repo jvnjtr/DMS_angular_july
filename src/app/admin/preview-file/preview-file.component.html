@@ -1,0 +1,65 @@
+<div *ngIf="prevstatus">
+
+
+
+<div class="previewdiv" id="previewdiv" *ngIf="!(filetype =='mp3' || filetype =='mp4' || filetype =='zip')">
+         <iframe [src]="publicurl"></iframe>
+
+       
+            <div class="loader loader2" *ngIf="fileLoading">
+                <div class="loader-item"></div>
+                <p>Loading...</p>
+              </div>
+    
+        </div> 
+
+        <div class="videopreviewdiv" *ngIf="filetype =='mp4' || filetype =='MP4' ||  filetype =='WebM' || filetype =='mkv' ||  filetype =='avi' ||  filetype =='webm'" id="videopreviewdiv">
+            <div class="loader loader2" *ngIf="fileLoading">
+                <div class="loader-item"></div>
+                <p>Loading...</p>
+              </div>
+          </div>
+
+          <div class="audiopreviewdiv" *ngIf="filetype =='mp3' || filetype =='MP3'" id="audiopreviewdiv">
+              <div class="loader loader2" *ngIf="fileLoading">
+                  <div class="loader-item"></div>
+                  <p>Loading...</p>
+                </div>
+            </div>
+
+ <div class="zipdiv" *ngIf="filetype =='zip' || filetype =='ZIP'" id="zipdiv">
+
+                <div class="loader loader2" *ngIf="fileLoading">
+                  <div class="loader-item"></div>
+                  <p>Loading...</p>
+                </div>
+    </div>
+
+
+</div>
+
+
+<div class="lockmodaldiv" *ngIf="!prevstatus">
+    <div class="div-body">
+        <h5 class="modal-title mb-2" id="lockModalLabel"> {{"Lock File" | langReplace}}</h5>
+        <div class="text-center">
+                <div class="form-group">
+                                   
+                        <div class="input-group ">
+                                        <input type="password" placeholder="Enter File Password" class="form-control" id="txtPassword" [(ngModel)]="txtPassword">
+                                        
+                                      
+                                      
+                                       
+                                      </div>
+
+                     </div>
+                  
+                      
+                               
+                                    <button class="btn btn-primary" (click)="unsetPassword()"> {{"Submit" | langReplace}} </button>
+                                    <!--  -->
+                                
+        </div>
+    </div>
+</div>

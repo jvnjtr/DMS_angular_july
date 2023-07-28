@@ -1,0 +1,192 @@
+<!-- // =============================================================================
+// File Name		              : userlist.component.html
+// Description 	              : This page display userlist
+// Created by                 : Bikash Kumar Panda
+// Created on                 : 12-Feb-2023
+// Designed by                : Bikash Kumar Panda
+// Designed on                : 12-Feb-2023
+// Developed by               : Bikash Kumar Panda
+// Developed on               : 12-Apr-2023
+// Style sheet                : userlist.component.scss
+
+// ============================================================================= -->
+
+
+<!--===Page Title===-->
+<div class="page-title">
+   
+    <h4>{{title | langReplace}}</h4>
+    </div>
+    <!--===Page Title===-->
+    <!--===controle section===-->
+    <div class="page-controls-section" id="page-content">
+                    <div class="card">
+                    <div class="controls-section-header">
+                       <ul class="nav nav-tabs nav-fill" role="tablist" >
+                          <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="letterID" [tabMessage]="tablist"></app-tabs>  
+                       </ul>
+                    <div class="indicatorslist">
+                            <!-- <a href="javascript:void(0)" ngbTooltip="Table View" class="tableviews" [ngClass]="dataviewtype == 1 ? 'text-info' : 'text-dark'" (click)="tableview()" title="Tabular View" ><i class="icon-table-solid"></i></a>
+                            <a href="javascript:void(0)" ngbTooltip="Div View" class="me-2 tableviews" [ngClass]="dataviewtype == 2 ? 'text-info' : 'text-dark'" (click)="boxview()" title="Box View"><i class="icon-th-large-solid"></i></a> -->
+                       <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils> 
+                          </div>
+                          </div>
+                    
+                    <div class="card-body">
+                       
+
+                        <div *ngIf="userList?.length > 0; else norecord">
+                            <div class="d-flex align-items-center justify-content-between mb-3 ">
+                                <div>
+                                 
+                                </div>
+                                <div class="d-flex align-items-center">
+                                   
+                                   
+                                    <div class="d-flex align-items-center me-3">
+                                          {{"Per Page"| langReplace}}
+                                        <select class="form-select width-90" (change)="onTableSizeChange($event)">
+                                      <option *ngFor="let size of pageSizes" [ngValue]="size">
+                                        {{ size }}
+                                      </option>
+                                    </select> 
+            </div>
+            <div class="d-flex justify-content-end ">
+                    <div class="custom-search ">
+                            <div class="search-ctrldiv">
+                                  <div class="selcteditems">
+                                    <div class="selitem" *ngFor="let serSelItems of searchselcteditems;let i = index ">
+                                        <span>{{serSelItems.searchkey}}</span>
+                                        {{serSelItems.searchvalue}}
+                                       <i (click)="removeselitems(i,serSelItems.searchkey,serSelItems.searchvalue)" class="bi bi-x"></i>
+                                    </div>     
+                                  </div>
+                               
+                                  <input class="form-control " #searchField type="search" placeholder="Search..." [(ngModel)]="txtSearch" aria-label="Search">
+                                  <i class="bi bi-search searchicon"></i>
+                            </div> 
+                         
+                          <div class="suggestList" *ngIf="txtSearch">
+                              <ng-container *ngFor="let searchref of searchColList ">
+                                      <a href="javascript:void(0)" (click)="setSearchParam(searchref,txtSearch)" ><span>Search {{searchref}} for</span>: <b>{{txtSearch}}</b> </a>
+                              </ng-container>
+                             
+                          </div>
+                         </div>
+</div>
+            
+                                   
+                                  </div>
+                               </div>
+                            <div class="table-responsive print-section" *ngIf="dataviewtype == 1">
+
+                             
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th width="50px"> {{"Sl No"| langReplace}} </th>
+                                           <th *ngFor="let flist of tablecollist">
+                                            <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)" class="my-icon bi bi-arrow-up"></i> 
+                                            {{flist.name| langReplace}}
+                                           </th>
+
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      
+                                        <tr valign="middle" *ngFor="let flist of userList | paginate
+                                        : {
+                                            itemsPerPage: tableSize,
+                                            currentPage: page,
+                                            totalItems: count
+                                          }; let i = index">
+                                          <td>{{tableSize *(page-1)+ i+1}}</td>
+                                        
+                                   
+                                      <td>{{flist.userFullName}}</td>
+                                      <td>{{flist.departmentName ? flist.departmentName : '-'}}</td>
+                                      <td>{{flist.roleName }}</td>
+                                      
+                                      <td>{{flist.userMailId}}</td>
+                                      <td> {{flist.userMobile }}</td>
+                                    
+
+
+                                
+
+
+
+                                          </tr>
+
+                                      </tbody>
+                                      </table>
+                           </div>
+                           <div class="row" *ngIf="dataviewtype == 2">
+
+                              <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-4" *ngFor="let flist of userList |  paginate
+                              : {
+                                  itemsPerPage: tableSize,
+                                  currentPage: page,
+                                  totalItems: count
+                                }; let i = index">
+
+                                <div class="div-view-section">
+
+                                    <div class="div-view-addons" *ngIf="flist.type == 2"> 
+
+ </div>
+        
+        
+                                <p class="mb-3"> 
+                                   
+                                       <strong> {{flist.userFullName}}</strong>
+                                       
+                                 
+                                    
+                                
+                                      </p>
+                                      <div class="row mb-2">
+                                          <div class="col">
+                                            <i class="bi bi-person-circle text-primary"></i>&nbsp; {{flist.roleName }}     
+                                          </div>
+                                          </div>
+                                          <div class="row mb-2">
+                                            <div class="col">
+                                              <i class="bi bi-envelope text-primary"></i>&nbsp; {{flist.userMailId}}     
+                                            </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                  <i class="bi bi-phone text-primary"></i>&nbsp; {{flist.userMobile }}     
+                                                </div>
+                                                </div>
+                                </div>
+
+
+                                </div>
+                            
+                             </div>
+                             <app-pagination [page]="page" [count]="count" [tableSize]="tableSize" (callfunction)="onTableDataChange($event)"></app-pagination>
+                          </div>
+                        
+                        <ng-template #norecord>
+                                <h6 class="no-content">  {{"No Record Found"| langReplace}} </h6>
+                            
+                            </ng-template>
+
+                
+                    </div> 
+    </div>
+
+     <!-- Modal -->
+ 
+
+
+
+
+<div class="loader" *ngIf="loading">
+    <div class="loader-item"></div>
+    <p>Loading...</p>
+  </div> 
+

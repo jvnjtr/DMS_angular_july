@@ -1,0 +1,29 @@
+[
+      {
+        "pagetitle":"All Files",
+        "tabList":[
+        
+          {"tabName":"Pending","tabUrl":"../pendingdocs","tabClass":"add d-none"},
+          {"tabName":"Summary","tabUrl":"../summarydocs","tabClass":"active add d-none"}
+                  
+                  ],
+        "utils":[
+         
+          {"utilName":"print"}
+         
+          ],
+        "messages":{
+          "successMsg":"New Meta Created Successfully",
+          "updatesuccessMsg":"Updated Successfully",
+          "errorMsg":"Error in Meta creation",
+          "fromname":"Please Select Form Name",
+          "metaname":"Please Enter Meta Name",
+          "metadesc":"Please Enter Meta Description",
+          "warningtype":"You want to delete this meta ",
+           "metaType":"Select Meta Type",
+           "deleteMsg":"Meta record deleted successfully"
+         }
+      }
+    ]
+
+

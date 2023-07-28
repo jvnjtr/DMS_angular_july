@@ -1,0 +1,233 @@
+<!-- // =============================================================================
+// File Name		              : pendingapprovals.component.ts
+// Description 	              : This page dispalys Pending approval list
+// Created by                 : Bikash Kumar Panda
+// Created on                 : 09-Jun-2023
+// Designed by                : Bikash Kumar Panda
+// Designed on                : 09-Jun-2023
+// Developed by               : Bikash Kumar Panda
+// Developed on               : 09-Jun-2023
+// Style sheet                : pendingapprovals.component.scss
+
+// ============================================================================= -->
+<!--===Page Title===-->
+<div class="page-title">
+
+  <h4>{{title | langReplace}}</h4>
+</div>
+<!--===Page Title===-->
+<!--===controle section===-->
+<div class="page-controls-section" id="page-content">
+  <div class="card">
+    <div class="controls-section-header">
+      <ul class="nav nav-tabs nav-fill" role="tablist">
+        <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="letterID"
+          [tabMessage]="tablist"></app-tabs>
+      </ul>
+      <div class="indicatorslist">
+
+        <a href="javascript:void(0)" ngbTooltip="Table View " class="mb-0 tableviews"
+          [ngClass]="selType == 1 ? 'text-info' : 'text-dark'" (click)="tableview(1)"><i
+            class="icon-table-solid"></i></a>
+           
+        <!-- <a href="javascript:void(0)" ngbTooltip="Graph View " class="mb-0 tableviews me-2"
+            [ngClass]="selType == 2 ? 'text-info' : 'text-dark'" (click)="tableview(2)"><i
+              class="icon-chart-pie-solid"></i></a> -->
+              <a href="javascript:void(0)" ngbTooltip="Download Excel " class="mb-0 text-success "
+              (click)="excelDownloadFolderWiselList()"><i
+                class="icon-file-excel-solid"></i></a>
+        <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils>
+
+      </div>
+    </div>
+
+    <div class="card-body">
+
+
+      <!-- Search Panel -->
+      <!-- <div class="search-container active" id="search-container">
+  
+          <div class="search-sec">
+  
+            <div class="row">
+  
+  
+              <div class="col-12 col-md-3 col-lg-3" >
+                <div class="form-group">
+                  <label>Baseed On</label>
+                  <select class="form-select" [(ngModel)]="selBasedon">
+                    <option value=0>Select</option>
+                    <option value=1>User</option>
+                    <option value=2>fileName</option>
+                    <option value=3>Date</option>
+  
+                  </select>
+                </div>
+              </div>
+              <div class="col-12 col-md-3 col-lg-3" *ngIf="selType == 1 && selBasedon==1">
+                <div class="form-group">
+                  <label>User</label>
+                  <select class="form-select" [(ngModel)]="txtUserName">
+                    <option value=0>Select</option>
+                    <option *ngFor="let ulist of userList" value="{{ulist.userId}}">
+                      {{ulist.userFullName}}
+                    </option>
+                  </select>
+  
+                </div>
+              </div>
+              <div class="col-12 col-md-3 col-lg-3" *ngIf="selType == 1 &&  selBasedon==2">
+                <div class="form-group">
+                  <label>File Name</label>
+                  <input type="text" class="form-control" [(ngModel)]="txtFileName" placeholder="">
+                </div>
+              </div>
+              <div class="col-12 col-md-3 col-lg-3" *ngIf="selType == 1 || selBasedon==3">
+                <div class="form-group">
+                  <label>From Date</label>
+                  <input type="date" class="form-control" [(ngModel)]="txtFromdate" placeholder="">
+                </div>
+              </div>
+              <div class="col-12 col-md-3 col-lg-3" *ngIf="selType == 1 || selBasedon==3">
+                <div class="form-group">
+                  <label>To Date</label>
+                  <input type="date" class="form-control" [(ngModel)]="txtTodate" placeholder="">
+                </div>
+              </div>
+              <div class="col-12 col-md-3 col-lg-3" *ngIf="selType == 2">
+                <div class="form-group">
+                  <label>Graph Type</label>
+                  <select class="form-select" [(ngModel)]="selGraphType">
+                    <option value=0>Select</option>
+                    <option value=1>Bar </option>
+                    <option value=2>Column </option>
+                    <option value=3>Line </option>
+                    <option value=4>Area </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-12 col-md-3 col-lg-3 pt-4">
+                <div class="form-group">
+                  <button class="btn btn-primary"
+                    (click)="searchdata(selType,selBasedon,txtUserName,txtFromdate,txtTodate,selGraphType,txtFileName)">{{"Show"}}
+                  </button>
+                  <button class="btn btn-danger ml-1" (click)="loadData(1,0,'','','',0,'');resetform()"> {{"Reset"}}</button>
+                </div>
+              </div>
+            </div>
+  
+  
+          </div>
+  
+  
+        </div> -->
+      <!-- Search Panel -->
+
+
+      <div class="controls-section print-section">
+        <div *ngIf="selType == 1">
+          <div *ngIf="queryList?.length > 0; else norecord">
+            <div class="d-flex justify-content-between mb-3">
+              <div>
+                <h6 class="mb-0" *ngIf="searchstatus == 1">
+                  Search Result Based On :
+                  <span class="text-success">
+                    {{ txtUserName ? 'User -'+ txtUserName : ''}}
+                    {{ selBasedon ? 'Based on -'+ selBasedon : ''}}
+                    {{ txtFromdate ? 'From Date -'+ (txtFromdate | date :"dd-MM-yyyy") : ''}}
+                    {{ txtTodate ? ', To Date -'+ (txtTodate | date :"dd-MM-yyyy") : ''}}
+                  </span>
+                </h6>
+              </div>
+              <div class="p-none" *ngIf="selType == 1">
+                {{"Per Page"| langReplace}} :
+                <select (change)="onTableSizeChange($event)">
+                  <option *ngFor="let size of pageSizes" [ngValue]="size">
+                    {{ size }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+
+
+
+            <div class="table-responsive ">
+              <table class="table table-bordered" #table1>
+                <thead>
+                  <tr>
+                    <th width="50px"> {{"Sl No"| langReplace}}</th>
+
+                    <th *ngFor="let flist of tablecollist">
+                      <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)"
+                        class="my-icon bi bi-arrow-up"></i>  {{flist.name | langReplace}}
+                    </th>
+
+
+
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <tr *ngFor="let plist of queryList | paginate
+                                          : {
+                                              itemsPerPage: tableSize,
+                                              currentPage: page,
+                                              totalItems: count
+                                            }; let i = index">
+                    <td>{{tableSize *(page-1)+ i+1}}</td>
+                    <td>{{plist.folderRefNo}}</td>
+                  
+                    <td>
+
+                      {{plist.fileName }}
+                    </td>
+                    <!-- <td><i class="h6" [ngClass]="getfiletype(plist.fileType)"></i> {{plist.fileName}} </td>
+   -->
+                    <td width="140px" class="text-center">{{plist.fileCount}}</td>
+
+                    <td class="text-right">{{formatBytes(plist.fileSize,2)}}</td>
+
+
+                    <td>{{plist.createdByName}}</td>
+                    <td>{{plist.CreatedOn }}</td>
+
+
+
+
+
+
+                  </tr>
+
+
+                </tbody>
+              </table>
+            </div>
+            <div class="p-none">
+              <app-pagination [page]="page" [count]="count" [tableSize]="tableSize"
+                (callfunction)="onTableDataChange($event)"></app-pagination>
+            </div>
+
+
+
+          </div>
+          <ng-template #norecord>
+            <h6 class="no-content">  {{"No Record Found"| langReplace}} </h6>
+
+          </ng-template>
+        </div>
+        <div *ngIf="selType == 2">
+          <highcharts-chart style="width: 100%; display: block" [Highcharts]="Highcharts" [options]="chartOptions"
+            [runOutsideAngular]="true" [oneToOne]="true">
+          </highcharts-chart>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+  <div class="loader" *ngIf="loading">
+    <div class="loader-item"></div>
+    <p>Loading...</p>
+  </div>

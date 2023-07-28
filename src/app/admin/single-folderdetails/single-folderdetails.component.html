@@ -1,0 +1,58 @@
+<div class="row">
+    <div class="col-md-12 col-lg-8 col-xxl-6">
+            <table class="table table-bordered">
+                    <tbody>
+                       
+                        <tr><th width="200px">{{"Folder Name"| langReplace}}</th><td>{{folderName}}</td></tr>
+                        <tr><th>{{"Size Consumed"| langReplace}}</th><td>
+
+                              <span>{{formatBytes(childSizeInKb,2)}}</span>
+
+                              
+
+                        </td></tr> 
+
+
+
+
+                        <tr><th>{{"Free Space"| langReplace}}</th><td class="bg-success-subtle text-emphasis-success">
+                              
+                         {{formatBytes(parentSizeinKb - childSizeInKb,2)}}
+
+
+                                      
+                            
+                        
+                        
+                        </td></tr> 
+                        <tr><th>{{"No of Subfolders"| langReplace}}</th><td>{{noofFolders}}</td></tr> 
+                       <tr><th>{{"No of documents"| langReplace}}</th><td>{{noofFiles}}</td></tr>  
+                       
+                        <tr *ngIf="noofFiles > 0"><th>{{"Type of documents"| langReplace}} </th><td >
+                            <div >
+                                    <button type="button" class="btn btn-primary btn-sm me-2" *ngFor="let tfile of typeoffiles">
+                                            {{tfile.type}} <span class="badge text-bg-warning">{{tfile.count}}</span>
+                                          </button>
+                                   
+                                   
+                            </div>
+                                
+                          
+                            <!-- {{typeoffiles |json}} -->
+                        </td></tr> 
+                        <tr><th>{{"Created By"| langReplace}}</th><td>{{createdByName}} </td></tr> 
+                        <tr><th>{{"Created On"| langReplace}} </th><td>{{createdAt}} </td></tr> 
+      
+                   
+                    </tbody>
+                </table>
+              
+    </div>
+    <div class="col-md-12 col-lg-4 col-xxl-6 text-center pt-5" *ngIf="folderid > 1">
+     <div class="file-property-btns">
+             <a href="javascript:void(0)" ngbTooltip='{{"Delete Folder"| langReplace}}' class="" *ngIf="folderDelete == true" (click)="delete(folderid)"  ><i class="bi bi-trash"></i></a>
+             <a class="" ngbTooltip="Duplicate" ngbTooltip='{{"Duplicate Folder"| langReplace}}'  *ngIf="folderModify == true" (click)="duplicateFolder(folderid)"  ><i class="bi bi-folder"></i></a> 
+</div>
+             <!-- (click)="fileDuplicate(fileid,folderId)" -->
+        </div>
+</div>

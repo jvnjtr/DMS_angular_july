@@ -1,0 +1,49 @@
+<div class="row form-group">
+        <label class="col-md-3">File Name</label>
+        <div class="col-md-9">Appendix.pdf</div>
+    </div>
+  
+
+    
+    
+    <div class="row form-group">
+            <label class="col-md-3">User Name</label>
+            <div class="col-md-9">
+                    <angular2-multiselect [data]="nameList" [(ngModel)]="selectedItems" 
+                    [settings]="dropdownSettings" 
+                    (onSelect)="onItemSelect($event)" 
+                    (onDeSelect)="OnItemDeSelect($event)"
+                    (onSelectAll)="onSelectAll($event)"
+                    (onDeSelectAll)="onDeSelectAll($event)">
+                </angular2-multiselect>
+            </div>
+    </div>
+    
+ 
+    <div class="row form-group">
+            <label class="col-md-3"> Expiry Date </label>
+            <div class="col-md-9">
+                    <div class="input-group ">
+                            <input type="text" readonly placeholder="DD-MM-YYYY" class="form-control" [minDate]="txtEfminDate" [(ngModel)]="txtEffeciveFrom"
+                            
+                               bsDatepicker [bsConfig]="{showWeekNumbers: false, isAnimated: true,dateInputFormat: 'DD-MM-YYYY',customTodayClass:'custom-today-class' }">
+                               <span class="input-group-text" id="basic-addon2"><i class="icon-calendar-alt"></i></span>
+                            </div>
+            </div>
+    </div>
+    <div class="row form-group">
+            <label class="col-md-3">Message</label>
+            <div class="col-md-9">
+                    <textarea class="form-control" rows="3" cols="3">
+
+                    </textarea>
+            
+            </div>
+    </div>
+    
+
+    <div class="row form-group">
+            <label class="col-md-3"> </label>
+            <div class="col-md-9"> <button  class="btn btn-success" >Save</button> &nbsp; </div>
+    </div>
+    

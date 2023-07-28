@@ -1,0 +1,62 @@
+
+
+
+      <!--===Page Title===-->
+      <div class="page-title">
+   
+        <h4>{{title | langReplace}} </h4>
+        </div>
+        <!--===Page Title===-->
+        <!--===controle section===-->
+        <div class="page-controls-section" id="page-content">
+                        <div class="card">
+                        <div class="controls-section-header">
+                           <ul class="nav nav-tabs nav-fill" role="tablist" >
+                              <app-tabs *ngFor="let tablist of tablist; let i = index"  [tabMessage]="tablist"></app-tabs>  
+                           </ul>
+                        <div class="indicatorslist">
+                                 <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils> 
+                              </div>
+                              </div>
+                        
+                        <div class="card-body">  
+
+<div class="py-3">
+<div class="row">
+    <label class="col-md-4 col-lg-3">* {{"Docuemnt Type"| langReplace}} </label>
+    <div class="col-md-6 col-lg-4">
+        <div class="form-group">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" [(ngModel)]="rdoDocuemntType" (change)="loadCreateeditor(rdoDocuemntType)" name="rdoDocuemntType" id="rdoDocuemntType1" value="1">
+                <label class="form-check-label" for="rdoDocuemntType1">{{"Pdf"| langReplace}}/{{"Word"| langReplace}}</label>
+              </div>
+
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" [(ngModel)]="rdoDocuemntType" (change)="loadCreateeditor(rdoDocuemntType)" name="rdoDocuemntType" id="rdoDocuemntType2" value="2">
+                <label class="form-check-label" for="rdoDocuemntType2">{{"Excel"| langReplace}}</label>
+              </div>
+        </div>
+</div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <iframe [src]="pdfweriterURL"></iframe>
+</div>
+</div>
+</div>
+
+<!-- *ngIf="fileeList?.length > 0" -->
+<div class=""  *ngIf="otherDetails"> 
+
+
+  </div>
+
+
+</div>
+</div>
+</div>
+<div class="loader" *ngIf="loading">
+    <div class="loader-item"></div>
+    <p>Loading...</p>
+  </div> 

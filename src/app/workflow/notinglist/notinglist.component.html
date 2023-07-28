@@ -1,0 +1,39 @@
+
+
+
+
+<h6> {{"Action History"| langReplace}} </h6>
+                    <div class="action-history" id="viewTable" >
+                            <!-- {{nlist | json}} -->
+<div *ngIf="notingList?.length > 0; else norecord">
+                            <div class="action-item notingTbl" *ngFor="let nlist of notingList">
+                                    <div class="action-authority">
+                                            
+                                            
+                                            <img src="{{siteUrl}}assets/img/user.png" alt="Logo">  
+                                          </div>
+                                          <div class="action-body">
+                                            <p> <strong>{{nlist.actionTakenByName}}({{nlist.actionTakenBy}}) , {{nlist.actionTaken}} </strong></p>
+                                            <p class="mb-1 "><strong> {{"Status"| langReplace}}  : </strong> {{nlist.statusTaken}}</p>
+                                                <p class="mb-0 d-flex"><strong> {{"Remark"| langReplace}}  :&nbsp;  </strong>
+                                                  <span class="remarkdetails" [innerHTML]="nlist.txtNoting" >demo</span>
+                                
+                                                </p>
+                                
+                                                
+                                                
+                                              </div>
+                           
+                           
+                            </div>
+                        </div>
+                            <ng-template #norecord>
+                                    <h6 class="no-content border">{{"Action Details Not Found"| langReplace}}   </h6>
+                                
+                                </ng-template>
+
+
+                          </div>
+           
+
+

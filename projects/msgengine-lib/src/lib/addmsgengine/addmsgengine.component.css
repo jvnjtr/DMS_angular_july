@@ -1,0 +1,64 @@
+.files-list{
+    display: flex;
+    margin-bottom: 0.5rem;
+    padding: 0.8rem 1rem;
+    background: #f7f7f7;
+    border-radius: 2px;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #e1e1e1;
+    cursor:pointer;
+    word-break: break-all;
+  }
+  .files-list i{
+    font-size: 1.3rem;
+  }
+  .files-list:hover{
+  background: #dedede;
+}
+
+.custom-dropzone {
+    margin-bottom: 1rem;
+  }
+  .btn-dropzone{
+    height: auto;
+  }
+  .custom-dropzone {
+      height: auto;
+      background: var(--bg-white);
+      border: 3px dashed var(--bs-gray-200);
+      border-radius: 5px;
+      padding:.5rem;
+    
+  
+  
+       
+     
+  }
+  .custom-dropzone label {
+    color: white;
+    width: auto;
+   
+    border-radius: 4px;
+    background-color:var(--base-color-600);
+    padding: .6rem 1.2rem;
+    transition: all ease-in-out .5s;
+  }
+  .custom-dropzone svg{
+    fill:var(--bs-gray-200);
+    margin-bottom: .5rem;
+    height: 40px;
+}
+.ngx-dropzone-label{
+    margin: 0;
+}
+.custom-dropzone h3 {
+      
+    font-size: 1rem;
+     color: var(--bs-gray-400);
+   } 
+   .custom-dropzone:hover label{
+  
+        background-color:var(--base-color-700);
+
+  }

@@ -1,0 +1,192 @@
+<!--===Page Title===-->
+<!-- Developed by Abhijit Dash -->
+<div class="page-title">
+
+    <h4>{{title | langReplace}}</h4>
+</div>
+<div class="page-controls-section" id="page-content">
+    <div class="card">
+        <div class="controls-section-header">
+            <ul class="nav nav-tabs nav-fill" role="tablist">
+               <app-tabs *ngFor="let tablist of tablist" [tabMessage]="tablist"></app-tabs> 
+            </ul>
+
+
+        </div>
+        <!-- --------------------------------------------- -->
+        <div class="card-body">
+            <div class="controls-section">
+                <!--begin::Form-->
+
+                <div class="row">
+                    <label class="col-md-4 col-lg-3">* {{"Language Name"| langReplace}}  </label>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                                <input type="text" class="form-control" id="txtLangName" [(ngModel)]="txtLangName">
+                           
+                        </div>
+                    </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-4 col-lg-3">* {{"Alias Name"| langReplace}} </label>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group">
+                                    <input type="text" class="form-control" id="txtAliasName" [(ngModel)]="txtAliasName">
+                               
+                            </div>
+                        </div>
+                        </div>
+
+  <div class="row">
+                        <label class="col-md-4 col-lg-3"></label>
+                        <div class="col-md-6 col-lg-9">
+                            <div>
+                                <button type="submit" id="submit" class="btn btn-success"
+                                    (click)="onSubmit()">{{ (editStatus ? "Update"  :"Submit") | langReplace}}</button>&nbsp;
+                               
+                                <button class="btn btn-danger"
+                                    (click)="cancel()">{{(editStatus ? "Cancel" :"Reset") | langReplace}}</button>
+                              
+    
+                            </div>
+                        </div>
+                        </div>
+
+            
+
+
+                <!-- end::Form -->
+
+
+            </div>
+        </div>
+    </div>
+
+<div class="card">
+<div class="controls-section-header">
+    <ul  role="tablist" class="nav nav-tabs nav-fill"></ul>
+    <div class="indicatorslist">
+     <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"
+            [sendIds]="letterIdArray" [funType]="sevName" [pubUnpubStatus]="pubUnpStatus"
+            (callfunction)="this.getLanguages('0')"></app-utils> 
+
+    </div>
+</div>
+<div class="card-body">
+
+    <div *ngIf="getLanguageList?.length > 0; else norecord">
+        <div class="d-flex justify-content-between mb-3">
+
+            <div>
+                <ul class="legends">
+                    <li><span class="bg-success"></span>{{"Publish" | langReplace}} </li>
+                    <li><span class="bg-danger"></span>{{"Unpublish" | langReplace}}  </li>
+                </ul>
+            </div>
+
+            <div>
+
+                {{"Per Page"| langReplace}}:
+                <select (change)="onTableSizeChange($event)">
+                    <option *ngFor="let size of pageSizes" [ngValue]="size">
+                        {{ size }}
+                    </option>
+                </select>
+    
+    
+    
+    
+            </div>
+        </div>
+    
+    
+        <div>
+           
+           
+
+            <div class="table-responsive print-section">
+
+                <!-- {{letterIdArray |json}} -->
+                <table data-toggle="table" class="table table-bordered valign-middle">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col" style="width:40px;" class="noPrint">
+
+
+                                <div>
+                                    <input class="form-check-input checkAll" type="checkbox"
+                                        (click)='selectAll($event)' id="checkall" name="checkall"
+                                        value="checkall">
+                                </div>
+                            </th>
+                            <th scope="col" style="width:40px;">{{"Sl No"| langReplace}} </th>
+
+                            <th scope="col">{{"Language Name"| langReplace}}</th>
+                            <th scope="col">{{"Alias Name"| langReplace}}</th>
+                           
+                            <th scope="col" class="noPrint">{{"Status"| langReplace}}</th>
+                            <th scope="col" class="noPrint" style="width:80px;">
+                                {{"Action"| langReplace}}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let lang of getLanguageList | paginate
+    : {
+        itemsPerPage: tableSize,
+        currentPage: page,
+        totalItems: count
+      };index as i">
+
+
+                            <td class="noPrint border-left-2"
+                                [ngClass]="{'border-left-danger': lang.tinPublishStatus == 0 , 'border-left-success': lang.tinPublishStatus == 1}">
+                                <div>
+                                    <input *ngIf="defaultLanguage!=lang.aliasName"
+                                        class="form-check-input rowCheck" type="checkbox"
+                                        [attr.pubstatus]="lang.tinPublishStatus"
+                                        (change)="onChange(lang.intId, $event,lang.tinPublishStatus)"
+                                        name="{{lang.intId}}" [id]="lang.intId" [value]="lang.intId">
+                                </div>
+                            </td>
+                            <td>{{i+1+indexNumber}}</td>
+                            <td>{{lang.langName}}</td>
+                            <td>{{lang.aliasName}}</td>
+                            
+
+                            <td >{{lang.tinPublishStatus == 0 ? 'Unpublish' : 'Publish'}} </td>
+                           
+                            <td class="p-none text-center p-none">
+                                <a *ngIf="defaultLanguage!=lang.aliasName"
+                                    class="text-primary" data-toggle="tooltip" title=""
+                                    (click)="editForm(lang.intId)" data-original-title="Edit"><i
+                                        class="icon-edit-solid"></i></a>
+                            </td>
+                        </tr>
+                    </tbody>
+
+
+                </table>
+            </div>
+            <div class="d-flex justify-content-end">
+                <app-pagination [page]="page" [count]="count" [tableSize]="tableSize"
+                    (callfunction)="onTableDataChange($event)"></app-pagination>
+            </div>
+        </div>
+    </div>
+    <ng-template #norecord>
+        <h6 class="no-content"> {{"No Record Found" | langReplace}}</h6>
+
+    </ng-template>
+</div>
+</div>
+
+
+
+
+
+</div>
+<div class="loader" *ngIf="loading">
+    <div class="loader-item"></div>
+    <p>{{"Loading"}}...</p>
+</div>

@@ -1,0 +1,396 @@
+<!--===Page Title===-->
+<div class="page-title">
+ 
+    <h4>{{title | translate}}</h4>
+  </div>
+  <!--===Page Title===-->
+  
+  <div class="page-controls-section" id="page-content">
+    <div class="card">
+      <div class="controls-section-header">
+       
+
+        <ul class="nav nav-tabs nav-fill" role="tablist">
+            <lib-libtabs *ngFor="let tablist of tablist" [tabMessage]="tablist"></lib-libtabs>
+    
+        </ul>
+        <div class="indicatorslist">
+
+            <lib-libutils *ngFor="let utillist of utillist" [childMessage]="utillist"  [sendIds]="letterIdArray"
+            [funType]="sevName" [pubUnpubStatus]="pubUnpStatus"  (callfunction)="viewItemsReminder('','','','',2)"
+            (callfunction2)='selectAll($event)'></lib-libutils>
+
+   
+         
+        </div>
+
+
+      </div>
+      <div class="card-body">
+  
+  
+        <div class="controls-section">
+          <!-- Search Panel -->
+          <div class="search-container active" id="search-container">
+  
+            <div class="search-sec">
+  
+              <div class="row">
+  
+                <div class="col-12 col-md-3 col-lg-3" *ngIf="formenable">
+                  <div class="form-group">
+                    <input type="text" class="form-control" [(ngModel)]="selFormName" placeholder="Select Form Name">
+                  </div>
+                </div>
+  
+                <div class="col-12 col-md-3 col-lg-3">
+                  <div class="form-group">
+                    <select class="form-select docSizeType" [(ngModel)]="txtMessageConfigType">
+                      <option value="0" disabled selected>{{"Select Message config Type" | translate}}</option>
+                      <option value=1>Mail</option>
+                      <option value=2>SMS</option>
+                      <option value=3>Whatsapp</option>
+                    </select>
+                  </div>
+                </div>
+  
+  
+                <div class="col-12 col-md-3 col-lg-3">
+                  <div class="form-group">
+                    <button class="btn btn-primary" (click)="viewSearchList()">{{"Search" | translate}} </button>
+                    <button class="btn btn-danger ml-1" (click)="viewItemsReminder('','','','',2)">
+                      {{"Reset" | translate}}</button>
+                  </div>
+                </div>
+              </div>
+  
+  
+            </div>
+  
+  
+          </div>
+          <!-- Search Panel -->
+          <div *ngIf="messageList?.length > 0; else norecord">
+  
+            <div class="d-flex justify-content-between mb-3">
+              <div>
+                <ul class="legends">
+                  <li><span class="bg-success"></span> {{"Publish" | translate}}</li>
+                  <li><span class="bg-danger"></span>{{"Unpublish" | translate}} </li>
+                </ul>
+              </div>
+              <div>
+                {{"Per Page" | translate}} :
+                <select (change)="onTableSizeChange($event)">
+                  <option *ngFor="let size of pageSizes" [ngValue]="size">
+                    {{ size }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="table-responsive print-section" id="print-section">
+              <table data-toggle="table" class="table table-bordered valign-middle">
+                <thead>
+                  <tr>
+                    <th scope="col" style="width:40px" class="noPrint">
+                      <div class="form-check">
+                        <input class="form-check-input checkall" type="checkbox" (change)="selectAll($event)" id="checkall"
+                          name="checkall" value="checkall">
+  
+                      </div>
+                    </th>
+                    <th scope="col" style="width:50px">{{"Sl No" | translate}}</th>
+                    <th scope="col" *ngIf="formenable">{{"Form Name" | translate}}</th>
+                    <th scope="col">{{"Configuration Type" | translate}}</th>
+                    <th scope="col">{{"Message Type" | translate}}</th>
+                    <th scope="col">{{"Created On" | translate}}</th>
+                    <th scope="col">{{"Last Execution Date" | translate}}</th>
+                    <th scope="col" [width]="150">{{"Set Reminder" | translate}}</th>
+                    <th scope="col" class="noPrint">{{"Preview" | translate}}</th>
+                    <th scope="col" class="noPrint" style="width:80px">{{"Action" | translate}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let messages of messageList | paginate
+                          : {
+                              itemsPerPage: tableSize,
+                              currentPage: page,
+                              totalItems: count
+                            };
+                      let i = index">
+                    <td class="noPrint border-left-2"
+                      [ngClass]="{'border-left-danger': messages.tinPublishStatus === 0 , 'border-left-success': messages.tinPublishStatus === 1 }">
+                      <div>
+                        <input class="form-check-input rowCheck" [attr.pubstatus]="messages.tinPublishStatus"
+                          type="checkbox"
+                          (change)="onChange(messages.intMessageConfigId, $event,messages.tinPublishStatus)"
+                          name="{{messages.intMessageConfigId}}" [id]="messages.intMessageConfigId"
+                          [value]="messages.intMessageConfigId">
+                      </div>
+                    </td>
+
+
+                    
+                    <td>{{i+1+indexNumber}}</td>
+                    <td *ngIf="formenable"><a type="button" class="text-primary" data-bs-toggle="modal"
+                        [attr.data-bs-target]="'#previewModal'+i">
+                        {{messages.vchProcessName}}</a>
+                    </td>
+                    <td>
+                      <a type="button" *ngIf="!formenable" class="text-primary" data-bs-toggle="modal"
+                        [attr.data-bs-target]="'#previewModal'+i">
+                        {{(messages.intMessageConfigType == 1) ? 'Mail':(messages.intMessageConfigType == 2) ?'SMS':
+                      'Whatsapp'}}
+                      </a>
+                      <span *ngIf="formenable">
+                      {{(messages.intMessageConfigType == 1) ? 'Mail':(messages.intMessageConfigType == 2) ?'SMS':
+                      'Whatsapp'}}</span></td>
+                    <td>{{messages.intmessageType == 1 ? 'Messaging': 'Reminder'}}</td>
+                    <td>{{messages.dtmCreatedOn}}</td>
+                    <td>{{(messages.schedularStatus == 1) ? messages.stopExecutionDate :'--'}}</td>
+                    <!-- <td>{{messages.vchLanguage}}</td> -->
+                    <td>
+                      <a type="button" class="btn btn-primary btn-sm text-white width-100" 
+                        *ngIf="messages.schedularStatus == 0" (click)="createreminder(messages.intProcessId,messages.intMessageConfigId,messages.intMessageConfigType)">
+                        {{"Create" | translate}} </a>
+                      <span *ngIf="messages.schedularStatus == 1">
+                        <a type="button" class="btn btn-success btn-sm text-white width-100"
+                          (click)="executeSchedular(messages.intMessageConfigId,messages.intProcessId)">{{"EXECUTE" | translate}}</a>
+                      </span>
+                      <span *ngIf="messages.schedularStatus == 2">
+                        <a type="button" class="btn btn-danger btn-sm text-white width-100"
+                          (click)="stopSchedular(messages.intMessageConfigId,messages.intProcessId)">{{"STOP" | translate}}</a>
+                      </span>
+                    </td>
+                    <td class="noPrint">
+                      <div *ngIf="messages.schedularStatus == 1;else nodt ">
+                        <a href="javascriprt:void(0)" class="text-info" data-bs-toggle="modal"
+                          [attr.data-bs-target]="'#excuteModal'+i">{{"Preview" | translate}}</a>
+                      </div>
+                      <ng-template #nodt>-</ng-template>
+                    </td>
+                    <!--=========== Modal For Message Details ===================-->
+  
+                    <td class="noPrint"><a class="text-primary" data-toggle="tooltip" title="" data-original-title="Edit"
+                        (click)="editReminder(messages.intMessageConfigId+':'+messages.intProcessId+':'+messages.vchProcessName)"><i
+                          class="icon-edit-solid"></i></a>
+
+                          <div class="modal fade noPrint" id="excuteModal{{i}}" tabindex="-1" aria-labelledby="excuteModalLabel"
+                          aria-hidden="true">
+                          <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title mb-0" id="excuteModalLabel">{{"Execute Details" | translate}}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                <table class="table table-bordered">
+                                  <tbody>
+                                    <tr>
+                                      <td class="w-25 fw-bold">{{"Scheduler URL" | translate}} </td>
+                                      <td colspan="2">{{messages.schedularUrl}}</td>
+      
+                                    </tr>
+      
+                                    <tr>
+                                      <td class="fw-bold">{{"Start Date and Time" | translate}} </td>
+                                      <td colspan="2">{{messages.dtmStartDate}}</td>
+                                    </tr>
+      
+                                    <tr>
+                                      <td class="fw-bold">{{"End Date and Time" | translate}} </td>
+                                      <td colspan="2">{{messages.dtmEndDate}}</td>
+                                    </tr>
+      
+                                    <tr>
+                                      <td class="fw-bold">{{"Frequency Type" | translate}} </td>
+                                      <td colspan="2">{{messages.frequencyType == 1 ? 'Month': (messages.frequencyType == 2)
+                                        ?'Day': (messages.frequencyType == 3) ?'Hour' :'Second'}}</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="fw-bold">{{"Frequency Duration" | translate}}</td>
+                                      <td colspan="2">{{messages.frequencyDuration}}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+      
+      
+                        <div class="modal fade noPrint" id="previewModal{{i}}" tabindex="-1" aria-labelledby="previewModalLabel"
+                          aria-hidden="true">
+                          <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title mb-0" id="previewModalLabel">{{"Message Details" | translate}}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                <table class="table table-bordered">
+                                  <tbody>
+                                    <tr *ngIf="formenable">
+                                      <td class="w-25 fw-bold">{{"Form Name" | translate}} </td>
+                                      <td colspan="2">{{messages.vchProcessName}}</td>
+                                    </tr>
+      
+                                    <tr>
+                                      <td class="fw-bold">{{"Message Subject" | translate}} </td>
+                                      <td colspan="2">{{messages.vchSubject}}</td>
+                                    </tr>
+      
+                                    <tr *ngIf="messages.intMessageConfigType == 2">
+                                      <td class="w-25 fw-bold">{{"SMS TemplateId" | translate}} </td>
+                                      <td colspan="2">{{messages.vchSmsTemplateId}}</td>
+                                    </tr>
+      
+                                    <tr *ngIf="messages.intMessageConfigType == 3 && messages.intDocumentType == 1">
+                                      <td class="w-25 fw-bold"> {{"Audio" | translate}} </td>
+                                      <td colspan="2">
+                                        <audio controls>
+                                          <source src="{{messages.vchDocument}}" type="audio/mp3">
+                                          {{"Your browser does not support the audio tag"}}.
+                                        </audio>
+                                      </td>
+                                    </tr>
+      
+                                    <tr *ngIf="messages.intMessageConfigType == 3 && messages.intDocumentType == 2">
+                                      <td class="w-25 fw-bold"> {{"Video" | translate}} </td>
+                                      <td colspan="2">
+                                        <video width="320" height="240" controls>
+                                          <source src="{{messages.vchDocument}}" type="video/mp4">
+                                          {{"Your browser does not support the video tag"}}.
+                                        </video>
+                                      </td>
+                                    </tr>
+      
+                                    <tr *ngIf="messages.intMessageConfigType == 3 && messages.intDocumentType == 3">
+                                      <td class="w-25 fw-bold"> {{"Image" | translate}} </td>
+                                      <td colspan="2"><img src="{{messages.vchDocument}}" style="max-width:100%"
+                                          height="70px"></td>
+                                    </tr>
+      
+                                    <tr>
+                                      <td class="fw-bold">{{"Message Content" | translate}} </td>
+                                      <td>
+                                        <div class="pdfContainer" [innerHtml]="htmldecode(messages.vchMessageContent)"  ></div>
+                                      </td>
+                                    </tr>
+      
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        </td>
+
+
+           
+  
+  
+  
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <lib-libpagination [page]="page" [count]="count" [tableSize]="tableSize" (callfunction)="onTableDataChange($event)"></lib-libpagination>
+           
+          </div>
+          <ng-template #norecord>
+            <h6 class="no-content">{{"No Record Found" | translate}} </h6>
+          </ng-template>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+
+  <ng-template #createreminderModal id="createreminderModal" class="noPrint" let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mb-0" >
+        {{"Reminder Scheduler" | translate}}
+      </h5>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="closeModal()"
+        aria-label="Close"
+      ></button>
+    </div>
+
+
+
+    <div class="modal-body">
+ 
+      <div class="form-group">
+        <div class="row">
+          <label class="col-md-4 col-lg-3 text-dark"> <span class="text-danger">*</span>
+            {{"Scheduler URL" | translate}}</label>
+          <div class="col-md-8 col-lg-6">
+            <input type="text" [(ngModel)]="schedularUrl" id="schedularUrl" class="form-control" name=""
+              placeholder="https://www.google.co.in/">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row">
+          <label class="col-md-4 col-lg-3 text-dark"> <span class="text-danger">*</span>{{"Start Date and Time" | translate}} </label>
+          <div class="col-md-8 col-lg-6">
+            <input type="datetime-local" [(ngModel)]="startDateTime"  id="startDateTime"  class="form-control" name="">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row">
+          <label class="col-md-4 col-lg-3 text-dark"><span class="text-danger"> </span>{{"End Date and Time" | translate}} </label>
+          <div class="col-md-8 col-lg-6">
+            <input type="datetime-local" [(ngModel)]="endDateTime"  id="endDateTime"  class="form-control" name="">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row">
+          <label class="col-md-4 col-lg-3 text-dark"><span class="text-danger">*</span>{{"Frequency Type" | translate}} </label>
+          <div class="col-md-8 col-lg-6">
+            <select class="form-select docSizeType" [(ngModel)]="freqType"  id="freqType" >
+              <option value="0" disabled selected>{{"Select" | translate}}</option>
+              <option value=1>Month</option>
+              <option value=2>Day</option>
+              <option value=3>Hours</option>
+              <option value=4>Seconds</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row">
+          <label class="col-md-4 col-lg-3 text-dark"><span class="text-danger">*</span> {{"Frequency Duration" | translate}}</label>
+          <div class="col-md-8 col-lg-6">
+            <input type="number" [(ngModel)]="freqDuration"  id="freqDuration"  class="form-control" name=""
+              placeholder="">
+          </div>
+        </div>
+      </div>
+
+    
+      <div class="form-group">
+        <div class="row">
+          <label class="col-md-4 col-lg-3 text-dark"> </label>
+          <div class="col-md-8 col-lg-6">
+            <button class="btn btn-primary"
+          
+              (click)="createSchedular()">{{"Submit" | translate}}</button>
+            <button class="btn btn-danger ml-1"
+              (click)="resetSchedular()">{{"Reset" | translate}}</button>
+          </div>
+        </div>
+      </div>
+       
+       
+    </div>
+  </ng-template>

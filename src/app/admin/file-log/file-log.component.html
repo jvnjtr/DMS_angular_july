@@ -1,0 +1,114 @@
+<div *ngIf="filevesions?.length > 0; else norecord">
+    <div class="table-responsive print-section">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th width="50px"> {{ "Sl No" | langReplace}} </th>
+  
+            <th *ngFor="let flist of tablecollist">
+              <i
+                *ngIf="flist.sortable"
+                (click)="onSortClick(flist.cname, $event)"
+                class="my-icon bi bi-arrow-up"
+              ></i>
+              {{ flist.name | langReplace}}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let flist of filevesions; let i = index">
+            <td>
+              {{ i + 1 }}
+            </td>
+            <td>
+              {{ flist.fileRefNo }}
+            </td>
+            <td>
+              <a
+                (click)="
+                  loadpreview(
+                    flist.fileId,
+                    flist.fileType,
+                    flist.logId,
+                    flist.filePath,
+                    flist.lockStatus
+                  )
+                "
+                target="_blank"
+                class="text-primary"
+                >{{ flist.fileName }}
+                  
+                <i
+                  ngbTooltip="Locked File"
+                  class="{{
+                    flist.lockStatus == 1
+                      ? 'bi bi-lock-fill text-danger ml-1'
+                      : ''
+                  }}"
+                ></i
+              ></a>
+            </td>
+  
+            <td class="">
+              {{flist.activityPerformed}}
+            </td>
+  
+            <!-- <td>v{{ flist.fileVersion | number : "1.1-5" }}</td>
+            <td>
+              {{ formatBytes(flist.fileSize, 2) }}
+            </td> -->
+            <td>
+              {{ flist.createdBy }}
+              <small class="text-primary d-block mt-1"
+                >on {{ flist.createdOn }}</small
+              >
+            </td>
+  
+            <!-- <td>
+              {{ flist.changedBy ? flist.changedBy : "" }}
+              <small class="text-primary d-block mt-1"
+                >{{ flist.changedOn && flist.changedOn !=null ? 'on ' + flist.changedOn : "" }}</small
+              >
+            </td> -->
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <ng-template #norecord>
+    <h6 class="no-content">{{"No Record Found" | langReplace}}</h6>
+  </ng-template>
+  <div class="loader" *ngIf="loading">
+    <div class="loader-item"></div>
+    <p>Loading...</p>
+  </div>
+  
+  <ng-template #previewModal id="previewModal" let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mb-0" id="previewModalLabel">{{"Document Preview" | langReplace}}</h5>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="closeModal()"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div
+      class="modal-body"
+      style="
+        max-height: 90vh;
+        min-height: 300px;
+        overflow-y: auto;
+        position: relative;
+      "
+    >
+      <app-preview-file
+        [fileId]="previewfileid"
+        [filetype]="filetype"
+        [lockstatus]="lockstatus"
+        [logid]="logId"
+        [vfilepath]="vfilepath"
+      ></app-preview-file>
+    </div>
+  </ng-template>
+  

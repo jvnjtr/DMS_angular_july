@@ -1,0 +1,144 @@
+<!--===Page Title===-->
+<div class="page-title">
+   
+    <h4>{{title | langReplace}}</h4>
+    </div>
+    <!--===Page Title===-->
+    <!--===controle section===-->
+    <div class="page-controls-section" id="page-content">
+                    <div class="card">
+                    <div class="controls-section-header">
+                       <ul class="nav nav-tabs nav-fill" role="tablist" >
+                          <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="letterID" [tabMessage]="tablist"></app-tabs>  
+                       </ul>
+                    <div class="indicatorslist">
+                       <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils> 
+                          </div>
+                          </div>
+                    
+                    <div class="card-body">
+                       <div class="controls-section">
+                            <!-- <div class="d-flex justify-content-end mb-3">
+                                    <div class="custom-search ">
+                                            <div class="search-ctrldiv">
+                                                  <div class="selcteditems">
+                                                    <div class="selitem" *ngFor="let serSelItems of searchselcteditems;let i = index ">
+                                                        <span>{{serSelItems.searchkey}}</span>
+                                                        {{serSelItems.searchvalue}}
+                                                       <i (click)="removeselitems(i,serSelItems.searchkey,serSelItems.searchvalue)" class="bi bi-x"></i>
+                                                    </div>     
+                                                  </div>
+                                               
+                                                  <input class="form-control " #searchField type="search" placeholder="Search..." [(ngModel)]="txtSearch" aria-label="Search">
+                                                  <i class="bi bi-search searchicon"></i>
+                                            </div> 
+                                         
+                                          <div class="suggestList" *ngIf="txtSearch">
+                                              <ng-container *ngFor="let searchref of searchColList ">
+                                                      <a href="javascript:void(0)" (click)="setSearchParam(searchref,txtSearch)" ><span>Search {{searchref}} for</span>: <b>{{txtSearch}}</b> </a>
+                                              </ng-container>
+                                             
+                                          </div>
+                                         </div>
+        </div> -->
+                            <div class="d-flex justify-content-between mb-3 ">
+                                    <div>
+                                        
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        
+                                      
+                
+                                     
+                
+                                    <input class="form-control" type="search" placeholder="{{'Search' | langReplace}}.." style="width:400px" [(ngModel)]="txtSearch" aria-label="Search">
+                                     
+                                       
+                                    
+                                    </div>
+                                   </div>
+                            <div *ngIf="metalist?.length > 0; else norecord">
+
+                           <div class="table-responsive print-section">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th width="50px"> {{"Sl No"| langReplace}}</th>
+
+
+                                            <th *ngFor="let flist of tablecollist">
+                                                <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)" class="my-icon bi bi-arrow-up"></i> 
+                                                {{flist.name | langReplace}}
+                                                
+                                                
+                                               </th>
+<!-- 
+
+                                            <th >Meta Name</th>
+                                            <th>Description</th>
+                                            <th>Type</th>
+                                            
+                                            <th>Created By</th> -->
+                                            <th width="100px" class="p-none">
+                                                {{"Action"| langReplace}}
+                                                </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                          
+                                        <tr *ngFor="let mlist of metalist | metasearch:txtSearch | paginate
+                                        : {
+                                            itemsPerPage: tableSize,
+                                            currentPage: page,
+                                            totalItems: count
+                                          }; let i = index">
+                                               
+                                            
+
+                                            <td>{{tableSize *(page-1)+ i+1}} </td>
+                                            <td>{{mlist.metaName}}</td>
+                                            <td>{{mlist.description}}</td>
+                                            <td >
+                                                {{mettypelist[mlist.metaType]}}
+                                                 
+                                                    <!-- {{ colName.typeid == mlist.metaType ? colName.typeName : ''}} -->
+                                              
+                                                  
+                                                  </td>
+                                            
+                                          
+                                           
+                                            <td>{{mlist.createdBy}}
+                                                   <small class="text-primary d-block mt-1">on {{mlist.createdOn}}</small>
+                                            </td>
+                                            <td class="p-none">
+                                                    <a class="text-primary" title="Edit" href="javascript:void(0)" (click)="gotoEdit(mlist.intMetaId)"><i class="icon-edit-solid"></i></a>
+                                                    <a class="text-danger" href="javascript:void(0)" (click)="deletMeta(mlist.intMetaId)"><i class="icon-trash-solid"></i></a>
+                                            </td>
+
+
+
+
+
+  
+                                        </tr>
+                                       
+                                          
+                                    </tbody>
+                                </table>
+                           </div>
+                           <app-pagination [page]="page" [count]="count" [tableSize]="tableSize" (callfunction)="onTableDataChange($event)"></app-pagination>
+                             
+                        </div>
+                        <ng-template #norecord>
+                                <h6 class="no-content">  {{"No Record Found"| langReplace}} </h6>
+                            
+                            </ng-template>
+                        </div>
+                    </div> 
+    </div>
+    <div class="loader" *ngIf="loading">
+            <div class="loader-item"></div>
+            <p>Loading...</p>
+          </div> 
+    

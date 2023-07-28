@@ -1,0 +1,245 @@
+<!--===Page Title===-->
+<div class="page-title">
+
+    <h4>{{title | translate}}</h4>
+  </div>
+  <!--===Page Title===-->
+  <!--===controle section===-->
+  <div class="page-controls-section" id="page-content">
+    <div class="card">
+      <div class="controls-section-header">
+        <ul class="nav nav-tabs nav-fill" role="tablist">
+            <lib-libtabs *ngFor="let tablist of tablist" [tabMessage]="tablist"></lib-libtabs>
+    
+        </ul>
+        <div class="indicatorslist">
+
+            <lib-libutils *ngFor="let utillist of utillist" [childMessage]="utillist" [sendIds]="getwayIdArray"
+            [funType]="sevName" [pubUnpubStatus]="pubUnpStatus"  (callfunction)="viewAllrecrds(selType,txtName)"
+            (callfunction2)='selectAll($event)'></lib-libutils>
+         
+         
+        </div>
+  
+      </div>
+      <div class="card-body">
+  
+
+        <div class="controls-section">
+  
+          <!-- Search Panel -->
+          <div class="search-container active" id="search-container">
+  
+            <div class="search-sec">
+  
+              <div class="row">
+  
+                <div class="col-12 col-md-3 col-lg-3">
+                  <div class="form-group">
+                    <select class="form-select" [(ngModel)]="selType">
+                      <option value="0" >{{"Select Gateway Type" | translate}}</option>
+                      <option *ngFor="let gettype of getwaytypes; let i index" [value]="gettype.typeId">
+                        {{gettype.typeName}}</option>
+  
+                    </select>
+                  </div>
+                </div>
+  
+                <div class="col-12 col-md-3 col-lg-3">
+                  <div class="form-group">
+                    <input type="text" class="form-control" name="Form Name" [(ngModel)]="txtName"
+                      placeholder="{{'Enter Name' | translate}}">
+                  </div>
+                </div>
+  
+  
+                <div class="col-12 col-md-3 col-lg-3">
+                  <div class="form-group">
+                    <button class="btn btn-primary" (click)="viewAllrecrds(selType,txtName)">{{"Search" | translate}} </button>
+                    <button class="btn btn-danger ml-1" (click)="viewAllrecrds(0,'')"> {{"Reset" | translate}}</button>
+                  </div>
+                </div>
+              </div>
+  
+  
+            </div>
+  
+  
+          </div>
+          <!-- Search Panel -->
+  
+          <div *ngIf="getwayList?.length > 0; else norecord">
+  
+            <div class="d-flex justify-content-between mb-3">
+              <div>
+                <ul class="legends">
+                  <li>
+                    <span class="bg-success"></span>{{"Publish" | translate}}
+                  </li>
+                  <li>
+                    <span class="bg-danger"></span> {{"Unpublish" | translate}}
+                  </li>
+                </ul>
+              </div>
+              <div>
+  
+                <!-- {{"Per Page"}}:
+                <select (change)="onTableSizeChange($event)">
+                  <option *ngFor="let size of pageSizes" [ngValue]="size">
+                    {{ size }}
+                  </option>
+                </select> -->
+  
+              </div>
+  
+            </div>
+  
+            <div class="table-responsive " id="print-section">
+                
+              <table data-toggle="table" class="table table-bordered ">
+                <thead>
+                  <tr>
+                    <th scope="col" class="noPrint" style="width:25px" valign="top">
+                      <div class="form-check">
+                        <input class="form-check-input checkall" type="checkbox" (change)="selectAll($event)" id="checkall"
+                          name="checkall" value="checkall">
+  
+                      </div>
+                    </th>
+                    <th scope="col" style="width:50px">{{"Sl No" | translate}}</th>
+                    <th scope="col">{{"Type" | translate}}</th>
+                    <th scope="col">{{"Name" | translate}}</th>
+  
+                    <th scope="col">{{"URL" | translate}}</th>
+                    <th scope="col" class="noPrint" style="width:140px">{{"Action" | translate}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let getways of getwayList| paginate
+                                                                      : {
+                                                                          itemsPerPage: tableSize,
+                                                                          currentPage: page,
+                                                                          totalItems: count
+                                                                        };
+                                                                  let i = index">
+                    <td class="noPrint border-left-2"
+                      [ngClass]="{'border-left-danger': getways.tinStatus == 0 , 'border-left-success': getways.tinStatus == 1 }">
+                      <div class="form-check">
+                        <input class="form-check-input rowCheck" type="checkbox"
+                          (change)="onChange(getways.intId, $event,getways.tinStatus)"
+                          [attr.pubstatus]="getways.tinStatus" name="{{getways.intId }}" [id]="getways.intId"
+                          [value]="getways.intId">
+  
+                      </div>
+                    </td>
+                    <td>{{i+1+indexNumber}}</td>
+                    <td>{{getways.typeName}} </td>
+                    <td>{{getways.vchName}}</td>
+  
+                    <td>{{getways.vchUrl}}</td>
+                    <td class="noPrint">
+                      <a class="text-info"  (click)="filedata(getways.intId,getways.tinType,getways.typeName)" >{{"View" | translate}}</a>
+                     
+              
+  
+                    </td>
+                  </tr>
+  
+  
+  
+  
+                </tbody>
+              </table>
+            </div>
+  
+
+            <!-- <lib-pagination [page]="page" [count]="count" [tableSize]="tableSize" (callfunction)="onTableDataChange($event)"></lib-pagination> -->
+            <lib-libpagination [page]="page" [count]="count" [tableSize]="tableSize" (callfunction)="onTableDataChange($event)"></lib-libpagination>
+            
+          </div>
+          <ng-template #norecord>
+            <h6 class="no-content"> {{"No Record Found" | translate}}</h6>
+  
+          </ng-template>
+  
+  
+        </div>
+  
+      </div>
+  
+    </div>
+  
+  
+  
+  </div>
+  <ng-template #previewModal id="previewModal" let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mb-0" id="movetoFolderModalLabel">
+        {{"Gateway Details" | translate}}
+      </h5>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="closeModal()"
+        aria-label="Close"
+      ></button>
+    </div>
+
+
+
+    <div class="modal-body">
+        <div *ngFor="let getways of getwayDetails">
+            <div class="mb-3 row">
+                <label class="col-sm-4 ">{{"Type" | translate}}</label>
+                <div class="col-sm-8">
+                  : <label class="text-dark">{{typeName}}</label>
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label class="col-sm-4 ">{{"Name" | translate}}</label>
+                <div class="col-sm-8">
+                  : <label class="text-dark">{{getways.vchName}}</label>
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label class="col-sm-4 ">{{"Url" | translate}}</label>
+                <div class="col-sm-8">
+                  : <label class="text-dark">{{getways.url}}</label>
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label class="col-sm-4 ">{{"Data post method" | translate}}</label>
+                <div class="col-sm-8">
+                  : <label class="text-dark">{{getways.dataPostMethod}} </label>
+                </div>
+              </div>
+              <div class="mb-3 row">
+                <label class="col-sm-4 ">{{"Contact Address" | translate}}</label>
+                <div class="col-sm-8">
+                  : <label class="text-dark">{{getways.contactaddress}}</label>
+                </div>
+              </div>
+        </div>
+       
+       
+        <table class="table table-bordered mt-3">
+            <thead>
+              <tr>
+                <th scope="col">{{"Label" | translate}}</th>
+                <th scope="col">{{"Key" | translate}}</th>
+                <th scope="col">{{"Value" | translate}}</th>
+
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr *ngFor="let apilist of getDetailslist; let i = index">
+                <td>{{apilist.vchLabel}}</td>
+                <td>{{apilist.vchKey}}</td>
+                <td>{{apilist.vchValue}}</td>
+              </tr>
+
+            </tbody>
+          </table>
+    </div>
+  </ng-template>

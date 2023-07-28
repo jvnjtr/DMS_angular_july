@@ -1,0 +1,30 @@
+[
+      {
+        "pagetitle":"Upload Document",
+        "tabList":[
+          {"tabName":"Upload","tabUrl":"../upload","tabClass":"active add d-none"},
+          {"tabName":"New Folder","tabUrl":"../newfolder"}
+         
+                  
+                  ],
+        "utils":[
+          {"utilName":"mandatory"}
+         
+         
+          ],
+        "messages":{
+          "successMsg":"New Letter Generated Successfully",
+          "updatesuccessMsg":"Updated Successfully",
+          "errorMsg":"Error in letter creation",
+          "fromname":"Please Select Form Name",
+          "lettername":"Please Enter Letter Name",
+          "effectivefrom":"Please Select Effective form date",
+          "effectiveto":"Please Enter Effective to date",    
+          "effectivefromto":"Effective to date must be grater then from date",  
+          "signtype":"Please Select sign Type",  
+          "lettercontent":"Please Enter Letter content"
+         }
+      }
+    ]
+
+

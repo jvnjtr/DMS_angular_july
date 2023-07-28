@@ -1,0 +1,129 @@
+<!-- // =============================================================================
+// File Name		              : searchreport.component.ts
+// Description 	              : This page dispalys key based search details
+// Created by                 : Bikash Kumar Panda
+// Created on                 : 10-May-2023
+// Designed by                : Bikash Kumar Panda
+// Designed on                : 10-May-2023
+// Developed by               : Bikash Kumar Panda
+// Developed on               : 10-May-2023
+// Style sheet                : searchreport.component.scss
+
+// ============================================================================= -->
+<!--===Page Title===-->
+<div class="page-title">
+
+    <h4>{{title | langReplace}}</h4>
+</div>
+<!--===Page Title===-->
+<!--===controle section===-->
+<div class="page-controls-section" id="page-content">
+    <div class="card">
+        <div class="controls-section-header">
+            <ul class="nav nav-tabs nav-fill" role="tablist">
+                <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="letterID"
+                    [tabMessage]="tablist"></app-tabs>
+            </ul>
+            <div class="indicatorslist">
+                <a href="javascript:void(0)" ngbTooltip="Download " class="mb-0 text-success"
+                       (click)="excelDownloadSearchReportList()"><i
+                        class="icon-file-excel-solid"></i></a>
+                <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="controls-section print-section">
+                <div class="">
+                    <h5> {{"Top 10 Search Result"| langReplace}} </h5>
+                    <highcharts-chart style="width: 100%; display: block" [Highcharts]="Highcharts"
+                        [options]="chartOptions" [runOutsideAngular]="true" [oneToOne]="true">
+                    </highcharts-chart>
+                </div>
+                <div class="separator separator-dashed"></div>
+                <div class="d-flex justify-content-between mb-3 p-none">
+                    <div>
+
+                    </div>
+                    <div class="d-flex align-items-center">
+
+
+
+
+
+                        <input class="form-control" type="search" placeholder="Search" style="width:400px"
+                            [(ngModel)]="txtSearch" aria-label="Search">
+
+
+
+                    </div>
+                </div>
+
+                <div *ngIf="queryList?.length > 0; else norecord">
+
+                    <div class="table-responsive ">
+                        <table class="table table-bordered" #table1>
+                            <thead>
+                                <tr>
+                                    <th width="50px"> {{"Sl No"| langReplace}} </th>
+
+                                    <th *ngFor="let flist of tablecollist">
+                                        <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)"
+                                            class="my-icon bi bi-arrow-up"></i>
+                                        {{flist.name | langReplace}}
+
+
+                                    </th>
+
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr *ngFor="let mlist of queryList | docSearch:txtSearch |paginate
+                                        : {
+                                            itemsPerPage: tableSize,
+                                            currentPage: page,
+                                            totalItems: count
+                                          }; let i = index">
+
+
+
+                                    <td>{{tableSize *(page-1)+ i+1}}</td>
+                                    <td><span class="text-primary">Search By {{mlist.typeName}}</span> -
+                                        {{mlist.SearchedKeyWord}}</td>
+                                    <td>{{mlist.totalCount}}</td>
+
+                                    <td>{{mlist.createdOn}}</td>
+
+                                    <td> {{mlist.resultStatus==1?"Found":"Not Found"}} </td>
+
+
+
+
+
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-none">
+                        <app-pagination [page]="page" [count]="count" [tableSize]="tableSize"
+                            (callfunction)="onTableDataChange($event)"></app-pagination>
+                    </div>
+
+
+                </div>
+                <ng-template #norecord>
+                    <h6 class="no-content"> {{"No Record Found"| langReplace}} </h6>
+
+                </ng-template>
+            </div>
+        </div>
+    </div>
+    <div class="loader" *ngIf="loading">
+        <div class="loader-item"></div>
+        <p>Loading...</p>
+    </div>

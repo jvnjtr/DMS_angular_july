@@ -1,0 +1,222 @@
+<!--===Page Title===-->
+<div class="page-title">
+   
+    <h4>{{title | langReplace}} </h4>
+    </div>
+    <!--===Page Title===-->
+    <!--===controle section===-->
+    <div class="page-controls-section" id="page-content">
+                    <div class="card">
+                    <div class="controls-section-header">
+                       <ul class="nav nav-tabs nav-fill" role="tablist" >
+                          <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="letterID" [tabMessage]="tablist"></app-tabs>  
+                       </ul>
+                    <div class="indicatorslist">
+                            <a href="javascript:void(0)" ngbTooltip="Table View" class="tableviews" [ngClass]="dataviewtype == 1 ? 'text-info' : 'text-dark'" (click)="tableview()" title="Tabular View" ><i class="icon-table-solid"></i></a>
+                            <a href="javascript:void(0)" ngbTooltip="Div View" class="me-2 tableviews" [ngClass]="dataviewtype == 2 ? 'text-info' : 'text-dark'" (click)="boxview()" title="Box View"><i class="icon-th-large-solid"></i></a>
+                       <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils> 
+                          </div>
+                          </div>
+                    
+                    <div class="card-body">
+
+                        
+                       
+                            <div class="d-flex align-items-center justify-content-between mb-3 ">
+                                <div>
+                                 
+                                </div>
+                                <div class="d-flex align-items-center">
+                                   
+                                   
+                                    <div class="d-flex align-items-center me-3">
+                                        {{ 'Per Page' | langReplace}} : 
+                                        <select class="form-select width-90" (change)="onTableSizeChange($event)">
+                                      <option *ngFor="let size of pageSizes" [ngValue]="size">
+                                        {{ size }}
+                                      </option>
+                                    </select> 
+            </div>
+            <div class="custom-search ">
+                    <div class="search-ctrldiv">
+                          <div class="selcteditems">
+                            <div class="selitem" *ngFor="let serSelItems of searchselcteditems;let i = index ">
+                                <span>{{serSelItems.searchkey}}</span>
+                                {{serSelItems.searchvalue}}
+                               <i (click)="removeselitems(i,serSelItems.searchkey,serSelItems.searchvalue)" class="bi bi-x"></i>
+                            </div>     
+                          </div>
+                       
+                          <input class="form-control " #searchField type="search" placeholder="{{'Search' | langReplace}}..." [(ngModel)]="txtSearch" aria-label="Search">
+                          <i class="bi bi-search searchicon"></i>
+                    </div> 
+                 
+                  <div class="suggestList" *ngIf="txtSearch">
+                      <ng-container *ngFor="let searchref of searchColList ">
+                              <a href="javascript:void(0)" (click)="setSearchParam(searchref,txtSearch)" ><span>Search {{searchref}} for</span>: <b>{{txtSearch}}</b> </a>
+                      </ng-container>
+                     
+                  </div>
+                 </div>
+         
+                                    
+                                  </div>
+                               </div>
+                               <div *ngIf="ffdetailsArr?.length > 0; else norecord">
+                            <div class="table-responsive print-section" *ngIf="dataviewtype == 1">
+
+                             
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th width="50px">{{ "Sl No" | langReplace}}   </th>
+
+                                            <th *ngFor="let flist of tablecollist">
+                                                <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)" class="my-icon bi bi-arrow-up"></i> 
+                                                
+                                                {{flist.name | langReplace}} 
+                                              
+                                               </th>
+
+
+                                            
+                                           
+                                            <th class="p-none" width="100px"> {{"Action" | langReplace}} </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      
+                                        <tr valign="middle" *ngFor="let flist of ffdetailsArr | paginate
+                                        : {
+                                            itemsPerPage: tableSize,
+                                            currentPage: page,
+                                            totalItems: count
+                                          }; let i = index">
+                                          <td>{{tableSize *(page-1)+ i+1}}</td>
+                                          <td width="140px">
+
+
+                                           {{flist.fileRefNo }}
+                                           
+                                             
+                                            </td>
+                                            <td>{{flist.folderName }}</td>
+                                      <td>
+                                            <!--  -->
+                                        <div class="d-flex justify-content-between ">
+                                        <a  class="text-primary" href="javascript:void(0)" (click)="loadpreview(flist.fileId,flist.fileType,flist.logId,flist.filePath,flist.lockStatus )" >
+                                        <i class="h6" [ngClass]="flist.type=='1'?'bi-folder-fill text-warning':getfiletype(flist.fileType)"  ></i>
+                                        {{flist.fileName}}
+                                       
+                                        <i ngbTooltip="Locked File"  class='{{flist.lockStatus==1? "bi bi-lock-fill text-danger ml-1" :""}}'></i>
+                                       </a> 
+                                    
+                                      </div>
+                                      </td>
+                                      <td>{{flist.fileType}}</td>
+                                      <td>{{formatBytes(flist.fileSize,2) }}</td>
+                                      
+                                      <td>{{flist.createdByName}} 
+                                          <small class="mt-1 d-block text-primary">On : {{flist.CreatedOn}}</small>
+
+                                      </td>
+                                      
+                                      <td class="p-none text-center">
+                                          <div class="" >
+                                            <a class="text-primary" ngbTooltip="{{'Restore'| langReplace}} "  (click)="restore(flist.fileId)"  ><i class="icon-trash-restore-solid"></i></a>
+                                            <a class="text-danger"  ngbTooltip="{{'Delete' | langReplace}}" (click)="delete(flist.fileId)"  ><i class="icon-trash-solid"></i></a>
+                                                
+                                                  </div>
+                                      </td>
+
+
+                                
+
+
+
+                                          </tr>
+
+                                      </tbody>
+                                      </table>
+                           </div>
+                           <div class="row" *ngIf="dataviewtype == 2">
+
+                              <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-4" *ngFor="let flist of ffdetailsArr | paginate
+                              : {
+                                  itemsPerPage: tableSize,
+                                  currentPage: page,
+                                  totalItems: count
+                                }; let i = index">
+
+                                <div class="div-view-section">
+
+                                    <div class="div-view-addons" *ngIf="flist.type == 2"> 
+
+
+                                        <a class="text-primary" ngbTooltip="Restore"  (click)="restore(flist.fileId)"  ><i class="icon-trash-restore-solid"></i></a>
+                                        <a class="text-danger"  ngbTooltip="Delete" (click)="delete(flist.fileId)"  ><i class="icon-trash-solid"></i></a>
+
+                              </div>
+        
+        
+                                <p class="mb-3"> 
+                                    <a  class="text-primary" href="javascript:void(0)" >
+                                        <i class="" [ngClass]="flist.type == 1 ? 'h5 bi bi-folder-fill text-warning' : 'h5 bi-file-pdf text-danger'" ></i>
+                                        {{flist.fileName}}
+                                       
+                                    </a>
+                                    
+                                  
+                               
+                                      </p>
+                                      <div class="row">
+                                          <div class="col">
+                                                  <div class=""> 
+                                                      {{flist.type == 1 ? 'Folder' : 'File'}} Size   
+                                                          <span class="text-primary d-block mt-1 mb-0" >
+                                                                  {{flist.fileSize}}
+                                                          </span>
+                                                        
+                                                     </div>
+                                          </div>
+                                          </div>
+                                </div>
+
+
+                                </div>
+                            
+                             </div>
+                             <app-pagination [page]="page" [count]="count" [tableSize]="tableSize" (callfunction)="onTableDataChange($event)"></app-pagination>
+                          </div>
+                        
+                        <ng-template #norecord>
+                                <h6 class="no-content">  {{ 'No Record Found' | langReplace}}  </h6>
+                            
+                            </ng-template>
+
+                
+                    </div> 
+    </div>
+
+     
+
+    <ng-template #previewModal id="previewModal" let-modal>
+
+            <div class="modal-header">
+              <h5 class="modal-title mb-0" id="previewModalLabel"> {{ 'Document Preview' | langReplace}} </h5>
+              <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="max-height:90vh;min-height:300px;overflow-y: auto;position:relative">
+                   
+<app-preview-file [fileId]="previewfileid"  [filetype]="filetype" [lockstatus]="lockstatus" [logid]="logId"  [vfilepath]="vfilepath"></app-preview-file>
+
+        </div>
+          
+        
+        </ng-template>
+
+<div class="loader" *ngIf="loading">
+    <div class="loader-item"></div>
+    <p>Loading...</p>
+  </div> 
+

@@ -1,0 +1,111 @@
+.qs-div{
+    margin-bottom:1.5rem;
+    h6{
+        font-size:1.2rem;
+          margin-bottom: 0.8rem
+    }
+}
+.result-div{
+    display:flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom:.5rem;
+  
+
+    .option-item{
+         display: block;
+   color: #fff;
+    flex: 0 0 20%;
+    
+    padding: 1rem;
+   
+    position: relative;
+    justify-content: flex-start;
+    &:before{
+          display: inline-block;
+    font-family: 'icons'!important;
+    content: "";
+    font-size: 3rem;
+    display: inline-block;
+    position: absolute;
+    top:1rem;
+    right: 1rem;
+    color: rgba(255, 255, 255, 0.50);
+    }
+            
+            h5{
+                margin:0;
+                font-size: 1rem;
+                small{
+                    display:block;
+                    font-size:75%;
+
+                }
+            }
+             .option-data{
+                margin-bottom:.6rem;
+              }
+
+     @media screen and (max-width:1440px) { 
+flex: 0 0 25%;
+ padding: .6rem;
+     &:before{
+      
+     font-size: 2.6rem;
+   
+    top: .6rem;
+    right: .6rem;
+  
+    }
+      }
+     @media screen and (max-width:1440px) { 
+flex: 0 0 33%;
+
+     
+      }
+    }
+   
+    .option-result{
+        display:flex;
+        flex: 0 0 80%;
+       
+        i{
+            display:flex;
+        }
+    }
+
+}
+
+.one{
+   background: #e10000;
+   &:before{
+       content: "\eb3c"!important;
+   }
+  
+   }
+.two{
+   background: #f95656;
+      &:before{
+       content: "\eb3c"!important;
+   }
+   }
+.three{
+      background: #FF9800;
+       &:before{
+       content: "\ec89"!important;
+   }
+ }
+.four{
+   background: #2aaf2f;
+   &:before{
+       content: "\edb8"!important;
+   }
+}
+.five{
+   
+    background:#009b05;
+    &:before{
+       content: "\eb89"!important;
+   }
+   
+}

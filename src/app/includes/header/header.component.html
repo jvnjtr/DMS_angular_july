@@ -1,0 +1,111 @@
+<div class="fixed-topmenu">
+  
+    <a class="nav-toggle-btn" (click)="togglemenu()">
+               
+               <span></span>
+               <span></span>
+               <span></span>
+               </a>
+   
+               <nav class="navbar navbar-expand-lg navbar-light bg-white p-0">
+              
+                 
+                  <div  class="collapse navbar-collapse" *ngIf="findURL != '/admin/dashboard'" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0" >
+                  
+                    </ul>
+                   
+                  </div>
+               
+              </nav>
+
+
+               <ul>
+                <!-- <li>
+                  <div class="theme">
+                   <label id="switch" class="switch">
+                  <input type="checkbox" (click)="toggleTheme()" id="slider">
+                  <span class="slider round"></span>
+               
+              </label>
+            </div></li>  -->
+            <!-- <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                
+              </form> -->
+              <li><a href="javascript:void(0)"  routerLink="../admin/createdoc"  class="btn btn-warning text-dark btn-sm px-2 shadow-none rounded" >{{"Create Document"| langReplace }}</a></li>
+              <li><a href="javascript:void(0)" id="notifications" data-target="#newnotification-section" (click)="notificationOpen()" class="notifications" ><i class="icon-bell"></i><span class="badge badge-pill bg-danger">{{totalNotificationCount}}</span></a></li>
+              <li><a href="javascript:void(0)" title="Configuration" >  
+               <span class="text-right ">
+                <i class="bi bi-gear"></i>   
+             </span>
+                </a>
+                <div class="header-dropdown">
+               
+                 
+                   <a   routerLinkActive="active" routerLink="../admin/addgateway" *ngIf="roleId == 1"><i class="bi bi-box-arrow-right" ></i> {{"Gateway"| langReplace }} </a> 
+                   <a  routerLinkActive="active" routerLink="../admin/addmessageengine"><i class="bi bi-chat-right-text" ></i> {{"Message"| langReplace }} </a> 
+                   <a   routerLinkActive="active" routerLink="../admin/managelanguage" *ngIf="roleId == 1"><i class="bi bi-translate" ></i> {{"Language"| langReplace }} </a> 
+                   <a  routerLinkActive="active" routerLink="../admin/labelLanguage"><i class="bi bi-translate" ></i> {{"Language labels"| langReplace }}  </a> 
+                </div>
+
+             </li>
+                   <li>
+                    <div class="language">
+                      <!-- <span class="text-light">Language &nbsp;</span>    -->
+                         <select class="langsel" #langSelect (change)="changeLang(langSelect.value)">
+                                 <option *ngFor="let lang of languageList" [selected]="(prefrenceLang==lang.vchAliasName) ? true : false" [value]="lang.vchAliasName"
+                                     >{{ lang.vchLanguageName | langReplace }}</option>
+
+                                    
+                                 
+                                    
+
+
+                          </select>
+                             <!-- <label>{{'Captcha Code' | translate}}</label> -->
+                 </div>
+                   </li> 
+               
+
+
+                  <li><a href="javascript:void(0)"  >  
+                    <span class="text-right me-2">
+                     {{"Hi"| langReplace }}, {{username}} <small class="d-block mt-1"> ( {{desgName}} )</small>
+                  </span>
+                    <img src="{{siteUrl}}assets/img/user.png" alt="user"> </a>
+                     <div class="header-dropdown">
+                     
+                        <!-- <a href="profile.html" class=""><i class="icon-user-circle"></i> Profile</a> -->
+                        <a routerLink="./changepassword" class=""><i class="icon-lock-solid" ></i>{{"Change Password"| langReplace }}  </a> 
+                         <a href="javascript:void(0)" (click)="logout()" class="bg-theme text-light"><i class="icon-arrow60"></i> {{"SignOut"| langReplace }}</a>
+                     </div>
+   
+                  </li>
+               
+               </ul>
+   
+   </div>
+
+
+   <div class="notification-sec" id="newnotification-section">
+      <div class="d-flex justify-content-between">
+         <h5>{{"Notifications"| langReplace }} </h5>
+         <a class="text-info div-close" href="javascript:void(0)" (click)="divclose()"><i class="bi bi-arrow-right"></i></a>
+      </div>
+    
+                                  <ul>
+                                   
+                               <li class="unread" *ngFor="let flist of notificationList">
+                                       <a href="javascript:void(0)" class="text-dark">
+                                         <span class="d-block text-primary">{{flist.fileName }}
+                                       </span> 
+                                          {{flist.notificationMessage }}
+                                          <small class="d-block">{{flist.notificationMessageDate}}</small>
+                                       </a>
+                                      
+                                    </li>
+                                      
+                                  </ul>
+                                
+    </div>

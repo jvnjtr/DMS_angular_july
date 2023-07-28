@@ -1,0 +1,158 @@
+<!--===Page Title===-->
+<div class="page-title">
+   
+        <h4>{{title | langReplace}}</h4>
+        </div>
+        <!--===Page Title===-->
+        <!--===controle section===-->
+        <div class="page-controls-section" id="page-content">
+                        <div class="card">
+                        <div class="controls-section-header">
+                           <ul class="nav nav-tabs nav-fill" role="tablist" >
+                                <li>
+                                        <a class="nav-item nav-link tab-link " routerLinkActive="active" routerLink="/workflow/pendingdocs"> {{"Pending"| langReplace}}  </a>
+                                    </li>
+                                <li>
+                                    <a class="nav-item nav-link tab-link" routerLinkActive="active" routerLink="/workflow/summarydocs"> {{"Summary"| langReplace}}  </a>
+                                </li>
+                           </ul>
+                        <div class="indicatorslist">
+                           <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils> 
+                              </div>
+                              </div>
+                        
+                        <div class="card-body">
+                           <div class="controls-section">
+                                <div class="d-flex justify-content-end mb-3">
+                                 <div class="d-flex align-items-center me-2">
+                                  {{"Display"| langReplace}}  &nbsp;
+                                        <select class="form-select width-90" (change)="onTableSizeChange($event)">
+                                          <option *ngFor="let size of pageSizes" [ngValue]="size">
+                                            {{ size }}
+                                          </option>
+                                        </select> 
+                                        </div>
+                                        <div class="custom-search ">
+                                                <div class="search-ctrldiv">
+                                                      <div class="selcteditems">
+                                                        <div class="selitem" *ngFor="let serSelItems of searchselcteditems;let i = index ">
+                                                            <span>{{serSelItems.searchkey}}</span>
+                                                            {{serSelItems.searchvalue}}
+                                                           <i (click)="removeselitems(i,serSelItems.searchkey,serSelItems.searchvalue)" class="bi bi-x"></i>
+                                                        </div>     
+                                                      </div>
+                                                   
+                                                      <input class="form-control " #searchField type="search" placeholder="{{'Search' | langReplace}}..." [(ngModel)]="txtSearch" aria-label="Search">
+                                                      <i class="bi bi-search searchicon"></i>
+                                                </div> 
+                                             
+                                              <div class="suggestList" *ngIf="txtSearch">
+                                                  <ng-container *ngFor="let searchref of searchColList ">
+                                                          <a href="javascript:void(0)" (click)="setSearchParam(searchref,txtSearch)" ><span>Search {{searchref}} for</span>: <b>{{txtSearch}}</b> </a>
+                                                  </ng-container>
+                                                 
+                                              </div>
+                                             </div>
+            </div>
+                              
+                                <div *ngIf="pendingDocList?.length > 0; else norecord">
+    
+                               <div class="table-responsive print-section">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th width="50px"> {{"Sl No"| langReplace}}</th>
+
+                                                <th *ngFor="let flist of tablecollist">
+                                                  <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)" class="my-icon bi bi-arrow-up"></i>
+                                                  
+                                                  {{flist.name| langReplace}}
+                                                  
+                                                  
+                                                 </th>
+
+
+                                               
+                                                <th *ngIf="userLoginId == 1">{{"Pending At"| langReplace}} </th>
+                                                <th class="p-none"  *ngIf="userLoginId != 1" width="140px">{{"Action"| langReplace}}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                              
+                                            <tr *ngFor="let plist of pendingDocList | paginate
+                                            : {
+                                                itemsPerPage: tableSize,
+                                                currentPage: page,
+                                                totalItems: count
+                                              }; let i = index"> 
+                                                   
+                                            
+                                             
+                                             
+    
+                                                <td>{{tableSize *(page-1)+ i+1}}</td>
+                                                <td>{{plist.fileRefNo}}</td>
+                                                <td >
+                                         
+                                                   {{plist.folderName }}   
+                                                    </td>
+                                                <td><a class="text-primary" (click)="loadpreview(plist.fileId,plist.filePath,0,plist.fileName,plist.lockStatus,plist.fileType)"  >{{plist.fileName}}  <i ngbTooltip="Locked File" class='{{plist.lockStatus==1? "bi bi-lock-fill text-danger ml-1" :""}}'></i></a></td>
+                                                
+                                                <td class="text-center">
+                                         
+                                                        <i class="h6" [ngClass]="getfiletype(plist.fileType)" ></i>
+                                                    </td>
+                                                <td class="text-right">{{formatBytes(plist.fileSize,2)}}</td>
+                                               
+                                                <td>{{plist.CreatedOn}}</td>
+                                                <td>{{plist.createdByName}}</td>
+                                                <td *ngIf="userLoginId == 1" >{{plist.pendingAtName}}
+
+                                                       
+                                                </td>
+                                                <td class="p-none" *ngIf="userLoginId != 1">
+                                                        <a class="btn btn-sm btn-success"  href="javascript:void(0)" (click)="takeAction(plist.fileId+':'+plist.folderId+':'+plist.stageNo+':'+plist.workflowFolderId+':'+plist.intApprovalId+':'+plist.filePath+':'+plist.fileName+':'+0+':'+plist.lockStatus+':'+plist.fileType)">{{"Take Action" | langReplace}}</a>
+                                                    
+                                                </td>
+    
+    
+    
+    
+    
+      
+                                            </tr>
+                                           
+                                              
+                                        </tbody>
+                                    </table>
+                               </div>
+                               <app-pagination [page]="page" [count]="count" [tableSize]="tableSize" (callfunction)="onTableDataChange($event)"></app-pagination>
+                                 
+                            </div>
+                            <ng-template #norecord>
+                                    <h6 class="no-content"> {{"No Record Found"| langReplace}} </h6>
+                                
+                                </ng-template>
+                            </div>
+                        </div> 
+        </div>
+    
+        <div class="loader" *ngIf="loading">
+                <div class="loader-item"></div>
+                <p>Loading...</p>
+              </div>   
+    
+              <ng-template #previewModal id="previewModal" let-modal>
+
+                <div class="modal-header">
+                  <h5 class="modal-title mb-0" id="previewModalLabel">{{"Document Preview"| langReplace}} </h5>
+                  <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="max-height:90vh;min-height:300px;overflow-y: auto;position:relative">
+                     
+                    <app-doc-prev-only [fileId]="previewfileid" [logid]="logId" [filetype]="filetype" [lockstatus]="lockstatus"  [vfilepath]="filePath"></app-doc-prev-only>
+
+            </div>
+              
+            
+            </ng-template>

@@ -1,0 +1,58 @@
+<!--===Page Title===-->
+<div class="page-title">
+    <h4>{{title | langReplace }}</h4>
+  </div>
+  <!--===Page Title===-->
+  <!--===controle section===-->
+  <div class="page-controls-section" id="page-content">
+    <div class="card">
+      <div class="controls-section-header">
+        <ul class="nav nav-tabs nav-fill" role="tablist">
+          <div class="col-md-12 bg-light text-right">
+          </div>
+          <!-- For Addnew and View button -->
+          <app-tabs *ngFor="let tablist of tablist" [activeid]="schemeStr" [tabMessage]="tablist"></app-tabs>
+        </ul>
+      </div>
+      <form>
+        <div class="card-body">
+          <div class="controls-section">
+
+      
+
+            <div class="row" *ngFor="let re of langDynaic; index as i">
+              <label class="col-md-4 col-lg-2" >* {{re.name | langReplace}} </label>
+              <div class="col-md-6 col-lg-4">
+                  <div class="form-group">
+                    <input  [(ngModel)]='re.value' [ngModelOptions]="{standalone: true}" class="form-control txtval" type="text" name="" id="lang_{{i}}" >
+                    
+                  </div>
+              </div>
+              </div>
+              <div class="row">
+                <label class="col-md-4 col-lg-2"></label>
+                <div class="col-md-6 col-lg-9">
+                    <div>
+
+                      <button type="submit" id="submit" class="btn btn-success"
+                      (click)="doSubmit()">{{"Submit" | langReplace }}</button>&nbsp;
+                    <button (click)="editStatus ? cancel() : resetform()"
+                      class="btn btn-danger">{{(editStatus ? "Cancel" :"Reset") | langReplace}}</button>
+  
+                    
+                   
+
+
+                      
+
+                    </div>
+                </div>
+                </div>
+
+
+        
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>

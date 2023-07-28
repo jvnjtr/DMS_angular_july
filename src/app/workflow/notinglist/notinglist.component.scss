@@ -1,0 +1,111 @@
+.action-history{
+    position: relative;
+     margin-bottom: 1rem;
+    }
+.action-item{
+    display: flex;
+    flex-flow: wrap;
+    width: 100%;
+    
+    margin-bottom: 1rem;
+    
+   
+        .action-authority{ 
+        width: 90px;
+        
+        position: relative;
+        text-align: center;
+        padding: 1rem;
+        border-radius: 3px;
+        color: var(--base-color-800);
+        font-size: 1rem;
+        font-weight: 600;
+        z-index: 1;
+        
+        align-items: center;
+        justify-content: center;
+        img{
+            height:40px
+        }
+          span{
+            margin-top: .5rem;
+              font-size: .9rem
+          }
+    }
+
+    .action-body{    
+        padding: 1rem;
+        border-radius: 4px;
+        position: relative;
+        flex:0 0 calc(100% - 90px);
+        max-width:calc(100% - 90px);
+        padding-bottom: 0;
+        font-size: 13px;
+        background: #f5f8ff;
+        border: 1px solid var(--base-color-100);
+        &:before{
+            width: 0; 
+            height: 0; 
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent; 
+            
+            border-right:10px solid var(--base-color-100);
+            content:'';
+            position: absolute;
+            left: -11px;
+            top: 8px;
+        }
+        p{
+            line-height: 1.4;
+        }
+        ul{
+            list-style: none;
+            margin-bottom: 2rem;
+            li{
+                margin: 0;
+                padding: .5rem 0 0 2rem;
+                position: relative;
+                &:after{
+                    position: absolute;
+                                font-family: icons;
+                                content: "\e942";
+                                color: var(--bs-orange);
+                                font-size:1rem;
+                                left: 3px;
+                                top: 7px
+                }
+            }
+        }   
+
+      }
+      &:nth-of-type(even){
+       
+      
+        .action-authority{
+           
+            color: var(--bs-gray-800);
+           
+        }
+        .action-body{
+            border-color: var(--bs-gray-200);
+           background: var(--bs-gray-100);
+         
+            &:before{
+                
+                
+                border-right:10px solid var(--bs-gray-200);
+               
+            }
+          
+       }
+      }
+}
+.remarkdetails{
+p{
+    margin-bottom: 0!important
+}
+}
+   
+    
+    
+   

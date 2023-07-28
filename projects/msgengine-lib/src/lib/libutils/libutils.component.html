@@ -1,0 +1,29 @@
+ <div [ngSwitch]="childMessage.utilName">
+    <div *ngSwitchCase="'mandatory'">
+          <p class="ml-2">( * )  {{'Indicates Mandatory Fields'| translate}} .</p>
+      </div>
+      <div *ngSwitchCase="'search'">
+              <a  id="searchicon" href="javascript:void(0)" ngbTooltip="{{'Search'| translate}}" title="" (click)="opensearch()" data-original-title="Search"><i class="icon-search1"></i></a>
+          </div>
+      <div *ngSwitchCase="'print'">
+              <a  id="printicon" href="javascript:void(0)" ngbTooltip="{{'Print'| translate}}" title="" (click)="printTable()"  data-original-title="Print"><i class="icon-print-solid"></i></a>   
+      </div>
+     
+      <div *ngSwitchCase="'delete'">
+              <a  id="deleteicon" href="javascript:void(0)" ngbTooltip="{{'Delete'| translate}}" title="" (click)="deleteAll(sendIds,funType)"  data-original-title="Delete"><i class="icon-trash-solid"></i></a>
+      </div>
+      <div *ngSwitchCase="'publish'">
+          <a  id="publishicon" href="javascript:void(0)" ngbTooltip="{{'Publish'| translate}}" title="" (click)="publishAll(sendIds,funType,pubUnpubStatus)"  data-original-title="Publish"><i class="icon-volume-up-solid"></i></a>
+      </div>
+      <div *ngSwitchCase="'unpublish'">
+          <a  id="unpublishicon" href="javascript:void(0)" ngbTooltip="{{'Unpublish'| translate}}" title="" (click)="unpublishAll(sendIds,funType,pubUnpubStatus)" data-original-title="Unpublish"><i class="icon-volume-off-solid"></i></a>
+      </div>
+      <div *ngSwitchCase="'download'">
+              <a  title="" href="javascript:void(0)" id="downloadicon" ngbTooltip="{{'Download'| translate}}" data-original-title="Download"><i class="icon-download-solid"></i></a>
+          </div>
+          <div *ngSwitchCase="'back'">
+              <a  title="" href="javascript:void(0)" id="backicon" ngbTooltip="{{'Back'| translate}}" (click)="backClicked()" data-original-title="Back"><i class="icon-arrow-left-solid"></i></a>
+          </div>
+      <div *ngSwitchDefault></div>
+    </div> 
+

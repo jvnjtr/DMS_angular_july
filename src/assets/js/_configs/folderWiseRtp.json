@@ -1,0 +1,30 @@
+[
+      {
+        "pagetitle":"Folder List",
+        "tabList":[
+        
+         
+          {"tabName":"View","tabUrl":"../searchreport","tabClass":"active add d-none"}
+                  
+                  ],
+        "utils":[
+         
+          {"utilName":"print"},
+          {"utilName":"back"}
+         
+          ],
+        "messages":{
+          "successMsg":"New Meta Created Successfully",
+          "updatesuccessMsg":"Updated Successfully",
+          "errorMsg":"Error in Meta creation",
+          "fromname":"Please Select Form Name",
+          "metaname":"Please Enter Meta Name",
+          "metadesc":"Please Enter Meta Description",
+          "warningtype":"You want to delete this meta ",
+           "metaType":"Select Meta Type",
+           "deleteMsg":"Meta record deleted successfully"
+         }
+      }
+    ]
+
+

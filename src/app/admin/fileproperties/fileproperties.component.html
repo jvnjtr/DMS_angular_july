@@ -1,0 +1,213 @@
+<div class="row">
+  <div class="col-md-12 col-lg-8 col-xxl-6">
+    <table class="table table-bordered">
+      <tbody>
+        <tr>
+          <th width="200px">{{"Document Name" | langReplace}}</th>
+          <td>{{ txtFileName }}</td>
+        </tr>
+        <!-- <tr><th>Folder Name</th><td>{{flist[0].txtFileName}}</td></tr> -->
+        <tr>
+          <th>{{"Document No" | langReplace }} .</th>
+          <td>{{ txtFileNumber }}</td>
+        </tr>
+        <tr>
+          <th>{{"Size" | langReplace}}</th>
+          <td>{{ formatBytes(filesize, 2) }}</td>
+        </tr>
+        <tr>
+          <th>{{"Type" | langReplace}} </th>
+          <td><i class="h6 {{ fileType }}"></i></td>
+        </tr>
+        <tr>
+          <th>{{"Version" | langReplace}} </th>
+          <td>v{{ fileVersion | number : "1.1-5" }}</td>
+        </tr>
+
+        <tr>
+          <th>{{"Subject" | langReplace}} </th>
+          <td>{{ txtSubject }}</td>
+        </tr>
+        <tr>
+          <th>{{"Tags" | langReplace}}</th>
+          <td>
+            {{fileTags}}
+            <!-- <span *ngFor="let ftags of fileTags">{{ ftags}},</span> -->
+          </td>
+        </tr>
+
+        <tr>
+          <th>{{"Meta Details" | langReplace}} </th>
+          <td>
+            <span *ngFor="let metalist of metadetails">
+              {{ metalist.metaDetails }},
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <th>{{"Created By" | langReplace}}</th>
+          <td>{{ createdby }}</td>
+        </tr>
+        <tr>
+          <th>{{"Created On" | langReplace}} </th>
+          <td>{{ createdOn }}</td>
+        </tr>
+        <tr>
+          <th>{{"Last Updated On" | langReplace}} </th>
+          <td>{{ updatedOn }}</td>
+        </tr>
+        <tr>
+          <th>{{"Retention Date" | langReplace}} </th>
+          <td>{{ txtExpDate }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- {{lockStatus}}  -->
+  </div>
+  <div class="col-md-12 col-lg-4 col-xxl-6">
+    <div class="file-property-btns">
+      <a class="" ngbTooltip="{{'Download' | langReplace}}" *ngIf="folderFileDownload == true" (click)="downloadfils(fileid, filePath)"
+        target="_blank"><i class="bi bi-download"></i></a>
+      <a class="" ngbTooltip="{{'Move to trash'| langReplace }} " *ngIf="folderDelete == true && (checkInCheckoutStatus <= 1)" (click)="moveTrash(fileid, folderId)"><i
+          class="bi bi-trash"></i>
+      </a>
+      <a class="" ngbTooltip="{{'Duplicate'| langReplace}} " *ngIf="folderModify == true && (checkInCheckoutStatus <= 1)" (click)="fileDuplicate(fileid, folderId)"><i
+          class="bi bi-files"></i>
+      </a>
+
+      <a ngbTooltip="{{'Lock File'| langReplace}}" *ngIf="lockStatus == '0' && fileCreatedById == desgId && (checkInCheckoutStatus <= 1)"
+        (click)="lockFile(fileid, folderId, lockStatus)"><i class="bi bi-lock"></i>
+      </a>
+      <a ngbTooltip="{{'Unlock File'| langReplace}}" *ngIf="lockStatus == '1' && fileCreatedById == desgId && (checkInCheckoutStatus <= 1)"
+        (click)="lockFile(fileid, folderId, lockStatus)"><i class="bi bi-unlock"></i>
+      </a>
+      <a ngbTooltip="{{'CheckOut File'| langReplace}}" *ngIf="checkInCheckoutStatus <= 1"
+        (click)="checkinCheckoutFile(fileid, folderId, checkInCheckoutStatus)"><i class="bi bi-check-circle-fill"></i>
+      </a>
+      <a ngbTooltip="{{'CheckIn File'| langReplace}} " *ngIf="checkInCheckoutStatus == 2 && checkinEligibility == true"
+        (click)="checkinCheckoutFile(fileid, folderId, checkInCheckoutStatus)"><i class="bi bi-check-circle"></i>
+      </a>
+    </div>
+  </div>
+</div>
+<ng-template #lockModal id="lockModal" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mb-0" id="lockModalLabel">
+      {{ (!showlockfields ?"Unlock File"  : "Lock File") |  langReplace }}
+    </h5>
+    <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="!showlockfields">
+      <div class="row">
+        <label class="col-4 pt-1"> {{'Password'| langReplace}}   </label>
+        <div class="col-8">
+          <div class="form-group">
+            <div class="input-group">
+              <input [type]="upassword" class="form-control form-control-sm border-end-0" id="txtUPassword" [(ngModel)]="txtUPassword" />
+
+              <span class="input-group-text border-start-0" (click)="toggleFieldUTextType()">
+                <i class="bi bi-eye" aria-hidden="true" *ngIf="!ushow"></i>
+                <i class="bi bi-eye-slash" aria-hidden="true" *ngIf="ushow"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label class="col-4"></label>
+        <div class="col-8">
+          <button class="btn btn-primary" (click)="unsetPassword(folderId)">
+            {{'Unlock'| langReplace}}  
+          </button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="showlockfields">
+      <div class="row">
+        <label class="col-5 pt-1">* {{'Password'| langReplace}} </label>
+        <div class="col-7">
+          <div class="form-group">
+            <div class="input-group">
+              <input [type]="password" class="form-control form-control-sm border-end-0" id="txtPassword" [(ngModel)]="txtPassword" />
+
+              <span class="input-group-text border-start-0" (click)="toggleFieldTextType()">
+                <i class="bi bi-eye" aria-hidden="true" *ngIf="!show"></i>
+                <i class="bi bi-eye-slash" aria-hidden="true" *ngIf="show"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <label class="col-5 pt-1">*  {{'Confirm Password'| langReplace}}</label>
+        <div class="col-7">
+          <div class="form-group">
+            <div class="input-group">
+              <input [type]="cpassword" class="form-control form-control-sm border-end-0"
+                [(ngModel)]="txtConPassword" id="txtConPassword" />
+
+              <span class="input-group-text border-start-0" (click)="toggleFieldCTextType()">
+                <i class="bi bi-eye" aria-hidden="true" *ngIf="!cshow"></i>
+                <i class="bi bi-eye-slash" aria-hidden="true" *ngIf="cshow"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label class="col-5"></label>
+        <div class="col-7">
+          <button class="btn btn-primary" (click)="setPassword(folderId)">
+            {{'Save'| langReplace}}
+          </button>
+        </div>
+      </div>
+
+      <div class="text-danger">
+        Note :
+        <i>Password Must 8 to 15 characters which contain at least one lowercase
+          letter, one uppercase letter, one numeric digit, and one special
+          character</i>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #checkinCheckoutModal id="checkinCheckoutModal" let-modal class="modal-lg">
+  <div class="modal-header modal-lg">
+    <h5 class="modal-title mb-0" id="lockModalLabel">
+      {{ !showCheckinCheckoutField ? "Check out File" : "Check in File" }}
+    </h5>
+    <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+  </div>
+  <div class="modal-body modal-lg">
+    <div *ngIf="!showCheckinCheckoutField">
+      <div class="row">
+        <label class="col-4 pt-1">  {{'Remark'| langReplace}}</label>
+        <div class="col-8">
+          <div class="form-group">
+            <div class="">
+              <textarea class="form-control" rows="3" cols="5" id="userRemark"[(ngModel)]="userRemark"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label class="col-4"></label>
+        <div class="col-8">
+          <button class="btn btn-primary" (click)="checkoutFile(fileid)">
+            
+            {{'Check Out'| langReplace}}
+          </button>
+        </div>
+      </div>
+    </div>
+   
+  </div>
+</ng-template>
+<div class="loader" *ngIf="loading">
+  <div class="loader-item"></div>
+  <p>Loading...</p>
+</div>

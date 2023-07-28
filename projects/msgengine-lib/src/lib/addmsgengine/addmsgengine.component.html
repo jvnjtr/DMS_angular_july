@@ -1,0 +1,355 @@
+<!--===Page Title===-->
+<div class="page-title">
+
+    <h4>{{title | translate}}</h4>
+ </div>
+ <!--===Page Title===-->
+ <div class="page-controls-section" id="page-content">
+    <div class="card">
+       <div class="controls-section-header">
+        
+        
+
+          <ul class="nav nav-tabs nav-fill" role="tablist">
+            <lib-libtabs *ngFor="let tablist of tablist" [tabMessage]="tablist" [activeid]="messageId"></lib-libtabs>
+           
+         </ul>
+         <div class="indicatorslist">
+             <lib-libutils *ngFor="let utillist of utillist" [childMessage]="utillist"></lib-libutils>
+            
+         </div>
+
+       </div>
+       <div class="card-body">
+          <div class="controls-section">
+           
+             <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group" *ngIf="formenable && !dynamicForm">
+                 
+                     <div class="row">
+                        <label class="col-md-6 col-lg-4">* {{"Form Name" | translate}}</label>
+                        <div class="col-md-6 col-lg-6">
+                           <select class="form-select" id="selformId" [(ngModel)]="selformId">
+                              <option value=0>{{"Select" | translate}}</option>
+                              <option *ngFor="let flist of formNameslist" value="{{flist.intId}}">
+                                 {{flist.vchProcessName}}
+                              </option>
+                              
+                           </select>
+                           
+                        </div>
+                     </div>
+                  </div>
+                   <div class="form-group" *ngIf="formenable && dynamicForm">
+                 
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">* {{"Form Name" | translate}}</label>
+                         <div class="col-md-6 col-lg-6">
+                            <input type="text" class="form-control" id="txtProcessName" readonly [value]="txtProcessName">
+                            <input type="hidden" class="form-control" [(ngModel)]="formnames">
+                         </div>
+                      </div>
+                   </div>
+                   <div class="form-group">
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">* {{"Configuration Type" | translate}}</label>
+                         <div class="col-md-6 col-lg-6">
+                            <select class="form-select docSizeType" id="configtype" [(ngModel)]="configtype" (change)="getGateWayConfigDetails()">
+                               <option value=0  selected>{{"Select" | translate}}</option>
+                               <option value=1>Mail</option>
+                               <option value=2>SMS</option>
+                               <option value=9>Whatsapp</option>
+                            </select>
+                         </div>
+                      </div>
+                   </div>
+                   <div class="form-group">
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">* {{"Configuration" | translate}}</label>
+                         <div class="col-md-6 col-lg-6">
+                            <select class="form-select docSizeType" id="gatewayConfigurationType" [(ngModel)]="gateWayconfigtype">
+                               <option value='0' [selected]="true">{{"Select" | translate}}</option>
+                               <ng-container *ngFor="let gtway of gatewayconfigDetails">
+                                  <option  value={{gtway.intId}} [selected]="gtway.intId==gateWayconfigtype">{{gtway.vchName}}</option>
+                               </ng-container>
+                               
+                            </select>
+                         </div>
+                      </div>
+                   </div>
+                   <div class="form-group">
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">* {{"Message Type" | translate}}</label>
+                         <div class="col-md-6 col-lg-6">
+                            <select class="form-select docSizeType" id="messageType" name="messageType" [(ngModel)]="messageType">
+                               <option value=0 disabled selected>{{"Select" | translate}}</option>
+                               <option value=1>Messaging</option>
+                               <option value=2>Reminder</option>
+                            </select>
+                         </div>
+                      </div>
+                   </div>
+ 
+                   <!-- get language -->
+                   <div class="form-group">
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">* {{"Languages" | translate}}</label>
+                         <div class="col-md-6 col-lg-6">
+                            <!-- {{vchLanguage | json }}
+                            -->
+                            <select class="form-select docSizeType" name="vchLanguage" id="vchLanguage" [(ngModel)]="vchLanguage">
+                               <option value=0 disabled selected>{{"Select" | translate}}</option>
+                               <!-- <option value=0>--Select--</option>
+                               <option value="en">English</option> -->
+                               
+                               <option *ngFor="let mNames of languageList"  value="{{mNames.vchAliasName}}">
+                                  {{mNames.vchLanguageName}}
+                               </option>
+                            </select>
+                         </div>
+                      </div>
+                   </div>
+ 
+                   <div class="form-group" *ngIf="configtype == 2">
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">* {{"SMS Template Id" | translate}}</label>
+                         <div class="col-md-6 col-lg-6">
+                            <input type="text" class="form-control" id="smsTempId" name="smsTempId" [(ngModel)]="smsTempId">
+                         </div>
+                      </div>
+                   </div>
+ 
+                   <div class="form-group" *ngIf="messageType == 1">
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">* {{"Events" | translate}}</label>
+                         <div class="col-md-6 col-lg-6">
+                            <select class="form-select docSizeType" name="messageType" id="eventType" [(ngModel)]="eventType">
+                               <option value=0 disabled selected>{{"Select" | translate}}</option>
+                               <option value=1>OnSubmit</option>
+                               <option value=2>OnLoad</option>
+                            </select>
+                         </div>
+                      </div>
+                   </div>
+                   <div class="form-group" >
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">* {{"To" | translate}}</label>
+                         <div class="col-md-6 col-lg-6"><div class="form-check form-check-inline">
+                            <input name="mailSmsTo" type="checkbox" id="mailSmsTo1" class="form-check-input" value="1" (change)="mailSmsTo($event)" [checked]="mailsmstoApplicant=='1'">
+                            <label for="mailSmsTo1" class="form-check-label">{{"Applicant" | translate}}</label></div><div class="form-check form-check-inline"><input name="mailSmsTo" type="checkbox" id="mailSmsTo2" class="form-check-input " value="2" (change)="mailSmsTo($event)" [checked]="mailsmstoAuthority=='2'"><label for="mailSmsTo2" class="form-check-label">{{"Authority" | translate}}</label></div></div> 
+                      </div>
+                   </div>
+                   <div class="form-group" *ngIf="mailsmstoApplicant==1 && configtype==1">
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">* {{"Email" | translate}} ({{"key" | translate}})</label>
+                         <div class="col-md-6 col-lg-6">
+                            <input type="text" class="form-control" name="emailId" id="emailId" [(ngModel)]="emailId">
+                         </div>
+                      </div>
+                   </div>
+                   <div class="form-group" *ngIf="mailsmstoApplicant==1 && configtype!=1">
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">* {{"Mobile No" | translate}} ({{"key" | translate}})</label>
+                         <div class="col-md-6 col-lg-6">
+                            <input type="text" class="form-control" name="mobileNo" id="mobileNo" [(ngModel)]="mobileNo">
+                         </div>
+                      </div>
+                   </div>
+                   <!-- mailsmstoApplicant -->
+                   <div class="form-group" >
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">* {{"Subject" | translate}}</label>
+                         <div class="col-md-6 col-lg-6">
+                            <input type="text" class="form-control" name="smsSubject" id="smsSubject" [(ngModel)]="smsSubject">
+                         </div>
+                      </div>
+                   </div>
+                   <div class="form-group d-none" *ngIf="configtype == 1">
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">* {{"Choose Template" | translate}}</label>
+                         <div class="col-md-6 col-lg-6">
+                            <select class="form-select docSizeType" name="messageType" id="intMailTemplate" [(ngModel)]="intMailTemplate">
+                               <option value=0 disabled selected>{{"Select" | translate}}</option>
+                               <option value=temp_1>Template-1</option>
+                               <option value=temp_2>Template-2</option>
+                               <option value=temp_3>Template-3</option>
+                            </select>
+                         </div>
+                      </div>
+                   </div>
+                  
+                   <div class="form-group" *ngIf="configtype == 9">
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">* {{"Document Type" | translate}}</label>
+                         <div class="col-md-6 col-lg-6">
+                            <select class="form-select docSizeType" id="fileType" name="messageType" (change)="changedocType()"
+                               [(ngModel)]="fileType">
+                               <option value=0 disabled selected>{{"Select" | translate}}</option>
+                               <option value=1>Audio</option>
+                               <option value=2>Video</option>
+                               <option value=3>Image</option>
+                            </select>
+                         </div>
+                      </div>
+                   </div>
+                   
+                   <div class="form-group row" *ngIf="configtype == 9 && fileType > 0 ">
+                      <label class="col-md-6 col-lg-4">* {{"Upload Document" | translate}}</label>
+                      <div class="col-md-6 col-lg-6">
+                        <div *ngIf="fileeList?.length == 0">
+                           <div class="custom-dropzone" ngx-dropzone  (change)="fileType > 0 ? onSelect($event) :''" >
+                                   <ngx-dropzone-label>
+                                     <div>
+                                           <svg xmlns="http://www.w3.org/2000/svg" width="63" height="64" viewBox="0 0 63 64">
+                                               <g  fill-rule="nonzero">
+                                                   <path
+                                                       d="M42.656 15.135a1.953 1.953 0 0 1-1.391-.578L31.5 4.795l-9.765 9.762a1.97 1.97 0 1 1-2.785-2.785L30.106.616a1.97 1.97 0 0 1 2.785 0l11.157 11.156a1.97 1.97 0 0 1-1.392 3.363z" />
+                                                   <path
+                                                       d="M31.5 36.791a1.97 1.97 0 0 1-1.969-1.969V2.01a1.97 1.97 0 0 1 3.938 0v32.812a1.97 1.97 0 0 1-1.969 1.969z" />
+                                                   <path
+                                                       d="M55.781 63.041H7.22A7.225 7.225 0 0 1 0 55.822V41.385a4.599 4.599 0 0 1 4.594-4.594h7.234a4.567 4.567 0 0 1 4.402 3.276l2.814 9.382a.658.658 0 0 0 .628.467h23.656a.658.658 0 0 0 .628-.467l2.814-9.385a4.572 4.572 0 0 1 4.402-3.273h7.234A4.599 4.599 0 0 1 63 41.385v14.437a7.225 7.225 0 0 1-7.219 7.219zM4.594 40.729a.656.656 0 0 0-.657.656v14.437a3.286 3.286 0 0 0 3.282 3.282H55.78a3.286 3.286 0 0 0 3.282-3.282V41.385a.656.656 0 0 0-.657-.656h-7.234a.65.65 0 0 0-.628.467L47.73 50.58a4.628 4.628 0 0 1-4.402 3.274H19.672a4.567 4.567 0 0 1-4.402-3.276l-2.814-9.382a.65.65 0 0 0-.628-.467H4.594z" />
+                                               </g>
+                                           </svg>
+                                       
+                                           <h3>{{"Drag and drop file here" | translate}}</h3>
+                                           <h3>{{"or" | translate}}</h3>
+                                           <label for="fileDropRef">{{"Browse for file" | translate}}</label>
+                                      
+                                     </div>
+                                   </ngx-dropzone-label>
+                                 </div>
+
+                             
+                               </div>
+                         <small class="text-danger" *ngIf="(fileType == 1) && (fileeList?.length == 0)">
+                            ({{"Only .mp3, .mpeg file only maxsize 5 MB"}})
+                         </small>
+                         <small class="text-danger" *ngIf="(fileType == 2) && (fileeList?.length == 0)">
+                            ({{"Only .mp4,.wmv, .webm files only maxsize 10 MB"}})
+                         </small>
+                         <small class="text-danger" *ngIf="(fileType == 3) && (fileeList?.length == 0)">
+                            ({{"Only .jpg, .jpeg, .png file only maxsize 1 MB"}})
+                         </small>
+                         <div class="files-list" href="javascript:void(0)" *ngFor="let f of fileeList" >
+                           <div>
+                             <i class="h6 mr-1" [ngClass]="getfiletypeicon(f.fileType)" ></i> 
+                           <span>{{f.fileName}}</span>
+                        </div>
+                       
+                           <a (click)="onRemove(f)" class="text-danger" ngbTooltip="Back to upload" title=""  data-original-title="Cancel"><i class="bi bi-trash"></i></a>
+                       </div>
+                      </div>
+                   
+                      <!-- <div class="col-md-1 col-lg-1">
+                         <div *ngIf="fileType == 1 && documentUrl">
+                            <audio controls>
+                               <source src="{{documentUrl}}" type="audio/ogg">
+                               <source src="{{documentUrl}}" type="audio/mpeg">
+                               {{"Your browser does not support the audio tag"}}.
+                            </audio>
+ 
+                         </div>
+                         <div *ngIf="fileType == 2 && documentUrl">
+                            <video style="width:100%" style="height:80px" controls>
+                               <source src="{{documentUrl}}" type="video/mp4">
+                               <source src="{{documentUrl}}" type="video/ogg">
+                               {{"Your browser does not support the video tag"}}.
+                            </video>
+ 
+                         </div>
+                         <div *ngIf="fileType == 3 && documentUrl">
+                            <img src="{{documentUrl}}" class="border" width="100%" alt="{{documentUrl}}">
+                         </div>
+                      </div> -->
+                   </div>
+                </div>
+ 
+                <!-- =========== Dynamic Key Description Section Start =================== -->
+ 
+                <div class="col-md-6">
+                   <div class="mb-4" *ngIf="formenable">
+                      <h6>{{"Dynamic keys for value"}} <small><i
+                               class="fa fa-question-circle pos-abs  hlpICNKey" data-phlp="tooltip"
+                               style="top:10px;right:-15px;cursor: pointer;"></i></small></h6>
+                      <div class="p-2 overflow-auto" style="height:240px;">
+                         <table class="table table-bordered">
+                            <thead>
+                               <tr>
+                                  <th scope="col">{{"Key" | translate}}</th>
+                                  <th scope="col">{{"Label Name" | translate}}</th>
+                               </tr>
+                            </thead>
+                            <tbody>
+                               <tr *ngFor="let keys of keysArray; let i = index">
+                                  <td>{{'{' +keys.ctrlId+'}'}}</td>
+                                  <td>{{keys.ctrlLabel}}</td>
+                               </tr>
+                            </tbody>
+                         </table>
+                      </div>
+ </div>
+                      <div class="" >
+                      <h6 >{{"Static keys for value" | translate}} <small><i
+                         class="fa fa-question-circle pos-abs  hlpICNKey" data-phlp="tooltip"
+                         style="top:10px;right:-15px;cursor: pointer;"></i></small></h6>
+                <div class="overflow-auto" style="height:240px;">
+                   <table class="table table-bordered">
+                      <thead>
+                         <tr>
+                            <th scope="col">{{"Key" | translate}}</th>
+                            <th scope="col">{{"Key Description" | translate}}</th>
+                         </tr>
+                      </thead>
+                      <tbody>
+                         <tr *ngFor="let keys of StatickeysArray let i = index">
+                            <td>{{keys.keyName}}</td>
+                            <td>{{keys.keyDescription}}</td>
+                         </tr>
+                      </tbody>
+                   </table>
+                </div>
+           
+                   </div>
+                </div>
+                <!-- =========== Dynamic Key Description Section End =================== -->
+                <div class="form-group">
+                   <div class="row">
+                      <label class="col-md-4 col-lg-2">* {{"Message Content" | translate}}</label>
+                      <div class="col-md-8 col-lg-10">
+                        <ckeditor [(ngModel)]="messageContent"  id="messageContent"
+                        #myckeditor="ngModel"
+                        name="myckeditor"
+                        required
+                        [config]="ckeConfig" 
+                        debounce="500" 
+                        >
+                       
+                        </ckeditor>
+                         <!-- <app-ckeditornew [ckdesc]="messageContent" [(ngModel)]="messageContent"></app-ckeditornew> -->
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+ 
+          <div class="form-group">
+             <div class="row">
+                <label class="col-md-4 col-lg-2"></label>
+                <div class="col-md-8 col-lg-10" *ngIf="messageId == ''">
+ 
+                   <button class="btn btn-primary"
+                      (click)="newGenerateMessage()">{{"Submit" | translate}}</button>
+                   <button class="btn btn-danger ml-1" (click)="resetform()">{{"Reset" | translate}}</button>
+                </div>
+                <div class="col-md-8 col-lg-10" *ngIf="messageId">
+ 
+                   <button class="btn btn-primary"
+                      (click)="newGenerateMessage()">{{"Update" | translate}}</button>
+                   <button class="btn btn-danger ml-1" (click)="resetform()">{{"Cancel" | translate}}</button>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>

@@ -1,0 +1,164 @@
+<!--===Page Title===-->
+<div class="page-title">
+   
+        <h4>{{title | langReplace}}</h4>
+        </div>
+        <!--===Page Title===-->
+        <!--===controle section===-->
+        <div class="page-controls-section" id="page-content">
+                        <div class="card">
+                        <div class="controls-section-header">
+                           <ul class="nav nav-tabs nav-fill" role="tablist" >
+                              <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="letterID" [tabMessage]="tablist"></app-tabs>  
+                           </ul>
+                        <div class="indicatorslist">
+                           <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils> 
+                              </div>
+                              </div>
+                        
+                        <div class="card-body">
+                           <div class="controls-section">
+
+                            <div class="search-container active">
+                                <div class="search-sec">
+                                    <div class="row">
+                                        <div class="col-md-6 col-lg-3" *ngIf="roleId == 1">
+                                                <div class="form-group">
+                                                        <label> {{"User" | langReplace}} </label>
+                                                        <select class="form-select" [(ngModel)]="selUserId">
+                                                            <option value="0">{{"Select" | langReplace}}</option>
+                                                            <option *ngFor="let ulist of userlist" [value]="ulist.userId">{{ulist.userFullName}}</option>
+                                                        </select>
+                                                    </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-2">
+                                                <div class="form-group">
+                                                        <label>  {{"Type" | langReplace}} </label>
+                                                        <select class="form-select" [(ngModel)]="selType">
+                                                            <option value="0"> {{"Select" | langReplace}}</option>
+                                                            
+                                                            <option *ngFor="let elist of logactivitytypeList" [value]="elist.action">{{elist.activity}}</option>
+                                                        </select>
+                                                    </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-2">
+                                                <div class="form-group">
+                                                        <label> {{"Form Date" | langReplace}} </label>
+                                                        <input type="date" [(ngModel)]="txtFromDate"  placeholder="DD-MM-YYYY" id="expiryDate"  class="form-control" >
+                                                    </div>
+                                        </div>
+                                        <div class="col-md-6 col-lg-2">
+                                                <div class="form-group">
+                                                        <label> {{"To Date" | langReplace}} </label>
+                                                        <input type="date" [(ngModel)]="txtToDate" placeholder="DD-MM-YYYY" id="expiryDate"  class="form-control" >
+                                                    </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6 col-lg-3">
+                                                <div class="form-group pt-4">
+                                                       <button class="btn btn-success" (click)="viewLog(selUserId,selType,txtFromDate,txtToDate)"> {{"Search" | langReplace}}</button>
+                                                       <button class="btn btn-danger ml-2" (click)="reset()"> {{"Reset" | langReplace}}</button>
+                                                    </div>
+                                        </div>
+                                      
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="d-flex justify-content-end">
+                                       
+                                    
+                                <div class="d-flex align-items-center mb-2">
+                                    {{"Display" | langReplace}}  &nbsp;
+                                <select class="form-select width-90" (change)="onTableSizeChange($event)">
+                                  <option *ngFor="let size of pageSizes" [ngValue]="size">
+                                    {{ size }}
+                                  </option>
+                                </select> 
+                                </div>
+                            </div>
+                                
+                                <div *ngIf="loglist?.length > 0; else norecord">
+    
+                               <div class="table-responsive print-section">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th width="50px"> {{"Sl No" | langReplace}}</th>
+
+  <th *ngFor="let flist of tablecollist">
+                                      <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)" class="my-icon bi bi-arrow-up"></i>
+                                      
+                                      {{flist.name | langReplace}}
+                                     
+                                     </th>
+
+                                              
+                                              
+                                               
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                              
+                                            <tr *ngFor="let mlist of loglist | metasearch:txtSearch | paginate
+                                            : {
+                                                itemsPerPage: tableSize,
+                                                currentPage: page,
+                                                totalItems: count
+                                              }; let i = index">
+                                                   
+                                                
+    
+                                                <td>{{tableSize *(page-1)+ i+1}}</td>
+                                                <td>{{mlist.createdBy}}</td>
+
+                                                <td>
+                                                    <!--   -->
+
+                                              
+                                               
+                                                {{mlist.folderName ? mlist.folderName : mlist.fileName}} {{mlist.fileOrFoldertype}}
+                                               
+                                                        {{mlist.activityPerformed=='Logged in' ? 'Time: '+mlist.lastLoginTime : ''}}
+                                                        {{mlist.activityPerformed=='Logged out' ? 'Time: '+mlist.lastLogoutTime : ''}}
+                                                        <span class="text-primary d-block mt-1">{{mlist.activityPerformed}}</span>  
+
+
+
+                                                </td>
+                                               
+                                                
+                                              
+                                                <td>{{mlist.createdOn}}</td>
+                                             
+                                                
+    
+    
+    
+    
+    
+      
+                                            </tr>
+                                           
+                                              
+                                        </tbody>
+                                    </table>
+                               </div>
+                               <app-pagination [page]="page" [count]="count" [tableSize]="tableSize" (callfunction)="onTableDataChange($event)"></app-pagination>
+                                 
+                            </div>
+                            <ng-template #norecord>
+                                    <h6 class="no-content">  {{"No Record Found" | langReplace}} </h6>
+                                
+                                </ng-template>
+                            </div>
+                        </div> 
+        </div>
+    
+<div class="loader" *ngIf="loading">
+        <div class="loader-item"></div>
+        <p>Loading...</p>
+      </div> 
+        
+    

@@ -1,0 +1,276 @@
+<!--  =============================================================================
+// File Name		      : addgateway-config.component.html
+// Description 	              : This is used for config getway configuration
+// Created by                 : Bikash Kumar Panda
+// Created on                 : 17-May-2023
+// Designed by                : Bikash Kumar Panda
+// Designed on                : 17-May-2023
+// Developed by               : Bikash Kumar Panda
+// Developed on               : 18-May-2023
+// Style sheet                : addgateway-config.component.scss
+============================================================================= -->
+<!--===Page Title===-->
+<div class="page-title">
+
+    <h4>{{title | translate}}</h4>
+</div>
+<!--===Page Title===-->
+<!--===controle section===-->
+<div class="page-controls-section" id="page-content">
+    <div class="card">
+        <div class="controls-section-header">
+          
+            <ul class="nav nav-tabs nav-fill" role="tablist">
+               <lib-libtabs *ngFor="let tablist of tablist" [tabMessage]="tablist"></lib-libtabs>
+              
+            </ul>
+            <div class="indicatorslist">
+                <lib-libutils *ngFor="let utillist of utillist" [childMessage]="utillist"></lib-libutils>
+               
+            </div>
+
+        </div>
+        <div class="card-body">
+            <div class="controls-section">
+                <!--begin::Form-->
+                <div class="row mb-3">
+                    <div class="col-lg-7">
+                        <div class="row">
+                            <label class="col-md-4 col-lg-4 mt-2">*{{"Type" | translate}}</label>
+                            <div class="col-md-8 col-lg-7">
+                                <div class="form-group">
+                                    <select class="form-select" [(ngModel)]="selType" id="selType" (change)='getgetwayNames()'>
+                                        <option value="0"> {{"Select" | translate}}</option>
+                                        <option *ngFor="let gettype of getwaytypes;let i index"
+                                            [value]="gettype.typeId">{{gettype.typeName}}</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-4 col-lg-4 mt-2">* {{"Name" | translate}} </label>
+                            <div class="col-md-8 col-lg-7">
+                                <div class="form-group">
+                                    <select class="form-select" (change)='viewOldGetways()' id="selgetwayId" [(ngModel)]="selgetwayId">
+                                        <option value="0" > {{"Select" | translate}}</option>
+                                        <option *ngFor="let gNames of getwayNamelist" [value]="gNames.intId">{{ 
+                                            gNames.vchName }}</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    <input type="hidden" [(ngModel)]="selgetwayName">
+                                    <div *ngIf="selgetwayId == 'other' ">
+                                        <input type="text" placeholder="Enter Name" id="txtgetwaymName"  class="form-control mt-3"
+                                            [(ngModel)]="txtgetwaymName">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-4 col-lg-4 mt-2">*{{"URL" | translate}} </label>
+                            <div class="col-md-8 col-lg-7">
+                                <div class="form-group">
+                                    <input type="text" class="form-control amhfld arabic" name="vchUrl"
+                                        [(ngModel)]="txtUrl" id="txtUrl" autocomplete="off" value="" maxlength="250">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-4 col-lg-4 mt-2">*{{"Data post method" | translate}}</label>
+                            <div class="col-md-8 col-lg-7">
+                                <div class="form-group">
+                                    <select name="selPostMethod" id="selPostMethod" [(ngModel)]="selPostmenthod"
+                                        class="form-select">
+                                        <option value="0">{{"Select" | translate}}</option>
+                                        <option value="na">NA</option>
+                                        <option value="get">GET</option>
+                                        <option value="post">POST</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-4 col-lg-4 mt-2">* {{"Contact Address" | translate}}</label>
+                            <div class="col-md-8 col-lg-7">
+                                <div class="form-group">
+                                    <textarea class="form-control" [(ngModel)]="txtContactAddress" id="txtContactAddress" rows="2" cols="2">
+
+                                                                </textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="">
+                            <h6 class="mb-1"> {{"Dynamic keys for value" | translate}} </h6>
+                            <div class="overflow-auto pe-2" style="height:270px;">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">{{"Key" | translate}}</th>
+                                            <th scope="col">{{"Description" | translate}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>[APPLICANT_MOBILE]</td>
+                                            <td>{{"This key will be used to fetch the applicant mobile number"}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>[APPLICANT_NAME]</td>
+                                            <td>{{"This key will be used to bind the SMS content"}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>[APP_NO]</td>
+                                            <td>{{"This key will be used to bind the Application number"}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>[APP_DATE]</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>[APP_SLNO]</td>
+                                            <td>{{"This key will be used to bind the Letter number"}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>[FARMER_DIST]</td>
+                                            <td>{{"This key will be used to bind district of the  farmer"}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>[FARMER_BLOCK]</td>
+                                            <td>{{"This key will be used to bind block/ULB of the farmer"}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>[FARMER_GP]</td>
+                                            <td>{{"This key will be used to bind GP/Ward of the farmer"}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>[FARMER_VILLAGE]</td>
+                                            <td>{{"This key will be used to bind village of the farmer"}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>[SERVICE_VERIFICATION]</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>[FARMER_CATEGORY]</td>
+                                            <td>{{"This key will be used to bind caste category of the farmer"}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>[FARMER_FATHER]</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>[FARM_DISTRICT]</td>
+                                            <td>{{"This key will be used to bind district of the farm"}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>[FARM_BLOCK]</td>
+                                            <td>{{"This key will be used to bind block of the farm"}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>[FARM_GP]</td>
+                                            <td>{{"This key will be used to bind GP of the farm"}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>[FARM_VILLAGE]</td>
+                                            <td>{{"This key will be used to bind Village of the farm"}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>[VALID_UPTO_6_MONTH]</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>[VALID_UPTO_12_MONTH]</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>[INSPECTION_DATE]</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>[INSPECTED_LAND_AREA]</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>[INSPECTED_TOTAL_LAND_AREA]</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>[INSPECTED_LAND_AREA_DEVELOPED]</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>[VALID_UPTO_24_MONTH]</td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width:50px"> {{"Sl No" | translate}}</th>
+                                    <th scope="col"> {{"Label" | translate}} <span class="text-danger">*</span>
+                                    </th>
+                                    <th scope="col">{{"Key" | translate}} <span class="text-danger">*</span>
+                                    </th>
+                                    <th scope="col">{{"Value" | translate}} <span class="text-danger">*</span>
+                                    </th>
+                                    <th scope="col" style="width:70px">{{"Action" | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appendTr">
+
+                                <tr *ngFor="let apiArray of dynamicListArray; let i = index;">
+                                    <td>{{i+1}}</td>
+                                    <td>
+                                        <input class="form-control" name="{{apiArray.vchLabel}}"
+                                            [(ngModel)]="apiArray.vchLabel" id="label_{{i}}" type="text" />
+                                    </td>
+                                    <td>
+                                        <input class="form-control" name="{{apiArray.vchKey}}"
+                                            [(ngModel)]="apiArray.vchKey" id="key_{{i}}" type="text" />
+                                    </td>
+
+                                    <td>
+                                        <input class="form-control" name="{{apiArray.vchValue}}"
+                                            [(ngModel)]="apiArray.vchValue" id="value_{{i}}" type="text" />
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger px-2" (click)="deleteApiRow(i, apiArray.intId)"><i
+                                                class="icon-trash-alt"></i></button>
+
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="6">
+                                        <button class="btn btn-info btn-sm" (click)="addRow()">{{"Add Row" | translate}}  </button>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--end::Form-->
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <button class="btn btn-primary" (click)="manageGetWayConfig()">{{"Submit" | translate}}</button>
+            <button id="clear-all-fields" class="btn btn-danger ml-1">{{"Reset" | translate}}</button>
+        </div>
+    </div>
+</div>
+

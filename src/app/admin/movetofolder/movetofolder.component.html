@@ -1,0 +1,60 @@
+
+<div class="row">
+        <label class="col-lg-2 col-md-5">  {{"Document Name" | langReplace }}</label>
+        <div class="col-lg-4 col-md-7">
+            <div class="form-group">
+            
+                <input type="text" readonly class="form-control" id="mFileName" [(ngModel)]="mFileName">
+              
+            </div>
+            </div>
+</div>
+<div class="row">
+        <label class="col-lg-2 col-md-5">   {{"Document No" | langReplace }}</label>
+        <div class="col-lg-4 col-md-7">
+            <div class="form-group">
+            
+                <input type="text" readonly class="form-control" id="mrefNo" [(ngModel)]="mrefNo">
+            </div>
+            </div>
+</div>
+<div class="row">
+        <label class="col-lg-2 col-md-5">   {{"Current Folder" | langReplace }} </label>
+        <div class="col-lg-4 col-md-7">
+            <div class="form-group">
+              
+                    <select class="form-select" disabled="disabled" id="mFolderid" [(ngModel)]="mFolderid">
+                            <option value="0">{{"Select" | langReplace }} </option>
+                            <option *ngFor="let flist of folderlist" [value]="flist.folderId">{{flist.folderName}}</option>
+                        </select>
+              
+            </div>
+            </div>
+</div>
+<div class="row">
+        <label class="col-lg-2 col-md-5">*  {{"New Folder" | langReplace }} </label>
+        <div class="col-lg-4 col-md-7">
+            <div class="form-group">
+            
+                    <select class="form-select" [(ngModel)]="selFolderName" id="selFolderName">
+                            <option value="0">{{"Select" | langReplace }}</option>
+                            <ng-container *ngFor="let flist of folderlist">
+                                <option *ngIf="!(flist.folderId==1)" [value]="flist.folderId">{{flist.folderName}}</option>
+                            </ng-container>
+                           
+                        </select>
+            </div>
+            </div>
+</div>
+<div class="row">
+       
+        <label class="col-lg-2 col-md-5"></label>
+    
+                <div class="col-lg-4 col-md-7">
+                                <button  class="btn btn-success mr-1" (click)="saveMoveFile()"> {{"Save" | langReplace }}</button>
+                                <button  class="btn btn-danger" (click)="formReset()"> {{"Reset" | langReplace }} </button>
+                        </div>
+
+
+</div>
+

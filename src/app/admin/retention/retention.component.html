@@ -1,0 +1,52 @@
+<h6> {{"You can choose to have files in this folder to be automatically deleted after certain time"| langReplace }}.</h6>
+
+
+
+<h6 class="text-info"> {{"Retention Date"| langReplace }} : {{rdate ? rdate : 'NA'}}</h6>
+
+
+<div class="row">
+       
+        <div class="col-md-4 col-lg-3">
+            <div class="form-group">
+                    <label>*  {{"After"| langReplace }}</label>
+                    <input type="text"  (keypress)="vldChkLst.isNumberKey($event)"  class="form-control" id="txtAfter" [(ngModel)]="txtAfter">
+            </div>
+               
+               
+        </div>
+        <div class="col-md-4 col-lg-3">
+                <div class="form-group">
+                        <label>*  {{"Type"| langReplace }}</label>
+                        <select class="form-select" id="selType"  [(ngModel)]="selType">
+                                <option value="0"> {{"Select"| langReplace }}</option>
+                                <option value="4">Days</option>
+                                <option value="3">Week</option>
+                                <option value="2">Month</option>
+                                <option value="1">Year</option>
+                            
+                           </select>
+                </div>
+                   
+                   
+            </div>
+            <div class="col-md-4 col-lg-3">
+                    <div class="form-group">
+                            <label>*  {{"Action"| langReplace }}</label>
+                           <select class="form-select" id="selActionType"  [(ngModel)]="selActionType">
+                                <option value="0"> {{"Select"| langReplace }}</option>
+                                <option value="1">Delete Permanently</option>
+                                <option value="2">Move to Trash</option>
+                           </select>
+                    </div>
+                       
+                       
+                </div>
+                <div class="col-md-4 col-lg-12">
+                                <button  class="btn btn-success mr-1" (click)="saveRetenstion()"> {{"Save"| langReplace }}</button>
+                                <button  class="btn btn-danger" (click)="formReset()"> {{"Reset"| langReplace }}</button>
+                        </div>
+
+
+</div>
+

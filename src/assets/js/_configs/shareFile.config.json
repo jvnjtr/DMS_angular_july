@@ -1,0 +1,34 @@
+[
+      {
+        "pagetitle":"Share Document",
+        "tabList":[
+         
+         
+                  
+                  ],
+        "utils":[
+          
+          {"utilName":"back"}
+         
+          ],
+        "messages":{
+          "successMsg":"File Shared Successfully",
+          "updatesuccessMsg":"Updated Successfully",
+          "errorMsg":"Error in Share file",
+          "fromname":"Please Select Form Name",
+          "lettername":"Please Enter Letter Name",
+          "effectivefrom":"Please Select Effective form date",
+          "effectiveto":"Please Enter Effective to date",    
+          "effectivefromto":"Effective to date must be grater then from date",  
+          "signtype":"Please Select sign Type",  
+          "lettercontent":"Please Enter Letter content",
+          "selectuser":"Select User to share file",
+          "expDate":"Select Expiry Date",
+          "selecttouser":"Select To User",
+          "txtsubject":"Enter Mail Subject",
+           "maildesc":"Enter Message"
+         }
+      }
+    ]
+
+

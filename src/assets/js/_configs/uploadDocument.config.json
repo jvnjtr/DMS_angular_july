@@ -1,0 +1,38 @@
+[
+      {
+        "pagetitle":"Upload Document",
+        "tabList":[
+          {"tabName":"Upload","tabUrl":"../upload","tabClass":"active add d-none"},
+          {"tabName":"New Folder","tabUrl":"../newfolder"}
+         
+                  
+                  ],
+        "utils":[
+          {"utilName":"mandatory"}
+         
+         
+          ],
+        "messages":{
+          "successMsg":"New File uploaded Successfully",
+          "updatesuccessMsg":"Updated Successfully",
+          "errorMsg":"Error in File upload",
+          "filename":"Enter File Name",
+          "folderName":"folder",
+          "subject":"Enter Subject of the file",
+          "metaitems":" Meta type",
+          "fileindexing":"index",
+          "selMeta":"Meta Type",
+           "entermetadesc":"Enter Meta Details",
+           "addMeta":"Add Meta Details",
+           "selectRole":"Please Select role",
+           "chkrolename":"Select the role name",
+  "chkrolepermission":"Select the Permission type",
+  "chkusername":"user name",
+  "chkuserpermission":" the Permission type",
+   "selectuser":" User",
+   "addAuthority":"Please Select Authority"
+         }
+      }
+    ]
+
+

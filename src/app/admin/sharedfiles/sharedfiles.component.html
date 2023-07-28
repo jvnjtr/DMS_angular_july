@@ -1,0 +1,322 @@
+<!-- // =============================================================================
+// File Name		              : sharedfiles.component.html
+// Description 	              : This page display all shared files
+// Created by                 : Bikash Kumar Panda
+// Created on                 : 06-Jan-2023
+// Designed by                : Bikash Kumar Panda
+// Designed on                : 06-Jan-2023
+// Developed by               : Bikash Kumar Panda
+// Developed on               : 01-Feb-2023
+// Style sheet                : sharedfiles.component.scss
+
+// ============================================================================= -->
+<!--===Page Title===-->
+<div class="page-title">
+   
+    <h4>{{title | langReplace}}</h4>
+    </div>
+    <!--===Page Title===-->
+    <!--===controle section===-->
+    <div class="page-controls-section" id="page-content">
+                    <div class="card">
+                    <div class="controls-section-header">
+                       <ul class="nav nav-tabs nav-fill" role="tablist" >
+                          <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="letterID" [tabMessage]="tablist"></app-tabs>  
+                       </ul>
+                    <div class="indicatorslist">
+
+                            <!-- <a href="javascript:void(0)" ngbTooltip="Table View " class="mb-0 tableviews" [ngClass]="dataviewtype == 1 ? 'text-info' : 'text-dark'" (click)="tableview()" title="Tabular View" ><i class="icon-table-solid"></i></a>
+                            <a href="javascript:void(0)" ngbTooltip="Div View " class="mb-0 tableviews me-2" [ngClass]="dataviewtype == 2 ? 'text-info' : 'text-dark'" (click)="boxview()" title="Box View"><i class="icon-th-large-solid"></i></a> -->
+                       <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils> 
+                          </div>
+                          </div>
+                    
+                    <div class="card-body">
+
+                        
+                            <div class="d-flex align-items-center justify-content-between mb-3 ">
+                                <div>
+                                 
+                                </div>
+                                <div class="d-flex align-items-center">
+                                   
+                                   
+                                    <div class="d-flex align-items-center me-3">
+                                      {{"Per Page"| langReplace}}  
+                                        <select class="form-select width-90" (change)="onTableSizeChange($event)">
+                                      <option *ngFor="let size of pageSizes" [ngValue]="size">
+                                        {{ size }}
+                                      </option>
+                                    </select> 
+            </div>
+            <div class="custom-search ">
+                    <div class="search-ctrldiv">
+                          <div class="selcteditems">
+                            <div class="selitem" *ngFor="let serSelItems of searchselcteditems;let i = index ">
+                                <span>{{serSelItems.searchkey}}</span>
+                                {{serSelItems.searchvalue}}
+                               <i (click)="removeselitems(i,serSelItems.searchkey,serSelItems.searchvalue)" class="bi bi-x"></i>
+                            </div>     
+                          </div>
+                       
+                          <input class="form-control " #searchField type="search" placeholder="{{'Search' | langReplace}}..." [(ngModel)]="txtSearch" aria-label="Search">
+                          <i class="bi bi-search searchicon"></i>
+                    </div> 
+                 
+                  <div class="suggestList" *ngIf="txtSearch">
+                      <ng-container *ngFor="let searchref of searchColList ">
+                              <a href="javascript:void(0)" (click)="setSearchParam(searchref,txtSearch)" ><span>Search {{searchref}} for</span>: <b>{{txtSearch}}</b> </a>
+                      </ng-container>
+                     
+                  </div>
+                 </div>
+         
+                                  </div>
+                               </div>
+                               <div *ngIf="ffdetailsArr?.length > 0; else norecord">
+                            <div class="table-responsive print-section" *ngIf="dataviewtype == 1">
+
+                             
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th width="50px"> {{"Sl No"| langReplace}} </th>
+
+                                            <th *ngFor="let flist of tablecollist">
+                                              <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)" class="my-icon bi bi-arrow-up"></i> 
+                                              
+                                              {{flist.name | langReplace}}
+                                               
+                                             </th>
+
+
+                                          
+                                         
+                                           
+                                            <th class="p-none" width="100px"> {{"Action"| langReplace}} </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      
+                                        <tr valign="middle" *ngFor="let flist of ffdetailsArr | paginate
+                                        : {
+                                            itemsPerPage: tableSize,
+                                            currentPage: page,
+                                            totalItems: count
+                                          }; let i = index">
+                                          <td>{{tableSize *(page-1)+ i+1}}</td>
+                                          <td width="140px">
+
+
+                                           {{flist.fileRefNo }}
+                                           
+                                             
+                                            </td>
+                                            <td width="50px" class="text-center">
+                                         
+                                                    <i class="h6" [ngClass]="getfiletype(flist.fileType)" ></i>
+                                                </td>
+                                      <td>
+
+                                        <div class="d-flex justify-content-between ">
+                                        
+                                        
+                                        {{flist.fileName}}
+                                     
+                                       <a title="bookmark" ngbTooltip="Bookmark" href="javascript:void(0)"><i class="bi" (click)="addBookmark(flist.type == 1 ? '' : flist.fileId,flist.type == 2 ? '':flist.folderId,flist.BookmarkStatus == null ? '1' :'0');" [ngClass]="flist.BookmarkStatus == null ?  'bi-star' : 'bi-star-fill text-warning'">
+                                        </i></a>
+                                      </div>
+                                      </td>
+                                      <!-- <td><a title="Click here to check all versions" ngbTooltip="Click here to check all versions" class="text-primary" (click)="viewVersions(flist.fileId)" href="javascript:void(0)">v{{flist.fileVersion | number:'1.1-5'}}</a></td>
+                                       -->
+                                      <td>{{ formatBytes(flist.fileSize,2) }}</td>
+                                      
+                                      <td>{{flist.createdByName}} 
+                                         <small class="d-block text-primary mt-1">on {{flist.CreatedOn}}</small>
+                                      </td>
+                                     
+                                      <td> {{flist.sharedByName }}
+                                            <!-- <small class="d-block text-primary mt-1">on {{flist.CreatedOn}}</small> -->
+                                      </td>
+                                      <td class="p-none">
+                                          <div class="d-flex align-items-center" >
+
+
+                                                    <a class="text-primary"  ngbTooltip="Download" (click)="downloadfils(flist.fileId,flist.filePath)" target="_blank"  ><i class="bi bi-download"></i></a>
+                                                  </div>
+                                      </td>
+
+
+                                
+
+
+
+                                          </tr>
+
+                                      </tbody>
+                                      </table>
+                           </div>
+                           <div class="row" *ngIf="dataviewtype == 2">
+
+                              <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-4" *ngFor="let flist of ffdetailsArr  | paginate
+                              : {
+                                  itemsPerPage: tableSize,
+                                  currentPage: page,
+                                  totalItems: count
+                                }; let i = index">
+
+                                <div class="div-view-section">
+
+                                    <div class="div-view-addons" *ngIf="flist.type == 2"> 
+
+
+                                       
+
+                                            <a  class="text-primary" href="javascript:void(0)" ngbTooltip="Share" (click)="shareDoc(flist.fileId+':'+flist.folderId)"><i class="bi bi-share"></i></a>
+                                                                                          <!-- <div class="btn-group dropstart">
+                                                                                                  <a type="button" ngbTooltip="Setting" class="text-primary" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                                                   <i class="bi bi-gear"></i>
+                                                                                                  </a>
+                                                                                                  <ul class="dropdown-menu">
+                                                                                                  
+                                                                                                    <a href="javascript:void(0)" class="btn btn-primary btn-sm mb-1 w-100 text-center" (click)="fileModify(flist.fileId)">Modify</a>
+                                                                                                     <a href="javascript:void(0)" class="btn btn-primary btn-sm mb-1 w-100 text-center"  (click)="retentionFile(flist.fileId,flist.folderId,flist.retentionDate)"  >Retention</a>
+                                                                                                    <a href="javascript:void(0)" class="btn btn-primary btn-sm mb-1 w-100 text-center" (click)="filenumbering(flist.fileId,flist.fileRefNo,flist.fileName,flist.CreatedOn,flist.folderId)">Numbering</a> 
+                                                                                                    <a href="javascript:void(0)" class="btn btn-primary btn-sm mb-1 w-100 text-center" (click)="fileDuplicate(flist.fileId,flist.folderId)">Duplicate</a>
+                                                                                                    <a href="javascript:void(0)" data-bs-toggle="modal" [attr.data-bs-target]="'#reminderModal'+i" class="btn btn-primary btn-sm w-100  mb-1 text-center">Set Reminder</a>
+                                                                                                    <a href="javascript:void(0)" class="btn btn-primary btn-sm mb-1 w-100 text-center">Move to Folder</a>
+                                                                                                    <a href="javascript:void(0)" class="btn btn-primary btn-sm w-100 text-center" (click)="moveTrash(flist.fileId,flist.folderId)">Move to Trash</a> 
+                                                                                                  </ul>
+                                                                                                </div> -->
+                                                                                                
+                                                                                                <a class="text-primary"  ngbTooltip="Download" (click)="downloadfils(flist.fileId,flist.filePath)"><i class="bi bi-download"></i></a>
+                                                                                             
+
+                                            <!-- <a class="text-primary" *ngIf="i>=1" title="Edit" href="javascript:void(0)" (click)="gotoEdit(flist.folderId)"><i class="icon-edit-solid"></i></a>
+                                            <a class="text-danger" *ngIf="i>=1" title="Delete" href="javascript:void(0)" (click)="delete(flist.folderId)"><i class="icon-trash-solid"></i></a>  -->
+                                    </div>
+        
+        
+                                <p class="mb-3"> 
+                                    <a  class="text-primary" href="javascript:void(0)" (click)="previewDoc(flist.fileId)">
+                                        <i class="" [ngClass]="flist.type == 1 ? 'h5 bi bi-folder-fill text-warning' : 'h5 bi-file-pdf text-danger'" ></i>
+                                        {{flist.fileName}}
+                                       
+                                    </a>
+                                    
+                                    <a title="bookmark" ngbTooltip="Bookmark" href="javascript:void(0)"><i class="bi" (click)="addBookmark(flist.type == 1 ? '' : flist.fileId,flist.type == 2 ? '':flist.folderId,flist.BookmarkStatus
+ == null ? '1' :'0');" [ngClass]="flist.BookmarkStatus
+ == null ?  'bi-star' : 'bi-star-fill text-warning'">
+                                      </i></a>
+                               
+                                      </p>
+                                      <div class="row">
+                                          <div class="col">
+                                                  <div class=""> 
+                                                      {{flist.type == 1 ? 'Folder' : 'File'}} Size   
+                                                          <span class="text-primary d-block mt-1 mb-0" >
+                                                                  {{flist.fileSize}}
+                                                          </span>
+                                                        
+                                                     </div>
+                                          </div>
+                                          </div>
+                                </div>
+
+
+                                </div>
+                            
+                             </div>
+                             <app-pagination [page]="page" [count]="count" [tableSize]="tableSize" (callfunction)="onTableDataChange($event)"></app-pagination>
+                          </div>
+                        
+                        <ng-template #norecord>
+                                <h6 class="no-content"> {{"No Record Found"| langReplace}} </h6>
+                            
+                            </ng-template>
+
+                
+                    </div> 
+    </div>
+
+     <!-- Modal -->
+ 
+ <ng-template #numberingModal id="numberingModal" let-modal>
+ 
+    <div class="modal-header">
+      <h5 class="modal-title mb-0" id="numberingModalLabel">File Number</h5>
+      <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+           <app-filenumbering [folderid]="nfolderid" [fileid]="fileid" [fileRefNo]="filenumber" [fileName]="filesName" [updatedate]="updatedate" [fsplitVal]="splitVal" [fsplitId]="splitId" (callfunction)="viewDetails(finalobj)"></app-filenumbering>
+    
+          
+    </div>
+  
+
+</ng-template>
+<!-- Modal -->
+<ng-template #reminderModal id="reminderModal" let-modal>
+
+    <div class="modal-header">
+      <h5 class="modal-title mb-0" id="reminderModalLabel">Set Reminder</h5>
+      <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+            <app-setreminder></app-setreminder>
+    
+
+
+        
+    </div>
+  
+
+</ng-template>  
+
+<!-- Modal -->
+<ng-template #retentionModal id="retentionModal" let-modal>
+
+    <div class="modal-header">
+      <h5 class="modal-title mb-0" id="retentionModalLabel">Retention</h5>
+      <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+            <app-retention  [rfileid]="retensionid" [rfolderid]="retensionFolderid" [rdate]="retenstionDate" (callfunction)="viewDetails(finalobj)"></app-retention>
+           
+</div>
+  
+
+</ng-template>
+
+<ng-template #movetoFolderModal id="movetoFolderModal" let-modal>
+
+    <div class="modal-header">
+      <h5 class="modal-title mb-0" id="movetoFolderModalLabel">Move to Folder</h5>
+      <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+           <app-movetofolder  [mfileid]="movefileid" [mFolderid]="moveFolderid" [mFileName]="movefileName" [mrefNo]="movefilerefNo" (callfunction)="viewDetails(finalobj)"></app-movetofolder> 
+           
+</div>
+  
+
+</ng-template>
+<ng-template #fileversionModal id="fileversionModal" let-modal>
+
+        <div class="modal-header">
+          <h5 class="modal-title mb-0" id="fileversionModalLabel">File Versions</h5>
+          
+          <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+               <app-filevesions  [fileid]="fileversions"  (callfunction)="viewDetails(finalobj)"></app-filevesions> 
+               
+    </div>
+      
+    
+    </ng-template>
+
+<div class="loader" *ngIf="loading">
+    <div class="loader-item"></div>
+    <p>Loading...</p>
+  </div> 

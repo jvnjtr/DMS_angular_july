@@ -1,0 +1,75 @@
+
+
+  <h6>{{"File Details"| langReplace}} </h6>
+    <div class="table-responsive">
+      
+            <table class="table table-bordered mb-3">
+                    <tbody>
+                       
+                        <tr>
+                        <th width="150px" class="bg-light"> {{"File Name"| langReplace}}</th><td>{{txtFileName}}  
+                        <!-- <a class="text-primary" ngbTooltip="Download"  (click)="downloadfils(fileid,filePath)" target="_blank"  >(Download)</a> -->
+                        </td>
+                        
+                       
+                        </tr>
+                    
+                        <tr>
+                            <th class="bg-light"> {{"Document No"| langReplace}}.</th><td>{{txtFileNumber}}</td>
+                        </tr>
+                       <tr>
+                            <th class="bg-light"> {{"Folder Name"| langReplace}}</th><td>{{folderName }}</td>
+                        </tr>
+                        <tr> 
+                            <th class="bg-light"> {{"Size"| langReplace}}</th><td>{{formatBytes(filesize,2)}}</td>
+                        </tr>
+                        
+                        <!-- <tr>
+                            <th class="bg-light">Subject</th><td>{{txtSubject}}</td>
+                        </tr>
+                    
+                        <tr>
+                            <th class="bg-light">Version</th><td>v{{fileVersion | number:'1.1-5'}}</td>
+                        </tr>
+                        <tr> 
+                        <th class="bg-light">Tags</th><td><span *ngFor="let ftags of fileTags">{{ftags.displayValue}},</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <th class="bg-light">Meta Details</th><td>
+                                <span *ngFor="let metalist of metadetails">
+                                    
+                                    {{metalist.metaDetails}},  
+                                
+                                </span>
+                               
+                            </td>
+                        </tr>
+                       -->
+                       
+                        
+                            <tr>
+                                <th class="bg-light"> {{"Created By"| langReplace}}</th><td>{{createdby}}</td>
+                            </tr>
+                    
+                            <tr>
+                                <th class="bg-light"> {{"Created On"| langReplace}}</th><td>{{createdOn}}</td>
+                            </tr>
+                           
+                           
+                          
+                    </tbody>
+                </table>
+              
+    </div>
+  
+
+      
+
+
+
+
+<div class="loader" *ngIf="loading">
+        <div class="loader-item"></div>
+        <p>Loading...</p>
+      </div> 

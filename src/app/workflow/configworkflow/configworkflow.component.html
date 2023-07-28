@@ -1,0 +1,363 @@
+<!--===controle section===-->
+<!-- {{folderid}} -->
+ 
+    <form [formGroup]="dynamicForm">
+    
+      
+      
+          <div class="controls-section">
+            <div class="row">
+             
+             
+  
+              <label class="col-md-4 col-lg-2 mt-2">*  {{"Folder Name"| langReplace}}</label>
+              <div class="col-md-8 col-lg-3">
+                <div class="form-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    readonly
+                    [value]="folderName"
+                  />
+                  <input type="hidden" formControlName="itemId" />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-2">
+                <div
+                  class="drag-drawflow border mt-1"
+                  draggable="true"
+                  (dragstart)="drag($event)"
+                  [attr.data-node]="applicantRole"
+                >
+                  <span class="h5 p-1"><i class="bi bi-person"></i></span>  Applicant
+                </div> 
+                <!-- <div
+                  *ngFor="let roles of roleArr" >
+ <div class="text-center" *ngFor="let permissions of roles.permission;let pi=index" >
+        <span *ngIf="permissions.label == 'WorkFlow' && permissions.selected == true">
+          <span class="h5 p-1"><i class="bi bi-person"></i></span>
+          {{ roles.roleName }}
+
+        </span>
+                  
+                       </div> 
+                      </div> -->
+
+                <div *ngFor="let roles of roleArr" >
+                 <!-- -->
+                  <div *ngIf="roles.permission == 'WorkFlow'" >
+                      <div class="drag-drawflow border mt-1"
+                      draggable="true" 
+                      (dragstart)="drag($event)"
+                      [attr.data-node]="roles.roleId">
+                    
+                      <span class="h5 p-1"><i class="bi bi-person"></i></span>
+                      {{ roles.roleName }}
+                      
+                      </div>
+                  </div>
+               
+                <!--  -->
+                
+                 
+
+                  <!-- {{ roles.permission}} -->
+                </div>
+
+
+              </div>
+              <div class="col-sm-7">
+                <div
+                  id="drawflow"
+                  (drop)="drop($event)"
+                  (dragover)="allowDrop($event)"
+                ></div>
+  
+                <div class="mt-3">
+                  <input
+                    type="button"
+                    class="btn btn-success me-1" *ngIf="roleId == 1"
+                    value=" {{'Submit'| langReplace}}"
+                    (click)="validator()"
+                  />
+                  <a
+                    class="btn btn-danger"  *ngIf="roleId == 1"
+                    (click)="resetform()"
+                    > {{"Reset"| langReplace}}</a
+                  >
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="eventSection">
+                  <div class="accordion">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <a
+                          class="accordion-button"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#event_section"
+                          aria-expanded="true"
+                          aria-controls="event_section"
+                        >
+                        {{"Events"| langReplace}} 
+                        </a>
+                      </h2>
+                      <div id="event_section" class="show collapse in">
+                        <div
+                          class="accordion-body"
+                          style="height: 200px; overflow: auto"
+                        >
+                          <ul id="eventsUl">
+                            <li
+                              *ngFor="let actions of approvalActions"
+                              class="py-2 pl-2 d-flex align-items-center justify-content-between"
+                            >
+                              <div>
+                                <input
+                                  type="checkbox"
+                                  name="chkActions[]"
+                                  class="chk_actions me-1"
+                                  id="chk_{{ actions.tinApprovalActionId }}"
+                                  value="{{ actions.tinApprovalActionId }}"
+                                  (click)="
+                                    chooseAction(
+                                      actions.tinApprovalActionId,
+                                      actions.tinApprovalActionId
+                                    )
+                                  "
+                                />
+                                 <label
+                                  for="chk_{{ actions.tinApprovalActionId }}"
+                                  >{{ actions.vchActionName }}</label
+                                >
+                              </div>
+                              <a (click)="setApplicantAction($event)" href="javascript:void(0)" class="text-primary" [attr.data-actionid]="actions.tinApprovalActionId">&nbsp;&nbsp; <i class="icon-email"[attr.data-actionid]="actions.tinApprovalActionId">&nbsp;&nbsp;</i></a>
+                              <a
+                                *ngIf="
+                                  actions.tinApprovalActionId == 15 &&
+                                  selAppDocuments
+                                "
+                                href="javascript:void(0);"
+                                (click)="
+                                  chooseAction(
+                                    actions.tinApprovalActionId,
+                                    actions.tinApprovalActionId
+                                  )
+                                "
+                                > {{"Edit"| langReplace}} </a
+                              >
+                            </li>
+                          </ul>
+                          <ul id="eventsU2" class="d-none">
+                            <li  class="py-2 pl-2 d-flex align-items-center justify-content-between">
+                              <label> Mail and sms</label>
+                              <a href="javascript:void(0);" class="text-primary"  (click)="setApplicantAction($event)" [attr.data-actionid]="'Registration'"><i class="icon-email"  [attr.data-actionid]="'Registration'"></i></a>
+                              </li>
+                            </ul>
+                          <input type="hidden" id="hdnApprovalDocs" />
+                          <input type="hidden" id="hdnAllDocs" />
+                          <input type="hidden" id="hdnApprovalLetters" />
+                          <input type="hidden" id="hdnAllLetters" />
+                          <input
+                            type="hidden"
+                            id="hdnAllApprovalDocuments"
+                            value="test"
+                          />
+                          <input type="hidden" id="hdnCalcDetails" />
+                        </div>
+                      </div>
+                    </div>
+             
+                   
+                    <div class="accordion-item mb-3">
+                      <h2 class="accordion-header">
+                        <a
+                          class="accordion-button"
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#time_section"
+                          aria-expanded="true"
+                          aria-controls="event_section"
+                        >
+                        {{"Timeline"| langReplace}}   
+                        </a>
+                      </h2>
+                      <div id="time_section" class="show collapse in">
+                        <div class="accordion-body">
+                          <div class="input-group input-focus">
+                            <input
+                              type="text"
+                              name="txtTimeLine"
+                              (keypress)="vldChkLst.isNumberKey($event)"
+                              id="txtTimeLine"
+                              class="form-control"
+                              autocomplete="off"
+                            />
+                            <div class="input-group-text"> {{"Days"| langReplace}} </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-center">
+                    <a
+                      class="btn btn-success btn-sm"
+                      style="display: none"
+                      id="btnSaveEvent"
+                      > {{"Save"| langReplace}} </a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+     
+    </form>
+
+  <a
+    id="docUpload"
+    data-bs-toggle="modal"
+    [attr.data-bs-target]="'#divUploadDoc'"
+    class="d-none"
+  ></a>
+  <a
+    id="docVerify"
+    data-bs-toggle="modal"
+    [attr.data-bs-target]="'#divVerifyDoc'"
+    class="d-none"
+  ></a>
+
+  <div
+    class="modal fade"
+    id="divVerifyDoc"
+    tabindex="-1"
+    aria-labelledby="previewModalLabel"
+    aria-hidden="false"
+  >
+  
+  </div>
+  
+
+
+
+<!-- get message  -->
+<!-- //<a id="message" data-bs-toggle="modal" [attr.data-bs-target]="'#divMessage'" class="d-none"></a> -->
+<div class="modal fade" id="divMessage" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="false">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mb-0" id="staticBackdropLabel">
+          {{"Send Message"| langReplace}}  
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-sm-12">
+      
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </div>
+</div>
+
+<ng-template #sendMsgModal id="sendMsgModal" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mb-0" id="movetoFolderModalLabel">
+      {{"Send Message"| langReplace}}  
+    </h5>
+    <button
+      type="button"
+      class="btn-close"
+      (click)="closeModal()"
+      aria-label="Close"
+    ></button>
+  </div>
+
+
+
+  <div class="modal-body">
+
+           <div class="accordion">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                    aria-expanded="true" aria-controls="collapseOne">
+                    {{"Mail"| langReplace}}  
+                  </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                  data-bs-parent="#accordionExample">
+
+                  <table class="table table-bordered">
+                    <tbody>
+                        <tr *ngFor="let item of mailConigDetails;let allIndx = index">
+                        
+                          <td width="60px"> <input type="checkbox" id="chckBoxMail{{allIndx+1}}" class="mailSmsChkBx" [value]="item.intMessageConfigId" [attr.data-mlsmstype]="1"> </td>
+                           <td><label class="form-check-label"for="chckBoxMail{{allIndx+1}}" [innerHTML]="item.vchMessageContent"></label> </td>
+                        </tr></tbody>
+                      </table>
+               
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    {{"SMS"| langReplace}}  
+                  </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                  data-bs-parent="#accordionExample">
+                
+                    <table class="table table-bordered">
+                      <tbody>
+                          <tr *ngFor="let item of smsConfigDetails;let allIndx = index">
+                            <td width="60px"> <input type="checkbox" id="chckBoxMailSms{{allIndx+1}}" class="mailSmsChkBx" [value]="item.intMessageConfigId" [attr.data-mlsmstype]="1"> </td>
+                             <td><label class="form-check-label"for="chckBoxMailSms{{allIndx+1}}"[innerHTML]="item.vchMessageContent"></label> </td>
+                          </tr></tbody>
+                        </table>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    {{"Whatsapp"| langReplace}}   
+                  </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                  data-bs-parent="#accordionExample">
+                    <table class="table table-bordered">
+                      <tbody>
+                          <tr *ngFor="let item of whatsappConfigDetails;let allIndx = index">
+                            <td width="60px"> <input type="checkbox" id="chckBoxMailWhatsApp{{allIndx+1}}" class="mailSmsChkBx" [value]="item.intMessageConfigId" [attr.data-mlsmstype]="1"> </td>
+                             <td><label class="form-check-label"for="chckBoxMailWhatsApp{{allIndx+1}}"[innerHTML]="item.vchMessageContent"></label> </td>
+                          </tr></tbody>
+                        </table>
+                </div>
+              </div>
+            </div>
+     
+  
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-info" data-bs-dismiss="modal" (click)="saveAllMailSmsActions()">
+      {{"Save"| langReplace}} 
+    </button>
+    <button type="button" class="btn btn-danger" (click)="closeSMActions()" data-bs-dismiss="modal">
+      {{"Close"| langReplace}} 
+    </button>
+  </div>
+</ng-template>
+  <!-- <div class="loader" *ngIf="loading">
+    <div class="loader-item"></div>
+    <p>Loading...</p>
+  </div>
+   -->

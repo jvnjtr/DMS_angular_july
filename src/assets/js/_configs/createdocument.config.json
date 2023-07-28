@@ -1,0 +1,27 @@
+[
+  {
+    "pagetitle":"Create Document",
+    "tabList":[
+      {"tabName":"create","tabUrl":"../../createdocument","tabClass":"active add d-none"}     
+              
+              ],
+    "utils":[
+     
+      {"utilName":"mandatory"}
+     
+     
+     
+      ],
+    "messages":{
+     
+    "selFolder":" Folder",
+    "addMeta":"Add Meta details",
+    "subject":"Enter Subject",
+    "successMsg":"New File uploaded Successfully",
+    "updatesuccessMsg":"Updated Successfully",
+    "errorMsg":"Error in File upload"
+     }
+  }
+]
+
+

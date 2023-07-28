@@ -1,0 +1,28 @@
+[
+  {
+    "pagetitle":"Manage Language Configuration",
+    "tabList":[
+      {"tabName":"Manage Language","tabUrl":"../manageLanguage","tabClass":"active"}
+    ],
+      
+      
+    "utils":[
+      {"utilName":"delete"},
+      {"utilName":"publish"},
+      {"utilName":"unpublish"}
+     
+     
+      ],
+    "messages":
+      {
+      "successMsg":"New Language Added Successfully",
+      "errorMsg":"Something Went Wrong",
+      "warningtype":"You want to delete this record",
+      "deleteMsg":"Record has been deleted",
+      "updatesuccessMsg":"Data updated successfully"
+    }
+    
+  }
+]
+
+
