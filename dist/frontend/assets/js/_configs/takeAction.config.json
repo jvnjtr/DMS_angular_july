@@ -1,0 +1,30 @@
+[
+      {
+        "pagetitle":"Take Action",
+        "tabList":[
+        
+        
+       
+                  
+                  ],
+        "utils":[
+         
+          {"utilName":"mandatory"},
+          {"utilName":"back"}
+         
+          ],
+        "messages":{
+          "successMsg":"Action Taken Successfully",
+          "updatesuccessMsg":"Updated Successfully",
+          "errorMsg":"Error in remark",
+          "fromname":"Please Select Form Name",
+          "remark":"Please Enter remark",
+          "action":"Please Select Action",
+          "warningtype":"You want to delete this meta ",
+          "metaType":"Select Meta Type",
+          "deleteMsg":"Meta record deleted successfully"
+         }
+      }
+    ]
+
+

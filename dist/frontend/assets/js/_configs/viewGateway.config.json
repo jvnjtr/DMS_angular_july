@@ -1,0 +1,28 @@
+[
+      {
+        "pagetitle":"View Getway Config",
+        "tabList":[
+       
+          {"tabName":"Add","tabUrl":"../addgateway"},
+          {"tabName":"View","tabUrl":"../viewgateway" ,"tabClass":"active"}
+        ],
+          "utils":[
+          {"utilName":"search"},
+          {"utilName":"print"},
+          {"utilName":"delete"},
+          {"utilName":"publish"},
+          {"utilName":"unpublish"}
+         
+          ],
+        "messages":
+          {
+            "successMsg":"Date saved successfully",
+          "errorMsg":"Error in database",
+          "warningtype":"You want to delete this record",
+          "deleteMsg":"Record has been deleted"
+          }
+        
+      }
+    ]
+
+

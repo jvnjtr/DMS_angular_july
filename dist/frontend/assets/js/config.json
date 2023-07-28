@@ -1,0 +1,36 @@
+{"config":[
+    {
+        "component":"dashboard",
+        "pagetitle":"Dashboard",
+        "tabList":[
+            {"tabName":"Add","taburl":"#"},
+            {"tabName":"View","taburl":"#"}
+        ],
+        "utils":[
+            {
+                "print":true,
+                "publish":true,
+                "unpublish":true,
+                "manadatory":true
+               
+            }
+        ]
+    },
+    {
+        "component":"addManageForm",
+        "pagetitle":"Dashboard",
+        "tabList":[
+            {"tabName":"Add","taburl":"#"},
+            {"tabName":"View","taburl":"#"}
+        ],
+        "utils":[
+            {
+                "print":true,
+                "publish":true,
+                "unpublish":true,
+                "manadatory":true
+               
+            }
+        ]
+    }
+]}

@@ -1,0 +1,40 @@
+[
+      {
+        "pagetitle":"Add New Folder",
+        "tabList":[
+         
+          {"tabName":"New Folder","tabUrl":"../newfolder","tabClass":"active add d-none"}
+         
+                  
+                  ],
+        "utils":[
+          {"utilName":"mandatory"}
+        
+        
+          ],
+        "messages":{
+          "successMsg":"New Folder Created Successfully",
+          "updatesuccessMsg":"Updated Successfully",
+          "errorMsg":"Error in folder creation",
+          "parentfolder":"Parent Folder",
+          "foldername":"Please Enter Folder Name",
+          "permissiontype":"Please Select permission type",
+          "warningtype":"Files and Folders will be permanently deleted",
+          "allowsize":"Enter folder size",
+          "allowsizeType":"folder size type",
+          "allowfileSize":"Enter Max File size",
+          "allowfilesizeType":"file size type",
+          "selectdepartment":"department",
+          "selectRole":"Please Select Role",
+"chkrolename":"Select the role name",
+  "chkrolepermission":"Select the Permission type",
+  "chkusername":"user name",
+  "chkuserpermission":" the Permission type",
+   "selectuser":"Select User",
+ "permisstionType":"Select Permission Type"
+   
+         }
+      }
+    ]
+
+

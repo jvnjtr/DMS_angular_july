@@ -1,0 +1,28 @@
+[
+      {
+        "pagetitle":"Meta Configuration",
+        "tabList":[
+        
+          {"tabName":"Add","tabUrl":"../addMeta","tabClass":"active add d-none"},
+          {"tabName":"Edit","tabUrl":"","tabClass":"active edit d-none"},
+          {"tabName":"View","tabUrl":"../viewMeta","tabClass":"add d-none"}
+                  
+                  ],
+        "utils":[
+          {"utilName":"mandatory"}
+         
+         
+          ],
+        "messages":{
+          "successMsg":"New Meta Created Successfully",
+          "updatesuccessMsg":"Updated Successfully",
+          "errorMsg":"Error in Meta creation",
+          "fromname":"Please Select Form Name",
+          "metaname":"Please Enter Meta Name",
+          "metadesc":"Please Enter Meta Description",
+           "metaType":"Meta Type"
+         }
+      }
+    ]
+
+

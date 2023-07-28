@@ -1,0 +1,42 @@
+[
+      {
+        "pagetitle":"View Documents",
+        "tabList":[
+          {"tabName":"Upload","tabUrl":"../../upload","tabClass":"add d-none"},
+          {"tabName":"New Folder","tabUrl":"../../newfolder"}
+         
+                  
+                  ],
+        "utils":[
+         
+          {"utilName":"print"},
+         
+          {"utilName":"back"}
+         
+          ],
+        "messages":{
+          "successMsg":"New Letter Generated Successfully",
+          "updatesuccessMsg":"Updated Successfully",
+          "errorMsg":"Error in letter creation",
+          "fromname":"Please Select Form Name",
+          "lettername":"Please Enter Letter Name",
+          "effectivefrom":"Please Select Effective form date",
+          "effectiveto":"Please Enter Effective to date",    
+          "effectivefromto":"Effective to date must be grater then from date",  
+          "signtype":"Please Select sign Type",  
+          "lettercontent":"Please Enter Letter content",
+ "afterdata":"Enter After content",
+   "seldaysType":"Type",
+        "actionType":"Action Type" ,
+        "rsuccessMsg":"File retentioned  Successfully",
+        "trashwarningtype":"Files will be move to trash",
+        "tdeleteMsg":"Record has been trashed",
+        "selnewFolder":"New Folder",
+         "movesuccessMsg":"File Moved Successfully",
+        "moveerrorMsg":"Error in File Moveing"
+        
+         }
+      }
+    ]
+
+
