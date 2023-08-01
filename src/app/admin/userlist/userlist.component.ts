@@ -73,15 +73,17 @@ movefileName:any;
 folderHierarchy: any;
 loading:any=false;
 txtSearch:any;
-searchColList:any=["Name","Role","Email","Phone"]
+searchColList:any=["Name","Department","Role","Email","Phone"]
 searchselcteditems:any=[];
 namesarray:any=[];
 rolesarray:any=[];
 emailarray:any=[];
 phonearray:any=[];
 finalarray:any=[];
+deprtmentarray:any=[];
 finalobj: any = {
   'Name':this.namesarray,
+  'Department':this.deprtmentarray,
   'Role':this.rolesarray,
   'Email':this.emailarray,
   'Phone':this.phonearray
@@ -122,12 +124,17 @@ tablecollist=[
  }
 
  loadconfig() {
-   this.httpClient.get<any>(this.jsonurl).subscribe((data: any) => {
-     this.tablist = data[0].tabList;
-     this.utillist = data[0].utils
-     this.messaageslist = data[0].messages;
-     this.title = data[0].pagetitle;
-   })
+  this.httpClient.get<any>(this.jsonurl).subscribe({
+    next: (data) => {
+       this.tablist=data[0].tabList;
+         this.utillist=data[0].utils
+         this.messaageslist=data[0].messages; 
+         this.title = data[0].pagetitle;
+    },
+    error: (msg) => {
+      this.authService.directlogout();
+   }
+ })
  }
 
 
@@ -140,51 +147,51 @@ tablecollist=[
    let dataParam = {
     "searchfilter":searchitems
    };
-   this.commonserveice.getuserList(dataParam).subscribe((response: any) => {
-     let respData = response.RESPONSE_DATA;
-     let respToken = response.RESPONSE_TOKEN;
-
-     let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-     if(respToken == verifyToken){
-      let res:any = Buffer.from(respData,'base64'); 
-      let responseResult = JSON.parse(res)
+   this.commonserveice.getuserList(dataParam).subscribe({
+    next: (response) => {
+      let respData = response.RESPONSE_DATA;
+      let respToken = response.RESPONSE_TOKEN;
  
-      if (responseResult.status == 200) {
- 
+      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+      if(respToken == verifyToken){
+       let res:any = Buffer.from(respData,'base64'); 
+       let responseResult = JSON.parse(res)
+  
+       if (responseResult.status == 200) {
+  
+         this.loading=false;
+         this.userList = responseResult.result;
+       // console.log(this.userList) 
+  
+       }
+       if (responseResult.status == 400) {
+         this.loading=false;
+         this.userList = responseResult.result;
+       }
+       if (responseResult.status == 500) {
         this.loading=false;
         this.userList = responseResult.result;
-      // console.log(this.userList) 
- 
       }
-      if (responseResult.status == 400) {
+      else if(responseResult.status==501){
+          
+        this.authService.directlogout();
+      }
+      else{
         this.loading=false;
-        this.userList = responseResult.result;
+       
       }
-      if (responseResult.status == 500) {
-       this.loading=false;
-       this.userList = responseResult.result;
-     }
-     else if(responseResult.status==501){
-         
-       this.authService.directlogout();
-     }
-     else{
-       this.loading=false;
-      
-     }
-     }
-     else{
-       this.loading = false;
-       this.authService.directlogout();
-     }
-
-
-
-   },
-   (error:any) =>{
-    this.loading=false;
-    this.authService.directlogout();
-   })
+      }
+      else{
+        this.loading = false;
+        this.authService.directlogout();
+      }
+ 
+    },
+    error: (msg) => {
+      this.authService.directlogout();
+   }
+ })
+ 
 
  }
 //\\ ======================== // Load Data // ======================== //\\ 
@@ -225,6 +232,9 @@ setSearchParam(searchref:any,txtSearch:any){
 
        this.namesarray.push(txtSearch);
     }
+    else if(searchref =="Department"){
+      this.deprtmentarray.push(txtSearch)
+    }
     else if(searchref =="Role"){
       this.rolesarray.push(txtSearch)
     }
@@ -264,6 +274,13 @@ setSearchParam(searchref:any,txtSearch:any){
    //  this.namesarray.push(txtSearch);
 
   }
+    else if(searchkey =="Department"){
+    const index: number = this.deprtmentarray.indexOf(txtSearch);
+    if (index !== -1) {
+        this.deprtmentarray.splice(index, 1);
+    }   
+
+  }
   else if(searchkey =="Role"){
     const index: number = this.rolesarray.indexOf(txtSearch);
     if (index !== -1) {
@@ -292,47 +309,7 @@ setSearchParam(searchref:any,txtSearch:any){
   }
 
 
-  onSortClick(name:any,event:any) {
-   
-    let target = event.currentTarget,
-      classList = target.classList;
 
-
-    if (classList.contains('bi-arrow-up')) {
-      classList.remove('bi-arrow-up');
-      classList.add('bi-arrow-down');
-      this.sortDir=-1;
-    } else {
-      classList.add('bi-arrow-up');
-      classList.remove('bi-arrow-down');
-      this.sortDir=1;
-    }
-    this.sortArr(name);
-    
-    //this.sortArr('departmentName');
-  }
-
-  sortArr(colName:any){
-   
-   this.sortColumn = colName;
-   if (this.sortOrder == 'asc'){
-    this.sortOrder = 'desc';
-   }
-  else{
-    this.sortOrder = 'asc';
-  }
-  
-    
-    this.userList = this.userList.sort((a:any, b:any) => {
-      if (a[colName] < b[colName])
-        return this.sortOrder == 'asc' ? -1 : 1;
-      if (a[colName] > b[colName])
-        return this.sortOrder == 'asc' ? 1 : -1;
-      return 0;
-    })
-
-
-  }
 
 
 }

@@ -122,12 +122,17 @@ lockstatus:any;
     // Load Basic configuration of the page like tabs, messages, utils etc
     //=============================================================================
     loadconfig() {
-        this.httpClient.get < any > (this.jsonurl).subscribe((data: any) => {
-            this.tablist = data[0].tabList;
-            this.utillist = data[0].utils
-            this.messaageslist = data[0].messages;
-            this.title = data[0].pagetitle ;
-        })
+      this.httpClient.get<any>(this.jsonurl).subscribe({
+        next: (data) => {
+           this.tablist=data[0].tabList;
+             this.utillist=data[0].utils
+             this.messaageslist=data[0].messages; 
+             this.title = data[0].pagetitle;
+        },
+        error: (msg) => {
+          this.authService.directlogout();
+       }
+     })
     }
     //=============================================================================
     // Load Basic configuration of the page like tabs, messages, utils etc
@@ -154,7 +159,8 @@ lockstatus:any;
         this.pendingLoader=true;
        
         
-        this.dashboardServices.pendingFileLIst(dataParam).subscribe((response: any) => {
+        this.dashboardServices.pendingFileLIst(dataParam).subscribe({
+          next: (response) => {
             let respData = response.RESPONSE_DATA;
             let respToken = response.RESPONSE_TOKEN;
             let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
@@ -164,7 +170,7 @@ lockstatus:any;
               if (responseResult.status == 200) {
                   this.pendingLoader=false;
                   this.pendingDocList = responseResult.result;
-                  //console.log(this.pendingDocList)
+                 
               }
               else if ((responseResult.status == 400)) {
                 this.pendingLoader=false;
@@ -175,10 +181,7 @@ lockstatus:any;
                 }
               else {
                 this.pendingLoader=false;
-                Swal.fire({
-                  icon: 'error',
-                  text: this.commonserveice.langReplace(environment.somethingWrong)
-                });
+                this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
               }
             }
             else{
@@ -186,13 +189,13 @@ lockstatus:any;
             this.authService.directlogout();
             }
 
+          },
+          error: (msg) => {
+               this.authService.directlogout();
+         }
+       })
 
-     
-        },
-            (error: any) => {
-              this.pendingLoader=false;
-              this.authService.directlogout();
-            })
+
 
 
     }
@@ -200,35 +203,22 @@ lockstatus:any;
     // Pending Approval document List
     //=============================================================================  
 
-    //=============================================================================
-    // Get type of file
-    // Created by Bikash Kumar Panda on 12-Apr-2023
-    //=============================================================================  
-    getfiletype(filename:any){
-  
-        let icon:any;
-        let iconsGroups:any=environment.iconsGroups;
-         for(let i=0;i<iconsGroups.length;i++){
-         let filetype:any= iconsGroups[i].groups.includes(filename);
-           if(filetype==true){
-             icon=iconsGroups[i].name;
-           }
-          
-         }
-       return icon;
-     
-     }
-    //=============================================================================
-    // Get type of file
-    //============================================================================= 
+
 
     //=============================================================================
     // Take Action
     // Created by Bikash Kumar Panda on 12-Apr-2023
     //============================================================================= 
-    takeAction(id: any) {
+    takeAction(id: any, checkinstatus:any) {
+      if(!(checkinstatus == 2)){
         let encSchemeStr = this.encDec.encText(id.toString());
         this.route.navigate(['/workflow/takeaction', encSchemeStr]);
+      }
+      else{
+
+        this.commonserveice.swalfire('error',this.commonserveice.langReplace("Someone checked out the document")+'. '+this.commonserveice.langReplace("Document must check in before being taken action on")+".")
+       
+      }
     }
     //=============================================================================
     // Take Action
@@ -243,7 +233,9 @@ lockstatus:any;
             "fileId": fid,
             "url": fpath
         };
-        this.commonserveice.fileDownload(dataParam).subscribe((response: any) => {
+
+        this.commonserveice.fileDownload(dataParam).subscribe({
+          next: (response) => {
             let respData = response.RESPONSE_DATA;
             let respToken = response.RESPONSE_TOKEN;
             let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
@@ -268,10 +260,7 @@ lockstatus:any;
                   this.authService.directlogout();
                 }
                 else{
-                  Swal.fire({
-                    icon: 'error',
-                     text: this.commonserveice.langReplace(environment.somethingWrong)
-           });
+                  this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
                 }
             }
             else{
@@ -279,16 +268,12 @@ lockstatus:any;
             this.authService.directlogout();
             }
 
-
-
-
-            
-              
-        },
-            (error: any) => {
-
-              this.authService.directlogout();
-            })
+          },
+          error: (msg) => {
+               this.authService.directlogout();
+         }
+       })
+     
     }
     //=============================================================================
     // Download File
@@ -300,12 +285,10 @@ lockstatus:any;
     //============================================================================= 
     recentfilelist(fid: any, searchitems: any) {
 
-        let dataParam = {
-
-            "searchfilter": searchitems
-        };
+        let dataParam = {"searchfilter": searchitems,"mode":1};
         this.recentdocLoader=true;
-        this.dashboardServices.recentFiles(dataParam).subscribe((response: any) => {
+        this.dashboardServices.recentFiles(dataParam).subscribe({
+          next: (response) => {
             let respData = response.RESPONSE_DATA;
             let respToken = response.RESPONSE_TOKEN;
 
@@ -317,15 +300,12 @@ lockstatus:any;
               if (responseResult.status == 200) {
                   this.recentdocLoader=false;
                   this.recentlist = responseResult.result;
-                  //console.log(this.recentlist)
+                //  console.log(this.recentlist)
               }
              else if (responseResult.status == 400) {
                 this.recentdocLoader=false;
-                  Swal.fire({
-                      icon: 'error',
-                      text: responseResult.message,
-  
-                  });
+                this.commonserveice.swalfire('error',responseResult.message)
+                 
               }
               else if(responseResult.status==501){
           
@@ -333,24 +313,19 @@ lockstatus:any;
                 }
                  else {
                   this.recentdocLoader=false;
-                Swal.fire({
-                  icon: 'error',
-                  text: this.commonserveice.langReplace(environment.somethingWrong)
-                });
+                  this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
               }
             }
             else{
               this.recentdocLoader=false;
             this.authService.directlogout();
             }
-
-
-       
-        },
-            (error: any) => {
-              this.recentdocLoader=false;
-              this.authService.directlogout();  
-            })
+          },
+          error: (msg) => {
+               this.authService.directlogout();
+         }
+       })
+        
 
     }
     //=============================================================================
@@ -364,11 +339,9 @@ lockstatus:any;
     //============================================================================= 
     totalDocs() {
 
-        let dataParam = {
-
-            "mode": 1
-        };
-        this.dashboardServices.gettotalDocuments(dataParam).subscribe((response: any) => {
+        let dataParam = {"mode": 1};
+        this.dashboardServices.gettotalDocuments(dataParam).subscribe({
+          next: (response) => {
             let respData = response.RESPONSE_DATA;
             let respToken = response.RESPONSE_TOKEN;
             let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
@@ -386,33 +359,23 @@ lockstatus:any;
               }
               else if (responseResult.status == 400) {
   
-                  Swal.fire({
-                      icon: 'error',
-                      text: responseResult.message,
-  
-                  });
+                this.commonserveice.swalfire('error',responseResult.message)
               }
              
               else {
-                  Swal.fire({
-                      icon: 'error',
-                      text: this.commonserveice.langReplace(environment.somethingWrong)
-                    });
+                this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
               }
             }
             else{
               
             this.authService.directlogout();
             }
-
-
-
-          
-        },
-            (error: any) => {
-
-              this.authService.directlogout();
-            })
+          },
+          error: (msg) => {
+               this.authService.directlogout();
+         }
+       })
+      
 
     }
     //=============================================================================
@@ -426,11 +389,10 @@ lockstatus:any;
     //============================================================================= 
     totalFolders() {
 
-      let dataParam = {
+      let dataParam = { };
 
-         
-      };
-      this.dashboardServices.gettotalFolder(dataParam).subscribe((response: any) => {
+      this.dashboardServices.gettotalFolder(dataParam).subscribe({
+        next: (response) => {
           let respData = response.RESPONSE_DATA;
           let respToken = response.RESPONSE_TOKEN;
           let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
@@ -449,21 +411,14 @@ lockstatus:any;
             }
            else if (responseResult.status == 400) {
   
-                Swal.fire({
-                    icon: 'error',
-                    text: responseResult.message,
-  
-                });
+            this.commonserveice.swalfire('error',responseResult.message)
             }
             else if(responseResult.status==501){
           
               this.authService.directlogout();
             }
            else{
-            Swal.fire({
-              icon: 'error',
-               text: this.commonserveice.langReplace(environment.somethingWrong)
-     });
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
            }
           }
           else{
@@ -473,12 +428,13 @@ lockstatus:any;
 
 
 
-      
-      },
-          (error: any) => {
+        },
+        error: (msg) => {
+          this.authService.directlogout();
+       }
+     })
 
-            this.authService.directlogout();
-          })
+    
 
   }
   //=============================================================================
@@ -494,7 +450,9 @@ lockstatus:any;
 
          
       };
-      this.dashboardServices.totalSharedfiles(dataParam).subscribe((response: any) => {
+
+      this.dashboardServices.totalSharedfiles(dataParam).subscribe({
+        next: (response) => {
           let respData = response.RESPONSE_DATA;
           let respToken = response.RESPONSE_TOKEN;
           let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
@@ -511,21 +469,14 @@ lockstatus:any;
             }
             else if (responseResult.status == 400) {
   
-                Swal.fire({
-                    icon: 'error',
-                    text: responseResult.message,
-  
-                });
+              this.commonserveice.swalfire('error',responseResult.message)
             }
             else if(responseResult.status==501){
           
               this.authService.directlogout();
             }
             else {
-              Swal.fire({
-                  icon: 'error',
-                  text: this.commonserveice.langReplace(environment.somethingWrong)
-                });
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
             }
           }
           else{
@@ -533,15 +484,13 @@ lockstatus:any;
             this.authService.directlogout();
           }
 
+        },
+        error: (msg) => {
+          this.authService.directlogout();
+       }
+     })
 
-
-
-      
-      },
-          (error: any) => {
-
-            this.authService.directlogout();
-          })
+  
 
   }
   //=============================================================================
@@ -560,44 +509,47 @@ lockstatus:any;
      type:1
       };
       this.logLoader=true;
-  this.dashboardServices.recentactivitylog(dataParam).subscribe((response:any) => {
-    let respData = response.RESPONSE_DATA;
-    let respToken = response.RESPONSE_TOKEN;
-  
-    let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-    if(respToken == verifyToken){
-      let res:any = Buffer.from(respData,'base64'); 
-      let responseResult = JSON.parse(res)
-       
-        if (responseResult.status == 200) {
-          this.logLoader=false;
-        this.activitylist = responseResult.result;
-       // console.log(this.activitylist)
+      this.dashboardServices.recentactivitylog(dataParam).subscribe({
+        next: (response) => {
+
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
         
-        }
-        else if(responseResult.status==501){
-          
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if(respToken == verifyToken){
+            let res:any = Buffer.from(respData,'base64'); 
+            let responseResult = JSON.parse(res)
+             
+              if (responseResult.status == 200) {
+                this.logLoader=false;
+              this.activitylist = responseResult.result;
+            
+              
+              }
+              else if (responseResult.status == 400) {
+                this.logLoader=false;
+              }
+              else if(responseResult.status==501){
+                
+                this.authService.directlogout();
+              }
+              else{
+                this.logLoader=false;
+                this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+              }
+          }
+          else{
+            this.logLoader=false;
+            this.authService.directlogout();
+          }
+         
+
+        },
+        error: (msg) => {
           this.authService.directlogout();
-        }
-        else{
-          this.logLoader=false;
-          Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(environment.somethingWrong)
-            });
-        }
-    }
-    else{
-      this.logLoader=false;
-      this.authService.directlogout();
-    }
-   
-   
-  },
-  (error:any) =>{
-    this.logLoader=false;
-    this.authService.directlogout();
-  })
+       }
+     })
+
   
   
   }
@@ -637,106 +589,108 @@ viewAll(e:any){
      
       };
       this.logLoader=true;
-  this.dashboardServices.graphDetails(dataParam).subscribe((response:any) => {
-    let respData = response.RESPONSE_DATA;
-    let respToken = response.RESPONSE_TOKEN;
-    let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-        let responseResult = JSON.parse(res)
-         
-          if (responseResult.status == 200) {
-            this.logLoader=false;
-          let summarylist = responseResult.result;
-    
-    this.approvedfiles=summarylist.approvedFile;
-    this.pendingfiles=summarylist.pendingFile;
-    this.rejectfiles=summarylist.rerejectedFile;
-    setTimeout(()=>{ 
-            this.chartOptions = {
-        chart: {
-            backgroundColor: 'rgba(0,0,0,0)',
-            type: 'pie'
-        },
-        colors: ['#00bdab', '#ff6f6f', '#ffbc5a'],
-        accessibility: {
-            description: ''
-        },
-        title: {
-            text: ''
-        },
-        credits: {
-            enabled: false,
-        },
-    
-        tooltip: {
-            enable: false,
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                showInLegend: true,
-                cursor: 'pointer',
-                innerSize: '50%',
-                dataLabels: {
-                    format: '{point.percentage:.1f} %',
-                    enabled: true,
-                    color: 'black',
-                },
-    
-    
-            },
-        },
-        series: [{
-        
-            name: 'Documents',
-            data: [{
-                name: this.commonserveice.langReplace('Approved') ,
-                y: this.approvedfiles
-            }, {
-                name: this.commonserveice.langReplace('Reject') ,
-                y: this.rejectfiles 
-    
-            }, {
-                name: this.commonserveice.langReplace('Inprogress') ,
-                y: this.pendingfiles
-    
-            }]
-        }]
-    }  
-    },200)                         
-      
-    
-    
-    
-    
-    
-          }
-     
-          else if(responseResult.status==501){
-            
-            this.authService.directlogout();
-          }
-          else{
-            this.logLoader=false;
-            Swal.fire({
-                icon: 'error',
-                text: this.commonserveice.langReplace(environment.somethingWrong)
-              });
-          }
-      }
-      else{
-        this.logLoader=false;
-        this.authService.directlogout();
-      }
-   
-   
+      this.dashboardServices.graphDetails(dataParam).subscribe({
+        next: (response) => {
 
-  },
-  (error:any) =>{
-    this.logLoader=false;
-    this.authService.directlogout();
-  })
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+            if(respToken == verifyToken){
+              let res:any = Buffer.from(respData,'base64'); 
+              let responseResult = JSON.parse(res)
+               
+                if (responseResult.status == 200) {
+                  this.logLoader=false;
+                let summarylist = responseResult.result;
+          
+          this.approvedfiles=summarylist.approvedFile;
+          this.pendingfiles=summarylist.pendingFile;
+          this.rejectfiles=summarylist.rerejectedFile;
+          setTimeout(()=>{ 
+                  this.chartOptions = {
+              chart: {
+                  backgroundColor: 'rgba(0,0,0,0)',
+                  type: 'pie'
+              },
+              colors: ['#00bdab', '#ff6f6f', '#ffbc5a'],
+              accessibility: {
+                  description: ''
+              },
+              title: {
+                  text: ''
+              },
+              credits: {
+                  enabled: false,
+              },
+          
+              tooltip: {
+                  enable: false,
+              },
+              plotOptions: {
+                  pie: {
+                      allowPointSelect: true,
+                      showInLegend: true,
+                      cursor: 'pointer',
+                      innerSize: '50%',
+                      dataLabels: {
+                          format: '{point.percentage:.1f} %',
+                          enabled: true,
+                          color: 'black',
+                      },
+          
+          
+                  },
+              },
+              series: [{
+              
+                  name: 'Documents',
+                  data: [{
+                      name: this.commonserveice.langReplace('Approved') ,
+                      y: this.approvedfiles
+                  }, {
+                      name: this.commonserveice.langReplace('Reject') ,
+                      y: this.rejectfiles 
+          
+                  }, {
+                      name: this.commonserveice.langReplace('Inprogress') ,
+                      y: this.pendingfiles
+          
+                  }]
+              }]
+          }  
+          },200)                         
+            
+          
+          
+          
+          
+          
+                }
+                else if (responseResult.status == 400) {
+                  this.logLoader=false;
+                }
+                else if(responseResult.status==501){
+                  
+                  this.authService.directlogout();
+                }
+                else{
+                  this.logLoader=false;
+                  this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+                }
+            }
+            else{
+              this.logLoader=false;
+              this.authService.directlogout();
+            }
+
+        },
+        error: (msg) => {
+          this.authService.directlogout();
+       }
+     })
+
+
+
   
   
   }

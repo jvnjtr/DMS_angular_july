@@ -84,16 +84,18 @@ tablecollist=[
   }
   
   loadconfig(){
-    this.httpClient.get<any>(this.jsonurl).subscribe((data:any)=>
-     {
-      this.tablist=data[0].tabList;
-      this.utillist=data[0].utils
-      this.messaageslist=data[0].messages; 
-      this.title = data[0].pagetitle ;
-     },
-     (error:any) =>{
-      this.authService.directlogout();
-     })
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+   
    }
 
    reset(){
@@ -116,48 +118,43 @@ viewLog(userId:any,activityType:any,fromDate:any,toDate:any){
     "toDate":toDate
     };
     this.loading=true;
-this.commonserveice.activitylog(dataParam).subscribe((response:any) => {
-  let respData = response.RESPONSE_DATA;
-  let respToken = response.RESPONSE_TOKEN;
-  let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-        let responseResult = JSON.parse(res)
-         
-          if (responseResult.status == 200) {
-            this.loading=false;
-          this.loglist = responseResult.result;
-        //console.log(this.loglist)
-          }
-         else if (responseResult.status == 400) {
-            this.loading=false;
-            this.loglist=[];
-          }
-          else if(responseResult.status==501){
-              
-            this.authService.directlogout();
-          }
-          else{
-            this.loading=false;
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(environment.somethingWrong)
-      });
-          }
-      }
-      else{
-        this.loading = false;
-     this.authService.directlogout();
-      }
- 
- 
+    this.commonserveice.activitylog(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+            if(respToken == verifyToken){
+              let res:any = Buffer.from(respData,'base64'); 
+              let responseResult = JSON.parse(res)
+               
+                if (responseResult.status == 200) {
+                  this.loading=false;
+                this.loglist = responseResult.result;
+              //console.log(this.loglist)
+                }
+               else if (responseResult.status == 400) {
+                  this.loading=false;
+                  this.loglist=[];
+                }
+                else if(responseResult.status==501){
+                    
+                  this.authService.directlogout();
+                }
+                else{
+                  this.loading=false;
+                  this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+                }
+            }
+            else{
+              this.loading = false;
+           this.authService.directlogout();
+            }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
 
-},
-(error:any) =>{
-  this.loading=false;
-        
-  this.authService.directlogout();
-})
 
 
 }
@@ -201,90 +198,45 @@ onTableSizeChange(event: any): void {
     let dataParam = {
       "userId": ''
     };
-    this.commonserveice.getUserlist(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-     
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-        let responseResult = JSON.parse(res)
-  
-        if (responseResult.status == 200) {
-  
-          this.userlist = responseResult.result;
-  
-  
-        }
-        else if(responseResult.status==501){
-          
-          this.authService.directlogout();
+    this.commonserveice.getUserlist(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+       
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+          let responseResult = JSON.parse(res)
+    
+          if (responseResult.status == 200) {
+    
+            this.userlist = responseResult.result;
+    
+    
+          }
+          else if(responseResult.status==501){
+            
+            this.authService.directlogout();
+          }
+          else{
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+          }
         }
         else{
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(environment.somethingWrong)
-   });
+          this.loading = false;
+       this.authService.directlogout();
         }
-      }
-      else{
-        this.loading = false;
-     this.authService.directlogout();
-      }
-    
-    },
-    (error:any) =>{
-      
-      this.authService.directlogout();
-    })
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+
   }
   //\\ ======================== // get user list // ======================== //\\
   //\\ ======================== // Data sorting // ======================== //\\
 
 
-
-  onSortClick(name:any,event:any) {
-   
-    let target = event.currentTarget,
-      classList = target.classList;
-  
-  
-    if (classList.contains('bi-arrow-up')) {
-      classList.remove('bi-arrow-up');
-      classList.add('bi-arrow-down');
-      this.sortDir=-1;
-    } else {
-      classList.add('bi-arrow-up');
-      classList.remove('bi-arrow-down');
-      this.sortDir=1;
-    }
-    this.sortArr(name);
-    
-    //this.sortArr('departmentName');
-  }
-  
-  sortArr(colName:any){
-   
-   this.sortColumn = colName;
-   if (this.sortOrder == 'asc'){
-    this.sortOrder = 'desc';
-   }
-  else{
-    this.sortOrder = 'asc';
-  }
-  
-      
-    
-    this.loglist = this.loglist.sort((a:any, b:any) => {
-      if (a[colName] < b[colName])
-        return this.sortOrder == 'asc' ? -1 : 1;
-      if (a[colName] > b[colName])
-        return this.sortOrder == 'asc' ? 1 : -1;
-      return 0;
-    })
-  
-  
-  }
   
     //\\ ======================== // Data sorting // ======================== //\\
 

@@ -55,40 +55,41 @@ notingDetails(fileId:any){
     
     };
     this.loading=true;
-this.workFlowServices.getNotingList(dataParam).subscribe((response:any) => {
-  let respData = response.RESPONSE_DATA;
-  let respToken = response.RESPONSE_TOKEN;
-
-  let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-  if(respToken == verifyToken){
-    let res:any = Buffer.from(respData,'base64'); 
-    let responseResult = JSON.parse(res)
-     
-      if (responseResult.status == 200) {
-        this.loading=false;
-        this.notingList = responseResult.result;
-    //  console.log(this.notingList)
+    this.workFlowServices.getNotingList(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
       
-      }
-      if (responseResult.status == 400) {
-        this.loading=false;
-        this.notingList = responseResult.result;
-      }
-      else if(responseResult.status==501){
-          
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+          let responseResult = JSON.parse(res)
+           
+            if (responseResult.status == 200) {
+              this.loading=false;
+              this.notingList = responseResult.result;
+          //  console.log(this.notingList)
+            
+            }
+            if (responseResult.status == 400) {
+              this.loading=false;
+              this.notingList = responseResult.result;
+            }
+            else if(responseResult.status==501){
+                
+              this.authService.directlogout();
+            }
+        }
+        else{
+          this.loading = false;
+          this.authService.directlogout();
+        }
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      }
-  }
-  else{
-    this.loading = false;
-    this.authService.directlogout();
-  }
- 
+     }
+   })
 
-} ,(error:any) =>{
-  
-  this.authService.directlogout();
-})
 
  }
 //\\ ======================== // File details // ======================== //\\

@@ -46,7 +46,8 @@ previewfileid:any;
   {"name":"Document No","cname":"fileRefNo","sortable":false },
   {"name":"Document Name","cname":"fileName","sortable":false },
   {"name":"Activity Performed","cname":"activityPerformed","sortable":false },
-  {"name":"Created By","cname":"createdBy","sortable":true }
+  {"name":"Created By","cname":"createdBy","sortable":true },
+  {"name":"Created On","cname":"createdBy","sortable":true },
  ]
 
 
@@ -71,8 +72,9 @@ loadFileLogs(fid:any){
     "fileId": fid
   
   };
-  this.loading=true;
-  this.commonserveice.getfileLogs(dataParam).subscribe((response: any) => {
+this.loading=true;
+this.commonserveice.getfileLogs(dataParam).subscribe({
+  next: (response) => {
     let respData = response.RESPONSE_DATA;
     let respToken = response.RESPONSE_TOKEN;
 
@@ -88,11 +90,8 @@ loadFileLogs(fid:any){
        }
       else if (responseResult.status == 400) {
         this.loading=false;
-        Swal.fire({
-          icon: 'error',
-          text: responseResult.message,
-  
-        });
+     
+        this.commonserveice.swalfire('error',responseResult.message)
         //this.filevesions = responseResult.result;
       }
       else if(responseResult.status==501){
@@ -101,10 +100,7 @@ loadFileLogs(fid:any){
       }
       else{
         this.loading=false;
-        Swal.fire({
-          icon: 'error',
-           text: this.commonserveice.langReplace(environment.somethingWrong)
-  });
+        this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
   
       }
     }
@@ -113,14 +109,13 @@ loadFileLogs(fid:any){
       this.authService.directlogout();
     }
 
-
-
-   
   },
-  (error:any) =>{
-    this.loading=false;
-   this.authService.directlogout();
-  })
+  error: (msg) => {
+    this.authService.directlogout();
+ }
+})
+
+
 }
  //\\ ======================== // GEt file versions // ======================== //\\ 
   //\\ ======================== // Download File // ======================== //\\ 
@@ -129,51 +124,49 @@ loadFileLogs(fid:any){
       "fileId": fid,
       "logId":logId
     };
-    this.commonserveice.fileDownloadVer(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-        let responseResult = JSON.parse(res)
+    this.commonserveice.fileDownloadVer(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
   
-      if (responseResult.status == 200) {
-  
-        
-        this.downloaditem = responseResult.result;
-        this.downloadlink = this.downloaditem.filePath;
-     // //console.log(this.downloadlink)
-        let link: any = document.createElement("a");
-        link.download = this.downloadlink;
-        link.href = this.downloadlink;
-        link.target = "_blank";
-        link.click();
-        
-      }
-      else if(responseResult.status==501){
-        
-        this.authService.directlogout();
-      }
-      else{
-        Swal.fire({
-          icon: 'error',
-           text: this.commonserveice.langReplace(environment.somethingWrong)
- });
-      }
-      }
-      else{
-        this.loading = false;
-        this.authService.directlogout();
-      }
-
-
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+          let responseResult = JSON.parse(res)
     
-    },
-    (error:any) =>{
-      
-      this.authService.directlogout();
-    })
+        if (responseResult.status == 200) {
+    
+          
+          this.downloaditem = responseResult.result;
+          this.downloadlink = this.downloaditem.filePath;
+       // //console.log(this.downloadlink)
+          let link: any = document.createElement("a");
+          link.download = this.downloadlink;
+          link.href = this.downloadlink;
+          link.target = "_blank";
+          link.click();
+          
+        }
+        else if(responseResult.status==501){
+          
+          this.authService.directlogout();
+        }
+        else{
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+        }
+        }
+        else{
+          this.loading = false;
+          this.authService.directlogout();
+        }
+  
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+
+  
   }
   //\\ ======================== // Download File // ======================== //\\ 
 
@@ -218,73 +211,8 @@ loadpreview(fileid:any,fileType:any,logId:any,filePath:any,lockStatus:any)
    }
    //\\ ======================== // Get file Type // ======================== //\\
 
-      //\\ ======================== // Data sorting // ======================== //\\
 
-
-
-      onSortClick(name:any,event:any) {
-   
-        let target = event.currentTarget,
-          classList = target.classList;
       
-      
-        if (classList.contains('bi-arrow-up')) {
-          classList.remove('bi-arrow-up');
-          classList.add('bi-arrow-down');
-          this.sortDir=-1;
-        } else {
-          classList.add('bi-arrow-up');
-          classList.remove('bi-arrow-down');
-          this.sortDir=1;
-        }
-        this.sortArr(name);
-        
-        //this.sortArr('departmentName');
-      }
-      
-      sortArr(colName:any){
-       
-       this.sortColumn = colName;
-       if (this.sortOrder == 'asc'){
-        this.sortOrder = 'desc';
-       }
-      else{
-        this.sortOrder = 'asc';
-      }
-      
-          
-        
-        // this.filevesions = this.filevesions.sort((a:any, b:any) => {
-        //   if (a[colName] < b[colName])
-        //     return this.sortOrder == 'asc' ? -1 : 1;
-        //   if (a[colName] > b[colName])
-        //     return this.sortOrder == 'asc' ? 1 : -1;
-        //   return 0;
-        // })
-      
-        this.filevesions = this.filevesions.sort((a: any, b: any) => {
-     
-          if(this.sortOrder == 'asc'){
-            return a[colName].localeCompare(b[colName], 'en', { numeric: true });
-          }
-          else{
-            return b[colName].localeCompare(a[colName], 'en', { numeric: true });
-          }
-       
-        })
-      }
-      
-        //\\ ======================== // Data sorting // ======================== //\\
-        formatBytes(bytes:any, decimals:any) {
-          if (!+bytes) return '0 Bytes'
-        
-          const k = 1024
-          const dm = decimals < 0 ? 0 : decimals
-          const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-        
-          const i = Math.floor(Math.log(bytes) / Math.log(k))
-        
-          return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-        }
+  
       
 }

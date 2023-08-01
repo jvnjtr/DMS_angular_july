@@ -68,7 +68,7 @@ export class NewfolderComponent implements OnInit {
     {label: 'Create Folder'},
     {label: 'Delete'},
     {label: 'Rename'},
-    {label: 'Archive'},
+    
     {label: 'WorkFlow'},
     {label: 'Move to folder'}
   
@@ -149,18 +149,18 @@ txtDepartmentName:any;
   }
   //\\ ======================== // Config // ======================== //\\
   loadconfig() {
-    this.httpClient.get<any>(this.jsonurl).subscribe((data: any) => {
-      this.tablist = data[0].tabList;
-      this.utillist = data[0].utils
-      this.messaageslist = data[0].messages;
-      this.title = data[0].pagetitle ;
-    },
-    (error:any) =>{
-      Swal.fire({
-        icon: 'error',
-        text: error
-      });
-    })
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+   
   }
 //\\ ======================== // Config // ======================== //\\
 getDesignation(uderid:any){
@@ -169,49 +169,45 @@ getDesignation(uderid:any){
     
    
   };
-this.commonserveice.getDesignation(dataParam).subscribe((response:any) => {
-  let respData = response.RESPONSE_DATA;
-  let respToken = response.RESPONSE_TOKEN;
- 
 
-  let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res : any = { 'status': 0, 'result': {} }; 
- 
-        res = Buffer.from(respData,'base64'); 
-        let responseResult= JSON.parse(res)
-      
-        
-         // console.log(this.designationid)
-          if (responseResult.status == 200) {
-            this.designationid=responseResult.result[0].desgId;
-          }
-          else if(responseResult.status==501){
-              
-            this.authService.directlogout();
-          }
-         else{
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(environment.somethingWrong)
-      });
-         }
-      }
-      else{
-        this.loading = false;
-        Swal.fire({
-          icon: 'error',
-          text:this.commonserveice.langReplace(environment.invalidResponse)
+  this.commonserveice.getDesignation(dataParam).subscribe({
+    next: (response) => {
+      let respData = response.RESPONSE_DATA;
+      let respToken = response.RESPONSE_TOKEN;
+     
+    
+      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if(respToken == verifyToken){
+            let res : any = { 'status': 0, 'result': {} }; 
+     
+            res = Buffer.from(respData,'base64'); 
+            let responseResult= JSON.parse(res)
           
-        });
-      }
-},
-(error:any) =>{
-  Swal.fire({
-          icon: 'error',
-          text:this.commonserveice.langReplace(environment.errorApiResponse)
-});
-})
+            
+             // console.log(this.designationid)
+              if (responseResult.status == 200) {
+                this.designationid=responseResult.result[0].desgId;
+              }
+              else if(responseResult.status==501){
+                  
+                this.authService.directlogout();
+              }
+             else{
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+             }
+          }
+          else{
+            this.loading = false;
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.invalidResponse))
+            
+          }
+    },
+    error: (msg) => {
+      this.authService.directlogout();
+   }
+ })
+
+
 }
 
   //\\ ======================== // get Folders // ======================== //\\
@@ -219,57 +215,51 @@ this.commonserveice.getDesignation(dataParam).subscribe((response:any) => {
     let dataParam = {
       "folderId": '0',
     };
-    this.commonserveice.getFolders(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
 
+    this.commonserveice.getFolders(dataParam).subscribe({
+      next: (response) => {     let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+  
+        
+        if(respToken == verifyToken){
+          let res: any = { 'status': 0, 'result': {} };
+  
+  
+  
+  
+          res = Buffer.from(respData,'base64'); 
+          let responseResult= JSON.parse(res)
       
-      if(respToken == verifyToken){
-        let res: any = { 'status': 0, 'result': {} };
-
-
-
-
-        res = Buffer.from(respData,'base64'); 
-        let responseResult= JSON.parse(res)
-    
-    
-    
-          if (responseResult.status == '200') {
-            this.folderlist = responseResult.result;
-            for(let i=0;i<responseResult.result.length;i++){
-              this.rows.push(responseResult.result[i]);
+      
+      
+            if (responseResult.status == '200') {
+              this.folderlist = responseResult.result;
+              for(let i=0;i<responseResult.result.length;i++){
+                this.rows.push(responseResult.result[i]);
+              }
+              this.temp=this.rows;
+           //  console.log(this.temp);
             }
-            this.temp=this.rows;
-         //  console.log(this.temp);
+            else if(responseResult.status==501){
+              
+              this.authService.directlogout();
+            }
+          else{
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
           }
-          else if(responseResult.status==501){
-            
-            this.authService.directlogout();
-          }
-        else{
-          Swal.fire({
-            icon: 'error',
-             text: this.commonserveice.langReplace(environment.somethingWrong)
-    });
         }
-      }
-      else{
-        this.loading = false;
-        Swal.fire({
-          icon: 'error',
-           text:this.commonserveice.langReplace(environment.invalidResponse)
+        else{
+          this.loading = false;
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.invalidResponse))
+         
+        }},
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
 
-        });
-      }
- },
-    (error:any) =>{
-      Swal.fire({
-        icon: 'error',
-         text:this.commonserveice.langReplace(environment.errorApiResponse)
-});
-    })
+
   }
   //\\ ======================== // get Folders // ======================== //\\
   showdubfolder(folderId:any,e:any){
@@ -283,66 +273,9 @@ this.commonserveice.getDesignation(dataParam).subscribe((response:any) => {
     let dataParam = {
       "parentFolderId": parentfolderid,
     };
-    this.commonserveice.getParentwiseFolders(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res: any = { 'status': 0, 'result': {} };
 
-        res = Buffer.from(respData,'base64'); 
-        let responseResult= JSON.parse(res)
-    
-    
-    
-          if (responseResult.status == '200') {
-            this.folderlistItmes = responseResult.result;
-    
-          
-    
-           // console.log(responseResult.result);
-           // console.log(this.rows);
-          }
-          else if(responseResult.status==501){
-            
-            this.authService.directlogout();
-          }
-        else{
-          Swal.fire({
-            icon: 'error',
-             text: this.commonserveice.langReplace(environment.somethingWrong)
-    });
-        }
-      }
-      else{
-        this.loading = false;
-        Swal.fire({
-          icon: 'error',
-           text:this.commonserveice.langReplace(environment.invalidResponse)
-
-        });
-      }
-
-     
-
-
-    },
-    (error:any) =>{
-      Swal.fire({
-        icon: 'error',
-         text:this.commonserveice.langReplace(environment.errorApiResponse)
-});
-    })
-  }
- //\\ ======================== // get Parent Folder wise data // ======================== //\\
- 
-    //\\ ======================== // get Department list wise data // ======================== //\\
-    getDepartmentList() {
-      let dataParam = {
-        "deptId": "",
-      };
-      this.commonserveice.loadDepartment(dataParam).subscribe((response: any) => {
-        let respData = response.RESPONSE_DATA;
+    this.commonserveice.getParentwiseFolders(dataParam).subscribe({
+      next: (response) => {   let respData = response.RESPONSE_DATA;
         let respToken = response.RESPONSE_TOKEN;
         let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
         if(respToken == verifyToken){
@@ -354,34 +287,79 @@ this.commonserveice.getDesignation(dataParam).subscribe((response:any) => {
       
       
             if (responseResult.status == '200') {
-              this.departmentsList = responseResult.result;
+              this.folderlistItmes = responseResult.result;
       
             
       
-           
+             // console.log(responseResult.result);
+             // console.log(this.rows);
             }
             else if(responseResult.status==501){
-            
+              
               this.authService.directlogout();
             }
           else{
-            Swal.fire({
-              icon: 'error',
-               text: this.commonserveice.langReplace(environment.somethingWrong)
-     });
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
           }
         }
         else{
           this.loading = false;
-          this.authService.directlogout();
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.invalidResponse))
         }
-   
-       
-  
-      },
-      (error:any) =>{
+  },
+      error: (msg) => {
         this.authService.directlogout();
-      })
+     }
+   })
+
+
+
+  }
+ //\\ ======================== // get Parent Folder wise data // ======================== //\\
+ 
+    //\\ ======================== // get Department list wise data // ======================== //\\
+    getDepartmentList() {
+      let dataParam = {
+        "deptId": "",
+      };
+      this.commonserveice.loadDepartment(dataParam).subscribe({
+        next: (response) => {   let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if(respToken == verifyToken){
+            let res: any = { 'status': 0, 'result': {} };
+    
+            res = Buffer.from(respData,'base64'); 
+            let responseResult= JSON.parse(res)
+        
+        
+        
+              if (responseResult.status == '200') {
+                this.departmentsList = responseResult.result;
+        
+              
+        
+             
+              }
+              else if(responseResult.status==501){
+              
+                this.authService.directlogout();
+              }
+            else{
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+            }
+          }
+          else{
+            this.loading = false;
+            this.authService.directlogout();
+          }},
+        error: (msg) => {
+             this.authService.directlogout();
+       }
+     })
+
+
+      
     }
    //\\ ======================== // get Department list wise data // ======================== //\\
    deptChange(deptid:any){
@@ -396,59 +374,62 @@ this.commonserveice.getDesignation(dataParam).subscribe((response:any) => {
       "roleId": '0',
       "deptId": deptId
     };
-    this.commonserveice.getRoles(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res: any = { 'status': 0, 'result': {} };
 
-        res = Buffer.from(respData,'base64'); 
-        let responseResult= JSON.parse(res)
+    this.commonserveice.getRoles(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res: any = { 'status': 0, 'result': {} };
+  
+          res = Buffer.from(respData,'base64'); 
+          let responseResult= JSON.parse(res)
+      
     
-  
-        if (responseResult.status == 200) {
-          let result = responseResult.result;
-          for (let i = 0; i < result.length; i++) {
-            let obj: any = {};
-            obj['roleName'] = result[i].roleName;
-            obj['roleId'] = result[i].roleId;
-            obj['checked'] = false;
-            obj['permission'] = [
-              {label: 'Read', selected: false},
-              {label: 'Write', selected: false},
-              {label: 'Download', selected: false},
-              {label: 'Create Folder', selected: false},
-              {label: 'Delete', selected: false},
-              {label: 'Rename', selected: false},
-              {label: 'Archive', selected: false},
-              {label: 'WorkFlow', selected: false},
-              {label: 'Move to folder', selected: false}
-            ];
-  
+          if (responseResult.status == 200) {
+            let result = responseResult.result;
+            for (let i = 0; i < result.length; i++) {
+              let obj: any = {};
+              obj['roleName'] = result[i].roleName;
+              obj['roleId'] = result[i].roleId;
+              obj['checked'] = false;
+              obj['permission'] = [
+                {label: 'Read', selected: false},
+                {label: 'Write', selected: false},
+                {label: 'Download', selected: false},
+                {label: 'Create Folder', selected: false},
+                {label: 'Delete', selected: false},
+                {label: 'Rename', selected: false},
+               
+                {label: 'WorkFlow', selected: false},
+                {label: 'Move to folder', selected: false}
+              ];
+    
+             
+              this.rolelist.push(obj);
+              // {label: 'Archive', selected: false},
+            }
            
-            this.rolelist.push(obj);
-         
+         //console.log(this.rolelist)
           }
-         
-       //console.log(this.rolelist)
+          else if(responseResult.status==501){
+            
+            this.authService.directlogout();
+          }
         }
-        else if(responseResult.status==501){
-          
+        else{
+          this.loading = false;
           this.authService.directlogout();
         }
-      }
-      else{
-        this.loading = false;
+        
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      }
-      
-     
+     }
+   })
 
-    },
-    (error:any) =>{
-      this.authService.directlogout();
-    })
+   
   }
   //\\ ======================== // Get Roles // ======================== //\\
 
@@ -469,7 +450,25 @@ this.commonserveice.getDesignation(dataParam).subscribe((response:any) => {
  
   }
   checkchanged(e:any,i:any,pi:any){
-    this.rolelist[i].permission[pi].selected= e.target.checked;
+  
+    if(e.target.checked == true){
+
+      for(let j=0;j<this.rolelist[i].permission.length;j++ ){
+         this.rolelist[i].permission[pi].selected=e.target.checked;
+         this.rolelist[i].checked=true;
+       }
+    
+   }
+   else{
+     $('#rolerow_'+i).find('.roleselectAll').prop('checked',false);    
+       for(let j=0;j<this.rolelist[i].permission.length;j++ ){
+         this.rolelist[i].permission[pi].selected=e.target.checked;
+         this.rolelist[i].checked=false;
+    }
+   
+   }
+
+ //   this.rolelist[i].permission[pi].selected= e.target.checked;
 
    let totalCheckbox:any = document.querySelectorAll('#rolerow_'+i+' .permissionChk').length;
    let totalChecked:any = document.querySelectorAll('#rolerow_'+i+' .permissionChk:checked').length;
@@ -504,37 +503,52 @@ else{
 
 for(let j=0;j<this.rolelist[i].permission.length;j++ ){
 this.rolelist[i].permission[j].selected=e.target.checked
-
+this.rolelist[i].checked=true;
 }
   }
   else{
     $('#rolerow_'+i).find('.chkrole').prop('checked',false);    
 for(let j=0;j<this.rolelist[i].permission.length;j++ ){
 this.rolelist[i].permission[j].selected=e.target.checked
-
+this.rolelist[i].checked=false;
 }
   }
 
 
 }
   //\\ ======================== // Folder Rolewise  changes // ======================== //\\
+  
   frolechange(e:any,i:any){
     if(e.target.checked == true){
       for(let j=0;j<this.rolewisepermissions[i].permission.length;j++ ){
         this.rolewisepermissions[i].permission[0].selected=e.target.checked
-      
+        this.rolewisepermissions[i].checked=true;
       }
      }
     else{
       $('#rolerow_'+i).find('.roleselectAll').prop('checked',false);    
         for(let j=0;j<this.rolewisepermissions[i].permission.length;j++ ){
           this.rolewisepermissions[i].permission[j].selected=e.target.checked
-
+          this.rolewisepermissions[i].checked=false;
         }
             }
 
 }
  fcheckchanged(e:any,i:any,pi:any){
+
+  if(e.target.checked == true){
+   
+      this.rolewisepermissions[i].checked=true;
+    
+   }
+  else{
+    $('#rolerow_'+i).find('.roleselectAll').prop('checked',false);    
+   
+        this.rolewisepermissions[i].checked=false;
+      
+          }
+
+
     this.rolewisepermissions[i].permission[pi].selected= e.target.checked;
 
    let totalCheckbox:any = document.querySelectorAll('#rolerow_'+i+' .permissionChk').length;
@@ -553,6 +567,7 @@ else{
  if(totalChecked == 0) {
   
    $('#rolerow_'+i).find('.chkrole').prop('checked',false);
+ 
  } 
  else{
    $('#rolerow_'+i).find('.roleselectAll').prop('checked',false);
@@ -570,18 +585,18 @@ else{
 
 for(let j=0;j<this.rolewisepermissions[i].permission.length;j++ ){
   this.rolewisepermissions[i].permission[j].selected=e.target.checked
-
+  this.rolewisepermissions[i].checked=true;
 }
     }
     else{
       $('#rolerow_'+i).find('.chkrole').prop('checked',false);    
 for(let j=0;j<this.rolewisepermissions[i].permission.length;j++ ){
   this.rolewisepermissions[i].permission[j].selected=e.target.checked
-
+  this.rolewisepermissions[i].checked=false;
 }
     }
 
- 
+
   } 
 
 
@@ -613,10 +628,10 @@ for(let j=0;j<this.rolewisepermissions[i].permission.length;j++ ){
         if (rolechecked == false || typeof (rolechecked) == undefined || rolechecked == null) {
 
           // alert(1)
-          Swal.fire({
-            icon: 'error',
-            text: roleName + ' ' + this.messaageslist.chkrolename,
-          });
+
+         
+          this.commonserveice.swalfire('error',roleName + ' ' + this.messaageslist.chkrolename)
+          
           validationStatus = false;
           break;
 
@@ -633,11 +648,9 @@ for(let j=0;j<this.rolewisepermissions[i].permission.length;j++ ){
            
           }
         if(countarray.length == 0){
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace("Please select one permission type")
-           
-          });
+        
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace("Please select one permission type"))
+          
           validationStatus = false;
           break;
         }
@@ -750,17 +763,20 @@ crateFolder() {
 
     }
 
+      const specialChars = /[`!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~]/;
+
+   
+    //  return specialChars.test(str);
+
+
     if (!this.vldChkLst.selectDropdown(parentfolder,this.commonserveice.langReplace(this.messaageslist.parentfolder),'parentFId')) {
      // document.getElementById('parentFId')?.focus();
     }
     else if (!this.vldChkLst.blankCheck(foldername,this.commonserveice.langReplace(this.messaageslist.foldername),'txtfoldername')) {
    }
-    else if (!this.vldChkLst.containsSpecialChars(foldername)) {
-
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace('Special Char Not allowed in foldername')
-      });
+    else if (specialChars.test(foldername)) {
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace('Special Char Not allowed in foldername'))
+   
     }
 
     else if (!this.vldChkLst.blankCheck(allowSize,this.commonserveice.langReplace(this.messaageslist.allowsize),'foldersize')) {
@@ -785,11 +801,8 @@ crateFolder() {
 
   
     else if ((parentfolder == 1) && (this.selectroleList.length == 0)) {
-
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace(this.messaageslist.selectRole),
-      });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.messaageslist.selectRole))
+   
     }
     else if ((parentfolder == 1) && (!this.validaterolebased())) {
  }
@@ -836,103 +849,92 @@ crateFolder() {
         "archieveDate": ''
       }
 
-   
-
-      this.commonserveice.createFolders(forlderParams).subscribe((response: any) => {
-        let respData = response.RESPONSE_DATA;
-        let respToken = response.RESPONSE_TOKEN;
-        //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
-        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        if(respToken == verifyToken){
-          let res:any = Buffer.from(respData,'base64'); 
-          let responseResult= JSON.parse(res)
-      
-      
-              if (responseResult.status == 200) {
-                Swal.fire({
-      
-                  text: this.commonserveice.langReplace(this.messaageslist.successMsg),
-                  icon: 'success',
-                  confirmButtonColor: '#3085d6',
-                  confirmButtonText: 'Ok'
-                }).then((result) => {
-      
-                  this.getFolders();
-                  this.resetform();
-                  this.route.navigateByUrl('/admin/newfolder')
-                  window.location.reload()
-                  //this.getFolders()
-                })
-      
-      
-      
-              }
-              else if (responseResult.status == 202) {
-      
-      
-                Swal.fire({
-      
-                  text: this.commonserveice.langReplace(this.messaageslist.updatesuccessMsg),
-                  icon: 'success',
-                  confirmButtonColor: '#3085d6',
-                  confirmButtonText: 'Ok'
-                }).then((result) => {
-      
-                  this.getFolders();
-                  this.resetform();
-                  window.location.reload()
-                  this.route.navigateByUrl('/admin/newfolder');
-                 
-                })
-      
-      
-      
-              }
-              else if(responseResult.status == 400){
-      
-                
-                Swal.fire({
-                  icon: 'error',
-                  text:responseResult.message,
+      this.commonserveice.createFolders(forlderParams).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
+          //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if(respToken == verifyToken){
+            let res:any = Buffer.from(respData,'base64'); 
+            let responseResult= JSON.parse(res)
+        
+        
+                if (responseResult.status == 200) {
+                  Swal.fire({
+        
+                    text: this.commonserveice.langReplace(this.messaageslist.successMsg),
+                    icon: 'success',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok'
+                  }).then((result) => {
+        
+                    this.getFolders();
+                    this.resetform();
+                    this.route.navigateByUrl('/admin/newfolder')
+                    window.location.reload()
+                    //this.getFolders()
+                  })
+        
+        
+        
+                }
+                else if (responseResult.status == 202) {
+        
+        
+                  Swal.fire({
+        
+                    text: this.commonserveice.langReplace(this.messaageslist.updatesuccessMsg),
+                    icon: 'success',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok'
+                  }).then((result) => {
+        
+                    this.getFolders();
+                    this.resetform();
+                    window.location.reload()
+                    this.route.navigateByUrl('/admin/newfolder');
+                   
+                  })
+        
+        
+        
+                }
+                else if(responseResult.status == 400){
+                  this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
                   
-                });
-      
-            
-               }
-               else if(responseResult.status == 401){
-      
-                
-                Swal.fire({
-                  icon: 'error',
-                  text:responseResult.message
-                  
-                });
-      
-            
-               }
-               else if(responseResult.status==501){
+               
+        
               
-                this.authService.directlogout();
-              }
-             else{
-              Swal.fire({
-                icon: 'error',
-                 text: this.commonserveice.langReplace(environment.somethingWrong)
-       });
-      
-             }
-        }
-        else{
-          this.loading = false;
-          this.authService.directlogout();
-        }
-      
+                 }
+                 else if(responseResult.status == 401){
+        
+                  this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+               
+        
+              
+                 }
+                 else if(responseResult.status==501){
+                
+                  this.authService.directlogout();
+                }
+               else{
+                this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+        
+        
+               }
+          }
+          else{
+            this.loading = false;
+            this.authService.directlogout();
+          }
+        
+        },
+        error: (msg) => {
+             this.authService.directlogout();
+       }
+     })
 
-      },
-      (error:any) =>{
-       
-        this.authService.directlogout();
-      })
 
 
 
@@ -977,170 +979,166 @@ crateFolder() {
       "folderId": this.folderId,
     };
     this.loading=true;
-    this.commonserveice.getFoldersSingle(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-        let responseResult= JSON.parse(res)
-    
-    
-          if (responseResult.status == '200') {
-          
-            let folderDetails = responseResult.result;
-    
-    //console.log(folderDetails)
-            this.selParentFolderName = folderDetails[0].parentFolderId;
-            this.txtFolderName = folderDetails[0].folderName;
-            this.selSizeType = folderDetails[0].folderSizeType;
-            this.txtAllowSize = Math.round(folderDetails[0].folderSize);
-            this.txtAllowFileSize=Math.round(folderDetails[0].allowedFileSize);
-            this.selFileSizeType= folderDetails[0].allowedFileSizeType;
-    
-            // this.selDepartmentName= folderDetails[0].departmentId;
-             this.txtDepartmentName=folderDetails[0].departmentName;
-             this.selDepartmentName=folderDetails[0].departmentId ? folderDetails[0].departmentId : '0';
-    
-            let permissions = folderDetails[0].folderPermission;
-            let permissiondata = permissions[0];
-           
-           // console.log(permissiondata)
-    
-    if(this.selParentFolderName == 1){
-            setTimeout(() => {
-    
-            let selectIfElement: any = document.getElementById("seldept");
-    
-    
-            if (selectIfElement != null || selectIfElement != undefined) {
-              selectIfElement.dispatchEvent(
-                new Event("change")
-    
-    
-              );
-    
-    
-    
-            }
-            },500)
-      //alert(this.selParentFolderName)
-    
-    
-    if (permissiondata.rolebased.length > 0) {
-      this.rdoPermissiontype = "1";
-      setTimeout(() => {
-       // alert(1);
-       let rolebased = permissiondata.rolebased;
-     
-              let selectIfElement: any = document.getElementById("rdoPermissiontype" + this.rdoPermissiontype);
-    
-    
-                if (selectIfElement != null || selectIfElement != undefined) {
-                  selectIfElement.dispatchEvent(
-                    new Event("click")
-    
-                  );
-                }
-    
-             setTimeout(() => {
-    
-                  let roleMap: any = {
-                    get(roleId: any): any {
-                      return this[roleId];
-                    },
-                    set(rolesList: any) {
-                      this[rolesList.roleId] = rolesList;
-                    }
-                  };
-    
-    
-                  rolebased.forEach((rolesList: any) => {
-                    roleMap.set(rolesList);
-                  });
-    
- 
-                  this.rolelist.forEach((rolesList: any,i:any) => {
-                   
-                    if (roleMap.get(rolesList.roleId) && (rolesList.roleId == roleMap.get(rolesList.roleId).roleId)) {
-                      rolesList.checked = roleMap.get(rolesList.roleId).checked;
-                      
-                      rolesList.permission = roleMap.get(rolesList.roleId).permission;
-                     
-                    }
-                    setTimeout(() => {
-                    let totalCheckbox:any = document.querySelectorAll('#rolerow_'+i+' .permissionChk').length;
-                      let totalChecked:any = document.querySelectorAll('#rolerow_'+i+' .permissionChk:checked').length;
-                  
-                      if(totalCheckbox == totalChecked) {
-                      
-                        $('#rolerow_'+i).find('.roleselectAll').prop('checked',true);
+    this.commonserveice.getFoldersSingle(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+  
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+          let responseResult= JSON.parse(res)
+      
+      
+            if (responseResult.status == '200') {
+            
+              let folderDetails = responseResult.result;
+      
+      //console.log(folderDetails)
+              this.selParentFolderName = folderDetails[0].parentFolderId;
+              this.txtFolderName = folderDetails[0].folderName;
+              this.selSizeType = folderDetails[0].folderSizeType;
+              this.txtAllowSize = Math.round(folderDetails[0].folderSize);
+              this.txtAllowFileSize=Math.round(folderDetails[0].allowedFileSize);
+              this.selFileSizeType= folderDetails[0].allowedFileSizeType;
+      
+              // this.selDepartmentName= folderDetails[0].departmentId;
+               this.txtDepartmentName=folderDetails[0].departmentName;
+               this.selDepartmentName=folderDetails[0].departmentId ? folderDetails[0].departmentId : '0';
+      
+              let permissions = folderDetails[0].folderPermission;
+              let permissiondata = permissions[0];
+             
+             // console.log(permissiondata)
+      
+      if(this.selParentFolderName == 1){
+              setTimeout(() => {
+      
+              let selectIfElement: any = document.getElementById("seldept");
+      
+      
+              if (selectIfElement != null || selectIfElement != undefined) {
+                selectIfElement.dispatchEvent(
+                  new Event("change")
+      
+      
+                );
+      
+      
+      
+              }
+              },500)
+        //alert(this.selParentFolderName)
+      
+      
+      if (permissiondata.rolebased.length > 0) {
+        this.rdoPermissiontype = "1";
+        setTimeout(() => {
+         // alert(1);
+         let rolebased = permissiondata.rolebased;
+       
+                let selectIfElement: any = document.getElementById("rdoPermissiontype" + this.rdoPermissiontype);
+      
+      
+                  if (selectIfElement != null || selectIfElement != undefined) {
+                    selectIfElement.dispatchEvent(
+                      new Event("click")
+      
+                    );
+                  }
+      
+               setTimeout(() => {
+      
+                    let roleMap: any = {
+                      get(roleId: any): any {
+                        return this[roleId];
+                      },
+                      set(rolesList: any) {
+                        this[rolesList.roleId] = rolesList;
                       }
-                    },1000);
-                  });
-                  this.loading=false;
-                 
-                }, 1000);
-    
-              
-               
-              
-            
-            
-            
-           
+                    };
+      
+      
+                    rolebased.forEach((rolesList: any) => {
+                      roleMap.set(rolesList);
+                    });
+      
+   
+                    this.rolelist.forEach((rolesList: any,i:any) => {
+                     
+                      if (roleMap.get(rolesList.roleId) && (rolesList.roleId == roleMap.get(rolesList.roleId).roleId)) {
+                        rolesList.checked = roleMap.get(rolesList.roleId).checked;
+                        
+                        rolesList.permission = roleMap.get(rolesList.roleId).permission;
+                       
+                      }
+                      setTimeout(() => {
+                      let totalCheckbox:any = document.querySelectorAll('#rolerow_'+i+' .permissionChk').length;
+                        let totalChecked:any = document.querySelectorAll('#rolerow_'+i+' .permissionChk:checked').length;
+                    
+                        if(totalCheckbox == totalChecked) {
+                        
+                          $('#rolerow_'+i).find('.roleselectAll').prop('checked',true);
+                        }
+                      },1000);
+                    });
+                    this.loading=false;
+                   
+                  }, 1000);
+      
                 
-      },1500)
-    }
-    else {
-      this.loading=false;
-    }
-    }
-    else{
-             setTimeout(() => {
-      let selectFolderIfElement: any = document.getElementById("parentFId");
-      if (selectFolderIfElement != null || selectFolderIfElement != undefined) {
-        selectFolderIfElement.dispatchEvent(
-          new Event("change")
-    
-    
-        );
+                 
+                
+              
+              
+              
+             
+                  
+        },1500)
       }
-    
-        },500)
-      this.loading=false;
-    }
-    
-    }
-    else if(responseResult.status==501){
-            
-      this.authService.directlogout();
-    }
-          else {
-             this.loading=false;
-             Swal.fire({
-              icon: 'error',
-               text: this.commonserveice.langReplace(environment.somethingWrong)
-     });
-    
-          }
+      else {
+        this.loading=false;
+      }
       }
       else{
-        this.loading = false;
+               setTimeout(() => {
+        let selectFolderIfElement: any = document.getElementById("parentFId");
+        if (selectFolderIfElement != null || selectFolderIfElement != undefined) {
+          selectFolderIfElement.dispatchEvent(
+            new Event("change")
+      
+      
+          );
+        }
+      
+          },500)
+        this.loading=false;
+      }
+      
+      }
+      else if(responseResult.status==501){
+              
         this.authService.directlogout();
       }
-
-
-     
-
-
-    },
-    (error:any) =>{
-       this.loading=false;
+            else {
+               this.loading=false;
+               this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+              
       
-       this.authService.directlogout();
-    })
+            }
+        }
+        else{
+          this.loading = false;
+          this.authService.directlogout();
+        }
+  
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+   
+
 
 
   }
@@ -1168,48 +1166,49 @@ crateFolder() {
       }).then((result:any) => {
   
         if (result.isConfirmed) {
-          this.commonserveice.deleteFolder(formParams).subscribe((response:any)=>{
-            let respData = response.RESPONSE_DATA;
-            let respToken = response.RESPONSE_TOKEN;
-
-            let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-            if(respToken == verifyToken){
-             
-            let res:any = Buffer.from(respData,'base64'); 
-            let responseResult= JSON.parse(res)
-          if(responseResult.status==200){
-
-          Swal.fire(
-            this.commonserveice.langReplace('Deleted')+'!',
-              this.commonserveice.langReplace(this.messaageslist.deleteMsg),
-              'success'
-            )
-            window.location.reload()
-            this.getFolders()
-            
-          }
-          else if(responseResult.status==501){
-        
-            this.authService.directlogout();
-          }
-         else{
-          Swal.fire({
-            icon: 'error',
-             text: this.commonserveice.langReplace(environment.somethingWrong)
-   });
+          this.commonserveice.deleteFolder(formParams).subscribe({
+            next: (response) => {
+              let respData = response.RESPONSE_DATA;
+              let respToken = response.RESPONSE_TOKEN;
   
-         }
+              let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+              if(respToken == verifyToken){
+               
+              let res:any = Buffer.from(respData,'base64'); 
+              let responseResult= JSON.parse(res)
+            if(responseResult.status==200){
+  
+            
+
+            Swal.fire(
+
+              this.commonserveice.langReplace('Deleted')+'!',
+                this.commonserveice.langReplace(this.messaageslist.deleteMsg),
+                'success'
+              )
+              window.location.reload()
+              this.getFolders()
+              
             }
-            else{
-              this.loading = false;
+            else if(responseResult.status==501){
+          
               this.authService.directlogout();
             }
-
-
-        },
-        (error:any) =>{
-          this.authService.directlogout();
-        });
+           else{
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+    
+           }
+              }
+              else{
+                this.loading = false;
+                this.authService.directlogout();
+              }
+            },
+            error: (msg) => {
+              this.authService.directlogout();
+           }
+         })
+      
         }
       })
    }
@@ -1225,83 +1224,78 @@ crateFolder() {
   let dataParam = {
     "folderId": folderid,
     };
-    
-this.commonserveice.getFolders(dataParam).subscribe((response:any) => {
-
-  let respData = response.RESPONSE_DATA;
-  let respToken = response.RESPONSE_TOKEN;
-  let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-  if(respToken == verifyToken){
-    let res:any = Buffer.from(respData,'base64'); 
-    let responseResult= JSON.parse(res)
-     
-    
-      if(responseResult.status == '200'){
-        this.permissionlist=responseResult.result;
-    //  console.log(this.permissionlist)
-        if(this.permissionlist.length > 0){
-          this.folderSizeType=this.permissionlist[0].folderSizeType;
-          this.parentSizeinKb =this.permissionlist[0].parentSizeinKb;
-           this.childSizeInKb=this.permissionlist[0].childSizeInKb ;
-  
-  this.txtDepartmentName=this.permissionlist[0].departmentName;
-  this.selDepartmentName=this.permissionlist[0].departmentId ? this.permissionlist[0].departmentId : '0';
-          let foldrpermissions:any=JSON.parse(this.permissionlist[0].folderPermission)
-          let rolewisepermissions=foldrpermissions[0].rolebased;
-          let userwisepermissions=foldrpermissions[0].userbased;
-  
-          for (let i = 0; i < rolewisepermissions.length; i++) {
-            let obj: any = {};
-            obj['roleName'] = rolewisepermissions[i].roleName;
-            obj['roleId'] = rolewisepermissions[i].roleId;
-            obj['checked'] = rolewisepermissions[i].checked;
-            obj['permission'] = rolewisepermissions[i].permission;
-            obj['deptId'] = this.selDepartmentName;
-            this.rolewisepermissions.push(obj);
-            
-            setTimeout(() => {
-              let totalCheckbox:any = document.querySelectorAll('#rolerow_'+i+' .permissionChk').length;
-                let totalChecked:any = document.querySelectorAll('#rolerow_'+i+' .permissionChk:checked').length;
-            
-                if(totalCheckbox == totalChecked) {
-                
-                  $('#rolerow_'+i).find('.roleselectAll').prop('checked',true);
-                }
-              },1000);
-
-
-
-          }
-  
+    this.commonserveice.getFolders(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+          let responseResult= JSON.parse(res)
+           
+          
+            if(responseResult.status == '200'){
+              this.permissionlist=responseResult.result;
+          //  console.log(this.permissionlist)
+              if(this.permissionlist.length > 0){
+                this.folderSizeType=this.permissionlist[0].folderSizeType;
+                this.parentSizeinKb =this.permissionlist[0].parentSizeinKb;
+                 this.childSizeInKb=this.permissionlist[0].childSizeInKb ;
         
-  
-          
+        this.txtDepartmentName=this.permissionlist[0].departmentName;
+        this.selDepartmentName=this.permissionlist[0].departmentId ? this.permissionlist[0].departmentId : '0';
+                let foldrpermissions:any=JSON.parse(this.permissionlist[0].folderPermission)
+                let rolewisepermissions=foldrpermissions[0].rolebased;
+                let userwisepermissions=foldrpermissions[0].userbased;
+        
+                for (let i = 0; i < rolewisepermissions.length; i++) {
+                  let obj: any = {};
+                  obj['roleName'] = rolewisepermissions[i].roleName;
+                  obj['roleId'] = rolewisepermissions[i].roleId;
+                  obj['checked'] = rolewisepermissions[i].checked;
+                  obj['permission'] = rolewisepermissions[i].permission;
+                  obj['deptId'] = this.selDepartmentName;
+                  this.rolewisepermissions.push(obj);
+                  
+                  setTimeout(() => {
+                    let totalCheckbox:any = document.querySelectorAll('#rolerow_'+i+' .permissionChk').length;
+                      let totalChecked:any = document.querySelectorAll('#rolerow_'+i+' .permissionChk:checked').length;
+                  
+                      if(totalCheckbox == totalChecked) {
+                      
+                        $('#rolerow_'+i).find('.roleselectAll').prop('checked',true);
+                      }
+                    },1000);
+      
+      
+      
+                }
+        
+              
+        
+                
+              }
+        
+            }
+            else if(responseResult.status==501){
+                
+              this.authService.directlogout();
+            }
+          else{
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+          }
         }
-  
-      }
-      else if(responseResult.status==501){
-          
+        else{
+          this.loading = false;
+          this.authService.directlogout();
+        }
+       
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      }
-    else{
-      Swal.fire({
-        icon: 'error',
-         text: this.commonserveice.langReplace(environment.somethingWrong)
-  });
-    }
-  }
-  else{
-    this.loading = false;
-    this.authService.directlogout();
-  }
- 
+     }
+   })
 
-
-  
-} ,(error:any) => {
-  this.authService.directlogout();
- 
-})
     
 
 

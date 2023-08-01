@@ -1,110 +1,122 @@
 <!--===Page Title===-->
 <div class="page-title">
-
+   
     <h4>{{title | langReplace}}</h4>
-</div>
-<!--===Page Title===-->
-<!--===controle section===-->
-<div class="page-controls-section" id="page-content">
-    <div class="card">
-        <div class="controls-section-header">
-            <ul class="nav nav-tabs nav-fill" role="tablist">
-                <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="letterID"
-                    [tabMessage]="tablist"></app-tabs>
-            </ul>
-            <div class="indicatorslist">
-                <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils>
-            </div>
-        </div>
-
-        <div class="card-body">
-            <div class="controls-section">
-                <div class="row">
-                    <div class="col-md-6 col-lg-6">
-
-                        <app-filedetails [fileid]="fileId"></app-filedetails>
-
-
-                        <app-notinglist [fileid]="fileId"></app-notinglist>
-
-
-
-                        <div class="row mt-3">
-                            <label class="col-md-4 col-lg-3">* {{"Action"| langReplace}} </label>
-                            <div class="col-md-8 col-lg-9">
-                                <div class="form-group" *ngIf="forwardActionEvent<1">
-                                    <div *ngFor="let actions of userActionList;" class="form-check form-check-inline">
-                                        <input type="radio" name="radAction" [(ngModel)]="radAction"
-                                            class="form-check-input" id="radAction{{actions}}" value="{{actions}}"
-                                            (click)="forwardAction(actions)" />
-                                        <label for="radAction{{actions}}">
-                                            {{actionarray[actions]}}
-
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-group" *ngIf="forwardActionEvent==4">
-                                    <div class="form-check form-check-inline">
-                                        <input type="radio" name="radAction" [(ngModel)]="radAction"
-                                            class="form-check-input" id="radAction" value="9"/>
-                                        <label for="radAction">{{"Reply"| langReplace}}</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <label class="col-md-6 col-lg-4" *ngIf="showForwardAuthority">* {{"Select Authority"| langReplace }} </label>
-                            <div class="col-md-6 col-lg-4">
-                                <div class="form-group" *ngIf="showForwardAuthority">
-                                    <select class="form-select" id="parentAuthorityId" [(ngModel)]="authorityRoleId" (change)="getFOrwardAuthority($event)">
-                                        <option value="0">{{"Select"| langReplace }} </option>
-                                        <option *ngFor="let flist of roleArr" [value]="flist.roleId">{{flist.userFullName}}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <label class="col-md-12 col-lg-12 mb-1">* {{"Remark"| langReplace}}</label>
-                            <div class="col-md-12 col-lg-12">
-                                <div class="form-group">
-                                    <ckeditor [(ngModel)]="txtRemark" #myckeditor="ngModel" id="txtRemark"
-                                        name="myckeditor" required [config]="ckeConfig" debounce="500">
-
-                                    </ckeditor>
-
-
-
-
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <label class="col-md-4 col-lg-4"></label>
-                            <div class="col-md-12 col-lg-12">
-
-                                <button class="btn btn-success" (click)="submitRemark()"> {{"Submit"| langReplace}}
-                                </button> &nbsp;
-                                <button type="button" class="btn btn-danger" (click)="resetForm()"> {{"Reset"|
-                                    langReplace}}</button>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-6">
-                        <div class="position-relative">
-                            <!-- //{{fileId}} -->
-                            <app-docpreview [fileId]="fileId" [logid]="logid" [lockstatus]="lockstatus"
-                                [filetype]="filetype" [vfilepath]="filePath"></app-docpreview>
-                        </div>
-                    </div>
-                </div>
-
-
-            </div>
-        </div>
     </div>
-</div>
+    <!--===Page Title===-->
+    <!--===controle section===-->
+    <div class="page-controls-section" id="page-content">
+                    <div class="card">
+                    <div class="controls-section-header">
+                       <ul class="nav nav-tabs nav-fill" role="tablist" >
+                          <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="letterID" [tabMessage]="tablist"></app-tabs>  
+                       </ul>
+                    <div class="indicatorslist">
+                       <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils> 
+                          </div>
+                          </div>
+                    
+                    <div class="card-body">
+                       <div class="controls-section">
+                        <div class="row">
+                            <div class="col-md-6 col-lg-6">
+                                
+                                    <app-filedetails [fileid]="fileId" ></app-filedetails>
+                          
+                                   
+                                    <app-notinglist [fileid]="fileId"></app-notinglist>
+                            
+                            
+                            
+                            <div class="row mt-3">
+                                <label class="col-md-4 col-lg-3">*  {{"Action"| langReplace}} </label>
+                                <div class="col-md-8 col-lg-9">
+                                    <div class="form-group">
+                                            <div *ngFor="let actions of userActionList;"
+                                            class="form-check form-check-inline"
+                                          >
+                                            <input
+                                              type="radio"
+                                              name="radAction" 
+                                              [(ngModel)]="radAction" 
+                                              class="form-check-input"
+                                              id="radAction{{actions}}"
+                                              value="{{actions}}" (click)="forwardAction(actions)"
+                                            />
+                                            <label for="radAction{{actions}}"> 
+                                               {{actionarray[actions]}} 
+                                            
+                                            </label>
+                                          </div>
+                                    
+                                    <div class="" *ngIf="forwardActionEvent==4">
+                                        <div class="form-check form-check-inline">
+                                            <input type="radio" name="radAction" [(ngModel)]="radAction"
+                                                class="form-check-input" id="radAction" value="9"/>
+                                            <label for="radAction">{{"Reply"| langReplace}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                           
+                            </div>
+
+                            <div class="row" *ngIf="showForwardAuthority">
+                                <label class="col-md-6 col-lg-4" >* {{"Select Authority"| langReplace }} </label>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="form-group" >
+                                        <select class="form-select" id="parentAuthorityId" [(ngModel)]="authorityRoleId" (change)="getFOrwardAuthority($event)">
+                                            <option value="0">{{"Select"| langReplace }} </option>
+                                            <option *ngFor="let flist of roleArr" [value]="flist.roleId">{{flist.userFullName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div >
+                                    <label class="col-md-12 col-lg-12 mb-1">*  {{"Remark"| langReplace}}</label>
+                                    <div class="col-md-12 col-lg-12">
+                                        <div class="form-group">
+                                                <ckeditor [(ngModel)]="txtRemark" 
+                                                #myckeditor="ngModel" id="txtRemark"
+                                                name="myckeditor"
+                                                required
+                                                [config]="ckeConfig" 
+                                                debounce="500" 
+                                                >
+                                               
+                                                </ckeditor>
+                                            
+                                           
+                                            
+                                         
+                                                      
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                        <label class="col-md-4 col-lg-4"></label>
+                                        <div class="col-md-12 col-lg-12">
+                                            
+                                                    <button  class="btn btn-success" (click)="submitRemark()"> {{"Submit"| langReplace}} </button> &nbsp; 
+                                                    <button  type="button" class="btn btn-danger" (click)="resetForm()"> {{"Reset"| langReplace}}</button>  
+                                           
+                                        </div>
+                                    </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6">
+                                    <div class="position-relative">
+                                        <!-- //{{fileId}} -->
+                                    <app-docpreview [fileId]="fileId" [logid]="logid" [lockstatus]="lockstatus" [filetype]="filetype" [vfilepath]="filePath"></app-docpreview>
+                                </div>
+                            </div>
+                        </div>
+
+                           
+                           </div>
+                    </div>
+                    </div>
+ </div>
 
 
 
@@ -112,6 +124,6 @@
 
 
 <div class="loader" *ngIf="loading">
-    <div class="loader-item"></div>
-    <p>Loading...</p>
-</div>
+        <div class="loader-item"></div>
+        <p>Loading...</p>
+      </div> 

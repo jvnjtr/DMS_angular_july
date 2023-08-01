@@ -125,8 +125,9 @@ export class FilepropertiesComponent implements OnInit {
 
     };
     this.loading = true;
-    this.commonserveice.getFileDetails(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
+    this.commonserveice.getFileDetails(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
       let respToken = response.RESPONSE_TOKEN;
 
       let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
@@ -147,7 +148,7 @@ export class FilepropertiesComponent implements OnInit {
 
           this.txtFileNumber = this.filedetails.fileRefNo;
           this.filesize = this.filedetails.fileSize;
-          this.fileType = this.getfiletype(this.filedetails.fileType);
+          this.fileType = this.commonserveice.getfiletype(this.filedetails.fileType);
           this.ocrLanguage = this.filedetails.ocrLanguage;
           this.txtExpDate = this.filedetails.retentionDate;
           this.txtSubject = this.filedetails.subject;
@@ -195,29 +196,15 @@ this.fileTags = fileTagsarr.join()
          this.authService.directlogout();
       }
 
+      },
+      error: (msg) => {
+           this.authService.directlogout();
+     }
+   })
 
-    }, (error: any) => {
-      this.loading = false;
-      this.authService.directlogout();
-    })
-
-  }
-  //\\ ======================== // Get file Type // ======================== //\\
-  getfiletype(filename: any) {
-
-    let icon: any;
-    let iconsGroups: any = environment.iconsGroups;
-    for (let i = 0; i < iconsGroups.length; i++) {
-      let filetype: any = iconsGroups[i].groups.includes(filename);
-      if (filetype == true) {
-        icon = iconsGroups[i].name;
-      }
-
-    }
-    return icon;
 
   }
-  //\\ ======================== // Get file Type // ======================== //\\
+
   //\\ ======================== // File Modify // ======================== //\\ 
   fileModify(id: any) {
     let encSchemeStr = this.encDec.encText(id.toString());
@@ -230,50 +217,47 @@ this.fileTags = fileTagsarr.join()
       "fileId": fid,
       "url": fpath
     };
-    this.commonserveice.fileDownload(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        let responseResult = JSON.parse(res)
-
-        if (responseResult.status == 200) {
-
-
-          this.downloaditem = responseResult.result;
-          this.downloadlink = this.downloaditem.filePath;
-          let link: any = document.createElement("a");
-          link.download = this.downloadlink;
-          link.href = this.downloadlink;
-          link.target = "_blank";
-          link.click();
-
-        }
-        else if (responseResult.status == 501) {
-
-          this.authService.directlogout();
+    this.commonserveice.fileDownload(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+  
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+  
+          if (responseResult.status == 200) {
+  
+  
+            this.downloaditem = responseResult.result;
+            this.downloadlink = this.downloaditem.filePath;
+            let link: any = document.createElement("a");
+            link.download = this.downloadlink;
+            link.href = this.downloadlink;
+            link.target = "_blank";
+            link.click();
+  
+          }
+          else if (responseResult.status == 501) {
+  
+            this.authService.directlogout();
+          }
+          else {
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+          }
         }
         else {
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(environment.somethingWrong)
-          });
+          this.loading = false;
+           this.authService.directlogout();
         }
-      }
-      else {
-        this.loading = false;
-         this.authService.directlogout();
-      }
-
-
-
-    },
-      (error: any) => {
-
-        this.authService.directlogout();
-      })
+  
+      },
+      error: (msg) => {
+           this.authService.directlogout();
+     }
+   })
+    
   }
   //\\ ======================== // Download File // ======================== //\\ 
 
@@ -296,8 +280,9 @@ this.fileTags = fileTagsarr.join()
     }).then((result: any) => {
 
       if (result.isConfirmed) {
-        this.commonserveice.moveToTash(formParams).subscribe((response: any) => {
-          let respData = response.RESPONSE_DATA;
+        this.commonserveice.moveToTash(formParams).subscribe({
+          next: (response) => {
+            let respData = response.RESPONSE_DATA;
           let respToken = response.RESPONSE_TOKEN;
 
           let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
@@ -336,24 +321,19 @@ this.fileTags = fileTagsarr.join()
               this.authService.directlogout();
             }
             else {
-              Swal.fire({
-                icon: 'error',
-                text: this.commonserveice.langReplace(environment.somethingWrong)
-              });
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
             }
           }
           else {
             this.loading = false;
             this.authService.directlogout();
           }
-
-
-
-        },
-          (error: any) => {
-
-            this.authService.directlogout();
-          });
+          },
+          error: (msg) => {
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+         }
+       })
+        
       }
     })
   }
@@ -365,9 +345,9 @@ this.fileTags = fileTagsarr.join()
 
     };
 
-
-    this.commonserveice.createDuplicate(formParams).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
+    this.commonserveice.createDuplicate(formParams).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
       let respToken = response.RESPONSE_TOKEN;
 
 
@@ -407,23 +387,19 @@ this.fileTags = fileTagsarr.join()
           this.authService.directlogout();
         }
         else {
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(environment.somethingWrong)
-          });
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
         }
       }
       else {
         this.loading = false;
          this.authService.directlogout();
       }
-
-
-    },
-      (error: any) => {
-
-        this.authService.directlogout();
-      });
+      },
+      error: (msg) => {
+           this.authService.directlogout();
+     }
+   })
+  
 
 
   }
@@ -476,11 +452,8 @@ this.fileTags = fileTagsarr.join()
 
     }
     else if (password !== confpass) {
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace('Entered password and Confirm Password not matched'),
-
-      });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace('Entered password and Confirm Password not matched'))
+      
     }
     else {
 
@@ -489,71 +462,63 @@ this.fileTags = fileTagsarr.join()
         "password": password,
         "action": 1
       };
-
-      // console.log(formParams) 
-      this.commonserveice.fileLockUnlock(formParams).subscribe((response: any) => {
-        let respData = response.RESPONSE_DATA;
-        let respToken = response.RESPONSE_TOKEN;
-
-        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        if (respToken == verifyToken) {
-          let res: any = Buffer.from(respData, 'base64');
-          let responseResult = JSON.parse(res)
-
-          if (responseResult.status == 200) {
-            Swal.fire({
-              icon: 'success',
-              
-              text: this.commonserveice.langReplace("File Locked Successfully")
-            }).then((result: any) => {
-              if (result.isConfirmed) {
-                this.modalService.dismissAll();
-                let encSchemeStr = this.encDec.encText(folderId.toString());
-                // this.route.navigate(['/admin/configuration/formPreview',encSchemeStr]);
-
-                this.route.navigate(['/admin/viewupload', encSchemeStr])
-
-                this.callfunction.emit();
-                this.callfunction2.emit();
-
-              }
-            });
-
-
-          }
-          else if (responseResult.status == 400) {
-            Swal.fire({
-              icon: 'error',
-              text: responseResult.message,
-
-            });
-          }
-          else if (responseResult.status == 501) {
-
-            this.authService.directlogout();
+      this.commonserveice.fileLockUnlock(formParams).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
+  
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if (respToken == verifyToken) {
+            let res: any = Buffer.from(respData, 'base64');
+            let responseResult = JSON.parse(res)
+  
+            if (responseResult.status == 200) {
+              Swal.fire({
+                icon: 'success',
+                
+                text: this.commonserveice.langReplace("File Locked Successfully")
+              }).then((result: any) => {
+                if (result.isConfirmed) {
+                  this.modalService.dismissAll();
+                  let encSchemeStr = this.encDec.encText(folderId.toString());
+                  // this.route.navigate(['/admin/configuration/formPreview',encSchemeStr]);
+  
+                  this.route.navigate(['/admin/viewupload', encSchemeStr])
+  
+                  this.callfunction.emit();
+                  this.callfunction2.emit();
+  
+                }
+              });
+  
+  
+            }
+            else if (responseResult.status == 400) {
+              Swal.fire({
+                icon: 'error',
+                text: responseResult.message,
+  
+              });
+            }
+            else if (responseResult.status == 501) {
+  
+              this.authService.directlogout();
+            }
+            else {
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+            }
           }
           else {
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(environment.somethingWrong)
-
-            });
+            this.loading = false;
+            this.authService.directlogout();
           }
-        }
-        else {
-          this.loading = false;
-          this.authService.directlogout();
-        }
-
-
-
-
-
-      },
-        (error: any) => {
-          this.authService.directlogout();
-        });
-
+        },
+        error: (msg) => {
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+       }
+     })
+      // console.log(formParams) 
+    
     }
 
 
@@ -577,71 +542,63 @@ this.fileTags = fileTagsarr.join()
         "password": password,
         "action": 2
       };
-
-      // console.log(formParams) 
-      this.commonserveice.fileLockUnlock(formParams).subscribe((response: any) => {
-        let respData = response.RESPONSE_DATA;
-        let respToken = response.RESPONSE_TOKEN;
-
-        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        if (respToken == verifyToken) {
-          let res: any = Buffer.from(respData, 'base64');
-          let responseResult = JSON.parse(res)
-
-          if (responseResult.status == 200) {
-            Swal.fire({
-              icon: 'success',
-              text: this.commonserveice.langReplace('File Unlocked Successfully') ,
-
-            }).then((result: any) => {
-              if (result.isConfirmed) {
-                this.modalService.dismissAll();
-                let encSchemeStr = this.encDec.encText(folderId.toString());
-                // this.route.navigate(['/admin/configuration/formPreview',encSchemeStr]);
-
-                this.route.navigate(['/admin/viewupload', encSchemeStr])
-
-                this.callfunction.emit();
-                this.callfunction2.emit();
-
-              }
-            });
-
-
-          }
-          else if (responseResult.status == 400) {
-            Swal.fire({
-              icon: 'error',
-              text: responseResult.message,
-
-            });
-          }
-          else if (responseResult.status == 501) {
-
-            this.authService.directlogout();
+      this.commonserveice.fileLockUnlock(formParams).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
+  
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if (respToken == verifyToken) {
+            let res: any = Buffer.from(respData, 'base64');
+            let responseResult = JSON.parse(res)
+  
+            if (responseResult.status == 200) {
+              Swal.fire({
+                icon: 'success',
+                text: this.commonserveice.langReplace('File Unlocked Successfully') ,
+  
+              }).then((result: any) => {
+                if (result.isConfirmed) {
+                  this.modalService.dismissAll();
+                  let encSchemeStr = this.encDec.encText(folderId.toString());
+                  // this.route.navigate(['/admin/configuration/formPreview',encSchemeStr]);
+  
+                  this.route.navigate(['/admin/viewupload', encSchemeStr])
+  
+                  this.callfunction.emit();
+                  this.callfunction2.emit();
+  
+                }
+              });
+  
+  
+            }
+            else if (responseResult.status == 400) {
+              Swal.fire({
+                icon: 'error',
+                text: responseResult.message,
+  
+              });
+            }
+            else if (responseResult.status == 501) {
+  
+              this.authService.directlogout();
+            }
+            else {
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+            }
           }
           else {
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(environment.somethingWrong)
-
-            });
+            this.loading = false;
+            this.authService.directlogout();
           }
-        }
-        else {
-          this.loading = false;
-          this.authService.directlogout();
-        }
-
-
-
-
-
-
-      },
-        (error: any) => {
-          this.authService.directlogout();
-        });
+        },
+        error: (msg) => {
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+       }
+     })
+      // console.log(formParams) 
+      
 
     }
 
@@ -681,17 +638,7 @@ this.fileTags = fileTagsarr.join()
   }
 
 
-  formatBytes(bytes: any, decimals: any) {
-    if (!+bytes) return '0 Bytes'
 
-    const k = 1024
-    const dm = decimals < 0 ? 0 : decimals
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-  }
   //function for checkin checkout
   checkinCheckoutFile(fileid: any, folderId: any, checkInCheckoutStatus: any) {
     if (checkInCheckoutStatus <= 1) {
@@ -725,8 +672,9 @@ this.fileTags = fileTagsarr.join()
       };
 
       // console.log(formParams) 
-      this.commonserveice.checkinCheckout(formParams).subscribe((response: any) => {
-        let respData = response.RESPONSE_DATA;
+      this.commonserveice.checkinCheckout(formParams).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
         let respToken = response.RESPONSE_TOKEN;
 
         let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
@@ -753,32 +701,27 @@ this.fileTags = fileTagsarr.join()
             });
           }
           else if (responseResult.status == 400) {
-            Swal.fire({
-              icon: 'error',
-              text: responseResult.message,
-
-            });
+            this.commonserveice.swalfire('error',responseResult.message)
+          
           }
           else if (responseResult.status == 501) {
 
             this.authService.directlogout();
           }
           else {
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(environment.somethingWrong)
-
-            });
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
           }
         }
         else {
           this.loading = false;
           this.authService.directlogout();
         }
-      },
-        (error: any) => {
-          this.authService.directlogout();
-        });
+        },
+        error: (msg) => {
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+       }
+     })
+     
 
     }
   }

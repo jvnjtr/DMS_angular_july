@@ -75,8 +75,10 @@ export class SingleFolderdetailsComponent implements OnInit {
   let dataParam = {
     "folderId": fldrId,
   };
-  this.commonserveice.getFoldersSingle(dataParam).subscribe((response: any) => {
-    let respData = response.RESPONSE_DATA;
+
+  this.commonserveice.getFoldersSingle(dataParam).subscribe({
+    next: (response) => {
+      let respData = response.RESPONSE_DATA;
     let respToken = response.RESPONSE_TOKEN;
     let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
     if(respToken == verifyToken){
@@ -128,24 +130,19 @@ export class SingleFolderdetailsComponent implements OnInit {
       }
       
      else{
-      Swal.fire({
-        icon: 'error',
-         text: this.commonserveice.langReplace(environment.somethingWrong),
-  });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
      }
     }
     else{
       
       this.authService.directlogout();
     }
+    },
+    error: (msg) => {
+      this.authService.directlogout();
+   }
+ })
 
-
-
-
-  },
-  (error:any) =>{
-    this.authService.directlogout();
-  })
 
 
 }
@@ -170,68 +167,69 @@ delete(fid:any){
     }).then((result:any) => {
 
       if (result.isConfirmed) {
-        this.commonserveice.deleteFolder(formParams).subscribe((response:any)=>{
-          let respData = response.RESPONSE_DATA;
-          let respToken = response.RESPONSE_TOKEN;
-
-          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-          if(respToken == verifyToken){
-            let res:any = Buffer.from(respData,'base64'); 
-            let responseResult = JSON.parse(res)
-      
-              if(responseResult.status==200){
-              
-                Swal.fire({
-                  title:this.commonserveice.langReplace('Deleted')+' !',
-                  text:this.commonserveice.langReplace("Record has been trashed"),
-                  icon: 'success',
-                   confirmButtonText: this.commonserveice.langReplace('Ok'),
-                  
-                }).then((result) => {
+        this.commonserveice.deleteFolder(formParams).subscribe({
+          next: (response) => {
+            let respData = response.RESPONSE_DATA;
+            let respToken = response.RESPONSE_TOKEN;
+  
+            let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+            if(respToken == verifyToken){
+              let res:any = Buffer.from(respData,'base64'); 
+              let responseResult = JSON.parse(res)
+        
+                if(responseResult.status==200){
+                
+                  Swal.fire({
+                    title:this.commonserveice.langReplace('Deleted')+' !',
+                    text:this.commonserveice.langReplace("Record has been trashed"),
+                    icon: 'success',
+                     confirmButtonText: this.commonserveice.langReplace('Ok'),
+                    
+                  }).then((result) => {
+                   
+                    if (result.isConfirmed) {
+                    
+        
+                   let reData:any= this.parentFolderId+':'+'-1'
+                   let encSchemeStr = this.encDec.encText(reData.toString());
+                   
+                  this.route.navigate(['/admin/viewupload',encSchemeStr])
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 100);
+                 // 
+  
+  
+  
+                    } 
+                  })
+        
                  
-                  if (result.isConfirmed) {
-                  //  window.location.reload();
-                  // alert(this.parentFolderId)
-               
-      
-                 let reData:any= this.parentFolderId+':'+'0'
-                 let encSchemeStr = this.encDec.encText(reData.toString());
                  
-                this.route.navigate(['/admin/viewupload',encSchemeStr])
-
-
-
-
-                  } 
-                })
-      
-               
-               
-              }
-              else if(responseResult.status==501){
-              
-                this.authService.directlogout();
-              }
-              else{
-               
-                Swal.fire({
-                  icon: 'error',
-                  text: this.commonserveice.langReplace(environment.somethingWrong)
-                  
-                }); 
-              }
-          }
-          else{
-           
+                }
+                else if(responseResult.status==400){
+                  this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+                
+                }
+                else if(responseResult.status==501){
+                
+                  this.authService.directlogout();
+                }
+                else{
+                  this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+                 
+                }
+            }
+            else{
+             
+              this.authService.directlogout();
+            }
+          },
+          error: (msg) => {
             this.authService.directlogout();
-          }
-
-
-   
-      },
-      (error:any) =>{
-        this.authService.directlogout();
-      });
+         }
+       })
+    
       }
     })
  }
@@ -245,79 +243,64 @@ duplicateFolder(folderid:any){
 
   };
 
+  this.commonserveice.duplicateFolder(formParams).subscribe({
+    next: (response) => {
+      let respData = response.RESPONSE_DATA;
+      let respToken = response.RESPONSE_TOKEN;
 
-    this.commonserveice.duplicateFolder(formParams).subscribe((response: any) => {
-        let respData = response.RESPONSE_DATA;
-        let respToken = response.RESPONSE_TOKEN;
+      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+      if(respToken == verifyToken){
+        let res:any = Buffer.from(respData,'base64'); 
+        let responseResult = JSON.parse(res)
+        if (responseResult.status == 200) {
 
-        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        if(respToken == verifyToken){
-          let res:any = Buffer.from(respData,'base64'); 
-          let responseResult = JSON.parse(res)
-          if (responseResult.status == 200) {
-  
-            Swal.fire({
-              icon: 'success',
-              text: this.commonserveice.langReplace("Duplicate Folder created successfully"),
-              
-              confirmButtonText: this.commonserveice.langReplace('Ok'),
-             
-            }).then((result) => {
-              /* Read more about isConfirmed, isDenied below */
-              if (result.isConfirmed) {
-  
-              
-                window.location.reload();
-                let encSchemeStr = this.encDec.encText(folderid.toString());
-                // this.route.navigate(['/admin/configuration/formPreview',encSchemeStr]);
-      
-                this.route.navigate(['/admin/viewupload', encSchemeStr])
-              }
-            })
-  
-  
-          
-  
-          }
-          else if(responseResult.status==501){
-          
-            this.authService.directlogout();
-          }
-          else{
-            Swal.fire({
-              icon: 'error',
-               text: this.commonserveice.langReplace(environment.somethingWrong),
-     });
-     
-          }
+          Swal.fire({
+            icon: 'success',
+            text: this.commonserveice.langReplace("Duplicate Folder created successfully"),
+            
+            confirmButtonText: this.commonserveice.langReplace('Ok'),
+           
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+
+            
+              window.location.reload();
+              let encSchemeStr = this.encDec.encText(folderid.toString());
+              // this.route.navigate(['/admin/configuration/formPreview',encSchemeStr]);
+    
+              this.route.navigate(['/admin/viewupload', encSchemeStr])
+            }
+          })
+
+
+        
+
         }
-        else{
-         
+        else if(responseResult.status==501){
+        
           this.authService.directlogout();
         }
-
-
-        
-        
-      },
-      (error:any) =>{
+        else{
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+   
+        }
+      }
+      else{
        
         this.authService.directlogout();
-      });
+      }
+    },
+    error: (msg) => {
+      this.authService.directlogout();
+   }
+ })
+
+  
     
  
 }
 //\\ ======================== // File Duplicate // ======================== //\\
 
-formatBytes(bytes:any, decimals:any) {
-  if (!+bytes) return '0 Bytes'
 
-  const k = 1024
-  const dm = decimals < 0 ? 0 : decimals
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-}
 }

@@ -72,7 +72,7 @@
                                                             <div class="row form-group">
                                                                     <label class="col-lg-2 col-md-4">*  {{"Expiry Date"| langReplace }} </label>
                                                                     <div class="col-lg-4 col-md-8">
-                                                                                <input type="date" class="form-control" id="txtExpireDate" [(ngModel)]="txtExpireDate">
+                                                                                <input type="date" class="form-control" min="{{currenttime | date:'yyyy-MM-dd'}}" id="txtExpireDate" [(ngModel)]="txtExpireDate">
                                                                             <!-- <div class="input-group ">
                                                                                    
                                                                                     <input type="text" readonly placeholder="DD-MM-YYYY" class="form-control" [minDate]="txtEfminDate" [(ngModel)]="txtEffeciveFrom"

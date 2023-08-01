@@ -10,7 +10,7 @@
                 <th width="50px">{{"Sl No" | langReplace}}</th>
 
                 <th *ngFor="let flist of tablecollist">
-                    <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)" class="my-icon bi bi-arrow-up"></i>
+                    <i *ngIf="flist.sortable" (click)="commonserveice.onSortClick(flist.cname,$event,filevesions)" class="my-icon bi bi-arrow-up"></i>
                     {{flist.name | langReplace}}
                   
                    </th>
@@ -38,7 +38,7 @@
                    
                         <td class="text-center">
                                          
-                            <i class="h6" [ngClass]="getfiletype(flist.fileType)" ></i>
+                            <i class="h6" [ngClass]="commonserveice.getfiletype(flist.fileType)" ></i>
                         </td>
                        
                    
@@ -46,7 +46,7 @@
                             v{{flist.fileVersion | number:'1.1-5'}}
                         </td>
                         <td>
-                                {{formatBytes(flist.fileSize,2)}}
+                                {{commonserveice.formatBytes(flist.fileSize,2)}}
                             </td>
                             <td>
                                     {{flist.createdBy}}

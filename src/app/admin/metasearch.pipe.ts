@@ -10,7 +10,7 @@ export class MetasearchPipe implements PipeTransform {
       return value;
     }
     return value.filter((val:any)=>{
-      let rVal=(val.metaName.toLocaleLowerCase().includes(args)) || (val.description.includes(args) || (val.createdOn.includes(args)) ||  (val.createdBy.toLocaleLowerCase().includes(args)));
+      let rVal=(val.metaName.toLocaleLowerCase().includes(args)) || ( val.description.toLocaleLowerCase().includes(args) || (val.createdOn.includes(args)) ||  (val.createdBy.toLocaleLowerCase().includes(args)));
       return rVal;
     })
   }

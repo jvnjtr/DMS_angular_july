@@ -50,8 +50,8 @@ export class UtilsComponent implements OnInit {
     let printContents;
     let popupWin:any;
     printContents =  $(".print-section").html();
-    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
-    popupWin.document.open();
+    popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto;display:none');
+ //   popupWin.document.open();
     popupWin.document.write(`
   <html>
     <head>
@@ -71,15 +71,12 @@ ${printContents}</body>
 
   deleteAll(ids:any,ftype:any) {
     if (ids.length == 0) {
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace('Please select the record you want to delete') + '.',
-
-      });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace('Please select the record you want to delete'))
+ 
     }
     else {
       var itemids = ids.toString();
-
+    
       let letterParams = {
         "itemId": itemids,
         "itemStatus": "1"
@@ -96,46 +93,46 @@ ${printContents}</body>
         confirmButtonText: this.commonserveice.langReplace('Yes') + ', ' + this.commonserveice.langReplace('delete it') + '!'
       }).then((result: any) => {
         if (result.isConfirmed) {
-          this.commonserveice.deleteAll(letterParams, ftype).subscribe((response: any) => {
-            // console.log(response);
-            let respData = response.RESPONSE_DATA;
-            let respToken = response.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-            // console.log(respToken);
-            // console.log(verifyToken);
 
-            if (respToken == verifyToken) {
-              let res: any = Buffer.from(respData, 'base64');
-              res = JSON.parse(res.toString());
-              // console.log(res.status);
-
-              if (res.status == 200) {
-                Swal.fire(
-                  this.commonserveice.langReplace('Deleted')+' !',
-                  this.commonserveice.langReplace('Record has been deleted'),
-                  'success'
-                )
-                $('.checkAll').prop('checked', false);
-                this.callfunction.emit();
-                this.callfunction3.emit();
-              } else if (res.status == 417) {
+          this.commonserveice.deleteAll(letterParams, ftype).subscribe({
+            next: (response) => {
+              let respData = response.RESPONSE_DATA;
+              let respToken = response.RESPONSE_TOKEN;
+              let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+              // console.log(respToken);
+              // console.log(verifyToken);
+  
+              if (respToken == verifyToken) {
+                let res: any = Buffer.from(respData, 'base64');
+                res = JSON.parse(res.toString());
+                // console.log(res.status);
+  
+                if (res.status == 200) {
+                  Swal.fire(
+                    this.commonserveice.langReplace('Deleted')+' !',
+                    this.commonserveice.langReplace('Record has been deleted'),
+                    'success'
+                  )
+                  $('.checkAll').prop('checked', false);
+                  this.callfunction.emit();
+                  this.callfunction3.emit();
+                } else if (res.status == 417) {
+                this.authService.directlogout();
+                }
+                else {
+  
+                  this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+                }
+              } else {
+                 this.authService.directlogout();
+              }
+            },
+            error: (msg) => {
               this.authService.directlogout();
-              }
-              else {
+           }
+         })
 
-                Swal.fire({
-                  icon: 'error',
-                  text: this.commonserveice.langReplace(environment.somethingWrong),
-
-                });
-              }
-            } else {
-               this.authService.directlogout();
-            }
-
-
-          });
-
+       
 
 
         }
@@ -158,20 +155,14 @@ ${printContents}</body>
       }
     }
     if (puberroStatus == 1) {
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace('Please select the unpublished record to publish') + '.',
-
-      });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace("Please select the unpublished record to publish"))
+   
       return
     }
 
     if (ids.length == 0) {
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace('Please select the record you want to publish') + '.',
-
-      });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace("Please select the record you want to publish"))
+   
     }
     else {
 
@@ -193,42 +184,37 @@ ${printContents}</body>
       }).then((result: any) => {
 
         if (result.isConfirmed) {
-
-          this.commonserveice.publishAll(letterParams, ftype).subscribe((response: any) => {
-            let respData = response.RESPONSE_DATA;
-            let respToken = response.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-              let res: any = Buffer.from(respData, 'base64');
-              res = JSON.parse(res.toString());
-              if (res.status == 200) {
-                Swal.fire(
-                  this.commonserveice.langReplace('Published')+" !",
-                  this.commonserveice.langReplace('Publish Records Successfully'),
-                  'success'
-                )
-                $('.checkAll').prop('checked', false);
-                this.callfunction.emit();
-                this.callfunction3.emit();
-              } else if (res.status == 417) {
+          this.commonserveice.publishAll(letterParams, ftype).subscribe({
+            next: (response) => {    let respData = response.RESPONSE_DATA;
+              let respToken = response.RESPONSE_TOKEN;
+              let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+              if (respToken == verifyToken) {
+                let res: any = Buffer.from(respData, 'base64');
+                res = JSON.parse(res.toString());
+                if (res.status == 200) {
+                  Swal.fire(
+                    this.commonserveice.langReplace('Published')+" !",
+                    this.commonserveice.langReplace('Publish Records Successfully'),
+                    'success'
+                  )
+                  $('.checkAll').prop('checked', false);
+                  this.callfunction.emit();
+                  this.callfunction3.emit();
+                } else if (res.status == 417) {
+                this.authService.directlogout();
+                }
+                else {
+                  this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+                }
+              } else {
+                this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.errorApiResponse))
+          
+              }},
+            error: (msg) => {
               this.authService.directlogout();
-              }
-              else {
-                Swal.fire({
-                  icon: 'error',
-                  text: this.commonserveice.langReplace(environment.somethingWrong),
-
-                });
-              }
-            } else {
-              Swal.fire({
-                icon: 'error',
-                text:this.commonserveice.langReplace(environment.errorApiResponse)
-              });
-            }
-
-
-          });
+           }
+         })
+       
 
         }
       })
@@ -246,20 +232,14 @@ ${printContents}</body>
       }
     }
     if (puberroStatus == 1) {
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace('Please select the published record to unpublish') + '.',
-
-      });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace("Please select the published record to unpublish"))
+  
       return
     }
 
     if (ids.length == 0) {
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace('Please select the record you want to unpublish') + '.',
-
-      });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace("Please select the record you want to unpublish"))
+ 
     }
     else {
       let itemids = ids.toString();
@@ -278,38 +258,41 @@ ${printContents}</body>
         confirmButtonText: this.commonserveice.langReplace('Yes') + ', ' + this.commonserveice.langReplace('unpublish it')
       }).then((result: any) => {
         if (result.isConfirmed) {
-          this.commonserveice.unpublishAll(letterParams, ftype).subscribe((response: any) => {
-           
-            let respData = response.RESPONSE_DATA;
-            let respToken = response.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-              let res: any = Buffer.from(respData, 'base64');
-              res = JSON.parse(res.toString());
-              if (res.status == 200) {
-                Swal.fire(
-                  this.commonserveice.langReplace('Unpublished')+" !",
-                  this.commonserveice.langReplace('Unpublish Records Successfully') + '.',
-                  'success'
-                )
-                itemids = '';
-                $('.checkAll').prop('checked', false);
-                this.callfunction.emit();
-                this.callfunction3.emit();
-              } else if (res.status == 417) {
-              this.authService.directlogout();
-              }
-              else {
-                Swal.fire({
-                  icon: 'error',
-                  text: this.commonserveice.langReplace(environment.somethingWrong),
 
-                });
+
+          this.commonserveice.unpublishAll(letterParams, ftype).subscribe({
+            next: (response) => {
+              let respData = response.RESPONSE_DATA;
+              let respToken = response.RESPONSE_TOKEN;
+              let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+              if (respToken == verifyToken) {
+                let res: any = Buffer.from(respData, 'base64');
+                res = JSON.parse(res.toString());
+                if (res.status == 200) {
+                  Swal.fire(
+                    this.commonserveice.langReplace('Unpublished')+" !",
+                    this.commonserveice.langReplace('Unpublish Records Successfully') + '.',
+                    'success'
+                  )
+                  itemids = '';
+                  $('.checkAll').prop('checked', false);
+                  this.callfunction.emit();
+                  this.callfunction3.emit();
+                } else if (res.status == 417) {
+                this.authService.directlogout();
+                }
+                else {
+                  this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+                }
+              } else {
+                 this.authService.directlogout();
               }
-            } else {
-               this.authService.directlogout();
-            }
-          });
+            },
+            error: (msg) => {
+              this.authService.directlogout();
+           }
+         })
+        
         }
       })
     }

@@ -12,8 +12,8 @@
                           <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="letterID" [tabMessage]="tablist"></app-tabs>  
                        </ul>
                     <div class="indicatorslist">
-                            <a href="javascript:void(0)" ngbTooltip="Table View" class="tableviews" [ngClass]="dataviewtype == 1 ? 'text-info' : 'text-dark'" (click)="tableview()" title="Tabular View" ><i class="icon-table-solid"></i></a>
-                            <a href="javascript:void(0)" ngbTooltip="Div View" class="me-2 tableviews" [ngClass]="dataviewtype == 2 ? 'text-info' : 'text-dark'" (click)="boxview()" title="Box View"><i class="icon-th-large-solid"></i></a>
+                            <!-- <a href="javascript:void(0)" ngbTooltip="Table View" class="tableviews" [ngClass]="dataviewtype == 1 ? 'text-info' : 'text-dark'" (click)="tableview()" title="Tabular View" ><i class="icon-table-solid"></i></a>
+                            <a href="javascript:void(0)" ngbTooltip="Div View" class="me-2 tableviews" [ngClass]="dataviewtype == 2 ? 'text-info' : 'text-dark'" (click)="boxview()" title="Box View"><i class="icon-th-large-solid"></i></a> -->
                        <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils> 
                           </div>
                           </div>
@@ -30,7 +30,7 @@
                                    
                                    
                                     <div class="d-flex align-items-center me-3">
-                                        {{ 'Per Page' | langReplace}} : 
+                                        {{ 'Per Page' | langReplace}}&nbsp; 
                                         <select class="form-select width-90" (change)="onTableSizeChange($event)">
                                       <option *ngFor="let size of pageSizes" [ngValue]="size">
                                         {{ size }}
@@ -72,7 +72,7 @@
                                             <th width="50px">{{ "Sl No" | langReplace}}   </th>
 
                                             <th *ngFor="let flist of tablecollist">
-                                                <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)" class="my-icon bi bi-arrow-up"></i> 
+                                                <i *ngIf="flist.sortable" (click)="commonserveice.onSortClick(flist.cname,$event,ffdetailsArr)" class="my-icon bi bi-arrow-up"></i> 
                                                 
                                                 {{flist.name | langReplace}} 
                                               
@@ -105,7 +105,7 @@
                                             <!--  -->
                                         <div class="d-flex justify-content-between ">
                                         <a  class="text-primary" href="javascript:void(0)" (click)="loadpreview(flist.fileId,flist.fileType,flist.logId,flist.filePath,flist.lockStatus )" >
-                                        <i class="h6" [ngClass]="flist.type=='1'?'bi-folder-fill text-warning':getfiletype(flist.fileType)"  ></i>
+                                        <i class="h6" [ngClass]="flist.type=='1'?'bi-folder-fill text-warning':commonserveice.getfiletype(flist.fileType)"  ></i>
                                         {{flist.fileName}}
                                        
                                         <i ngbTooltip="Locked File"  class='{{flist.lockStatus==1? "bi bi-lock-fill text-danger ml-1" :""}}'></i>
@@ -113,14 +113,17 @@
                                     
                                       </div>
                                       </td>
-                                      <td>{{flist.fileType}}</td>
-                                      <td>{{formatBytes(flist.fileSize,2) }}</td>
+                                     
+                                      <td>{{commonserveice.formatBytes(flist.fileSize,2) }}</td>
                                       
                                       <td>{{flist.createdByName}} 
-                                          <small class="mt-1 d-block text-primary">On : {{flist.CreatedOn}}</small>
+                                         
 
                                       </td>
-                                      
+                                      <td>
+                                         {{flist.CreatedOn}}
+
+                                    </td>
                                       <td class="p-none text-center">
                                           <div class="" >
                                             <a class="text-primary" ngbTooltip="{{'Restore'| langReplace}} "  (click)="restore(flist.fileId)"  ><i class="icon-trash-restore-solid"></i></a>

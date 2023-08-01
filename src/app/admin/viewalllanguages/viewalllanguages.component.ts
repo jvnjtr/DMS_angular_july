@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import { Buffer } from 'buffer';
 import * as CryptoJS from 'crypto-js';
 import { CommonServicesService } from 'src/app/services/common-services.service';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 
 @Component({
@@ -52,7 +53,8 @@ export class ViewalllanguagesComponent implements OnInit {
      public vldChkLst: ValidatorchecklistService,
     public router: ActivatedRoute,
       private labelLanguage: LanguageService, 
-      public commonserveice:CommonServicesService
+      public commonserveice:CommonServicesService,
+      public authService:AuthenticationService
       ) {
      // this.viewItems(); 
 
@@ -68,12 +70,17 @@ export class ViewalllanguagesComponent implements OnInit {
   }
 
   loadconfig() {
-    this.httpClient.get<any>(this.jsonurl).subscribe((data: any) => {
-      this.tablist = data[0].tabList;
-      this.utillist = data[0].utils
-      this.messaageslist = data[0].messages;
-      this.title = data[0].pagetitle
-    })
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
   }
 
 
@@ -99,32 +106,34 @@ export class ViewalllanguagesComponent implements OnInit {
     };
 
     this.loading = true;
-    this.labelLanguage.viewAllLanguages(listData).subscribe((resp: any) => {
-      let respData = resp.RESPONSE_DATA;
-      let respToken = resp.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        res = JSON.parse(res.toString());
-        if (res.status == 200) {
-
-          
-          this.allLanguage = res.result;
-         // console.log(this.allLanguage)
-         this.letterIdArray=[]
+    this.labelLanguage.viewAllLanguages(listData).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          res = JSON.parse(res.toString());
+          if (res.status == 200) {
+  
+            
+            this.allLanguage = res.result;
+           // console.log(this.allLanguage)
+           this.letterIdArray=[]
+          }
+          else {
+            console.log(res.messages)
+          }
+        } else {
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.invalidResponse))
+       
+  
         }
-        else {
-          console.log(res.messages)
-        }
-      } else {
-        Swal.fire({
-          icon: 'error',
-          text: "environment.invalidResponseMsg",
-        });
-
-      }
-
-    });
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
 
 
   }
@@ -145,28 +154,31 @@ export class ViewalllanguagesComponent implements OnInit {
     }; 
 
     this.loading = true;
-    this.labelLanguage.getlanguages(params).subscribe((resp: any) => {
-      let respData = resp.RESPONSE_DATA;
-      let respToken = resp.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res:any = Buffer.from(respData,'base64'); 
-        res = JSON.parse(res.toString());
-        if (res.status == 200) {
-          this.loading = false;
-          this.language = res.result;
+    this.labelLanguage.getlanguages(params).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res:any = Buffer.from(respData,'base64'); 
+          res = JSON.parse(res.toString());
+          if (res.status == 200) {
+            this.loading = false;
+            this.language = res.result;
+          }
+          else {
+            console.log(res.messages)
+          }
+        }else{
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.invalidResponse))
+        
         }
-        else {
-          console.log(res.messages)
-        }
-      }else{
-        Swal.fire({
-          icon: 'error',
-          text: "environment.invalidResponseMsg",
-        });
-      }
-      
-    });
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+   
   }
 
  

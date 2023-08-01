@@ -67,6 +67,7 @@ export class ShareDocumentComponent implements OnInit {
  
 
   txtExpireDate:any;
+  currenttime:Date=new Date();
   config: AngularEditorConfig = {
     editable: true,
     spellcheck: true,
@@ -175,13 +176,17 @@ private vldChkLst:ValidatorchecklistService
 
 
   loadconfig(){
-    this.httpClient.get<any>(this.jsonurl).subscribe((data:any)=>
-     {
-      this.tablist=data[0].tabList;
-      this.utillist=data[0].utils
-      this.messaageslist=data[0].messages; 
-      this.title = this.commonserveice.langReplace(data[0].pagetitle);
-     })
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
    }
   onItemSelect(item: any) {
     this.userslist=[];
@@ -307,43 +312,44 @@ private vldChkLst:ValidatorchecklistService
       "fileId": fileId
       
       };
-  this.commonserveice.getFileDetails(dataParam).subscribe((response:any) => {
-    let respData = response.RESPONSE_DATA;
-    let respToken = response.RESPONSE_TOKEN;
-  
-    let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-    if(respToken == verifyToken){
-      let res:any = Buffer.from(respData,'base64'); 
-      let responseResult = JSON.parse(res)
-       
-        if (responseResult.status == 200) {
-          this.filedetails = responseResult.result.fileDetails;
-        // console.log(this.filedetails)
-          this.fileName=this.filedetails.fileName;
-          this.filepath=this.filedetails["filePath"];
-         }
-        if (responseResult.status == 400) {
-          this.filedetails = responseResult.result;
-        }
-        else if(responseResult.status==501){
-          
+      this.commonserveice.getFileDetails(dataParam).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
+        
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if(respToken == verifyToken){
+            let res:any = Buffer.from(respData,'base64'); 
+            let responseResult = JSON.parse(res)
+             
+              if (responseResult.status == 200) {
+                this.filedetails = responseResult.result.fileDetails;
+              // console.log(this.filedetails)
+                this.fileName=this.filedetails.fileName;
+                this.filepath=this.filedetails["filePath"];
+               }
+              if (responseResult.status == 400) {
+                this.filedetails = responseResult.result;
+              }
+              else if(responseResult.status==501){
+                
+                this.authService.directlogout();
+              }
+              else{
+                
+              }
+          }
+          else{
+           
+           this.authService.directlogout();
+          }
+        },
+        error: (msg) => {
           this.authService.directlogout();
-        }
-        else{
-          
-        }
-    }
-    else{
+       }
+     })
      
-     this.authService.directlogout();
-    }
-   
 
-  },
-  (error:any) =>{
-    
-   this.authService.directlogout();
-  })
   
    }
   
@@ -355,56 +361,55 @@ private vldChkLst:ValidatorchecklistService
       "userId": '',
       "fileId":this.fileId
     };
-    this.commonserveice.getUserlist(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-     
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-        let responseResult = JSON.parse(res)
+    this.commonserveice.getUserlist(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+       
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+          let responseResult = JSON.parse(res)
+    
+          if (responseResult.status == 200) {
+    
+            let result = responseResult.result;
   
-        if (responseResult.status == 200) {
-  
-          let result = responseResult.result;
-
-          for (let i = 0; i < result.length; i++) {
-  
-  
-            let obj: any = {};
-  
-            obj['itemName'] = result[i].userFullName;
-            obj['id'] = result[i].userId;
-            //console.log(obj)
-            this.nameList.push(obj);
-            this.tonameList.push(obj);
-            this.ccnameList.push(obj);
-            this.bccnameList.push(obj);
+            for (let i = 0; i < result.length; i++) {
+    
+    
+              let obj: any = {};
+    
+              obj['itemName'] = result[i].userFullName;
+              obj['id'] = result[i].userId;
+              //console.log(obj)
+              this.nameList.push(obj);
+              this.tonameList.push(obj);
+              this.ccnameList.push(obj);
+              this.bccnameList.push(obj);
+            }
+    
           }
-  
-        }
-        else if(responseResult.status==501){
-          
-          this.authService.directlogout();
+          else if(responseResult.status==501){
+            
+            this.authService.directlogout();
+          }
+          else{
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+           
+      
+          }
         }
         else{
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(environment.somethingWrong),
-   });
-    
+         
+          this.authService.directlogout();
         }
-      }
-      else{
-       
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      }
- 
-    },
-    (error:any) =>{
-      
-      this.authService.directlogout();
-    })
+     }
+   })
+
   }
   //\\ ======================== // get user list // ======================== //\\
 
@@ -414,44 +419,42 @@ downloadfils(fid: any, fpath: any) {
     "fileId": fid,
     "url": fpath
   };
-  this.commonserveice.fileDownload(dataParam).subscribe((response: any) => {
-    let respData = response.RESPONSE_DATA;
-    let respToken = response.RESPONSE_TOKEN;
-
-    let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-    if(respToken == verifyToken){
-      let res:any = Buffer.from(respData,'base64'); 
-      let responseResult = JSON.parse(res)
+  this.commonserveice.fileDownload(dataParam).subscribe({
+    next: (response) => { let respData = response.RESPONSE_DATA;
+      let respToken = response.RESPONSE_TOKEN;
   
-      if (responseResult.status == 200) {
-  
-        
-        this.downloaditem = responseResult.result;
-        this.downloadlink = this.downloaditem.filePath;
-        let link: any = document.createElement("a");
-        link.download = this.downloadlink;
-        link.href = this.downloadlink;
-        link.target = "_blank";
-        link.click();
-        
-      }
-      else if(responseResult.status==501){
+      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+      if(respToken == verifyToken){
+        let res:any = Buffer.from(respData,'base64'); 
+        let responseResult = JSON.parse(res)
+    
+        if (responseResult.status == 200) {
+    
           
-        this.authService.directlogout();
+          this.downloaditem = responseResult.result;
+          this.downloadlink = this.downloaditem.filePath;
+          let link: any = document.createElement("a");
+          link.download = this.downloadlink;
+          link.href = this.downloadlink;
+          link.target = "_blank";
+          link.click();
+          
+        }
+        else if(responseResult.status==501){
+            
+          this.authService.directlogout();
+        }
       }
-    }
-    else{
-    
-     this.authService.directlogout();
-    }
-
-
- 
+      else{
+      
+       this.authService.directlogout();
+      }
   },
-  (error:any) =>{
-    
-   this.authService.directlogout();
-  })
+    error: (msg) => {
+      this.authService.directlogout();
+   }
+ })
+ 
 }
 //\\ ======================== // Download File // ======================== //\\ 
 
@@ -463,10 +466,8 @@ let expireDate=this.txtExpireDate;
 let mailSubject=this.txtSubject;
 let mailDesc=this.ckdesc;
 if ((sharethrough == '1') && (this.userslist.length == 0)) {
-  Swal.fire({
-    icon: 'error',
-    text: this.commonserveice.langReplace(this.messaageslist.selectuser),
-  });
+  this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.messaageslist.selectuser))
+
 
 }  
 
@@ -478,11 +479,8 @@ else if ((sharethrough == '1') && (!this.vldChkLst.blankCheck(expireDate,this.co
   
 }
 else if ((sharethrough == '2') && (this.touserslist.length == 0)) {
+  this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.messaageslist.selecttouser))
 
-  Swal.fire({
-    icon: 'error',
-    text: this.commonserveice.langReplace(this.messaageslist.selecttouser),
-  });
 }
 else if ((sharethrough == '2') && (!this.vldChkLst.blankCheck(mailSubject,this.commonserveice.langReplace(this.messaageslist.txtsubject),'txtSubject'))) {
 
@@ -523,72 +521,65 @@ else{
 }
 
 //console.log(shareParams)
-this.commonserveice.fileShare(shareParams).subscribe((response: any) => {
-  let respData = response.RESPONSE_DATA;
-  let respToken = response.RESPONSE_TOKEN;
-
-  let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-  let responseResult = JSON.parse(res)
-
-  if (responseResult.status == 200) {
-    Swal.fire({
-
-      text: this.commonserveice.langReplace(this.messaageslist.successMsg),
-      icon: 'success',
-      confirmButtonColor: '#3085d6',
-      confirmButtonText: 'Ok'
-    }).then((result) => {
-
-
-      let encSchemeStr = this.encDec.encText(this.folderid.toString());
-      this.route.navigate(['/admin/viewupload', encSchemeStr])
-      // this.getFolders();
-      // this.resetform();
-    })
-
-
-
-  }
-
-  else if(responseResult.status == 400){
-
-    
-    Swal.fire({
-      icon: 'error',
-      text:responseResult.message,
-      
-    });
-
-
-   }
-
-   else if(responseResult.status==501){
-        
-    this.authService.directlogout();
-  }
- else{
-  Swal.fire({
-    icon: 'error',
-    text: this.commonserveice.langReplace(environment.somethingWrong),
-});
-
- }
-      }
-      else{
-       
-        this.authService.directlogout();
-      }
-
-  //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
- 
-
-},
-(error:any) =>{
+this.commonserveice.fileShare(shareParams).subscribe({
+  next: (response) => {  let respData = response.RESPONSE_DATA;
+    let respToken = response.RESPONSE_TOKEN;
   
-  this.authService.directlogout();
+    let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+    let responseResult = JSON.parse(res)
+  
+    if (responseResult.status == 200) {
+      Swal.fire({
+  
+        text: this.commonserveice.langReplace(this.messaageslist.successMsg),
+        icon: 'success',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Ok'
+      }).then((result) => {
+  
+  
+        let encSchemeStr = this.encDec.encText(this.folderid.toString());
+        this.route.navigate(['/admin/viewupload', encSchemeStr])
+        // this.getFolders();
+        // this.resetform();
+      })
+  
+  
+  
+    }
+  
+    else if(responseResult.status == 400){
+  
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+
+  
+  
+     }
+  
+     else if(responseResult.status==501){
+          
+      this.authService.directlogout();
+    }
+   else{
+    this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+
+  
+   }
+        }
+        else{
+         
+          this.authService.directlogout();
+        }
+  
+    //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
+   },
+  error: (msg) => {
+    this.authService.directlogout();
+ }
 })
+
 
 
 }

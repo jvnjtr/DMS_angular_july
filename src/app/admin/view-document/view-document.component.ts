@@ -186,11 +186,12 @@ export class ViewDocumentComponent implements OnInit {
   sortColumn: string = 'ticker';
   tablecollist = [
     { "name": "Document No", "cname": "fileRefNo", "sortable": true },
-    { "name": "Type", "cname": "fileType", "sortable": false },
+
     { "name": "Name", "cname": "fileName", "sortable": true },
     { "name": "Version", "cname": "fileVersion", "sortable": false },
     { "name": "Size", "cname": "fileSize", "sortable": true },
-    { "name": "Created By", "cname": "createdByName", "sortable": true }
+    { "name": "Created By", "cname": "createdByName", "sortable": true },
+    { "name": "Created On", "cname": "CreatedOn", "sortable": true }
   ]
 
 
@@ -296,19 +297,17 @@ export class ViewDocumentComponent implements OnInit {
   }
 
   loadconfig() {
-    this.httpClient.get<any>(this.jsonurl).subscribe((data: any) => {
-      this.tablist = data[0].tabList;
-      this.utillist = data[0].utils
-      this.messaageslist = data[0].messages;
-      this.title = data[0].pagetitle;
-    },
-      (error: any) => {
-        this.loading = false;
-        Swal.fire({
-          icon: 'error',
-          text: error
-        });
-      })
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
   }
 
 
@@ -324,8 +323,9 @@ export class ViewDocumentComponent implements OnInit {
     let dataParam = {
       "folderId": fldrId,
     };
-    this.commonserveice.getFoldersSingle(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
+    this.commonserveice.getFoldersSingle(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
       let respToken = response.RESPONSE_TOKEN;
       let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
       if (respToken == verifyToken) {
@@ -456,10 +456,7 @@ export class ViewDocumentComponent implements OnInit {
 
         else {
 
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(environment.somethingWrong)
-          });
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
         }
       }
       else {
@@ -467,12 +464,13 @@ export class ViewDocumentComponent implements OnInit {
         this.authService.directlogout();
       }
 
-
-
-    },
-      (error: any) => {
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      })
+     }
+   })
+   
+ 
 
 
   }
@@ -488,53 +486,51 @@ export class ViewDocumentComponent implements OnInit {
       "searchfilter": searchitems
     };
     //  console.log(dataParam)
-    this.commonserveice.folderWiseDetails(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        let responseResult = JSON.parse(res)
-     
-        if (responseResult.status == 200) {
-          this.loading = false;
+    this.commonserveice.folderWiseDetails(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+       
+          if (responseResult.status == 200) {
+            this.loading = false;
+            
+            this.ffdetailsArr = responseResult.result;
+           this.loadHierarchy(this.folderid);
+           this.rowClicked = -1;
           
-          this.ffdetailsArr = responseResult.result;
-         this.loadHierarchy(this.folderid);
-         this.rowClicked = -1;
-        
-        }
-        else if (responseResult.status == 400) {
-          this.loading = false;
-          // Swal.fire({
-          //   icon: 'error',
-          //   text: responseResult.message,
-
-          // });
-        }
-        else if (responseResult.status == 501) {
-
-          this.authService.directlogout();
+          }
+          else if (responseResult.status == 400) {
+            this.loading = false;
+            // Swal.fire({
+            //   icon: 'error',
+            //   text: responseResult.message,
+  
+            // });
+          }
+          else if (responseResult.status == 501) {
+  
+            this.authService.directlogout();
+          }
+          else {
+            this.loading = false;
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+  
+          }
         }
         else {
           this.loading = false;
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(environment.somethingWrong)
-          });
-
+          this.authService.directlogout();
         }
-      }
-      else {
-        this.loading = false;
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      }
-
-    },
-      (error: any) => {
-        this.loading = false;
-        this.authService.directlogout();
-      })
+     }
+   })
+    
 
   }
   //\\ ======================== // Load Data // ======================== //\\ 
@@ -587,8 +583,9 @@ export class ViewDocumentComponent implements OnInit {
     let dataParam = {
       "folderId": fldrId,
     };
-    this.commonserveice.getFoldersSingle(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
+    this.commonserveice.getFoldersSingle(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
       let respToken = response.RESPONSE_TOKEN;
       let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
       if (respToken == verifyToken) {
@@ -605,10 +602,8 @@ export class ViewDocumentComponent implements OnInit {
           }
         }
         else if (responseResult.status == 400) {
-          Swal.fire({
-            icon: 'error',
-            text: responseResult.message
-          });
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+       
         }
         else if (responseResult.status == 501) {
 
@@ -617,20 +612,19 @@ export class ViewDocumentComponent implements OnInit {
 
         else {
 
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(environment.somethingWrong)
-          });
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
         }
       }
       else {
         this.loading = false;
         this.authService.directlogout();
       }
-    },
-      (error: any) => {
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      })
+     }
+   })
+  
   }
   //\\ ======================== // Edit Folder // ======================== //\\
 
@@ -644,8 +638,9 @@ export class ViewDocumentComponent implements OnInit {
       "bookmarkStatus": 0,
       "searchfilter": ''
     };
-    this.commonserveice.getFoldersSingle(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
+    this.commonserveice.getFoldersSingle(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
       let respToken = response.RESPONSE_TOKEN;
       let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
       if (respToken == verifyToken) {
@@ -680,12 +675,12 @@ export class ViewDocumentComponent implements OnInit {
         this.loading = false;
         this.authService.directlogout();
       }
-
-    },
-      (error: any) => {
-        this.loading = false;
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      })
+     }
+   })
+    
   }
   //\\ ======================== // Folder Hierarchy // ======================== //\\
 
@@ -697,8 +692,9 @@ export class ViewDocumentComponent implements OnInit {
       "folderId": folderId,
 
     };
-    this.commonserveice.fileBookmark(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
+    this.commonserveice.fileBookmark(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
       let respToken = response.RESPONSE_TOKEN;
       let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
       if (respToken == verifyToken) {
@@ -757,11 +753,12 @@ export class ViewDocumentComponent implements OnInit {
         this.authService.directlogout();
       }
 
-    },
-      (error: any) => {
-        this.loading = false;
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      })
+     }
+   })
+   
 
   }
   //\\ ======================== // Bookmark file // ======================== //\\   
@@ -1094,22 +1091,7 @@ else{
   }
   //\\ ======================== // Move file // ======================== //\\
 
-  //\\ ======================== // Get file Type // ======================== //\\
-  getfiletype(filename: any) {
 
-    let icon: any;
-    let iconsGroups: any = environment.iconsGroups;
-    for (let i = 0; i < iconsGroups.length; i++) {
-      let filetype: any = iconsGroups[i].groups.includes(filename);
-      if (filetype == true) {
-        icon = iconsGroups[i].name;
-      }
-
-    }
-    return icon;
-
-  }
-  //\\ ======================== // Get file Type // ======================== //\\
   resizediv(openflag: any) {
     this.toggle = !this.toggle;
     let fcard = <HTMLInputElement>document.getElementById('first-card');
@@ -1227,67 +1209,10 @@ else{
 
 
 
-  onSortClick(name: any, event: any) {
-
-    let target = event.currentTarget,
-      classList = target.classList;
-
-
-    if (classList.contains('bi-arrow-up')) {
-      classList.remove('bi-arrow-up');
-      classList.add('bi-arrow-down');
-      this.sortDir = -1;
-    } else {
-      classList.add('bi-arrow-up');
-      classList.remove('bi-arrow-down');
-      this.sortDir = 1;
-    }
-    this.sortArr(name);
-
-    //this.sortArr('departmentName');
-  }
-
-  sortArr(colName: any) {
-
-    this.sortColumn = colName;
-    if (this.sortOrder == 'asc') {
-      this.sortOrder = 'desc';
-    }
-    else {
-      this.sortOrder = 'asc';
-    }
-
-    this.ffdetailsArr = this.ffdetailsArr.sort((a: any, b: any) => {
-     
-      if(this.sortOrder == 'asc'){
-        return a[colName].localeCompare(b[colName], 'en', { numeric: true });
-      }
-      else{
-        return b[colName].localeCompare(a[colName], 'en', { numeric: true });
-      }
-   
-    })
-
-
-
-
-
-
-  }
 
   //\\ ======================== // Data sorting // ======================== //\\
 
-  formatBytes(bytes: any, decimals: any) {
-    if (!+bytes) return '0 Bytes'
 
-    const k = 1024
-    const dm = decimals < 0 ? 0 : decimals
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-  }
 
   //===================this function will show only the file last checkout status.================//
   showCheckIncheckoutStatus(fileId: any, checkInCheckoutStatus: any) {
@@ -1301,8 +1226,9 @@ else{
       };
 
       // console.log(formParams) 
-      this.commonserveice.checkinCheckout(formParams).subscribe((response: any) => {
-        let respData = response.RESPONSE_DATA;
+      this.commonserveice.checkinCheckout(formParams).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
         let respToken = response.RESPONSE_TOKEN;
 
         let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
@@ -1331,32 +1257,27 @@ else{
             });
           }
           else if (responseResult.status == 400) {
-            Swal.fire({
-              icon: 'error',
-              text: responseResult.message,
-
-            });
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+   
           }
           else if (responseResult.status == 501) {
 
             this.authService.directlogout();
           }
           else {
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(environment.somethingWrong),
-
-            });
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
           }
         }
         else {
           this.loading = false;
           this.authService.directlogout();
         }
-      },
-        (error: any) => {
+        },
+        error: (msg) => {
           this.authService.directlogout();
-        });
+       }
+     })
+ 
     }
   }
   //===================this function will show only the file last checkout status.================//

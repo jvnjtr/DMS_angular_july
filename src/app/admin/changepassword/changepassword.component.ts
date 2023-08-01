@@ -108,11 +108,8 @@ else if(!this.vldChkLst.chkPassword(confpass)){
 }
 
     else if(newpass !== confpass){
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace('Enter New and Confirm Password not matched'),
-        
-      });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace('Enter New and Confirm Password not matched'))
+     
     }
     else{
     
@@ -124,60 +121,58 @@ else if(!this.vldChkLst.chkPassword(confpass)){
         };
       
     //  console.log(formParams) 
-this.commonserveice.changePassword(formParams).subscribe((response:any)=>{
-  let respData = response.RESPONSE_DATA;
-  let respToken = response.RESPONSE_TOKEN;
-
-
-  let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-        let responseResult = JSON.parse(res)
-        if(responseResult.status == 200){
-          Swal.fire({
-            icon: 'success',
-            text: this.commonserveice.langReplace('Your Password changed Successfully'),
-            
-          }).then((result:any) => {
-            if (result.isConfirmed) {
-              this.resetform();
-              this.authService.directlogout();
-              
-            }
-          });
-          
-          
-        }
-        else if(responseResult.status == 400){
-          Swal.fire({
-            icon: 'error',
-            text: responseResult.message,
-            
-          });
-        }
-        else if(responseResult.status==501){
+    this.commonserveice.changePassword(formParams).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+      
+      
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+            if(respToken == verifyToken){
+              let res:any = Buffer.from(respData,'base64'); 
+              let responseResult = JSON.parse(res)
+              if(responseResult.status == 200){
+                Swal.fire({
+                  icon: 'success',
+                  text: this.commonserveice.langReplace('Your Password changed Successfully'),
+                  
+                }).then((result:any) => {
+                  if (result.isConfirmed) {
+                    this.resetform();
+                    this.authService.directlogout();
+                    
+                  }
+                });
                 
-          this.authService.directlogout();
-        }
-        else{
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace('Enter Old Password Not Matched'),
-            
-          });
-        }
-      }
-      else{
-       
+                
+              }
+              else if(responseResult.status == 400){
+                Swal.fire({
+                  icon: 'error',
+                  text: responseResult.message,
+                  
+                });
+              }
+              else if(responseResult.status==501){
+                      
+                this.authService.directlogout();
+              }
+              else{
+                this.commonserveice.swalfire('error',this.commonserveice.langReplace('Enter Old Password Not Matched'))
+              
+              }
+            }
+            else{
+             
+              this.authService.directlogout();
+            }
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      }
+     }
+   })
 
 
-
-},
-(error:any) =>{
-  this.authService.directlogout();
-});
 
     }
 

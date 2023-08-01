@@ -58,9 +58,12 @@
                                                                                          <td>{{plist.fileRefNo}}</td>
                                                                                          <td class="text-center">
                                                                                   
-                                                                                                 <i class="h6" [ngClass]="getfiletype(plist.fileType)" ></i>
+                                                                                                 <i class="h6" [ngClass]="commonserveice.getfiletype(plist.fileType)" ></i>
                                                                                              </td>
-                                                                                         <td><a class="text-primary" (click)="loadpreview(plist.fileId,plist.fileType,plist.filePath,0,plist.lockStatus)"  >{{plist.fileName}}
+                                                                                         <td>
+                                                                                            
+                                                                                                
+                                                                                                <a class="text-primary" (click)="loadpreview(plist.fileId,plist.fileType,plist.filePath,0,plist.lockStatus)"  >{{plist.fileName}}
                                                                                                         <i ngbTooltip="Locked File" class='{{plist.lockStatus==1? "bi bi-lock-fill text-danger ml-1" :""}}'></i></a>
                                                                                         </td>
                                                                                          <!-- <td class="text-right">{{plist.fileSize}}</td> -->
@@ -70,7 +73,7 @@
                                                                                                  <small class="text-primary d-block mt-1">{{plist.CreatedOn}}</small>
                                                                                          </td> -->
                                                                                          <td *ngIf="userLoginId != 1">
-                                                                                                 <a class="btn btn-sm btn-success"  href="javascript:void(0)" (click)="takeAction(plist.fileId+':'+plist.folderId+':'+plist.stageNo+':'+plist.workflowFolderId+':'+plist.intApprovalId+':'+plist.filePath+':'+plist.fileName+':'+0+':'+plist.lockStatus+':'+plist.fileType)">{{"Take Action" | langReplace}}</a>
+                                                                                                 <a class="btn btn-sm btn-success"  href="javascript:void(0)" (click)="takeAction(plist.fileId+':'+plist.folderId+':'+plist.stageNo+':'+plist.workflowFolderId+':'+plist.intApprovalId+':'+plist.filePath+':'+plist.fileName+':'+0+':'+plist.lockStatus+':'+plist.fileType,plist.checkInCheckoutStatus)">{{"Take Action" | langReplace}}</a>
                                                                                              
                                                                                          </td>
                                              
@@ -110,7 +113,7 @@
                                                       </div>
                                                             <h6 class="card-title mb-3">{{"documents" | langReplace }}</h6>   
                                                 <div class="w-100 d-flex justify-content-between portletdata">
-                                                    <a href="javascript:voaid(0)" class="text-primary">{{noofdocumets}} {{"Documents" | langReplace }}  </a>
+                                                    <a href="javascript:voaid(0)"  routerLink="../../reports/allfiles" class="text-primary">{{noofdocumets}} {{"Documents" | langReplace }}  </a>
                                                     <span>{{sizeofdocuments}}</span>
                                                 </div>
                                                      
@@ -126,7 +129,7 @@
                                                               </div>
                                                             <h6 class="card-title mb-3">{{"Folders" | langReplace }} </h6>    
                                                             <div class="w-100 d-flex justify-content-between portletdata">
-                                                                    <a href="javascript:voaid(0)" class="text-warning">{{nooffolders}} {{"Folders" | langReplace }}  </a>
+                                                                    <a href="javascript:voaid(0)" routerLink="../../reports/folderwise"  class="text-warning">{{nooffolders}} {{"Folders" | langReplace }}  </a>
                                                                     <span>{{sizeoffolders}}</span>
                                                                 </div>
                                                      
@@ -142,7 +145,7 @@
                                                               </div>
                                                             <h6 class="card-title mb-3">{{"Share" | langReplace }} </h6>   
                                                             <div class="w-100  d-flex justify-content-between portletdata">
-                                                                    <a href="javascript:voaid(0)" class="text-info">{{noofsharedfiles}} {{"Documents" | langReplace }} </a>
+                                                                    <a href="javascript:voaid(0)" routerLink="../../reports/sharedfilewise" class="text-info">{{noofsharedfiles}} {{"Documents" | langReplace }} </a>
                                                                     <span>{{sizeofsharedfiles}} </span>
                                                                 </div>
                                                                 
@@ -163,9 +166,9 @@
                                                         <ul class="listing" *ngIf="activitylist?.length > 0; else norecord">
 
                                                                         <li *ngFor="let mlist of activitylist; let i = index">
-                                                                                        <a class="docs" href="javascript:void(0)"    >
+                                                                                        <a class="docs" href="javascript:void(0)"  (click)="loadpreview(mlist.fileOrFolderId,mlist.fileName,mlist.filePath,0,mlist.lockStatus)"  >
                                                                                                
-                                                                                               <i class="h6" [ngClass]="mlist.fileType?getfiletype(mlist.fileType):'bi-folder-fill text-warning'" ></i>
+                                                                                               <i class="h6" [ngClass]="mlist.fileType?commonserveice.getfiletype(mlist.fileType):'bi-folder-fill text-warning'" ></i>
 
                                                                                                 {{mlist.folderName ? mlist.folderName : mlist.fileName}} 
                                                                                                
@@ -205,7 +208,7 @@
                                                             <ul class="listing" *ngIf="recentlist?.length > 0; else norecord">
                                                                     <li *ngFor="let flist of recentlist; let i = index" >
                                                                         <a class="docs" (click)="loadpreview(flist.fileId,flist.fileName,flist.filePath,0,flist.lockStatus)"  >
-                                                                                        <i class="h6" [ngClass]="getfiletype(flist.fileType)" ></i>
+                                                                                        <i class="h6" [ngClass]="commonserveice.getfiletype(flist.fileType)" ></i>
                                                                                         {{flist.fileName}}
                                                                                         <i ngbTooltip="Locked File" style="font-size:1rem" class='position-relative  {{flist.lockStatus==1? "bi bi-lock-fill text-danger ml-1" :""}}'></i>
                                                                             <span> {{flist.CreatedOn }}</span>

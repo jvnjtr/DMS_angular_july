@@ -102,9 +102,12 @@
                   ">
                   {{ "Search" | langReplace }}
                 </button>
-                <button class="btn btn-danger ml-1" (click)="loadData(1, 0, '', '', '', 0); resetform()">
+                
+                <button  class="btn btn-danger ml-1" (click)="loadData(1, 0, '', '', '', 0); resetform()">
                   {{ "Reset" | langReplace }}
                 </button>
+
+                 
               </div>
             </div>
           </div>
@@ -116,6 +119,7 @@
         <div *ngIf="selType == 1">
           <div *ngIf="queryList?.length > 0; else norecord">
             <div class="d-flex justify-content-between mb-3">
+              <div>
               <div *ngIf="txtUserName > 0">
                 <h6 class="mb-0" *ngIf="searchstatus == 1">
                   {{ "Search Result Based On" | langReplace }} :
@@ -124,17 +128,18 @@
                     {{ selBasedon ? "Based on -" + selBasedon : "" }}
                     {{
                     txtFromdate
-                    ? "From Date -" + (txtFromdate | date : "dd-MM-yyyy")
+                    ? "From Date -" + (txtFromdate | date : "dd-MMM-yyyy")
                     : ""
                     }}
                     {{
                     txtTodate
-                    ? ", To Date -" + (txtTodate | date : "dd-MM-yyyy")
+                    ? ", To Date -" + (txtTodate | date : "dd-MMM-yyyy")
                     : ""
                     }}
                   </span>
                 </h6>
               </div>
+            </div>
               <div class="p-none" *ngIf="selType == 1">
                 {{ "Per Page" | langReplace }} :
                 <select (change)="onTableSizeChange($event)">
@@ -152,7 +157,7 @@
                     <th width="50px">{{ "Sl No" | langReplace }}</th>
 
                     <th *ngFor="let flist of tablecollist">
-                      <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname, $event)"
+                      <i *ngIf="flist.sortable" (click)="commonserveice.onSortClick(flist.cname, $event,queryList)"
                         class="my-icon bi bi-arrow-up"></i>
 
                       {{ flist.name | langReplace }}
@@ -176,12 +181,12 @@
                       {{ plist.folderName }}
                     </td>
                     <td>
-                      <i class="h6" [ngClass]="getfiletype(plist.fileType)"></i>
+                      <i class="h6" [ngClass]="commonserveice.getfiletype(plist.fileType)"></i>
                       {{ plist.fileName }}
                     </td>
 
                     <td class="text-right">
-                      {{ formatBytes(plist.fileSize, 2) }}
+                      {{ commonserveice.formatBytes(plist.fileSize, 2) }}
                     </td>
 
                     <td>{{ plist.createdByName }}</td>

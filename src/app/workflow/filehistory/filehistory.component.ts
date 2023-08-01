@@ -91,19 +91,17 @@ ngOnInit(): void {
 
 //\\ ======================== // Load Config // ======================== //\\
 loadconfig(){
-  this.httpClient.get<any>(this.jsonurl).subscribe((data:any)=>
-   {
-    this.tablist=data[0].tabList;
-    this.utillist=data[0].utils
-    this.messaageslist=data[0].messages; 
-    this.title = data[0].pagetitle;
-   },
-   (error:any) =>{
-     Swal.fire({
-       icon: 'error',
-       text: error
-     });
-   })
+  this.httpClient.get<any>(this.jsonurl).subscribe({
+    next: (data) => {
+       this.tablist=data[0].tabList;
+         this.utillist=data[0].utils
+         this.messaageslist=data[0].messages; 
+         this.title = data[0].pagetitle;
+    },
+    error: (msg) => {
+      this.authService.directlogout();
+   }
+ })
  }
 //\\ ======================== // Load Config // ======================== //\\
 //\\ ======================== // Get Action List // ======================== //\\

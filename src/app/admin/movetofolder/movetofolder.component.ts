@@ -51,13 +51,18 @@ export class MovetofolderComponent implements OnInit {
   }
   //\\ ======================== // Config // ======================== //\\
   loadconfig(){
-    this.httpClient.get<any>(this.jsonurl).subscribe((data:any)=>
-     {
-      this.tablist=data[0].tabList;
-      this.utillist=data[0].utils
-      this.messaageslist=data[0].messages; 
-      this.title = data[0].pagetitle;
-     })
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+   
    }
      //\\ ======================== // Config // ======================== //\\
 
@@ -79,70 +84,61 @@ if(!(this.vldChkLst.selectDropdown(newFolder,this.commonserveice.langReplace(thi
         "fileId":this.mfileid,
         "folderId":newFolder
        }
-      
-       this.commonserveice.moveTofolder(moveParams).subscribe((response:any) => {
-         let respData = response.RESPONSE_DATA;
-         let respToken = response.RESPONSE_TOKEN;
-
-         let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-         if(respToken == verifyToken){
-          let res:any = Buffer.from(respData,'base64'); 
-          let responseResult = JSON.parse(res)
-         
-           if (responseResult.status == 200) {
-            
-              Swal.fire({
-                 
-               text: this.commonserveice.langReplace(this.messaageslist.movesuccessMsg),
-               icon: 'success',
-               confirmButtonColor: '#3085d6',
-               confirmButtonText: this.commonserveice.langReplace('Ok')
-             }).then((result) => {
-              let encSchemeStr = this.encDec.encText(this.mFolderid.toString());
-               
-              this.route.navigate(['/admin/viewupload', encSchemeStr])
-              
-            this.callfunction.emit(); 
-            
-             })
-   
-   
-            
-            }
-            else if(responseResult.status == 400){
-  
-              Swal.fire({
-                icon: 'error',
-                text: responseResult.message
-              });
-             
-            }
-   
-            else if(responseResult.status==501){
+       this.commonserveice.moveTofolder(moveParams).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
+ 
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if(respToken == verifyToken){
+           let res:any = Buffer.from(respData,'base64'); 
+           let responseResult = JSON.parse(res)
           
-              this.authService.directlogout();
-            }
+            if (responseResult.status == 200) {
+             
+               Swal.fire({
+                  
+                text: this.commonserveice.langReplace(this.messaageslist.movesuccessMsg),
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: this.commonserveice.langReplace('Ok')
+              }).then((result) => {
+               let encSchemeStr = this.encDec.encText(this.mFolderid.toString());
+                
+               this.route.navigate(['/admin/viewupload', encSchemeStr])
+               
+             this.callfunction.emit(); 
+             
+              })
+    
+    
+             
+             }
+             else if(responseResult.status == 400){
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message ))
+              
+              
+             }
+    
+             else if(responseResult.status==501){
+           
+               this.authService.directlogout();
+             }
+           else{
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+             
+             }
+          }
           else{
-           
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(environment.somethingWrong)
-     });
-            }
-         }
-         else{
-           
+            
+           this.authService.directlogout();
+          }
+        },
+        error: (msg) => {
           this.authService.directlogout();
-         }
-
-         //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
-        
-       
-       },
-       (error:any) =>{
-         
-        this.authService.directlogout();
-       }) 
+       }
+     })
+      
  
  
       }
@@ -161,46 +157,39 @@ if(!(this.vldChkLst.selectDropdown(newFolder,this.commonserveice.langReplace(thi
   let dataParam = {
     "folderId": 0,
     };
-this.commonserveice.getFolders(dataParam).subscribe((response:any) => {
-  let respData = response.RESPONSE_DATA;
-  let respToken = response.RESPONSE_TOKEN;
- 
-  let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-  let responseResult = JSON.parse(res)
-   
-  
-    if(responseResult.status == '200'){
-      this.folderlist=responseResult.result;
-     
-    }
-    else if(responseResult.status==501){
-        
-      this.authService.directlogout();
-    }
-    else{
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace(environment.somethingWrong)
-});
-    }
-      }
-      else{
+    this.commonserveice.getFolders(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
        
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+            if(respToken == verifyToken){
+              let res:any = Buffer.from(respData,'base64'); 
+        let responseResult = JSON.parse(res)
+         
+        
+          if(responseResult.status == '200'){
+            this.folderlist=responseResult.result;
+           
+          }
+          else if(responseResult.status==501){
+              
+            this.authService.directlogout();
+          }
+          else{
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+          }
+            }
+            else{
+             
+              this.authService.directlogout();
+            }
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      }
+     }
+   })
 
-
- 
-
-
-  
-},
-(error:any) =>{
-  
-  this.authService.directlogout();
-})
 }
 //\\ ======================== // get Folders // ======================== //\\
 }

@@ -84,12 +84,18 @@ export class ManageLanguageComponent implements OnInit {
    
   }
   loadconfig() {
-    this.httpClient.get<any>(this.jsonurl).subscribe((data: any) => {
-      this.tablist = data[0].tabList;
-      this.utillist = data[0].utils
-      this.messaageslist = data[0].messages;
-      this.title = data[0].pagetitle;
-    })
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+   
   }
   multilingual(test: any) {
     return test;
@@ -171,7 +177,8 @@ export class ManageLanguageComponent implements OnInit {
       return false;
     }
     else if (languageName.match(format)) {
-      Swal.fire("warning !!", this.commonserveice.langReplace("Language Name should not have any special character"), "warning");
+      this.commonserveice.swalfire('warning',this.commonserveice.langReplace("Language Name should not have any special character"))
+      
       return false;
     }
     else if (!this.validationService.blankCheck(aliasName, this.commonserveice.langReplace("Enter Alias Name"),'txtAliasName')) {
@@ -203,62 +210,49 @@ export class ManageLanguageComponent implements OnInit {
         'aliasName':this.txtAliasName
        };
       
-
-      this.manageLanguage.addLanguage(listData).subscribe((resp: any) => {
-        let respData = resp.RESPONSE_DATA;
-        let respToken = resp.RESPONSE_TOKEN;
-        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        if (respToken == verifyToken) {
-          let res: any = Buffer.from(respData, 'base64');
-          res = JSON.parse(res.toString());
-          if (res.status == 200) {
-            Swal.fire({
-              icon: 'success',
-              text: this.commonserveice.langReplace(this.messaageslist.successMsg),
-            }).then((e) => {
-              this.resetform()
-              this.ngOnInit();
-            });
-
-          }  else if (res.status == 400) {
-            Swal.fire({
-              icon: 'warning',
-              text: res.message,
-            });
-          } else if (res.status == 417) {
-            Swal.fire({
-              icon: 'error',
-               text:this.commonserveice.langReplace(environment.invalidResponse)
-            });
+       this.manageLanguage.addLanguage(listData).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if (respToken == verifyToken) {
+            let res: any = Buffer.from(respData, 'base64');
+            res = JSON.parse(res.toString());
+            if (res.status == 200) {
+              Swal.fire({
+                icon: 'success',
+                text: this.commonserveice.langReplace(this.messaageslist.successMsg),
+              }).then((e) => {
+                this.resetform()
+                this.ngOnInit();
+              });
+  
+            }  else if (res.status == 400) {
+              Swal.fire({
+                icon: 'warning',
+                text: res.message,
+              });
+            } else if (res.status == 417) {
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.invalidResponse))
+            } else {
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.messaageslist.errorMsg))
+             
+            }
           } else {
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(this.messaageslist.errorMsg),
-            });
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.errorApiResponse))
+          
+  
           }
-        } else {
-          Swal.fire({
-            icon: 'error',
-            text:this.commonserveice.langReplace(environment.errorApiResponse)
-          });
-
-        }
-
-
-      },
-        (error) => {
+        },
+        error: (msg) => {
           this.authService.directlogout();
-        });
+       }
+     })
+   
       }
   }
  
   //\\ ======================== // Save Language // ======================== //\\
-
-
-
-
-
-
 
 
 
@@ -281,44 +275,41 @@ export class ManageLanguageComponent implements OnInit {
       'intId':langid
     
     };
-    this.manageLanguage.viewLanguage(listData).subscribe((resp: any) => {
-      let respData = resp.RESPONSE_DATA;
-      let respToken = resp.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        res = JSON.parse(res.toString());
-        if (res.status == 200) {
-          this.getLanguageList = res.result;
-        // console.log(this.getLanguageList)
-        } else if (res.status == 417) {
-          Swal.fire({
-            icon: 'error',
-             text:this.commonserveice.langReplace(environment.invalidResponse)
-          });
-        } 
-        else if(res.status==501){
+    this.manageLanguage.viewLanguage(listData).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          res = JSON.parse(res.toString());
+          if (res.status == 200) {
+            this.getLanguageList = res.result;
+          // console.log(this.getLanguageList)
+          } else if (res.status == 417) {
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.invalidResponse ))
+           
+          } 
+          else if(res.status==501){
+            
+            this.authService.directlogout();
+          }
           
-          this.authService.directlogout();
-        }
+          else {
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+          }
+        } else {
         
-        else {
-          Swal.fire({
-            icon: 'error',
-             text: this.commonserveice.langReplace(environment.somethingWrong)
-          });
+            this.loading = false;
+            this.authService.directlogout();
+          
         }
-      } else {
-      
-          this.loading = false;
-          this.authService.directlogout();
-        
-      }
-
-    },(error:any) =>{
-      this.loading=false;
-      this.authService.directlogout();
-    });
+      },
+      error: (msg) => {
+           this.authService.directlogout();
+     }
+   })
+    
   }
 
 //\\ ======================== // Get Languages // ======================== //\\
@@ -333,48 +324,44 @@ export class ManageLanguageComponent implements OnInit {
       'intId':id
     
     };
-    this.manageLanguage.viewLanguage(listData).subscribe((resp: any) => {
-      let respData = resp.RESPONSE_DATA;
-      let respToken = resp.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        res = JSON.parse(res.toString());
-        if (res.status == 200) {
-
-          let langlist=res.result;
-          this.txtLangName=langlist[0].langName
-          this.txtAliasName=langlist[0].aliasName
-       
+    this.manageLanguage.viewLanguage(listData).subscribe({
+      next: (response) => { let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          res = JSON.parse(res.toString());
+          if (res.status == 200) {
+  
+            let langlist=res.result;
+            this.txtLangName=langlist[0].langName
+            this.txtAliasName=langlist[0].aliasName
+         
+            
+          } else if (res.status == 417) {
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.invalidResponse ))
+          } 
+          else if(res.status==501){
+            
+            this.authService.directlogout();
+          }
           
-        } else if (res.status == 417) {
-          Swal.fire({
-            icon: 'error',
-             text:this.commonserveice.langReplace(environment.invalidResponse)
-          });
-        } 
-        else if(res.status==501){
+          else {
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+        
+          }
+        } else {
+        
+            this.loading = false;
+            this.authService.directlogout();
           
-          this.authService.directlogout();
-        }
-        
-        else {
-          Swal.fire({
-            icon: 'error',
-             text: this.commonserveice.langReplace(environment.somethingWrong)
-          });
-        }
-      } else {
-      
-          this.loading = false;
-          this.authService.directlogout();
-        
-      }
+        }},
+      error: (msg) => {
+           this.authService.directlogout();
+     }
+   })
 
-    },(error:any) =>{
-      this.loading=false;
-      this.authService.directlogout();
-    });
+  
   }
 
 

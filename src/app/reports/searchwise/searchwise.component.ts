@@ -96,19 +96,18 @@ tablecollist=[
   }
   
   loadconfig(){
-    this.httpClient.get<any>(this.jsonurl).subscribe((data:any)=>
-     {
-      this.tablist=data[0].tabList;
-      this.utillist=data[0].utils
-      this.messaageslist=data[0].messages; 
-      this.title = data[0].pagetitle;
-     },
-     (error:any) =>{
-       Swal.fire({
-         icon: 'error',
-         text: error
-       });
-     })
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+   
    }
 
 
@@ -121,48 +120,45 @@ viewsearchQuery(){
 
  
   let dataParam = {};
-    this.loading=true
-this.reportService.searchQueryResult(dataParam).subscribe((response:any) => {
-  let respData = response.RESPONSE_DATA;
-  let respToken = response.RESPONSE_TOKEN;
+    this.loading=true;
+    this.reportService.searchQueryResult(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+      
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+        let responseResult = JSON.parse(res)
+         
+          if (responseResult.status == 200) {
+            this.loading=false;
+          this.queryList = responseResult.result;
+          //console.log(this.queryList)
+            this.loadChart(this.queryList);
+          }
+          else if (responseResult.status == 400) {
+            this.loading=false;
+          }
+          else if(responseResult.status==501){
+              
+            this.authService.directlogout();
+          }
+          else{
+            this.loading=false;
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+          }
+        }
+        else{
+          this.loading = false;
+          this.authService.directlogout();
+        }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
 
-  let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-  if(respToken == verifyToken){
-    let res:any = Buffer.from(respData,'base64'); 
-  let responseResult = JSON.parse(res)
-   
-    if (responseResult.status == 200) {
-      this.loading=false;
-    this.queryList = responseResult.result;
-    //console.log(this.queryList)
-      this.loadChart(this.queryList);
-    }
-    else if (responseResult.status == 400) {
-      this.loading=false;
-    }
-    else if(responseResult.status==501){
-        
-      this.authService.directlogout();
-    }
-    else{
-      this.loading=false;
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace(environment.somethingWrong)
-      });
-    }
-  }
-  else{
-    this.loading = false;
-    this.authService.directlogout();
-  }
- 
-  
-},
-(error:any) =>{
-  this.loading=false;
-  this.authService.directlogout();
-})
 
 
 }
@@ -257,20 +253,19 @@ setTimeout(()=>{
         {
           
             name: 'No. of Search ',
-            colors: [
-              '#0a9eaa','#1f88b7','#277dbd','#1693b1','#533be1','#5b30e7', '#3e5ccf','#9b20d9',  '#861ec9', '#691af3' ],
+            colors: [ '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff', '#ff6384', '#ff9f40', '#2dff49', '#ff2dd0', '#2deaff', '#691af3'],
             colorByPoint: true,
             data:dataseries,
             
     dataLabels: {
       enabled: true,
-      rotation: -90,
+      rotation: 0,
       color: '#FFFFFF',
-      align: 'right',
+      align: 'center',
       format: '{point.y}', // one decimal
-      y: 8, // 10 pixels down from the top
+      y: 0, // 10 pixels down from the top
       style: {
-        fontSize: '13px',
+        fontSize: '12px',
         fontFamily: 'Verdana, sans-serif'
       }
     }
@@ -285,49 +280,7 @@ setTimeout(()=>{
 
 
 
-   onSortClick(name:any,event:any) {
-   
-    let target = event.currentTarget,
-      classList = target.classList;
-  
-  
-    if (classList.contains('bi-arrow-up')) {
-      classList.remove('bi-arrow-up');
-      classList.add('bi-arrow-down');
-      this.sortDir=-1;
-    } else {
-      classList.add('bi-arrow-up');
-      classList.remove('bi-arrow-down');
-      this.sortDir=1;
-    }
-    this.sortArr(name);
-    
-    //this.sortArr('departmentName');
-  }
-  
-  sortArr(colName:any){
-   
-    this.sortColumn = colName;
-    if (this.sortOrder == 'asc') {
-      this.sortOrder = 'desc';
-    }
-    else {
-      this.sortOrder = 'asc';
-    }
-  
-    this.queryList = this.queryList.sort((a: any, b: any) => {
-     
-      if(this.sortOrder == 'asc'){
-        return a[colName].localeCompare(b[colName], 'en', { numeric: true });
-      }
-      else{
-        return b[colName].localeCompare(a[colName], 'en', { numeric: true });
-      }
-   
-    })
-  
-  
-  }
+
   
     //\\ ======================== // Data sorting // ======================== //\\
     excelDownloadSearchReportList() {

@@ -61,6 +61,7 @@ filePath:any;
 lockstatus:any;
 getfiletype:any;
 obj: any = [];
+//////////take action forward option/////////
 showForwardAuthority:any=false;
 authorityRoleId:any=0;
 folderName:any;
@@ -68,6 +69,7 @@ roleArr: any = [];
 forwardActionEvent:any=0;
 sessiontoken:any;
 logedinRoleId:any;
+//////////take action forward option/////////
   //\\ ======================== // Variables // ======================== //\\
 
   constructor( private route: Router,
@@ -115,25 +117,22 @@ this.sessiontoken = sessionStorage.getItem('ADMIN_SESSION');
     let SeetionParsed =JSON.parse(CryptoJS.AES.decrypt(this.sessiontoken, environment.apiHashingKey).toString(CryptoJS.enc.Utf8)); 
     //console.log(SeetionParsed)
     this.logedinRoleId=SeetionParsed.ROLE_ID;
-     
-
   }
 
   //\\ ======================== // Load Config // ======================== //\\
   loadconfig(){
-    this.httpClient.get<any>(this.jsonurl).subscribe((data:any)=>
-     {
-      this.tablist=data[0].tabList;
-      this.utillist=data[0].utils
-      this.messaageslist=data[0].messages; 
-      this.title = data[0].pagetitle;
-     },
-     (error:any) =>{
-       Swal.fire({
-         icon: 'error',
-         text: error
-       });
-     })
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+   
    }
   //\\ ======================== // Load Config // ======================== //\\
   //\\ ======================== // Get Action List // ======================== //\\
@@ -145,42 +144,46 @@ this.sessiontoken = sessionStorage.getItem('ADMIN_SESSION');
  };
       // getuserActionList
       this.loading=true;
-  this.workFlowServices.getuserActionList(dataParam).subscribe((response:any) => {
-    let respData = response.RESPONSE_DATA;
-    let respToken = response.RESPONSE_TOKEN;
-  
-    let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-    if(respToken == verifyToken){
-      let res:any = Buffer.from(respData,'base64'); 
-      let responseResult = JSON.parse(res)
-       
-        if (responseResult.status == 200) {
-          this.loading=false;
-         // this.userActionList = responseResult.result[0].AllowedActionName;
-         let userResponse:any =responseResult.result.AllowedActionName;
-
-         this.userActionList = userResponse.split(",");
-         //console.log(this.userActionList)
+      this.workFlowServices.getuserActionList(dataParam).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
         
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if(respToken == verifyToken){
+            let res:any = Buffer.from(respData,'base64'); 
+            let responseResult = JSON.parse(res)
+             
+              if (responseResult.status == 200) {
+                this.loading=false;
+               // this.userActionList = responseResult.result[0].AllowedActionName;
+               let userResponse:any =responseResult.result.AllowedActionName;
+      
+               this.userActionList = userResponse.split(",");
+               //console.log(this.userActionList)
+              
+              }
+              else if (responseResult.status == 400) {
+                this.loading=false;
+                this.forwardActionEvent=responseResult.result.tinstatus;
+              }
+              else if(responseResult.status==501){
+                
+                this.authService.directlogout();
+              }
+          }
+          else{
+            this.loading = false;
+            this.authService.directlogout();
+          }
+         
         }
-        else if (responseResult.status == 400) {
-          this.loading=false;
-          this.forwardActionEvent=responseResult.result.tinstatus;
-        }
-        else if(responseResult.status==501){
-          
+        ,
+        error: (msg) => {
           this.authService.directlogout();
-        }
-    }
-    else{
-      this.loading = false;
-      this.authService.directlogout();
-    }
-   
+       }
+     })
 
-  } ,(error:any) =>{
-    this.authService.directlogout();
-  })
   
    }
   
@@ -193,41 +196,38 @@ this.sessiontoken = sessionStorage.getItem('ADMIN_SESSION');
 //\\ ======================== // Eventes List // ======================== //\\ 
 loadEvents() {
   let params: any = [];
+  this.workFlowServices.getEvents(params).subscribe({
+    next: (response) => {
+      let respData = response.RESPONSE_DATA;
+      let respToken = response.RESPONSE_TOKEN;
+      let res:any = Buffer.from(respData,'base64'); 
+      let responseResult= JSON.parse(res)
+    
+  if (responseResult.status == '200') {
   
-  this.workFlowServices.getEvents(params).subscribe((response: any) => {
-    let respData = response.RESPONSE_DATA;
-    let respToken = response.RESPONSE_TOKEN;
-    let res:any = Buffer.from(respData,'base64'); 
-    let responseResult= JSON.parse(res)
+     let actionlist:any=responseResult.result;
+     for (let i = 0; i < actionlist.length; i++) {
   
-if (responseResult.status == '200') {
-
-   let actionlist:any=responseResult.result;
-   for (let i = 0; i < actionlist.length; i++) {
-
+    
+      this.actionarray[actionlist[i].tinApprovalActionId] = actionlist[i].vchActionName;
   
-    this.actionarray[actionlist[i].tinApprovalActionId] = actionlist[i].vchActionName;
-
-  
- 
-  }
-//this.actionarray = responseResult.result;
-//console.log(this.actionarray)
+    
+   
     }
- 
-    else if((responseResult.status==500)){
-      Swal.fire({
-        icon: 'error',
-        text: responseResult.message
-      });
-    }
-  
+  //this.actionarray = responseResult.result;
+  //console.log(this.actionarray)
+      }
+   
+      else if((responseResult.status==500)){
+        this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+     
+      }
+    },
+    error: (msg) => {
+      this.authService.directlogout();
+   }
+ })
 
-
-  },
-  (error:any) =>{
-    this.authService.directlogout();
-  })
 
 
 
@@ -246,10 +246,8 @@ if (responseResult.status == '200') {
     let workflowFolderId:any=this.workflowFolderId;
     let forwardAuthority:any=this.authorityRoleId;
     if(action == '0') {
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace(this.messaageslist.action)
-      });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.messaageslist.action))
+
 
     }  
  else if(!this.vldChkLst.blankCheck(remark,this.commonserveice.langReplace(this.messaageslist.remark),'txtRemark')) {
@@ -268,10 +266,11 @@ else{
     'authorityRoleId':forwardAuthority
 };
 
-// console.log(dataParam)
+//console.log(dataParam)
  this.loading=true;
-this.workFlowServices.takeAction(dataParam).subscribe((response:any) => {
-  let respData = response.RESPONSE_DATA;
+ this.workFlowServices.takeAction(dataParam).subscribe({
+  next: (response) => {
+    let respData = response.RESPONSE_DATA;
   let respToken = response.RESPONSE_TOKEN;
   let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
   if(respToken == verifyToken){
@@ -301,11 +300,8 @@ this.workFlowServices.takeAction(dataParam).subscribe((response:any) => {
      else if(responseResult.status == 400){
   
       this.loading=false;
-      Swal.fire({
-        icon: 'error',
-        text:responseResult.message.metaName[0],
-        
-      });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message.metaName[0]))
+  
   
   
      }
@@ -317,12 +313,11 @@ this.workFlowServices.takeAction(dataParam).subscribe((response:any) => {
     this.loading = false;
     this.authService.directlogout();
   }
-
-
-} ,
-(error:any) =>{
-  this.authService.directlogout();
-}) 
+  },
+  error: (msg) => {
+    this.authService.directlogout();
+ }
+})
 
 
 
@@ -389,10 +384,8 @@ console.log(this.roleArr);
      }
     
      else if((responseResult.status==500)){
-       Swal.fire({
-         icon: 'error',
-         text: responseResult.message
-       });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+    
      }
    }
    else{

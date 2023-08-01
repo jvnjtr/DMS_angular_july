@@ -76,9 +76,10 @@ tablecollist=[
     {"name":"Folder Name","cname":"folderName","sortable":true },
    
   {"name":"Name","cname":"fileName","sortable":true },
-  {"name":"File Type","cname":"fileType","sortable":false },
+
   {"name":"Size","cname":"fileSize","sortable":true },
   {"name":"Action Taken By","cname":"createdByName","sortable":true },
+  {"name":"Action Taken On","cname":"CreatedOn","sortable":true },
 ]
 
 @ViewChild('previewModal') previewModal: ElementRef;
@@ -105,19 +106,17 @@ tablecollist=[
   }
   
   loadconfig(){
-    this.httpClient.get<any>(this.jsonurl).subscribe((data:any)=>
-     {
-      this.tablist=data[0].tabList;
-      this.utillist=data[0].utils
-      this.messaageslist=data[0].messages; 
-      this.title = data[0].pagetitle;
-     },
-     (error:any) =>{
-       Swal.fire({
-         icon: 'error',
-         text: error
-       });
-     })
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
    }
 
 
@@ -134,44 +133,42 @@ viewPendingList(searchitems:any){
     "searchfilter":searchitems
     };
     this.loading=true;
-this.workFlowServices.summeylist(dataParam).subscribe((response:any) => {
-  let respData = response.RESPONSE_DATA;
-  let respToken = response.RESPONSE_TOKEN;
-  let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-      
-  let res:any = Buffer.from(respData,'base64'); 
-  let responseResult = JSON.parse(res)
-   
-    if (responseResult.status == 200) {
-      this.loading=false;
-    this.pendingDocList = responseResult.result;
-   
-  
-    }
-    else if((responseResult.status==400)){
-      this.loading=false;
-      this.pendingDocList=[];
-    }
-   
-    else{
-      this.loading=false;
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace(environment.somethingWrong),
-});
-    }
-      }
-      else{
-        this.loading = false;
+    this.workFlowServices.summeylist(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+            if(respToken == verifyToken){
+            
+        let res:any = Buffer.from(respData,'base64'); 
+        let responseResult = JSON.parse(res)
+         
+          if (responseResult.status == 200) {
+            this.loading=false;
+          this.pendingDocList = responseResult.result;
+         
+        
+          }
+          else if((responseResult.status==400)){
+            this.loading=false;
+            this.pendingDocList=[];
+          }
+         
+          else{
+            this.loading=false;
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+          }
+            }
+            else{
+              this.loading = false;
+              this.authService.directlogout();
+            }
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      }
- 
- 
-},
-(error:any) =>{
-  this.authService.directlogout();
-})
+     }
+   })
+
 
 
 }
@@ -190,22 +187,7 @@ onTableSizeChange(event: any): void {
  //\\ ======================== // Table Pagination // ======================== //\\
 
 
-    //\\ ======================== // Get file Type // ======================== //\\
-    getfiletype(filename:any){
-  
-      let icon:any;
-      let iconsGroups:any=environment.iconsGroups;
-       for(let i=0;i<iconsGroups.length;i++){
-       let filetype:any= iconsGroups[i].groups.includes(filename);
-         if(filetype==true){
-           icon=iconsGroups[i].name;
-         }
-        
-       }
-     return icon;
-   
-   }
-   //\\ ======================== // Get file Type // ======================== //\\
+
 
  //\\ ======================== // File Modify // ======================== //\\ 
  viewHistory(id:any) {
@@ -219,48 +201,48 @@ onTableSizeChange(event: any): void {
     "fileId": fid,
     "url": fpath
   };
-  this.commonserveice.fileDownload(dataParam).subscribe((response: any) => {
-    let respData = response.RESPONSE_DATA;
-    let respToken = response.RESPONSE_TOKEN;
-    let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-    if(respToken == verifyToken){
-      let res:any = Buffer.from(respData,'base64'); 
-      let responseResult = JSON.parse(res)
 
-  if (responseResult.status == 200) {
-
-    
-    this.downloaditem = responseResult.result;
-    this.downloadlink = this.downloaditem.filePath;
-    let link: any = document.createElement("a");
-    link.download = this.downloadlink;
-    link.href = this.downloadlink;
-    link.target = "_blank";
-    link.click();
-    
-  }
-  else if(responseResult.status==501){
+  this.commonserveice.fileDownload(dataParam).subscribe({
+    next: (response) => {
+      let respData = response.RESPONSE_DATA;
+      let respToken = response.RESPONSE_TOKEN;
+      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+      if(respToken == verifyToken){
+        let res:any = Buffer.from(respData,'base64'); 
+        let responseResult = JSON.parse(res)
+  
+    if (responseResult.status == 200) {
+  
       
-    this.authService.directlogout();
-  }
-  else{
-    Swal.fire({
-      icon: 'error',
-      text: this.commonserveice.langReplace(environment.somethingWrong),
-});
-  }
+      this.downloaditem = responseResult.result;
+      this.downloadlink = this.downloaditem.filePath;
+      let link: any = document.createElement("a");
+      link.download = this.downloadlink;
+      link.href = this.downloadlink;
+      link.target = "_blank";
+      link.click();
+      
     }
-    else{
-      this.loading = false;
+    else if(responseResult.status==501){
+        
       this.authService.directlogout();
     }
+    else{
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+    }
+      }
+      else{
+        this.loading = false;
+        this.authService.directlogout();
+      }
+  
+    },
+    error: (msg) => {
+      this.authService.directlogout();
+   }
+ })
 
- 
-  },
-  (error:any) =>{
-    
-    this.authService.directlogout();
-  })
+
 }
 //\\ ======================== // Download File // ======================== //\\ 
 
@@ -434,70 +416,5 @@ setSearchParam(searchref:any,txtSearch:any){
    //\\ ======================== // Data sorting // ======================== //\\
 
 
-
-   onSortClick(name:any,event:any) {
-   
-    let target = event.currentTarget,
-      classList = target.classList;
-  
-  
-    if (classList.contains('bi-arrow-up')) {
-      classList.remove('bi-arrow-up');
-      classList.add('bi-arrow-down');
-      this.sortDir=-1;
-    } else {
-      classList.add('bi-arrow-up');
-      classList.remove('bi-arrow-down');
-      this.sortDir=1;
-    }
-    this.sortArr(name);
-    
-    //this.sortArr('departmentName');
-  }
-  
-  sortArr(colName:any){
-   
-   this.sortColumn = colName;
-   if (this.sortOrder == 'asc'){
-    this.sortOrder = 'desc';
-   }
-  else{
-    this.sortOrder = 'asc';
-  }
-  
-
-  this.pendingDocList = this.pendingDocList.sort((a: any, b: any) => {
-     
-    if(this.sortOrder == 'asc'){
-      return a[colName].localeCompare(b[colName], 'en', { numeric: true });
-    }
-    else{
-      return b[colName].localeCompare(a[colName], 'en', { numeric: true });
-    }
- 
-  })
-    // this.pendingDocList = this.pendingDocList.sort((a:any, b:any) => {
-    //   if (a[colName] < b[colName])
-    //     return this.sortOrder == 'asc' ? -1 : 1;
-    //   if (a[colName] > b[colName])
-    //     return this.sortOrder == 'asc' ? 1 : -1;
-    //   return 0;
-    // })
-  
-  
-  }
-  
-    //\\ ======================== // Data sorting // ======================== //\\
-    formatBytes(bytes:any, decimals:any) {
-      if (!+bytes) return '0 Bytes'
-    
-      const k = 1024
-      const dm = decimals < 0 ? 0 : decimals
-      const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-    
-      const i = Math.floor(Math.log(bytes) / Math.log(k))
-    
-      return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-    }
 
 }

@@ -73,86 +73,72 @@ export class FiledetailsComponent implements OnInit {
       
       };
       this.loading=true;
-  this.commonserveice.getFileDetails(dataParam).subscribe((response:any) => {
-    let respData = response.RESPONSE_DATA;
-    let respToken = response.RESPONSE_TOKEN;
-    let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-        let responseResult = JSON.parse(res)
-         
-          if (responseResult.status == 200) {
-            this.loading=false;
-            this.filedetails = responseResult.result.fileDetails;
-           // console.log(this.filedetails)
-           this.files_dropped.push(this.filedetails);
-            this.metaListDetails=this.filedetails["metaDetail"];
-            this.txtFileName=this.filedetails.fileName;
-    
-          
-           this.txtFileNumber=this.filedetails.fileRefNo;
-           this.filesize=this.filedetails.fileSize;
-           this.fileType= this.getfiletype(this.filedetails.fileType);
-          this.ocrLanguage=this.filedetails.ocrLanguage;
-           this.txtExpDate=this.filedetails.retentionDate;
-          this.txtSubject=this.filedetails.subject;
-           this.filePath =this.filedetails.filePath;
-            this.fileid =this.filedetails.fileId;
-          this.folderName=this.filedetails.folderName;
-          this.createdby=this.filedetails.createdByName;
-          this.createdOn=this.filedetails.CreatedOn ;
-          this.updatedOn=this.filedetails.updatedOn;
-          this.fileTags=JSON.parse(this.filedetails.fileTags);
-          this.metadetails=this.filedetails.metaDetail;
-          this.folderId =this.filedetails.folderId;
-         
-         this.fileVersion =this.filedetails.fileVersion;
-          
-          }
-          if (responseResult.status == 400) {
-            this.loading=false;
-            this.filedetails = responseResult.result;
-          }
-          else if(responseResult.status==501){
-            
-            this.authService.directlogout();
-          }
-          else{
-          
-          }
-      }
-      else{
-        this.loading = false;
-        this.authService.directlogout();
-      }
-   
-   
 
-  } ,(error:any) =>{
-    this.authService.directlogout();
-  })
+
+      this.commonserveice.getFileDetails(dataParam).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+            if(respToken == verifyToken){
+              let res:any = Buffer.from(respData,'base64'); 
+              let responseResult = JSON.parse(res)
+               
+                if (responseResult.status == 200) {
+                  this.loading=false;
+                  this.filedetails = responseResult.result.fileDetails;
+                 // console.log(this.filedetails)
+                 this.files_dropped.push(this.filedetails);
+                  this.metaListDetails=this.filedetails["metaDetail"];
+                  this.txtFileName=this.filedetails.fileName;
+          
+                
+                 this.txtFileNumber=this.filedetails.fileRefNo;
+                 this.filesize=this.filedetails.fileSize;
+                 this.fileType= this.commonserveice.getfiletype(this.filedetails.fileType);
+                this.ocrLanguage=this.filedetails.ocrLanguage;
+                 this.txtExpDate=this.filedetails.retentionDate;
+                this.txtSubject=this.filedetails.subject;
+                 this.filePath =this.filedetails.filePath;
+                  this.fileid =this.filedetails.fileId;
+                this.folderName=this.filedetails.folderName;
+                this.createdby=this.filedetails.createdByName;
+                this.createdOn=this.filedetails.CreatedOn ;
+                this.updatedOn=this.filedetails.updatedOn;
+                this.fileTags=JSON.parse(this.filedetails.fileTags);
+                this.metadetails=this.filedetails.metaDetail;
+                this.folderId =this.filedetails.folderId;
+               
+               this.fileVersion =this.filedetails.fileVersion;
+                
+                }
+                if (responseResult.status == 400) {
+                  this.loading=false;
+                  this.filedetails = responseResult.result;
+                }
+                else if(responseResult.status==501){
+                  
+                  this.authService.directlogout();
+                }
+                else{
+                
+                }
+            }
+            else{
+              this.loading = false;
+              this.authService.directlogout();
+            }
+         
+        },
+        error: (msg) => {
+          this.authService.directlogout();
+       }
+     })
+
   
    }
 //\\ ======================== // File details // ======================== //\\
-//\\ ======================== // Get file Type // ======================== //\\
-  getfiletype(filename:any){
-    
-    const myArray = filename.split(".");
-    let ftype:any=myArray[1];
-    let icon:any;
-  
-    let iconsGroups:any=environment.iconsGroups;
-     for(let i=0;i<iconsGroups.length;i++){
-     let filetype:any= iconsGroups[i].groups.includes(filename);
-       if(filetype==true){
-         icon=iconsGroups[i].name;
-       }
-      
-     }
-   return icon;
-  
-  }
- //\\ ======================== // Get file Type // ======================== //\\
+
 
  //\\ ======================== // Download File // ======================== //\\ 
  downloadfils(fid: any, fpath: any) {
@@ -160,7 +146,9 @@ export class FiledetailsComponent implements OnInit {
     "fileId": fid,
     "url": fpath
   };
-  this.commonserveice.fileDownload(dataParam).subscribe((response: any) => {
+  
+  this.commonserveice.fileDownload(dataParam).subscribe({
+  next: (response) => {
     let respData = response.RESPONSE_DATA;
     let respToken = response.RESPONSE_TOKEN;
     let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
@@ -189,25 +177,14 @@ export class FiledetailsComponent implements OnInit {
       this.loading = false;
       this.authService.directlogout();
     }
-
-   
   },
-  (error:any) =>{
-    
+  error: (msg) => {
     this.authService.directlogout();
-  })
+ }
+})
+
 }
 //\\ ======================== // Download File // ======================== //\\ 
-formatBytes(bytes:any, decimals:any) {
-  if (!+bytes) return '0 Bytes'
 
-  const k = 1024
-  const dm = decimals < 0 ? 0 : decimals
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-}
 
 }

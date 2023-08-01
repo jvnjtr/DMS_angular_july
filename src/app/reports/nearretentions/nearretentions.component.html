@@ -26,13 +26,13 @@
         </ul>
         <div class="indicatorslist">
   
-          <a href="javascript:void(0)" ngbTooltip="Table View " class="mb-0 tableviews"
+          <!-- <a href="javascript:void(0)" ngbTooltip="Table View " class="mb-0 tableviews"
             [ngClass]="selType == 1 ? 'text-info' : 'text-dark'" (click)="tableview(1)"><i
               class="icon-table-solid"></i></a>
               
           <a href="javascript:void(0)" ngbTooltip="Graph View " class="mb-0 tableviews me-2"
             [ngClass]="selType == 2 ? 'text-info' : 'text-dark'" (click)="tableview(2)"><i
-              class="icon-chart-pie-solid"></i></a>
+              class="icon-chart-pie-solid"></i></a> -->
               <a href="javascript:void(0)" ngbTooltip="Download Excel " class="mb-0 text-success"
               (click)="excelDownloadRetentionList()"><i
                class="icon-file-excel-solid"></i></a>
@@ -124,10 +124,10 @@
                   <h6 class="mb-0" *ngIf="searchstatus == 1">
                     Search Result Based On :
                     <span class="text-success">
-                      {{ txtUserName ? 'User -'+ txtUserName : ''}}
-                      {{ selBasedon ? 'Based on -'+ selBasedon : ''}}
-                      {{ txtFromdate ? 'From Date -'+ (txtFromdate | date :"dd-MM-yyyy") : ''}}
-                      {{ txtTodate ? ', To Date -'+ (txtTodate | date :"dd-MM-yyyy") : ''}}
+                      {{ txtUserName ? 'User -'+ userFullName : ''}}
+                     
+                      {{ txtFromdate ? 'From Date -'+ (txtFromdate | date :"dd-MMM-yyyy") : ''}}
+                      {{ txtTodate ? ', To Date -'+ (txtTodate | date :"dd-MMM-yyyy") : ''}}
                     </span>
                   </h6>
                 </div>
@@ -151,7 +151,7 @@
                       <th width="50px">{{"Sl No"| langReplace}}</th>
   
                       <th *ngFor="let flist of tablecollist">
-                        <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)"
+                        <i *ngIf="flist.sortable" (click)="commonserveice.onSortClick(flist.cname,$event,queryList)"
                           class="my-icon bi bi-arrow-up"></i> {{flist.name| langReplace}}
                       </th>
   
@@ -178,10 +178,10 @@
   
                         {{plist.folderName }}
                       </td>
-                      <td><i class="h6" [ngClass]="getfiletype(plist.fileType)"></i> {{plist.fileName}} </td>
+                      <td><i class="h6" [ngClass]="commonserveice.getfiletype(plist.fileType)"></i> {{plist.fileName}} </td>
   
   
-                      <td class="text-right">{{formatBytes(plist.fileSize,2)}}</td>
+                      <td class="text-right">{{commonserveice.formatBytes(plist.fileSize,2)}}</td>
   
   
                       <td>{{plist.createdByName}}</td>

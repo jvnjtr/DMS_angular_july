@@ -3,6 +3,7 @@ import { HttpInterceptor, HttpHeaders, HttpRequest, HttpHandler, HttpEvent,HttpE
 import { Observable,throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { catchError } from 'rxjs/operators';
+import Swal from 'sweetalert2';
 //import { AuthenticationService } from './authentication.service';
 
 
@@ -35,21 +36,13 @@ export class TokenInterseptorService implements HttpInterceptor{
 
 
 
-  return next.handle(tokenHeader)
-  //  .pipe(catchError((error: HttpErrorResponse) => {
-  //    alert(0)
-  //                   let errorMsg = '';
-  //                   if (error.error instanceof ErrorEvent) {
-  //                      console.log('This is client side error');
-  //                      errorMsg = `Error: ${error.error.message}`;
-  //                   } else {
-  //                      console.log('This is server side error');
-  //                      errorMsg = `Error Code: ${error.status},  Message: ${error.message}`;
-  //                   }
-  //                   console.log(errorMsg);
-  //                   return throwError(errorMsg);
-  //                })
-  //          )
+  return next.handle(tokenHeader).pipe(
+    catchError((err: HttpErrorResponse) => {
+      this.handleServerSideError(err);
+      return throwError(err);
+    })
+  );
+  
 
 
   }
@@ -57,5 +50,40 @@ export class TokenInterseptorService implements HttpInterceptor{
 //  sessionStorage.removeItem('ADMIN_SESSION');
 //       sessionStorage.removeItem('TOKEN');
 //       this.router.navigateByUrl('/login');
+
+
+
+private handleServerSideError(error: HttpErrorResponse) {
+  switch (error.status) {
+
+    case 400: //  means the request could not be understood by the server.
+    Swal.fire({
+      icon: 'error',
+      text: "Bad Request, please try again later ."
+    });
+    
+      break;
+    case 401: // means lacks valid authentication credentials for the target resource. 
+  Swal.fire({
+      icon: 'error',
+      text: "Unauthorized, please try again later."
+    });
+      break;
+    case 403: //  means you are not allowed access to the target resource.
+    Swal.fire({
+      icon: 'error',
+      text: "Forbidden access is denied"
+    });
+    
+      break;
+    case 500: // means there's an issue or temporary glitch with the application's programming
+    Swal.fire({
+      icon: 'error',
+      text: "Session time out, Please login again"
+    });
+  
+      break;
+  }
+}
 
 }

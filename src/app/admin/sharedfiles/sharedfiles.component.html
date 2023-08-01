@@ -83,7 +83,7 @@
                                             <th width="50px"> {{"Sl No"| langReplace}} </th>
 
                                             <th *ngFor="let flist of tablecollist">
-                                              <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)" class="my-icon bi bi-arrow-up"></i> 
+                                              <i *ngIf="flist.sortable" (click)="commonserveice.onSortClick(flist.cname,$event,ffdetailsArr)" class="my-icon bi bi-arrow-up"></i> 
                                               
                                               {{flist.name | langReplace}}
                                                
@@ -112,29 +112,31 @@
                                            
                                              
                                             </td>
-                                            <td width="50px" class="text-center">
-                                         
-                                                    <i class="h6" [ngClass]="getfiletype(flist.fileType)" ></i>
-                                                </td>
+                                          
                                       <td>
 
                                         <div class="d-flex justify-content-between ">
                                         
-                                        
-                                        {{flist.fileName}}
-                                     
+                                        <span>
+                                          <i class="h6" [ngClass]="commonserveice.getfiletype(flist.fileType)" ></i> {{flist.fileName}}
+                                     </span>
                                        <a title="bookmark" ngbTooltip="Bookmark" href="javascript:void(0)"><i class="bi" (click)="addBookmark(flist.type == 1 ? '' : flist.fileId,flist.type == 2 ? '':flist.folderId,flist.BookmarkStatus == null ? '1' :'0');" [ngClass]="flist.BookmarkStatus == null ?  'bi-star' : 'bi-star-fill text-warning'">
                                         </i></a>
+
+
+
                                       </div>
                                       </td>
                                       <!-- <td><a title="Click here to check all versions" ngbTooltip="Click here to check all versions" class="text-primary" (click)="viewVersions(flist.fileId)" href="javascript:void(0)">v{{flist.fileVersion | number:'1.1-5'}}</a></td>
                                        -->
-                                      <td>{{ formatBytes(flist.fileSize,2) }}</td>
+                                      <td>{{ commonserveice.formatBytes(flist.fileSize,2) }}</td>
                                       
                                       <td>{{flist.createdByName}} 
-                                         <small class="d-block text-primary mt-1">on {{flist.CreatedOn}}</small>
+                                         
                                       </td>
-                                     
+                                     <td>
+                                      {{flist.CreatedOn}}
+                                     </td>
                                       <td> {{flist.sharedByName }}
                                             <!-- <small class="d-block text-primary mt-1">on {{flist.CreatedOn}}</small> -->
                                       </td>

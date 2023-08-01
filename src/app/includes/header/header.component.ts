@@ -167,37 +167,38 @@ export class HeaderComponent implements OnInit {
 
 
     //
-
-    this.commonserveice.saveAllLanguageLabel().subscribe((resp: any) => {
-      let allLangResult = '';
-      let respData = resp.RESPONSE_DATA;
-      let respToken = resp.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        res = JSON.parse(res.toString());
-        if (res.status == 200) {
-
-
-          allLangResult = res.result;
-          //console.log(allLangResult);
-          sessionStorage.setItem("ALL_LANG_LIST", CryptoJS.AES.encrypt(JSON.stringify(allLangResult), environment.apiHashingKey).toString());
-
-          location.reload()
-
+    this.commonserveice.saveAllLanguageLabel().subscribe({
+      next: (response) => {
+        let allLangResult = '';
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          res = JSON.parse(res.toString());
+          if (res.status == 200) {
+  
+  
+            allLangResult = res.result;
+            //console.log(allLangResult);
+            sessionStorage.setItem("ALL_LANG_LIST", CryptoJS.AES.encrypt(JSON.stringify(allLangResult), environment.apiHashingKey).toString());
+  
+            location.reload()
+  
+          }
+          else {
+            console.log(res.messages)
+          }
+        } else {
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.invalidResponse))
+  
         }
-        else {
-          console.log(res.messages)
-        }
-      } else {
-        Swal.fire({
-          icon: 'error',
-          text: this.commonserveice.langReplace(environment.invalidResponse),
-        });
-
-      }
-
-    });
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+ 
 
 
   }
@@ -208,34 +209,35 @@ export class HeaderComponent implements OnInit {
 
       'intId': intid
     };
-
-
-    this.labelLanguage.getlanguages(params).subscribe((resp: any) => {
-      let respData = resp.RESPONSE_DATA;
-      let respToken = resp.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        res = JSON.parse(res.toString());
-        if (res.status == 200) {
-
-
-          this.languageList = res.result;
-          //console.log(this.languageList)
-
+    this.labelLanguage.getlanguages(params).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          res = JSON.parse(res.toString());
+          if (res.status == 200) {
+  
+  
+            this.languageList = res.result;
+            //console.log(this.languageList)
+  
+          }
+          else {
+            console.log(res.messages)
+          }
+        } else {
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.invalidResponse))
+  
         }
-        else {
-          console.log(res.messages)
-        }
-      } else {
-        Swal.fire({
-          icon: 'error',
-          text: this.commonserveice.langReplace(environment.invalidResponse),
-        });
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
 
-      }
-
-    });
+   
   }
   //\\ ======================== // Get Languages // ======================== //\\
 
@@ -285,40 +287,43 @@ export class HeaderComponent implements OnInit {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        this.authService.logout(forlderParams).subscribe((response: any) => {
-          let respData = response.RESPONSE_DATA;
-          let respToken = response.RESPONSE_TOKEN;
-          //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
 
-          let res: any = Buffer.from(respData, 'base64');
-          let responseResult = JSON.parse(res)
-          if (responseResult.status == 200) {
-
+        this.authService.logout(forlderParams).subscribe({
+          next: (response) => {
+            let respData = response.RESPONSE_DATA;
+            let respToken = response.RESPONSE_TOKEN;
+            //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
+  
+            let res: any = Buffer.from(respData, 'base64');
+            let responseResult = JSON.parse(res)
+            if (responseResult.status == 200) {
+  
+              sessionStorage.removeItem('ADMIN_SESSION');
+              sessionStorage.removeItem('TOKEN');
+              sessionStorage.removeItem('USER_LANGPREF');
+              sessionStorage.removeItem('ALL_LANG_LIST');
+              this.router.navigateByUrl('/login');
+  
+            }
+            else {
+              sessionStorage.removeItem('ADMIN_SESSION');
+              sessionStorage.removeItem('TOKEN');
+              sessionStorage.removeItem('USER_LANGPREF');
+              sessionStorage.removeItem('ALL_LANG_LIST');
+              this.router.navigateByUrl('/login');
+            }
+          },
+          error: (msg) => {
             sessionStorage.removeItem('ADMIN_SESSION');
             sessionStorage.removeItem('TOKEN');
             sessionStorage.removeItem('USER_LANGPREF');
             sessionStorage.removeItem('ALL_LANG_LIST');
             this.router.navigateByUrl('/login');
+            this.authService.directlogout();
+         }
+       })
 
-          }
-          else {
-            sessionStorage.removeItem('ADMIN_SESSION');
-            sessionStorage.removeItem('TOKEN');
-            sessionStorage.removeItem('USER_LANGPREF');
-            sessionStorage.removeItem('ALL_LANG_LIST');
-            this.router.navigateByUrl('/login');
-          }
-
-
-        },
-          (error: any) => {
-            sessionStorage.removeItem('ADMIN_SESSION');
-            sessionStorage.removeItem('TOKEN');
-            sessionStorage.removeItem('USER_LANGPREF');
-            sessionStorage.removeItem('ALL_LANG_LIST');
-            this.router.navigateByUrl('/login');
-          })
-
+       
 
 
 
@@ -336,76 +341,65 @@ export class HeaderComponent implements OnInit {
 
     };
 
-    this.commonserveice.showUserNotification(formParams).subscribe((response: any) => {
+    
+    this.commonserveice.showUserNotification(formParams).subscribe({
+  next: (response) => {   let respData = response.RESPONSE_DATA;
 
-      let respData = response.RESPONSE_DATA;
-
-      let respToken = response.RESPONSE_TOKEN;
-
-
-
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-
-      if (respToken == verifyToken) {
-
-        let res: any = Buffer.from(respData, 'base64');
-
-        let responseResult = JSON.parse(res)
-
-        //console.log(responseResult);
-
-        if (responseResult.status == 200) {
-
-          this.totalNotificationCount = responseResult.result.length;
-          this.notificationList = responseResult.result;
-
-//console.log(this.notificationList)
-
-        }
-
-        else if (responseResult.status == 400) {
+    let respToken = response.RESPONSE_TOKEN;
 
 
 
-        }
+    let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
 
-        else if (responseResult.status == 501) {
+    if (respToken == verifyToken) {
+
+      let res: any = Buffer.from(respData, 'base64');
+
+      let responseResult = JSON.parse(res)
+
+      //console.log(responseResult);
+
+      if (responseResult.status == 200) {
+
+        this.totalNotificationCount = responseResult.result.length;
+        this.notificationList = responseResult.result;
+
+console.log(this.notificationList)
+
+      }
+
+      else if (responseResult.status == 400) {
 
 
 
-          this.authService.directlogout();
+      }
 
-        }
-
-        else {
-
-          Swal.fire({
-
-            icon: 'error',
-
-            text: this.commonserveice.langReplace(environment.somethingWrong)
+      else if (responseResult.status == 501) {
 
 
 
-          });
-
-        }
+        this.authService.directlogout();
 
       }
 
       else {
 
-        this.authService.directlogout();
+        this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
 
       }
 
-    },
+    }
 
-      (error: any) => {
+    else {
 
-        this.authService.directlogout();
+      this.authService.directlogout();
 
-      });
+    }},
+  error: (msg) => {
+    this.authService.directlogout();
+ }
+})
+ 
 
   }
 

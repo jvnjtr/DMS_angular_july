@@ -61,24 +61,23 @@ export class MetaDetailsComponent implements OnInit {
    }
    //\\ ======================== // Config // ======================== //\\
    loadconfig(){
-    this.httpClient.get<any>(this.jsonurl).subscribe((data:any)=>
-     {
-      this.tablist=data[0].tabList;
-      this.utillist=data[0].utils
-      this.messaageslist=data[0].messages; 
-      this.title = data[0].pagetitle;
-      if(this.metaid )
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+           if(this.metaid )
       {
         this.title =  "Edit Meta Configuration";
       }
-     
-     },
-     (error:any) =>{
-       Swal.fire({
-         icon: 'error',
-         text: error
-       });
-     })
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+
+
    }
  //\\ ======================== // Config // ======================== //\\
  
@@ -98,8 +97,9 @@ formReset(){
       "intMetaId": metaid
       };
       this.loading=true;
-    this.commonserveice.viewMeta(dataParam).subscribe((response:any) => {
-    let respData = response.RESPONSE_DATA;
+      this.commonserveice.viewMeta(dataParam).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
     let respToken = response.RESPONSE_TOKEN;
   
     let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
@@ -130,23 +130,20 @@ formReset(){
             }
             else{
               this.loading=false;
-              Swal.fire({
-                icon: 'error',
-                text: this.commonserveice.langReplace(environment.somethingWrong)
-              });
-            }
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+             }
     }
     else{
       this.loading = false;
       this.authService.directlogout();
     }  
+        },
+        error: (msg) => {
+             this.authService.directlogout();
+       }
+     })
 
-    
-  },
-  (error:any) =>{
-    this.loading=false;
-    this.authService.directlogout();
-  })
+  
   
   
   }
@@ -161,11 +158,8 @@ createMeta(){
 
  if(!this.vldChkLst.blankCheck(txtFieldName,this.commonserveice.langReplace(this.messaageslist.metaname),'txtFieldName')) {}
   else if (!this.vldChkLst.containsSpecialChars(txtFieldName)) {
+    this.commonserveice.swalfire('error',this.commonserveice.langReplace('Special Char Not allowed in Field Name'))
 
-    Swal.fire({
-      icon: 'error',
-      text: this.commonserveice.langReplace('Special Char Not allowed in Field Name')
-    });
   }
 
 
@@ -180,8 +174,9 @@ else if(!this.vldChkLst.selectDropdown(selMetaType,this.commonserveice.langRepla
         "metaType":selMetaType
       }
       this.loading=true;
-      this.commonserveice.createMeta(metaparams).subscribe((response:any) => {
-        let respData = response.RESPONSE_DATA;
+      this.commonserveice.createMeta(metaparams).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
         let respToken = response.RESPONSE_TOKEN;
     
         let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
@@ -229,34 +224,24 @@ else if(!this.vldChkLst.selectDropdown(selMetaType,this.commonserveice.langRepla
            else if(responseResult.status == 400){
   
             this.loading=false;
-            Swal.fire({
-              icon: 'error',
-              text:responseResult.message.metaName[0],
-              
-            });
-  
-        
-           }
+            this.commonserveice.swalfire('error',responseResult.message.metaName[0])
+            }
            else{
             this.loading=false;
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(environment.somethingWrong)
-            });
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+          
            }
         }
         else{
           this.loading = false;
           this.authService.directlogout();
         }
-
-    
+        },
+        error: (msg) => {
+             this.authService.directlogout();
+       }
+     })
       
-      } ,
-      (error:any) =>{
-        this.loading=false;
-        this.authService.directlogout();
-      }) 
 
 
   }

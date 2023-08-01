@@ -6,7 +6,7 @@
                         <tr><th width="200px">{{"Folder Name"| langReplace}}</th><td>{{folderName}}</td></tr>
                         <tr><th>{{"Size Consumed"| langReplace}}</th><td>
 
-                              <span>{{formatBytes(childSizeInKb,2)}}</span>
+                              <span>{{commonserveice.formatBytes(childSizeInKb,2)}}</span>
 
                               
 
@@ -17,7 +17,7 @@
 
                         <tr><th>{{"Free Space"| langReplace}}</th><td class="bg-success-subtle text-emphasis-success">
                               
-                         {{formatBytes(parentSizeinKb - childSizeInKb,2)}}
+                         {{commonserveice.formatBytes(parentSizeinKb - childSizeInKb,2)}}
 
 
                                       

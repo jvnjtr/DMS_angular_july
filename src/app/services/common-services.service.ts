@@ -6,12 +6,18 @@ import { map } from 'rxjs/operators';
 import * as CryptoJS from 'crypto-js';
 import { environment } from '../../environments/environment';
 import {Buffer} from 'buffer';
+import Swal from 'sweetalert2';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonServicesService {
+  sortDir = 1;//1= 'ASE' -1= DSC
+  sortOrder: string = 'asc';
+  sortColumn: string = 'ticker';
+
+
 
   constructor(private router: Router, private http: HttpClient) { }
 
@@ -554,7 +560,100 @@ public reloadpage(){
   }
 
 
+/// Get file type ///
+  getfiletype(filename: any) {
 
+    let icon: any;
+    let iconsGroups: any = environment.iconsGroups;
+    for (let i = 0; i < iconsGroups.length; i++) {
+      let filetype: any = iconsGroups[i].groups.includes(filename);
+      if (filetype == true) {
+        icon = iconsGroups[i].name;
+      }
+
+    }
+    return icon;
+
+  }
+
+/// Get file type ///
+
+/// File size conversion ///
+
+  formatBytes(bytes: any, decimals: any) {
+    if (!+bytes) return '0 Bytes'
+
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+  }
+/// File size conversion ///
+swalfire(type: any, message: any) {
+ return  Swal.fire({
+          icon: type,
+          text: message
+          });
+
+}
+
+onSortClick(name:any,event:any,arraydetails:any) {
+   
+  let target = event.currentTarget,
+    classList = target.classList;
+
+
+  if (classList.contains('bi-arrow-up')) {
+    classList.remove('bi-arrow-up');
+    classList.add('bi-arrow-down');
+    this.sortDir=-1;
+  } else {
+    classList.add('bi-arrow-up');
+    classList.remove('bi-arrow-down');
+    this.sortDir=1;
+  }
+  this.sortArr(name,arraydetails);
+  
+  //this.sortArr('departmentName');
+}
+
+
+sortArr(colName:any, filterarray:any){
+   
+  //this.sortColumn = colName;
+  if (this.sortOrder == 'asc'){
+   this.sortOrder = 'desc';
+  }
+ else{
+   this.sortOrder = 'asc';
+ }
+ 
+    filterarray = filterarray.sort((a: any, b: any) => {
+    
+   if(this.sortOrder == 'asc'){
+     return a[colName].localeCompare(b[colName], undefined, { numeric: true });
+   }
+   else{
+     return b[colName].localeCompare(a[colName], undefined, { numeric: true });
+   }
+
+ })    
+   
+   // this.ffdetailsArr = this.ffdetailsArr.sort((a:any, b:any) => {
+   //   if (a[colName] < b[colName])
+   //     return this.sortOrder == 'asc' ? -1 : 1;
+   //   if (a[colName] > b[colName])
+   //     return this.sortOrder == 'asc' ? 1 : -1;
+   //   return 0;
+   // })
+ 
+ 
+ }
+ 
+   //\\ ======================== // Data sorting // ======================== //\\
 
 
 }

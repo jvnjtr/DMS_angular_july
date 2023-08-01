@@ -65,7 +65,7 @@
 
                                                 <th width="50px"> {{"Sl No"| langReplace}} </th>
                                                 <th *ngFor="let flist of tablecollist">
-                                                  <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)" class="my-icon bi bi-arrow-up"></i> 
+                                                  <i *ngIf="flist.sortable" (click)="commonserveice.onSortClick(flist.cname,$event,pendingDocList)" class="my-icon bi bi-arrow-up"></i> 
                                                   {{flist.name| langReplace}}
                                                 
                                                  </th>
@@ -105,22 +105,21 @@
                                                       
                                                 </td>
                                                
-                                                <td><a class="text-primary" (click)="loadpreview(plist.fileId,plist.filePath,0,plist.fileName,plist.lockStatus,plist.fileType)" target="_blank" >{{plist.fileName}}
+                                                <td>
+                                                  <a class="text-primary" (click)="loadpreview(plist.fileId,plist.filePath,0,plist.fileName,plist.lockStatus,plist.fileType)" target="_blank" ><i class="h6" [ngClass]="commonserveice.getfiletype(plist.fileType)" ></i> {{plist.fileName}}
                                                         <i ngbTooltip="Locked File" class='{{plist.lockStatus==1? "bi bi-lock-fill text-danger ml-1" :""}}'></i>
 
                                                 </a></td>
-                                                <td class="text-center">
-                                         
-                                                        <i class="h6" [ngClass]="getfiletype(plist.fileType)" ></i>
-                                                    </td>
-                                                <td class="text-right">{{formatBytes(plist.fileSize,2)}}</td>
+                                              
+                                                <td class="text-right">{{commonserveice.formatBytes(plist.fileSize,2)}}</td>
                                               
                                               
                                                 <td>
                                                         {{plist.createdByName}}
-                                                        <span class="text-primary d-block mt-1">  {{plist.CreatedOn}}</span>
+                                                       
                                                     
                                                 </td>
+                                                <td> {{plist.CreatedOn}}</td>
                                                 <td *ngIf="userLoginId == 1">
                                                   <ng-container *ngIf="plist.status == 'Pending'">
                                                  <span class="text-warning d-block mb-1"> {{plist.status}}  </span>

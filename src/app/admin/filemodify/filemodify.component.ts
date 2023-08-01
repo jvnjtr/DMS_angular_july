@@ -149,18 +149,17 @@ export class FilemodifyComponent implements OnInit {
   }
   //\\ ======================== // Config // ======================== //\\
   loadconfig() {
-    this.httpClient.get<any>(this.jsonurl).subscribe((data: any) => {
-      this.tablist = data[0].tabList;
-      this.utillist = data[0].utils
-      this.messaageslist = data[0].messages;
-      this.title = data[0].pagetitle;
-    },
-      (error: any) => {
-        Swal.fire({
-          icon: 'error',
-          text: error
-        });
-      })
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
   }
   //\\ ======================== // Config // ======================== //\\
 
@@ -176,10 +175,10 @@ export class FilemodifyComponent implements OnInit {
 
     newFile.append('fileType', splititems[1])
     newFile.append('folderId', this.folderid)
-    this.uploadfiles.uploadFile(newFile).subscribe((response: any) => {
 
-
-      let respData = response.RESPONSE_DATA;
+    this.uploadfiles.uploadFile(newFile).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
       let respToken = response.RESPONSE_TOKEN;
       let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
       if (respToken == verifyToken) {
@@ -199,11 +198,7 @@ export class FilemodifyComponent implements OnInit {
           this.checkinUpload=false;
         }
         else if (responseResult.status == 400) {
-          Swal.fire({
-            icon: 'error',
-            text: responseResult.message,
-
-          });
+          this.commonserveice.swalfire('error',responseResult.message)
         }
         else if (responseResult.status == 501) {
 
@@ -214,14 +209,16 @@ export class FilemodifyComponent implements OnInit {
         this.loading = false;
        this.authService.directlogout();
       }
+      },
+      error: (msg) => {
+            this.authService.directlogout();
+     }
+   })
+   
 
 
 
-
-    },
-      (error: any) => {
-        this.authService.directlogout();
-      })
+ 
 
 
 
@@ -234,44 +231,43 @@ export class FilemodifyComponent implements OnInit {
     let dataParam = {
       "folderId": folderid,
     };
-
-    this.commonserveice.getFoldersSingle(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        let responseResult = JSON.parse(res)
-
-
-        if (responseResult.status == '200') {
-
-          this.folderlist = responseResult.result;
-          if (this.folderlist.length > 0) {
-            this.folderName = this.folderlist[0].folderName
-            this.selFolderName = this.folderlist[0].parentFolderId
-            this.permissionlist = this.folderlist[0].folderPermission;
+    this.commonserveice.getFoldersSingle(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+  
+  
+          if (responseResult.status == '200') {
+  
+            this.folderlist = responseResult.result;
+            if (this.folderlist.length > 0) {
+              this.folderName = this.folderlist[0].folderName
+              this.selFolderName = this.folderlist[0].parentFolderId
+              this.permissionlist = this.folderlist[0].folderPermission;
+            }
+            // console.log(this.permissionlist)
           }
-          // console.log(this.permissionlist)
+          else if (responseResult.status == 501) {
+  
+            this.authService.directlogout();
+          }
         }
-        else if (responseResult.status == 501) {
-
-          this.authService.directlogout();
+        else {
+          this.loading = false;
+         this.authService.directlogout();
         }
-      }
-      else {
-        this.loading = false;
-       this.authService.directlogout();
-      }
+  
+      },
+      error: (msg) => {
+            this.authService.directlogout();
+     }
+   })
 
-
-
-
-
-    }, (error: any) => {
-      this.authService.directlogout();
-
-    })
+ 
 
 
 
@@ -287,42 +283,43 @@ export class FilemodifyComponent implements OnInit {
     let dataParam = {
       "intMetaId": ''
     };
-    this.commonserveice.viewMeta(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        let responseResult = JSON.parse(res)
-
-        if (responseResult.status == 200) {
-
-          this.metalist = responseResult.result;
-
-
-          // console.log(this.metalist)
-
-        }
-        else if (responseResult.status == 501) {
-
-          this.authService.directlogout();
+    this.commonserveice.viewMeta(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+  
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+  
+          if (responseResult.status == 200) {
+  
+            this.metalist = responseResult.result;
+  
+  
+            // console.log(this.metalist)
+  
+          }
+          else if (responseResult.status == 501) {
+  
+            this.authService.directlogout();
+          }
+          else {
+  
+  
+          }
         }
         else {
-
-
+          this.loading = false;
+         this.authService.directlogout();
         }
-      }
-      else {
-        this.loading = false;
-       this.authService.directlogout();
-      }
-
-
-    }, (error: any) => {
-      this.authService.directlogout();
-
-    })
+      },
+      error: (msg) => {
+            this.authService.directlogout();
+     }
+   })
+  
 
 
   }
@@ -334,41 +331,43 @@ export class FilemodifyComponent implements OnInit {
     let dataParam = {
       "intMetaId": metaId
     };
-    this.commonserveice.viewMeta(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
 
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        let responseResult = JSON.parse(res)
-
-        if (responseResult.status == 200) {
-
-          let metalist = responseResult.result;
-          this.getmetaType = metalist[0].metaType;
-
-
-
-        } else if (responseResult.status == 501) {
-
-          this.authService.directlogout();
+    this.commonserveice.viewMeta(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+  
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+  
+          if (responseResult.status == 200) {
+  
+            let metalist = responseResult.result;
+            this.getmetaType = metalist[0].metaType;
+  
+  
+  
+          } else if (responseResult.status == 501) {
+  
+            this.authService.directlogout();
+          }
+          else {
+  
+          }
         }
         else {
-
+          this.loading = false;
+         this.authService.directlogout();
         }
-      }
-      else {
-        this.loading = false;
-       this.authService.directlogout();
-      }
+      },
+      error: (msg) => {
+            this.authService.directlogout();
+     }
+   })
 
-
-    }, (error: any) => {
-      this.authService.directlogout();
-
-    })
-
+   
 
   }
 
@@ -387,37 +386,18 @@ export class FilemodifyComponent implements OnInit {
     let tags = this.txtTags;
 
 
-
-
-
-
-
-    if (!this.vldChkLst.blankCheck(fileName, this.commonserveice.langReplace(this.messaageslist.filename),'txtFileName')) {
-
-
-    }
-
-    else if((this.rdoSetretention == 1) && (!this.vldChkLst.blankCheck(this.txtExpDate,this.commonserveice.langReplace("Please select the retention date"),'expiryDate'))){} 
-   
-    else if (!this.vldChkLst.blankCheck(subject, this.commonserveice.langReplace(this.messaageslist.subject),'txtSubject')) {
-
-
-    }
+    if (!this.vldChkLst.blankCheck(fileName, this.commonserveice.langReplace(this.messaageslist.filename),'txtFileName')) {}
+   else if((this.rdoSetretention == 1) && (!this.vldChkLst.blankCheck(this.txtExpDate,this.commonserveice.langReplace("Please select the retention date"),'expiryDate'))){} 
+   else if (!this.vldChkLst.blankCheck(subject, this.commonserveice.langReplace(this.messaageslist.subject),'txtSubject')) {}
     else if (this.metaListDetails.length == 0) {
-
-      Swal.fire({
-        icon: 'error',
-        text: this.messaageslist.addMeta
-      });
+      this.commonserveice.swalfire('error',this.messaageslist.addMeta)
+   
     }
 
 
     else {
 
-
-
-
-      let uploadParams = {
+let uploadParams = {
         "fileId": this.fileid,
         "folderId": this.folderid,
         "fileName": fileName,
@@ -434,82 +414,71 @@ export class FilemodifyComponent implements OnInit {
 
       // console.log(uploadParams)
       this.loading = true;
-      this.uploadfiles.fileEdit(uploadParams).subscribe((response: any) => {
-        let respData = response.RESPONSE_DATA;
-        let respToken = response.RESPONSE_TOKEN;
-        //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
 
-        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        if (respToken == verifyToken) {
-          let res: any = Buffer.from(respData, 'base64');
-          let responseResult = JSON.parse(res)
-
-          if (responseResult.status == 200) {
-            this.loading = false;
-            Swal.fire({
-
-              text: this.commonserveice.langReplace(this.messaageslist.successMsg),
-              icon: 'success',
-              confirmButtonColor: '#3085d6',
-              confirmButtonText: this.commonserveice.langReplace('Ok')
-            }).then((result) => {
-
-
-
-
-              let reData: any = this.folderid + ':' + '0'
-
-              let encSchemeStr = this.encDec.encText(reData.toString());
-
-              this.route.navigate(['/admin/viewupload', encSchemeStr])
-
-              this.viewFileDetails(this.fileid);
-
-            })
-
-
-          }
-          else if (responseResult.status == 400) {
-            this.loading = false;
-            Swal.fire({
-              icon: 'error',
-              text: responseResult.message,
-
-            });
-          }
-          else if (responseResult.status == 500) {
-            this.loading = false;
-            Swal.fire({
-              icon: 'error',
-              text: responseResult.message,
-
-            });
-          }
-          else if (responseResult.status == 501) {
-
-            this.authService.directlogout();
+      this.uploadfiles.fileEdit(uploadParams).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
+          //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
+  
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if (respToken == verifyToken) {
+            let res: any = Buffer.from(respData, 'base64');
+            let responseResult = JSON.parse(res)
+  
+            if (responseResult.status == 200) {
+              this.loading = false;
+              Swal.fire({
+  
+                text: this.commonserveice.langReplace(this.messaageslist.successMsg),
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: this.commonserveice.langReplace('Ok')
+              }).then((result) => {
+  
+  
+  
+  
+                let reData: any = this.folderid + ':' + '0'
+  
+                let encSchemeStr = this.encDec.encText(reData.toString());
+  
+                this.route.navigate(['/admin/viewupload', encSchemeStr])
+  
+                this.viewFileDetails(this.fileid);
+  
+              })
+  
+  
+            }
+            else if (responseResult.status == 400) {
+              this.loading = false;
+              this.commonserveice.swalfire('error',responseResult.message)
+            }
+            else if (responseResult.status == 500) {
+              this.loading = false;
+              this.commonserveice.swalfire('error',responseResult.message)
+            }
+            else if (responseResult.status == 501) {
+  
+              this.authService.directlogout();
+            }
+            else {
+              this.loading = false;
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+            }
           }
           else {
             this.loading = false;
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(environment.somethingWrong)
-            });
+            this.authService.directlogout();
           }
-        }
-        else {
-          this.loading = false;
-          this.authService.directlogout();
-        }
+        },
+        error: (msg) => {
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+       }
+     })
 
-
-
-      },
-        (error: any) => {
-          this.loading = false;
-          this.authService.directlogout();
-        })
-
+      
 
 
 
@@ -581,30 +550,31 @@ export class FilemodifyComponent implements OnInit {
       "fileId": fileid
 
     };
-    this.loading = true;
-    this.commonserveice.getFileDetails(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        let responseResult = JSON.parse(res)
+this.loading = true;
+this.commonserveice.getFileDetails(dataParam).subscribe({
+  next: (response) => {
+    let respData = response.RESPONSE_DATA;
+    let respToken = response.RESPONSE_TOKEN;
+    let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+    if (respToken == verifyToken) {
+      let res: any = Buffer.from(respData, 'base64');
+      let responseResult = JSON.parse(res)
 
-        if (responseResult.status == 200) {
+      if (responseResult.status == 200) {
 
-          this.loading = false;
-          this.filedetails = responseResult.result.fileDetails;
-          //this.files_dropped.push(this.filedetails);
+        this.loading = false;
+        this.filedetails = responseResult.result.fileDetails;
+        //this.files_dropped.push(this.filedetails);
 
-          // console.log(this.filedetails)
+        // console.log(this.filedetails)
 
-          this.txtFileName = this.filedetails.fileName;
-          this.selFolderName = this.filedetails.folderId;
-          this.txtFileNumber = this.filedetails.fileRefNo;
-          this.selOcrLang = this.filedetails.ocrLanguage ? this.filedetails.ocrLanguage :'0';
-          this.txtExpDate = this.filedetails.retentionDateDB;
-          this.txtSubject = this.filedetails.subject;
-          this.fileVersion = this.filedetails.fileVersion;
+        this.txtFileName = this.filedetails.fileName;
+        this.selFolderName = this.filedetails.folderId;
+        this.txtFileNumber = this.filedetails.fileRefNo;
+        this.selOcrLang = this.filedetails.ocrLanguage ? this.filedetails.ocrLanguage :'0';
+        this.txtExpDate = this.filedetails.retentionDateDB;
+        this.txtSubject = this.filedetails.subject;
+        this.fileVersion = this.filedetails.fileVersion;
 this.checkinoutstatus=this.filedetails.checkInCheckoutStatus;
 
 
@@ -613,103 +583,104 @@ this.rdoSetretention='1';
 
 }
 else{
-  this.rdoSetretention='2';
+this.rdoSetretention='2';
 
 }
 
-          setTimeout(() => {
+        setTimeout(() => {
 
 
-            let selectIfElement: any = document.getElementById("selfolder");
-
-
-
-            let foldrpermissions: any = JSON.parse(this.filedetails.filePermission)
-            let rolewisepermissions = foldrpermissions.rolebased;
-            let userwisepermissions = foldrpermissions.userbased;
-
-            for (let i = 0; i < rolewisepermissions.length; i++) {
-              let obj: any = {};
-              obj['roleName'] = rolewisepermissions[i].roleName;
-              obj['roleId'] = rolewisepermissions[i].roleId;
-              obj['checked'] = rolewisepermissions[i].checked;
-              obj['permission'] = rolewisepermissions[i].permission;
-              this.rolewisepermissions.push(obj);
-            }
-
-            for (let j = 0; j < userwisepermissions.length; j++) {
+          let selectIfElement: any = document.getElementById("selfolder");
 
 
 
-              let obj: any = {};
-              obj['itemName'] = userwisepermissions[j].itemName;
+          let foldrpermissions: any = JSON.parse(this.filedetails.filePermission)
+          let rolewisepermissions = foldrpermissions.rolebased;
+          let userwisepermissions = foldrpermissions.userbased;
 
-              obj['permission'] = userwisepermissions[j].permission;
-              obj['checked'] = userwisepermissions[j].checked;
-              this.userwisepermissions.push(obj);
-
-            }
-
-          }, 2000)
-
-
-
-          setTimeout(() => {
-            this.txtTags = JSON.parse(this.filedetails.fileTags);
-
-
-
-
-
-
-          }, 2000)
-
-          this.metaListDetails = this.filedetails["metaDetail"];
-          this.filepath = this.filedetails["filePath"];
-
-          this.fileTypeitem = this.filedetails["fileType"];
-          // console.log(datasrc)
-
-          if (this.lockstatus == 1) {
-            setTimeout(() => {
-
-            }, 200)
-          } else {
-            this.prevstatus = true;
-            this.downloadfils(fileid, this.filepath)
+          for (let i = 0; i < rolewisepermissions.length; i++) {
+            let obj: any = {};
+            obj['roleName'] = rolewisepermissions[i].roleName;
+            obj['roleId'] = rolewisepermissions[i].roleId;
+            obj['checked'] = rolewisepermissions[i].checked;
+            obj['permission'] = rolewisepermissions[i].permission;
+            this.rolewisepermissions.push(obj);
           }
 
+          for (let j = 0; j < userwisepermissions.length; j++) {
 
 
-          //  setTimeout(() => {
-          //   this.loadDocPreview(this.filedetails["fileType"],this.filepath)
-          // },2000)
+
+            let obj: any = {};
+            obj['itemName'] = userwisepermissions[j].itemName;
+
+            obj['permission'] = userwisepermissions[j].permission;
+            obj['checked'] = userwisepermissions[j].checked;
+            this.userwisepermissions.push(obj);
+
+          }
+
+        }, 2000)
 
 
+
+        setTimeout(() => {
+          this.txtTags = JSON.parse(this.filedetails.fileTags);
+
+
+
+
+
+
+        }, 2000)
+
+        this.metaListDetails = this.filedetails["metaDetail"];
+        this.filepath = this.filedetails["filePath"];
+
+        this.fileTypeitem = this.filedetails["fileType"];
+        // console.log(datasrc)
+
+        if (this.lockstatus == 1) {
+          setTimeout(() => {
+
+          }, 200)
+        } else {
+          this.prevstatus = true;
+          this.downloadfils(fileid, this.filepath)
         }
-        if (responseResult.status == 400) {
-          this.loading = false;
-          this.filedetails = responseResult.result;
-        }
-        else if (responseResult.status == 501) {
 
-          this.authService.directlogout();
-        }
-        else {
 
-        }
+
+        //  setTimeout(() => {
+        //   this.loadDocPreview(this.filedetails["fileType"],this.filepath)
+        // },2000)
+
+
+      }
+      if (responseResult.status == 400) {
+        this.loading = false;
+        this.filedetails = responseResult.result;
+      }
+      else if (responseResult.status == 501) {
+
+        this.authService.directlogout();
       }
       else {
-        this.loading = false;
-       this.authService.directlogout();
+
       }
-
-
-
-    }, (error: any) => {
+    }
+    else {
       this.loading = false;
-      this.authService.directlogout();
-    })
+     this.authService.directlogout();
+    }
+
+  },
+  error: (msg) => {
+    this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+ }
+})
+
+ 
 
   }
 
@@ -720,8 +691,9 @@ else{
       "fileId": fid,
       "url": fpath
     };
-    this.commonserveice.fileDownload(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
+    this.commonserveice.fileDownload(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
       let respToken = response.RESPONSE_TOKEN;
 
       this.fileLoading = true;
@@ -813,21 +785,21 @@ else{
           this.authService.directlogout();
         }
         else {
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(environment.somethingWrong)
-          });
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
         }
       }
       else {
         this.loading = false;
        this.authService.directlogout();
       }
+      },
+      error: (msg) => {
+            this.authService.directlogout();
+     }
+   })
 
-    }, (error: any) => {
-      this.loading = false;
-      this.authService.directlogout();
-    })
+
+   
   }
   //\\ ======================== // Download File // ======================== //\\ 
   onError(error: any) {
@@ -932,10 +904,9 @@ else{
         "password": password,
         "action": 3
       };
-
-      // console.log(formParams) 
-      this.commonserveice.fileLockUnlock(formParams).subscribe((response: any) => {
-        let respData = response.RESPONSE_DATA;
+      this.commonserveice.fileLockUnlock(formParams).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
         let respToken = response.RESPONSE_TOKEN;
         let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
         if (respToken == verifyToken) {
@@ -949,22 +920,14 @@ else{
 
           }
           else if (responseResult.status == 400) {
-            Swal.fire({
-              icon: 'error',
-              text: responseResult.message,
-
-            });
+            this.commonserveice.swalfire('error',responseResult.message)
           }
           else if (responseResult.status == 501) {
 
             this.authService.directlogout();
           }
           else {
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(environment.somethingWrong)
-
-            });
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
           }
         }
         else {
@@ -972,14 +935,12 @@ else{
           this.authService.directlogout();
         }
 
-
-
-
-
-      },
-        (error: any) => {
-          this.authService.directlogout();
-        });
+        },
+        error: (msg) => {
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+       }
+     })
+  
 
     }
 
@@ -1039,22 +1000,14 @@ else{
             });
           }
           else if (responseResult.status == 400) {
-            Swal.fire({
-              icon: 'error',
-              text: responseResult.message,
-
-            });
+            this.commonserveice.swalfire('error',responseResult.message)
           }
           else if (responseResult.status == 501) {
 
             this.authService.directlogout();
           }
           else {
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(environment.somethingWrong)
-
-            });
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
           }
         }
         else {

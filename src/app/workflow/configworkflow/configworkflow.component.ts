@@ -398,33 +398,29 @@ mailConigDetails: any = '';
 //\\ ======================== // Eventes List // ======================== //\\ 
   loadEvents() {
     let params: any = [];
-    
-    this.workFlowServices.getEvents(params).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let res:any = Buffer.from(respData,'base64'); 
-      let responseResult= JSON.parse(res)
-    
-if (responseResult.status == '200') {
-
+    this.workFlowServices.getEvents(params).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let res:any = Buffer.from(respData,'base64'); 
+        let responseResult= JSON.parse(res)
+      
+  if (responseResult.status == '200') {
+  
+       
+    this.approvalActions = responseResult.result;
+  
+        }
      
-  this.approvalActions = responseResult.result;
-
-      }
-   
-      else if((responseResult.status==500)){
-        Swal.fire({
-          icon: 'error',
-          text: responseResult.message
-        });
-      }
-    
-
-
-    },
-    (error:any) =>{
-      this.authService.directlogout();
-    })
+        else if((responseResult.status==500)){
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+      
+        }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
 
 
 
@@ -435,59 +431,54 @@ if (responseResult.status == '200') {
      let dataParam = {
       "folderId": folderid
     };
-    this.workFlowServices.getAdminRoles(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-        let responseResult= JSON.parse(res)
-  if (responseResult.status == '200') {
-  let authorities:any=responseResult.result;
-  this.folderName=authorities.folderName;
-  
-  let result:any=[];
-   result = authorities.data;
-   for (let i = 0; i < result.length; i++) {
-     let obj: any = {};
-     obj['fileOrFolderId'] = result[i].fileOrFolderId;
-     obj['intId'] = result[i].intId;
-     obj['type'] = result[i].type;
-     obj['roleName'] = result[i].roleName;
-     obj['roleId'] = result[i].roleId;
-     let permissions:any=JSON.parse(result[i].permission);
-      for(let j = 0; j < permissions.length; j++){
-          if(permissions[j].label == 'WorkFlow' && permissions[j].selected == true){
-              obj['permission'] = permissions[j].label
-          }
-      }
+    this.workFlowServices.getAdminRoles(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+          let responseResult= JSON.parse(res)
+    if (responseResult.status == '200') {
+    let authorities:any=responseResult.result;
+    this.folderName=authorities.folderName;
     
-     this.roleArr.push(obj);
-  
-   }
-  
+    let result:any=[];
+     result = authorities.data;
+     for (let i = 0; i < result.length; i++) {
+       let obj: any = {};
+       obj['fileOrFolderId'] = result[i].fileOrFolderId;
+       obj['intId'] = result[i].intId;
+       obj['type'] = result[i].type;
+       obj['roleName'] = result[i].roleName;
+       obj['roleId'] = result[i].roleId;
+       let permissions:any=JSON.parse(result[i].permission);
+        for(let j = 0; j < permissions.length; j++){
+            if(permissions[j].label == 'WorkFlow' && permissions[j].selected == true){
+                obj['permission'] = permissions[j].label
+            }
         }
-       
-        else if((responseResult.status==500)){
-          Swal.fire({
-            icon: 'error',
-            text: responseResult.message
-          });
+      
+       this.roleArr.push(obj);
+    
+     }
+    
+          }
+         
+          else if((responseResult.status==500)){
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+          }
         }
-      }
-      else{
-        this.loading = false;
-    this.authService.directlogout();
-      }
-
-
-   
-
-
-    },
-    (error:any) =>{
+        else{
+          this.loading = false;
       this.authService.directlogout();
-    })
+        }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+ 
 
 
 
@@ -625,10 +616,8 @@ if (responseResult.status == '200') {
     }
    if(stageArr.length ==0)
       {
-        Swal.fire({
-          icon: 'error',
-          text: this.commonserveice.langReplace("Please configure the workflow"),
-        })
+        this.commonserveice.swalfire('error',this.commonserveice.langReplace("Please configure the workflow"))
+       
         return false;
       }
       else if(this.roleArr > 0){
@@ -653,7 +642,8 @@ if (responseResult.status == '200') {
 
    
    //console.log(canvasArr)
-    this.workFlowServices.saveCanvasData(canvasArr).subscribe((response: any) => {
+   this.workFlowServices.saveCanvasData(canvasArr).subscribe({
+    next: (response) => {
       let respData = response.RESPONSE_DATA;
       let respToken = response.RESPONSE_TOKEN;
 
@@ -689,21 +679,19 @@ let responseResult= JSON.parse(res)
       this.authService.directlogout();
     }
       else {
-        Swal.fire({
-          icon: 'error',
-          text: curObj.commonserveice.langReplace(curObj.messaageslist.errorMsg),
-        });
+        this.commonserveice.swalfire('error',this.commonserveice.langReplace(curObj.messaageslist.errorMsg))
+     
       }
       }
       else{
         this.loading = false;
     this.authService.directlogout();
       }
-
-    
-    },(error:any) =>{
+    },
+    error: (msg) => {
       this.authService.directlogout();
-    });
+   }
+ })
 
     return true;
   //  saveCanvasData(canvasArr);
@@ -1000,76 +988,71 @@ let responseResult= JSON.parse(res)
       folderId:folderid
     };
     let curObj = this;
-    this.workFlowServices.fillWorkflowData(arrParam).subscribe((response: any) => {
-
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-        let responseResult= JSON.parse(res)
-  
-  
-        if (responseResult.status==200) {
-          
-          var drawFlow = responseResult.result.workflowDetail.canvasData;
+    this.workFlowServices.fillWorkflowData(arrParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+          let responseResult= JSON.parse(res)
+    
+    
+          if (responseResult.status==200) {
+            
+            var drawFlow = responseResult.result.workflowDetail.canvasData;
+           
+             drawFlow = this.encDec.decodeHtml(drawFlow);
+    
+           //  console.log(drawFlow)
+            drawFlow = JSON.parse(drawFlow);
+            this.editor.import(drawFlow);
+            var drawData = drawFlow.drawflow.Home.data;
+            var drawKeys = Object.keys(drawData);
+            var appDocs = '';
+            $(drawKeys).each(function (i) {
+              var drawKeyCtr = drawKeys[i];
+              var drawKeyData = drawData[parseInt(drawKeyCtr)];
+              var approvalDocs = drawKeyData.data.approvalDocs;
+              //curObj.approvalDocuments = drawKeyData.data.approvalDocuments;
+    
+             // console.log(drawKeyData.data);
+              if (typeof approvalDocs != 'undefined' && approvalDocs != '') {
+                appDocs = appDocs + approvalDocs + ',';
+              }
+            });
+            appDocs = appDocs.slice(0, -1);
+    
+            $('#hdnAllDocs').val(appDocs);
+          }  
+          else if((responseResult.status==400)){
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+       
+          }
+          else if((responseResult.status==402)){
+          //here no workflow for specific folder
+          }
+          else if(responseResult.status==501){
+            
+            this.authService.directlogout();
+          }
+          else {
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
          
-           drawFlow = this.encDec.decodeHtml(drawFlow);
-  
-         //  console.log(drawFlow)
-          drawFlow = JSON.parse(drawFlow);
-          this.editor.import(drawFlow);
-          var drawData = drawFlow.drawflow.Home.data;
-          var drawKeys = Object.keys(drawData);
-          var appDocs = '';
-          $(drawKeys).each(function (i) {
-            var drawKeyCtr = drawKeys[i];
-            var drawKeyData = drawData[parseInt(drawKeyCtr)];
-            var approvalDocs = drawKeyData.data.approvalDocs;
-            //curObj.approvalDocuments = drawKeyData.data.approvalDocuments;
-  
-           // console.log(drawKeyData.data);
-            if (typeof approvalDocs != 'undefined' && approvalDocs != '') {
-              appDocs = appDocs + approvalDocs + ',';
-            }
-          });
-          appDocs = appDocs.slice(0, -1);
-  
-          $('#hdnAllDocs').val(appDocs);
-        }  
-        else if((responseResult.status==400)){
-          Swal.fire({
-            icon: 'error',
-            text: responseResult.message
-          });
+          }
         }
-        else if((responseResult.status==402)){
-        //here no workflow for specific folder
-        }
-        else if(responseResult.status==501){
-          
-          this.authService.directlogout();
-        }
-        else {
-          Swal.fire({
-            icon: 'error',
-            text: "Something went wrong"
-          });
-        }
-      }
-      else{
-        this.loading = false;
-    this.authService.directlogout();
-      }
-
-
- 
-
-
-    },
-    (error:any) =>{
+        else{
+          this.loading = false;
       this.authService.directlogout();
-    });
+        }
+  
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+   
+ 
   }
 
   chooseAction(elementId: any, id: any) {
@@ -1089,21 +1072,22 @@ let responseResult= JSON.parse(res)
     } 
     let nodeData = this.editor.getNodeFromId(this.nodeSelected);
     let nodeInputCon = nodeData.inputs.input_1.connections;
+ let nodelavel = nodeData.data.lavel;
+
+
     let nodeOutputCon = nodeData.outputs.output_1.connections;
 
- if((this.nodeSelected != null) && (nodeInputCon.length == 0) && (elementId == 2)){
+ if((this.nodeSelected != null) && (nodelavel == '1') && (elementId == 2)){
+
   (<HTMLInputElement>document.getElementById('chk_' + elementId)).checked = false;
-  Swal.fire({
-    icon: 'error',
-    text:  this.commonserveice.langReplace('You can not chose markdown single or not connected authorities'),
-  });
+  this.commonserveice.swalfire('error',this.commonserveice.langReplace('It is not possible to choose to markdown a single authority or not connect with others '))
+
 }
 else if((this.nodeSelected != null) && (nodeOutputCon.length == 0) && (elementId == 1)){
+  
   (<HTMLInputElement>document.getElementById('chk_' + elementId)).checked = false;
-  Swal.fire({
-    icon: 'error',
-    text:  this.commonserveice.langReplace('You can not chose markup Please Connect the authorities first'),
-  });
+  this.commonserveice.swalfire('error',this.commonserveice.langReplace('The last authority cannot choose the mark up'))
+
 }
 
     else {

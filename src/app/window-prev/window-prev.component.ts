@@ -117,13 +117,17 @@ public vldChkLst:ValidatorchecklistService,
    }
 
    loadconfig(){
-    this.httpClient.get<any>(this.jsonurl).subscribe((data:any)=>
-     {
-      this.tablist=data[0].tabList;
-      this.utillist=data[0].utils
-      this.messaageslist=data[0].messages; 
-      this.title = data[0].pagetitle;
-     })
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
    }
  
  
@@ -138,157 +142,156 @@ downloadfils(fid: any, fpath: any,filetype:any) {
     "url": fpath,
     'logId':this.logid
   };
-  this.commonserveice.fileDownload(dataParam).subscribe((response: any) => {
-    let respData = response.RESPONSE_DATA;
-    let respToken = response.RESPONSE_TOKEN;
-     this.fileLoading=true; 
-
-     let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-     if(respToken == verifyToken){
-      let res:any = Buffer.from(respData,'base64'); 
-      let responseResult = JSON.parse(res)
-
-  if (responseResult.status == 200) {
-
+  this.commonserveice.fileDownload(dataParam).subscribe({
+    next: (response) => {
+      let respData = response.RESPONSE_DATA;
+      let respToken = response.RESPONSE_TOKEN;
+       this.fileLoading=true; 
   
-    this.downloaditem = responseResult.result;
-
-   // console.log(responseResult.result)
-    this.downloadlink = this.downloaditem.filePath;
-    this.dcoSrc=this.downloaditem.filePath;
-   
-    if(filetype == "pdf"){
-      setTimeout(() => {
-        this.fileLoading=true;
-       let dangerouframeUrl = `${environment.iframeviewURL}?fileId=${this.fileId}+&logId=${this.logid > 0 ? this.logid : 0}+&token=${this.token}+&date=${this.currenttime}`;
-        this.publicurl=this.sanitizer.bypassSecurityTrustResourceUrl(dangerouframeUrl);
-       
-      this.fileLoading=false;
-      },1000)
-    }  
- else if(filetype == "mp4"){
-
-  this.publicurl='';
-    setTimeout(() => {
-      const video = document.createElement("video");
+       let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+       if(respToken == verifyToken){
+        let res:any = Buffer.from(respData,'base64'); 
+        let responseResult = JSON.parse(res)
+  
+    if (responseResult.status == 200) {
+  
     
-      // video.classList.add("frame");
-        video.controls = true;
-        video.muted = false;
+      this.downloaditem = responseResult.result;
   
-        if (video.canPlayType('video/mp4')) {
-          video.src = this.dcoSrc;
-        } else if (video.canPlayType('video/ogg')) {
-          video.src = this.dcoSrc;
-        } else {
-          // Provide video link to user  video.src = this.DemoDoc;
-        }
-
-        video.height = 380; // in px
-        video.width = 560; 
-      
-        let element=<HTMLInputElement>document.getElementById("videopreviewdiv1")
-       
-        element.appendChild(video)
-        this.fileLoading=false; 
-    },2000)
-  
-  }else if(filetype == 'xlsx'){
-    //alert();
-    setTimeout(() => {
-  
-      this.fileLoading=true; 
-    let dangerouframeUrl = `${environment.excelViewer}?fileId=${this.fileId}+&logId=${this.logid > 0 ? this.logid : 0}+&token=${this.token}+&date=${this.currenttime}+&type=1`;
-  
-    this.publicurl=this.sanitizer.bypassSecurityTrustResourceUrl(dangerouframeUrl);
-    this.fileLoading=false; 
-  
-  
-  },200)
-  }
-  else if(filetype == 'docx'){
-    //alert();
-    setTimeout(() => {
-  
-      this.fileLoading=true; 
-    let dangerouframeUrl = `${environment.iframeURL}?fileId=${this.fileId}+&logId=${this.logid > 0 ? this.logid : 0}+&token=${this.token}+&date=${this.currenttime}+&type=1`;
-  
-    this.publicurl=this.sanitizer.bypassSecurityTrustResourceUrl(dangerouframeUrl);
-    this.fileLoading=false; 
-  
-  
-  },200)
-  }
-  else if(filetype == "mp3"){
-    this.publicurl='';
-    setTimeout(() => {
-
-      const audio = document.createElement("AUDIO");
-
-      audio.setAttribute("src",this.dcoSrc);
-      audio.setAttribute("controls", "controls");
-      document.body.appendChild(audio);
-  
-      let element=<HTMLInputElement>document.getElementById("audiopreviewdiv")
-        element.innerHTML="";
-        element.appendChild(audio)
-    },200)
-    this.fileLoading=false; 
-   }
-else if(filetype =="zip" ){
+     // console.log(responseResult.result)
+      this.downloadlink = this.downloaditem.filePath;
+      this.dcoSrc=this.downloaditem.filePath;
      
-setTimeout(() => {
-
-const zip = document.createElement("a");
-const t = document.createTextNode("Downlod .zip File");
- zip.setAttribute("target", "_blank");
-zip.setAttribute("href", this.dcoSrc);
-zip.classList.add("btn","btn-primary");
-zip.appendChild(t);
-let element=<HTMLInputElement>document.getElementById("zipdiv")
-    element.innerHTML="";
-    element.appendChild(zip)
-},200)
-
-this.fileLoading=false; 
-}
-else{
-setTimeout(() => {
-
-  this.fileLoading=true; 
-let dangerouframeUrl = `${environment.iframeviewURL}?fileId=${this.fileId}+&logId=${this.logid > 0 ? this.logid : 0}+&token=${this.token}+&date=${this.currenttime}+type=1`;
-
-this.publicurl=this.sanitizer.bypassSecurityTrustResourceUrl(dangerouframeUrl);
-this.fileLoading=false; 
-
-
-},200)
-
-}     
-
-  }
-  else if(responseResult.status==501){
+      if(filetype == "pdf"){
+        setTimeout(() => {
+          this.fileLoading=true;
+         let dangerouframeUrl = `${environment.iframeviewURL}?fileId=${this.fileId}+&logId=${this.logid > 0 ? this.logid : 0}+&token=${this.token}+&date=${this.currenttime}`;
+          this.publicurl=this.sanitizer.bypassSecurityTrustResourceUrl(dangerouframeUrl);
+         
+        this.fileLoading=false;
+        },1000)
+      }  
+   else if(filetype == "mp4"){
+  
+    this.publicurl='';
+      setTimeout(() => {
+        const video = document.createElement("video");
       
-    this.authService.directlogout();
+        // video.classList.add("frame");
+          video.controls = true;
+          video.muted = false;
+    
+          if (video.canPlayType('video/mp4')) {
+            video.src = this.dcoSrc;
+          } else if (video.canPlayType('video/ogg')) {
+            video.src = this.dcoSrc;
+          } else {
+            // Provide video link to user  video.src = this.DemoDoc;
+          }
+  
+          video.height = 380; // in px
+          video.width = 560; 
+        
+          let element=<HTMLInputElement>document.getElementById("videopreviewdiv1")
+         
+          element.appendChild(video)
+          this.fileLoading=false; 
+      },2000)
+    
+    }else if(filetype == 'xlsx'){
+      //alert();
+      setTimeout(() => {
+    
+        this.fileLoading=true; 
+      let dangerouframeUrl = `${environment.excelViewer}?fileId=${this.fileId}+&logId=${this.logid > 0 ? this.logid : 0}+&token=${this.token}+&date=${this.currenttime}+&type=1`;
+    
+      this.publicurl=this.sanitizer.bypassSecurityTrustResourceUrl(dangerouframeUrl);
+      this.fileLoading=false; 
+    
+    
+    },200)
+    }
+    else if(filetype == 'docx'){
+      //alert();
+      setTimeout(() => {
+    
+        this.fileLoading=true; 
+      let dangerouframeUrl = `${environment.iframeURL}?fileId=${this.fileId}+&logId=${this.logid > 0 ? this.logid : 0}+&token=${this.token}+&date=${this.currenttime}+&type=1`;
+    
+      this.publicurl=this.sanitizer.bypassSecurityTrustResourceUrl(dangerouframeUrl);
+      this.fileLoading=false; 
+    
+    
+    },200)
+    }
+    else if(filetype == "mp3"){
+      this.publicurl='';
+      setTimeout(() => {
+  
+        const audio = document.createElement("AUDIO");
+  
+        audio.setAttribute("src",this.dcoSrc);
+        audio.setAttribute("controls", "controls");
+        document.body.appendChild(audio);
+    
+        let element=<HTMLInputElement>document.getElementById("audiopreviewdiv")
+          element.innerHTML="";
+          element.appendChild(audio)
+      },200)
+      this.fileLoading=false; 
+     }
+  else if(filetype =="zip" ){
+       
+  setTimeout(() => {
+  
+  const zip = document.createElement("a");
+  const t = document.createTextNode("Downlod .zip File");
+   zip.setAttribute("target", "_blank");
+  zip.setAttribute("href", this.dcoSrc);
+  zip.classList.add("btn","btn-primary");
+  zip.appendChild(t);
+  let element=<HTMLInputElement>document.getElementById("zipdiv")
+      element.innerHTML="";
+      element.appendChild(zip)
+  },200)
+  
+  this.fileLoading=false; 
   }
   else{
-    this.loading=false;
-    Swal.fire({
-      icon: 'error',
-      text: this.commonserveice.langReplace(environment.somethingWrong)
-});
-  }
-     }
-     else{
-      this.fileLoading = false;
+  setTimeout(() => {
+  
+    this.fileLoading=true; 
+  let dangerouframeUrl = `${environment.iframeviewURL}?fileId=${this.fileId}+&logId=${this.logid > 0 ? this.logid : 0}+&token=${this.token}+&date=${this.currenttime}+type=1`;
+  
+  this.publicurl=this.sanitizer.bypassSecurityTrustResourceUrl(dangerouframeUrl);
+  this.fileLoading=false; 
+  
+  
+  },200)
+  
+  }     
+  
+    }
+    else if(responseResult.status==501){
+        
       this.authService.directlogout();
-     }
+    }
+    else{
+      this.loading=false;
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+    }
+       }
+       else{
+        this.fileLoading = false;
+        this.authService.directlogout();
+       }
+  
+    },
+    error: (msg) => {
+      this.authService.directlogout();
+   }
+ })
 
-   
-  },(error:any) =>{
-    this.loading=false;
-    this.authService.directlogout();
-  })
 }
 //\\ ======================== // Download File // ======================== //\\ 
 
@@ -337,8 +340,9 @@ unsetPassword(){
       };
     
    // console.log(formParams) 
-this.commonserveice.fileLockUnlock(formParams).subscribe((response:any)=>{
-let respData = response.RESPONSE_DATA;
+   this.commonserveice.fileLockUnlock(formParams).subscribe({
+    next: (response) => {
+      let respData = response.RESPONSE_DATA;
 let respToken = response.RESPONSE_TOKEN;
 let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
 if(respToken == verifyToken){
@@ -362,27 +366,19 @@ if(respToken == verifyToken){
   this.authService.directlogout();
   }
   else{
-  Swal.fire({
-    icon: 'error',
-    text: this.commonserveice.langReplace(environment.somethingWrong)
-    
-  });
+    this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
   }
 }
 else{
   this.loading = false;
   this.authService.directlogout();
 }
+    },
+    error: (msg) => {
+      this.authService.directlogout();
+   }
+ })
 
-
-
-
-
-
-},
-(error:any) =>{
-  this.authService.directlogout();
-});
 
   }
 

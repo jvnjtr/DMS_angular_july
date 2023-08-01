@@ -67,7 +67,7 @@
 
 
                                             <th *ngFor="let flist of tablecollist">
-                                                <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)" class="my-icon bi bi-arrow-up"></i> 
+                                                <i *ngIf="flist.sortable" (click)="commonserveice.onSortClick(flist.cname,$event,metalist)" class="my-icon bi bi-arrow-up"></i> 
                                                 {{flist.name | langReplace}}
                                                 
                                                 
@@ -109,8 +109,9 @@
                                           
                                            
                                             <td>{{mlist.createdBy}}
-                                                   <small class="text-primary d-block mt-1">on {{mlist.createdOn}}</small>
+                                                   
                                             </td>
+                                            <td>{{mlist.createdOn}}</td>
                                             <td class="p-none">
                                                     <a class="text-primary" title="Edit" href="javascript:void(0)" (click)="gotoEdit(mlist.intMetaId)"><i class="icon-edit-solid"></i></a>
                                                     <a class="text-danger" href="javascript:void(0)" (click)="deletMeta(mlist.intMetaId)"><i class="icon-trash-solid"></i></a>

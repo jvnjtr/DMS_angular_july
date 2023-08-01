@@ -89,18 +89,17 @@ export class FolderwiseComponent implements OnInit {
   }
 
   loadconfig() {
-    this.httpClient.get<any>(this.jsonurl).subscribe((data: any) => {
-      this.tablist = data[0].tabList;
-      this.utillist = data[0].utils
-      this.messaageslist = data[0].messages;
-      this.title = data[0].pagetitle;
-    },
-      (error: any) => {
-        Swal.fire({
-          icon: 'error',
-          text: error
-        });
-      })
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
   }
   viewDetails(fid: any, searchitems: any) {
 
@@ -143,10 +142,7 @@ export class FolderwiseComponent implements OnInit {
         }
         else {
           this.loading = false;
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(environment.somethingWrong)
-          });
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
 
         }
       }
@@ -175,97 +171,77 @@ export class FolderwiseComponent implements OnInit {
     };
 
 // console.log(dataParam);
-    this.loading = true
-    this.reportService.rptSharedList(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        let responseResult = JSON.parse(res)
-        // console.log(responseResult);
-        if (responseResult.status == 200) {
-          this.loading = false;
-          this.queryList = responseResult.result;
-          console.log(this.queryList)
-
-          if (type == 2) {
-
-            this.loadChart(this.queryList, graphtype);
+    this.loading = true;
+    this.reportService.rptSharedList(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+  
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+          // console.log(responseResult);
+          if (responseResult.status == 200) {
+            this.loading = false;
+            this.queryList = responseResult.result;
+            console.log(this.queryList)
+  
+            if (type == 2) {
+  
+              this.loadChart(this.queryList, graphtype);
+            }
+  
+  
+  
+  
           }
-
-
-
-
-        }
-        else if (responseResult.status == 400) {
-          this.loading = false;
-        }
-        else if (responseResult.status == 501) {
-
-          this.authService.directlogout();
+          else if (responseResult.status == 400) {
+            this.loading = false;
+          }
+          else if (responseResult.status == 501) {
+  
+            this.authService.directlogout();
+          }
+          else {
+            this.loading = false;
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+          }
         }
         else {
           this.loading = false;
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(environment.somethingWrong)
-          });
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.invalidResponse))
+        
         }
-      }
-      else {
-        this.loading = false;
-        Swal.fire({
-          icon: 'error',
-          text:this.commonserveice.langReplace(environment.invalidResponse)
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
 
-        });
-      }
-
-
-    },
-      (error: any) => {
-        this.loading = false;
-        Swal.fire({
-          icon: 'error',
-          text:this.commonserveice.langReplace(environment.errorApiResponse)
-        });
-      })
+ 
   }
 
 
   searchdata(type: any, basedon: any, user: any, fromdate: any, todate: any,graphtype: any,fileName:any) {
     if (fromdate == '' && todate) {
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace("Select From Date"),
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace("Select From Date"))
 
-      });
 
     }
     else if (fromdate && todate == '') {
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace("Select To Date"),
-
-      });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace("Select To Date"))
+ 
 
     }
     else if (type == 2 && basedon == 0) {
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace("Select Based On"),
-
-      });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace("Select Based On"))
+  
 
     }
     else if (type == 2 && graphtype == 0) {
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace("Select Graph Type"),
-
-      });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace("Select Graph Type"))
+   
 
     }
     else {
@@ -325,17 +301,7 @@ export class FolderwiseComponent implements OnInit {
 
 
   //\\ ======================== // Data sorting // ======================== //\\
-  formatBytes(bytes: any, decimals: any) {
-    if (!+bytes) return '0 Bytes'
 
-    const k = 1024
-    const dm = decimals < 0 ? 0 : decimals
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-  }
   //\\ ======================== // Get file Type // ======================== //\\
   getfiletype(filename: any) {
 
@@ -386,52 +352,51 @@ export class FolderwiseComponent implements OnInit {
       "userId": userId,
       "fileId": ''
     };
-    this.reportService.getUserlist(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        let responseResult = JSON.parse(res)
-
-        if (responseResult.status == 200) {
-
-          this.loading = false;
-          this.userList = responseResult.result;
-
-          //    console.log(this.userList) 
-
-        }
-        if (responseResult.status == 400) {
-          this.loading = false;
-          this.userList = responseResult.result;
-        }
-        if (responseResult.status == 500) {
-          this.loading = false;
-          this.userList = responseResult.result;
-        }
-        else if (responseResult.status == 501) {
-
-          this.authService.directlogout();
+    this.reportService.getUserlist(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+  
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+  
+          if (responseResult.status == 200) {
+  
+            this.loading = false;
+            this.userList = responseResult.result;
+  
+            //    console.log(this.userList) 
+  
+          }
+          if (responseResult.status == 400) {
+            this.loading = false;
+            this.userList = responseResult.result;
+          }
+          if (responseResult.status == 500) {
+            this.loading = false;
+            this.userList = responseResult.result;
+          }
+          else if (responseResult.status == 501) {
+  
+            this.authService.directlogout();
+          }
+          else {
+            this.loading = false;
+  
+          }
         }
         else {
           this.loading = false;
-
+          this.authService.directlogout();
         }
-      }
-      else {
-        this.loading = false;
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      }
-
-
-
-    },
-      (error: any) => {
-        this.loading = false;
-        this.authService.directlogout();
-      })
+     }
+   })
+  
 
   }
   //\\ ======================== // Load User List // ======================== //\\ 
@@ -442,52 +407,52 @@ export class FolderwiseComponent implements OnInit {
       "userId": userId,
 
     };
-    this.reportService.getUserDetails(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        let responseResult = JSON.parse(res)
-
-        if (responseResult.status == 200) {
-
-          this.loading = false;
-          this.userList = responseResult.result;
-
-          //    console.log(this.userList) 
-
-        }
-        if (responseResult.status == 400) {
-          this.loading = false;
-          this.userList = responseResult.result;
-        }
-        if (responseResult.status == 500) {
-          this.loading = false;
-          this.userList = responseResult.result;
-        }
-        else if (responseResult.status == 501) {
-
-          this.authService.directlogout();
+    this.reportService.getUserDetails(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+  
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+  
+          if (responseResult.status == 200) {
+  
+            this.loading = false;
+            this.userList = responseResult.result;
+  
+            //    console.log(this.userList) 
+  
+          }
+          if (responseResult.status == 400) {
+            this.loading = false;
+            this.userList = responseResult.result;
+          }
+          if (responseResult.status == 500) {
+            this.loading = false;
+            this.userList = responseResult.result;
+          }
+          else if (responseResult.status == 501) {
+  
+            this.authService.directlogout();
+          }
+          else {
+            this.loading = false;
+  
+          }
         }
         else {
           this.loading = false;
-
+          this.authService.directlogout();
         }
-      }
-      else {
-        this.loading = false;
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      }
+     }
+   })
+   
 
-
-
-    },
-      (error: any) => {
-        this.loading = false;
-        this.authService.directlogout();
-      })
 
   }
   //\\ ======================== // Load User List // ======================== //\\ 

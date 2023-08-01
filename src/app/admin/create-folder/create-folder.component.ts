@@ -67,7 +67,7 @@ permissionlistitems:any=[
   {label: 'Create Folder'},
   {label: 'Delete'},
   {label: 'Rename'},
-  {label: 'Archive'},
+  
   {label: 'WorkFlow'},
   {label: 'Move to folder'}
 
@@ -121,18 +121,17 @@ ngOnInit(): void {
 }
 //\\ ======================== // Config // ======================== //\\
 loadconfig() {
-  this.httpClient.get<any>(this.jsonurl).subscribe((data: any) => {
-    this.tablist = data[0].tabList;
-    this.utillist = data[0].utils
-    this.messaageslist = data[0].messages;
-    this.title = data[0].pagetitle;
-  },
-  (error:any) =>{
-    Swal.fire({
-      icon: 'error',
-      text: error
-    });
-  })
+  this.httpClient.get<any>(this.jsonurl).subscribe({
+    next: (data) => {
+       this.tablist=data[0].tabList;
+         this.utillist=data[0].utils
+         this.messaageslist=data[0].messages; 
+         this.title = data[0].pagetitle;
+    },
+    error: (msg) => {
+      this.authService.directlogout();
+   }
+ })
 }
 //\\ ======================== // Config // ======================== //\\
 
@@ -141,52 +140,48 @@ loadconfig() {
   let dataParam = {
     "folderId": folderid,
     };
-    
-this.commonserveice.getFoldersSingle(dataParam).subscribe((response:any) => {
-  let respData = response.RESPONSE_DATA;
-  let respToken = response.RESPONSE_TOKEN;
- 
- 
-  let res:any = Buffer.from(respData,'base64'); 
-  let responseResult = JSON.parse(res)
-   
-  
-    if(responseResult.status == '200'){
-
-      this.folderlist=responseResult.result;
-      //console.log(this.folderlist)
-      if(this.folderlist.length > 0){
-
-
-
-        this.folderSizeType=this.folderlist[0].folderSizeType;
-        this.parentSizeinKb =this.folderlist[0].parentSizeinKb;
-         this.childSizeInKb=this.folderlist[0].childSizeInKb ;
-
-      this.folderName=this.folderlist[0].folderName
-      this.selFolderName=this.folderlist[0].parentFolderId;
-      this.selectroleList = this.folderlist[0].folderPermission;
-      this.selDepartmentName=this.folderlist[0].departmentId;
-      }
-  // console.log(this.selectroleList)
-    }
-    else if(responseResult.status==501){
+    this.commonserveice.getFoldersSingle(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+       
+       
+        let res:any = Buffer.from(respData,'base64'); 
+        let responseResult = JSON.parse(res)
+         
         
-      this.authService.directlogout();
-    }
-   else{
-    Swal.fire({
-      icon: 'error',
-      text: this.commonserveice.langReplace(environment.somethingWrong)
+          if(responseResult.status == '200'){
+      
+            this.folderlist=responseResult.result;
+            //console.log(this.folderlist)
+            if(this.folderlist.length > 0){
+      
+      
+      
+              this.folderSizeType=this.folderlist[0].folderSizeType;
+              this.parentSizeinKb =this.folderlist[0].parentSizeinKb;
+               this.childSizeInKb=this.folderlist[0].childSizeInKb ;
+      
+            this.folderName=this.folderlist[0].folderName
+            this.selFolderName=this.folderlist[0].parentFolderId;
+            this.selectroleList = this.folderlist[0].folderPermission;
+            this.selDepartmentName=this.folderlist[0].departmentId;
+            }
+        // console.log(this.selectroleList)
+          }
+          else if(responseResult.status==501){
+              
+            this.authService.directlogout();
+          }
+         else{
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+         }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
 
-    });
-   }
-
-  
-} ,(error:any) => {
-  this.authService.directlogout();
- 
-})
     
 
 
@@ -221,34 +216,19 @@ crateFolder() {
   let allowfileSize = this.txtAllowFileSize;
   let sizefileType = this.selFileSizeType;
 
-
+  const specialChars = /[`!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~]/;
 
   if (!this.vldChkLst.blankCheck(foldername,this.commonserveice.langReplace(this.messaageslist.foldername),'txtFolderName')) {
  }
-  else if (!this.vldChkLst.containsSpecialChars(foldername)) {
-
-    Swal.fire({
-      icon: 'error',
-      text: this.commonserveice.langReplace('Special Char Not allowed in folder name')
-    });
-  }
+ else if (specialChars.test(foldername)) {
+  this.commonserveice.swalfire('error',this.commonserveice.langReplace('Special Char Not allowed in foldername'))
+  
+}
 
 else if (!this.vldChkLst.blankCheck(allowSize,this.commonserveice.langReplace(this.messaageslist.allowsize),'txtAllowSize')) {}
 else if ((allowSize != '') && (!this.vldChkLst.selectDropdown(sizeType,this.commonserveice.langReplace(this.messaageslist.allowsizeType),'selSizeType'))) {}
 else if (!this.vldChkLst.blankCheck(allowfileSize,this.commonserveice.langReplace(this.messaageslist.allowfileSize),'txtAllowFileSize')) { }
 else if ((allowfileSize != '') && (!this.vldChkLst.selectDropdown(sizefileType,this.commonserveice.langReplace(this.messaageslist.allowfilesizeType),'selFileSizeType'))) {}
- 
-  // else if ((parentfolder == 1) && (this.selectroleList.length == 0)) {
-
-  //   Swal.fire({
-  //     icon: 'error',
-  //     text: this.messaageslist.selectRole,
-  //   });
-  // }
- 
-
-
-
   else {
 
   
@@ -267,7 +247,9 @@ else if ((allowfileSize != '') && (!this.vldChkLst.selectDropdown(sizefileType,t
     }
    // console.log(forlderParams)
 
-    this.commonserveice.createFolders(forlderParams).subscribe((response: any) => {
+
+   this.commonserveice.createFolders(forlderParams).subscribe({
+    next: (response) => {
       let respData = response.RESPONSE_DATA;
       let respToken = response.RESPONSE_TOKEN;
       //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
@@ -298,34 +280,21 @@ else if ((allowfileSize != '') && (!this.vldChkLst.selectDropdown(sizefileType,t
    
       else if(responseResult.status == 400){
 
-        
-        Swal.fire({
-          icon: 'error',
-          text:responseResult.message
-          
-        });
+        this.commonserveice.swalfire('error',responseResult.message)
+       
 
     
        }
        else if(responseResult.status == 401){
 
         
-        Swal.fire({
-          icon: 'error',
-          text:responseResult.message
-          
-        });
+        this.commonserveice.swalfire('error',responseResult.message)
 
     
        }
        else if(responseResult.status == 500){
 
-        
-        Swal.fire({
-          icon: 'error',
-          text:responseResult.message
-          
-        });
+        this.commonserveice.swalfire('error',responseResult.message)
 
     
        }
@@ -335,17 +304,18 @@ else if ((allowfileSize != '') && (!this.vldChkLst.selectDropdown(sizefileType,t
         this.authService.directlogout();
       }
      else{
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace(environment.somethingWrong)
-
-      });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
      }
 
+
     },
-    (error:any) =>{
+    error: (msg) => {
       this.authService.directlogout();
-    })
+   }
+ })
+
+
+  
 
 
 
@@ -368,15 +338,13 @@ formatFileSize(bytes:any,decimalPoint:any) {
 getPermissions(folderid:any){
 
   this.rolewisepermissions=[];
-
-  
-  let dataParam = {
+let dataParam = {
     "folderId": folderid,
     };
-    
-this.commonserveice.getFolders(dataParam).subscribe((response:any) => {
-
-  let respData = response.RESPONSE_DATA;
+   
+    this.commonserveice.getFolders(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
   let respToken = response.RESPONSE_TOKEN;
  
  
@@ -413,18 +381,16 @@ this.commonserveice.getFolders(dataParam).subscribe((response:any) => {
       this.authService.directlogout();
     }
    else{
-    Swal.fire({
-      icon: 'error',
-      text: this.commonserveice.langReplace(environment.somethingWrong)
-
-    });
+    this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
    }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })   
 
-  
-} ,(error:any) => {
-  this.authService.directlogout();
- 
-})
+
+
     
 
 

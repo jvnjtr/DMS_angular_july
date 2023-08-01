@@ -36,6 +36,7 @@ export class UploadfileComponent implements OnInit {
   DemoDoc:any;  
   chkIndexing:any=true; 
   txtTags:any=[]; 
+  limit:any=5;
   selMeta:any='0';
   txtSubject:any;
   selFolderName:any='0';
@@ -100,8 +101,7 @@ roleArr: any = [];
    public encDec:EncrypyDecrpyService,
    private router:ActivatedRoute,
    private vldChkLst:ValidatorchecklistService,
-   private sanitizer: DomSanitizer,
-   private workFlowServices: WorkflowService,
+   private sanitizer: DomSanitizer,private workFlowServices: WorkflowService
   ) { }
 
   ngOnInit(): void {
@@ -149,19 +149,20 @@ roleArr: any = [];
    }
      //\\ ======================== // Config // ======================== //\\
    loadconfig(){
-    this.httpClient.get<any>(this.jsonurl).subscribe((data:any)=>
-     {
-      this.tablist=data[0].tabList;
-      this.utillist=data[0].utils
-      this.messaageslist=data[0].messages; 
-      this.title = data[0].pagetitle;
-     },
-     (error:any) =>{
-       Swal.fire({
-         icon: 'error',
-         text: error
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+           Swal.fire({
+           icon: 'error',
+           text: "Error In api response "+ msg
        });
-     })
+     }
+   })
    }
   //\\ ======================== // Config // ======================== //\\
 
@@ -184,65 +185,62 @@ for(let i=0;i<event.addedFiles.length;i++){
   
   
   // console.log(event.addedFiles[i])
-  
-     this.uploadfiles.uploadFile(newFile).subscribe((response:any) => {
-       
-        
-        let respData = response.RESPONSE_DATA;
-        let respToken = response.RESPONSE_TOKEN;
+  this.uploadfiles.uploadFile(newFile).subscribe({
+    next: (response) => {
+      let respData = response.RESPONSE_DATA;
+      let respToken = response.RESPONSE_TOKEN;
 
-        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        if(respToken == verifyToken){
-          let res:any = Buffer.from(respData,'base64'); 
-        let responseResult:any = JSON.parse(res)
-      
-   if (responseResult.status == 200) {
-      console.log(responseResult)
-  //  this.files_dropped.push(event.addedFiles);
-  let obj: any = {};
-  obj['fileName'] = responseResult.result.fileName;
-  obj['filePath'] = responseResult.result.filePath;
-  obj['fileType'] = responseResult.result.fileType;
+      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+      if(respToken == verifyToken){
+        let res:any = Buffer.from(respData,'base64'); 
+      let responseResult:any = JSON.parse(res)
+    
+ if (responseResult.status == 200) {
+    console.log(responseResult)
+//  this.files_dropped.push(event.addedFiles);
+let obj: any = {};
+obj['fileName'] = responseResult.result.fileName;
+obj['filePath'] = responseResult.result.filePath;
+obj['fileType'] = responseResult.result.fileType;
 this.fileeList.push(obj)
 if(addFilesLength==1){
-  this.getfiletype=responseResult.result.fileType;
+this.getfiletype=responseResult.result.fileType;
 
-  this.loadDocPreview(responseResult.result.fileType,responseResult.result.filePath)
+this.loadDocPreview(responseResult.result.fileType,responseResult.result.filePath)
 }
 else{
-  this.previewFile=false;
+this.previewFile=false;
 }
 
 
-         
-         }
-         else if(responseResult.status == 400){
-          Swal.fire({
-            icon: 'error',
-            text:responseResult.message,
-            
-          });
-         }
-         else if(responseResult.status==501){
+       
+       }
+       else if(responseResult.status == 400){
+        Swal.fire({
+          icon: 'error',
+          text:responseResult.message,
           
-          this.authService.directlogout();
-        }
-         else{
-          //this.authService.directlogout();
-         }
-        }
-        else{
-          this.loading = false;
-          this.authService.directlogout();
-        }
-
-
-      
-      
-      },
-      (error:any) =>{
+        });
+       }
+       else if(responseResult.status==501){
+        
         this.authService.directlogout();
-      })
+      }
+       else{
+        //this.authService.directlogout();
+       }
+      }
+      else{
+        this.loading = false;
+        this.authService.directlogout();
+      }
+
+    },
+    error: (msg) => {
+      this.authService.directlogout();
+   }
+ })
+  
 }
 
 
@@ -254,8 +252,12 @@ else{
 
  onRemove(event:any) {
 this.fileeList.splice(this.fileeList.indexOf(event), 1);
-this.previewFile=false;
-//this.resetform()
+
+if(this.fileeList.length== 0){
+  this.previewFile=false;
+  this.resetform()
+}
+
  }
 
 
@@ -264,48 +266,47 @@ this.previewFile=false;
   let dataParam = {
     "folderId": folderid,
     };
-    
-this.commonserveice.getFoldersSingle(dataParam).subscribe((response:any) => {
-  let respData = response.RESPONSE_DATA;
-  let respToken = response.RESPONSE_TOKEN;
-  let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-  if(respToken == verifyToken){
-    let res:any = Buffer.from(respData,'base64'); 
-    let responseResult = JSON.parse(res)
- 
-
-  if(responseResult.status == '200'){
-
-    this.folderlist=responseResult.result;
-   
-    if(this.folderlist.length > 0){
-    this.folderName=this.folderlist[0].folderName;
-    this.selFolderName=this.folderlist[0].parentFolderId;
-    this.permissionlist=this.folderlist[0].folderPermission;
-   
-    }
-
-  }
-  else if(responseResult.status==501){
+    this.commonserveice.getFoldersSingle(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+          let responseResult = JSON.parse(res)
+       
       
-    this.authService.directlogout();
-  }
-  else{
-   // this.authService.directlogout();
-  }
-  }
-  else{
-    this.loading = false;
-    this.authService.directlogout();
-  }
- 
+        if(responseResult.status == '200'){
+      
+          this.folderlist=responseResult.result;
+         
+          if(this.folderlist.length > 0){
+          this.folderName=this.folderlist[0].folderName;
+          this.selFolderName=this.folderlist[0].parentFolderId;
+          this.permissionlist=this.folderlist[0].folderPermission;
+         
+          }
+      
+        }
+        else if(responseResult.status==501){
+            
+          this.authService.directlogout();
+        }
+        else{
+         // this.authService.directlogout();
+        }
+        }
+        else{
+          this.loading = false;
+          this.authService.directlogout();
+        }
+       
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
 
-
-  
-} ,(error:any) => {
-  this.authService.directlogout();
- 
-})
     
 
 
@@ -324,33 +325,35 @@ this.commonserveice.getFoldersSingle(dataParam).subscribe((response:any) => {
     let dataParam = {
       "intMetaId": ''
       };
-  this.commonserveice.viewMeta(dataParam).subscribe((response:any) => {
-    let respData = response.RESPONSE_DATA;
-    let respToken = response.RESPONSE_TOKEN;
-  
-    let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-    if(respToken == verifyToken){
-      let res:any = Buffer.from(respData,'base64'); 
-      let responseResult = JSON.parse(res)
-     
-      if (responseResult.status == 200) {
-  
-        this.metalist = responseResult.result;
-     
-
-      }
-      else if(responseResult.status==501){
+      this.commonserveice.viewMeta(dataParam).subscribe({
+        next: (response) => {    let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
         
-        this.authService.directlogout();
-      }
-    }
-    else{
-      this.loading = false;
-      this.authService.directlogout();
-    }
-   
-  
-  })
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if(respToken == verifyToken){
+            let res:any = Buffer.from(respData,'base64'); 
+            let responseResult = JSON.parse(res)
+           
+            if (responseResult.status == 200) {
+        
+              this.metalist = responseResult.result;
+           
+      
+            }
+            else if(responseResult.status==501){
+              
+              this.authService.directlogout();
+            }
+          }
+          else{
+            this.loading = false;
+            this.authService.directlogout();
+          }},
+        error: (msg) => {
+          this.authService.directlogout();
+       }
+     })
+
   
   
   }
@@ -362,35 +365,40 @@ this.commonserveice.getFoldersSingle(dataParam).subscribe((response:any) => {
     let dataParam = {
       "intMetaId": metaId
       };
-  this.commonserveice.viewMeta(dataParam).subscribe((response:any) => {
-    let respData = response.RESPONSE_DATA;
-    let respToken = response.RESPONSE_TOKEN;
-  
-    let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-    if(respToken == verifyToken){
-      let res:any = Buffer.from(respData,'base64'); 
-      let responseResult = JSON.parse(res)
-       
-        if (responseResult.status == 200) {
-    
-          let metalist = responseResult.result;
-          this.getmetaType=metalist[0].metaType;
-  
+      this.commonserveice.viewMeta(dataParam).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
         
-  
-        }
-        else if(responseResult.status==501){
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if(respToken == verifyToken){
+            let res:any = Buffer.from(respData,'base64'); 
+            let responseResult = JSON.parse(res)
+             
+              if (responseResult.status == 200) {
           
+                let metalist = responseResult.result;
+                this.getmetaType=metalist[0].metaType;
+        
+              
+        
+              }
+              else if(responseResult.status==501){
+                
+                this.authService.directlogout();
+              }
+          }
+          else{
+            this.loading = false;
+            this.authService.directlogout();
+          }
+        },
+        error: (msg) => {
           this.authService.directlogout();
-        }
-    }
-    else{
-      this.loading = false;
-      this.authService.directlogout();
-    }
-   
- 
-  })
+       }
+     })
+     
+
   
   
   }
@@ -414,24 +422,13 @@ this.commonserveice.getFoldersSingle(dataParam).subscribe((response:any) => {
     let metaitems=this.metasellist;
     let tags=this.txtTags;
     let fileindexing=true;
-    let workflowMode=this.workflowMode;
-    let authorityRoleId=this.authorityRoleId;
 
 
  if((this.rdoSetretention == 1) && (!this.vldChkLst.blankCheck(this.txtExpDate,this.commonserveice.langReplace("Please select the retention date"),'expiryDate'))){} 
 else if(!this.vldChkLst.blankCheck(subject,this.commonserveice.langReplace(this.messaageslist.subject),'txtSubject')) { } 
-else if(workflowMode==2 && authorityRoleId==0) { 
-  Swal.fire({
-    icon: 'error',
-    text: this.commonserveice.langReplace(this.messaageslist.addAuthority)
-   });
-} 
     else if(this.metaListDetails.length == 0) {
-      
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace(this.messaageslist.addMeta)
-       });
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.messaageslist.addMeta))
+   
     } 
    
     
@@ -452,15 +449,14 @@ for(let i=0;i<this.fileeList.length;i++){
         "indexing":fileindexing,
         "expiryDate":this.txtExpDate,
         "ocrLanguage":this.selOcrLang,
-        "filePermission":this.permissionlist,
-        "authorityRoleId":this.authorityRoleId,
-        "workflowMode":this.workflowMode
+        "filePermission":this.permissionlist
        
       }
 
     
      this.loading=true;
-           this.uploadfiles.finaluploadFile(uploadParams).subscribe((response:any) => {
+     this.uploadfiles.finaluploadFile(uploadParams).subscribe({
+      next: (response) => {
         let respData = response.RESPONSE_DATA;
         let respToken = response.RESPONSE_TOKEN;
         //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
@@ -501,19 +497,13 @@ for(let i=0;i<this.fileeList.length;i++){
            }
            else if(responseResult.status==400){
             this.loading=false;
-            Swal.fire({
-              icon: 'error',
-              text:responseResult.message,
-              
-            });
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+           
           }
            else if(responseResult.status==500){
             this.loading=false;
-            Swal.fire({
-              icon: 'error',
-              text:responseResult.message,
-              
-            });
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+           
           }
           else if(responseResult.status==501){
           
@@ -528,14 +518,12 @@ for(let i=0;i<this.fileeList.length;i++){
           this.loading = false;
           this.authService.directlogout();
         }
-
-        
-      
       },
-      (error:any) =>{
-        this.loading=false;
+      error: (msg) => {
         this.authService.directlogout();
-      }) 
+     }
+   })
+         
 }
 
   
@@ -563,6 +551,10 @@ for(let i=0;i<this.fileeList.length;i++){
     this.rolewisepermissions=[];
     this.userwisepermissions=[];
     this.fileeList=[];
+    this.selOcrLang='0';
+    this.rdoSetretention='2';
+    this.txtExpDate='';
+    this.metaListDetails=[];
   }
   //\\ ======================== // Reset Form  // ======================== //\\
   //\\ ======================== // Add Meta Value  // ======================== //\\
@@ -720,7 +712,22 @@ workflowModedoClick(e:any){
   if(userSelection==2){
     this.workflowMode=userSelection;
     this.showForwardAuthority=true;
-    this.getRoles(this.folderid);
+    if(this.folderid < 1){
+        
+      Swal.fire({
+        title: 'Please Select Folder',
+        confirmButtonText: 'Ok',
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          this.workflowMode="1";
+      this.showForwardAuthority=false;
+        }
+      })
+      
+    }else{
+      this.getRoles(this.folderid);
+    }
   }else{
     this.workflowMode='1';
     this.showForwardAuthority=false;

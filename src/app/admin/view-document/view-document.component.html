@@ -113,7 +113,7 @@
                 <tr>
                   <th width="50px">{{"Sl No"| langReplace}} </th>
                   <th *ngFor="let flist of tablecollist">
-                    <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname, $event)"
+                    <i *ngIf="flist.sortable" (click)="commonserveice.onSortClick(flist.cname, $event,ffdetailsArr)"
                       class="my-icon bi bi-arrow-up"></i>
                       {{flist.name | langReplace}} 
                   </th>
@@ -152,19 +152,22 @@
                     <!--  -->
                     {{ flist.type == 1 ? flist.folderRefNo : flist.fileRefNo }}
                   </td>
-                  <td width="50px" class="text-center">
-                    <i class="h6" [ngClass]="
-                        flist.type == '1'
-                          ? 'bi-folder-fill text-warning'
-                          : getfiletype(flist.fileType)
-                      "></i>
-                  </td>
+                  
                   <td>
                     <div class="d-flex justify-content-between">
                       <a class="text-primary" *ngIf="flist.type == 1">
-                        {{ flist.fileName }}
+                        <i class="h6" [ngClass]="
+                        flist.type == '1'
+                          ? 'bi-folder-fill text-warning'
+                          : commonserveice.getfiletype(flist.fileType)
+                      "></i> {{ flist.fileName }}
                       </a>
                       <span *ngIf="flist.type == 2">
+                        <i class="h6" [ngClass]="
+                        flist.type == '1'
+                          ? 'bi-folder-fill text-warning'
+                          : commonserveice.getfiletype(flist.fileType)
+                      "></i>
                         {{ flist.fileName }}
                         <i ngbTooltip="Locked File" class="{{
                             flist.lockStatus == 1
@@ -220,16 +223,16 @@
                   </td>
 
                   <td class="text-right">
-                    {{ formatBytes(flist.fileSize, 2) }}
-                    <!-- {{ formatBytes(flist.fileSize,2)}} -->
+                    {{ commonserveice.formatBytes(flist.fileSize, 2) }}
+                    <!-- {{ commonserveice.formatBytes(flist.fileSize,2)}} -->
                   </td>
 
                   <td>
                     {{ flist.createdByName }}
-                    <small class="d-block text-primary mt-1">on {{ flist.CreatedOn }}</small>
+                    <!-- <small class="d-block text-primary mt-1">on </small> -->
                     <!-- <h1 class="{{flist.createdByName}}">demo</h1> -->
                   </td>
-
+                  <td>{{ flist.CreatedOn }}</td>
                   <!-- <td> {{flist.retentionDate ? flist.retentionDate : '-'}}</td> -->
                 </tr>
               </tbody>

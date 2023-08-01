@@ -35,7 +35,7 @@
                     <div class="card-body">
                        
 
-                        <div *ngIf="userList?.length > 0; else norecord">
+                       
                             <div class="d-flex align-items-center justify-content-between mb-3 ">
                                 <div>
                                  
@@ -78,6 +78,8 @@
                                    
                                   </div>
                                </div>
+
+                               <div *ngIf="userList?.length > 0; else norecord">
                             <div class="table-responsive print-section" *ngIf="dataviewtype == 1">
 
                              
@@ -86,7 +88,7 @@
                                         <tr>
                                             <th width="50px"> {{"Sl No"| langReplace}} </th>
                                            <th *ngFor="let flist of tablecollist">
-                                            <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)" class="my-icon bi bi-arrow-up"></i> 
+                                            <i *ngIf="flist.sortable" (click)="commonserveice.onSortClick(flist.cname,$event,userList)" class="my-icon bi bi-arrow-up"></i> 
                                             {{flist.name| langReplace}}
                                            </th>
 

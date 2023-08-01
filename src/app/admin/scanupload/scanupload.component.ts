@@ -148,19 +148,17 @@ loaduploadfile:any;
   }
     //\\ ======================== // Config // ======================== //\\
   loadconfig(){
-   this.httpClient.get<any>(this.jsonurl).subscribe((data:any)=>
-    {
-     this.tablist=data[0].tabList;
-     this.utillist=data[0].utils
-     this.messaageslist=data[0].messages; 
-     this.title = data[0].pagetitle;
-    },
-    (error:any) =>{
-      Swal.fire({
-        icon: 'error',
-        text: error
-      });
-    })
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
   }
  //\\ ======================== // Config // ======================== //\\
 
@@ -181,51 +179,46 @@ getFolderbased(folderid:any){
  let dataParam = {
    "folderId": folderid,
    };
-   
-this.commonserveice.getFoldersSingle(dataParam).subscribe((response:any) => {
- let respData = response.RESPONSE_DATA;
- let respToken = response.RESPONSE_TOKEN;
- let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
- if(respToken == verifyToken){
-  let res:any = Buffer.from(respData,'base64'); 
-  let responseResult = JSON.parse(res)
+   this.commonserveice.getFoldersSingle(dataParam).subscribe({
+    next: (response) => {
+      let respData = response.RESPONSE_DATA;
+      let respToken = response.RESPONSE_TOKEN;
+      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+      if(respToken == verifyToken){
+       let res:any = Buffer.from(respData,'base64'); 
+       let responseResult = JSON.parse(res)
+     
+     
+     if(responseResult.status == '200'){
+     
+       this.folderlist=responseResult.result;
+      
+       if(this.folderlist.length > 0){
+       this.folderName=this.folderlist[0].folderName;
+       this.selFolderName=this.folderlist[0].parentFolderId;
+       this.permissionlist=this.folderlist[0].folderPermission;
+      
+       }
+     
+     }
+     else if(responseResult.status==501){
+         
+       this.authService.directlogout();
+     }
+     else{
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+     }
+      }
+      else{
+        this.loading = false;
+        this.authService.directlogout();
+      }
+    },
+    error: (msg) => {
+        this.authService.directlogout();
+   }
+ }) 
 
-
-if(responseResult.status == '200'){
-
-  this.folderlist=responseResult.result;
- 
-  if(this.folderlist.length > 0){
-  this.folderName=this.folderlist[0].folderName;
-  this.selFolderName=this.folderlist[0].parentFolderId;
-  this.permissionlist=this.folderlist[0].folderPermission;
- 
-  }
-
-}
-else if(responseResult.status==501){
-    
-  this.authService.directlogout();
-}
-else{
- Swal.fire({
-   icon: 'error',
-   text: this.commonserveice.langReplace(environment.somethingWrong),
-});
-}
- }
- else{
-   this.loading = false;
-   this.authService.directlogout();
- }
-
-
-
- 
-} ,(error:any) => {
-  this.authService.directlogout();
-
-})
    
 
 
@@ -244,33 +237,37 @@ else{
    let dataParam = {
      "intMetaId": ''
      };
- this.commonserveice.viewMeta(dataParam).subscribe((response:any) => {
-   let respData = response.RESPONSE_DATA;
-   let respToken = response.RESPONSE_TOKEN;
- 
-   let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-   if(respToken == verifyToken){
-    let res:any = Buffer.from(respData,'base64'); 
-    let responseResult = JSON.parse(res)
-   
-    if (responseResult.status == 200) {
-
-      this.metalist = responseResult.result;
-   
-
-    }
-    else if(responseResult.status==501){
+     this.commonserveice.viewMeta(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
       
-      this.authService.directlogout();
-    }
-   }
-   else{
-     this.loading = false;
-     this.authService.directlogout();
-   }
-  
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+         let res:any = Buffer.from(respData,'base64'); 
+         let responseResult = JSON.parse(res)
+        
+         if (responseResult.status == 200) {
+     
+           this.metalist = responseResult.result;
+        
+     
+         }
+         else if(responseResult.status==501){
+           
+           this.authService.directlogout();
+         }
+        }
+        else{
+          this.loading = false;
+          this.authService.directlogout();
+        }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
 
- })
  
  
  }
@@ -282,35 +279,41 @@ else{
    let dataParam = {
      "intMetaId": metaId
      };
- this.commonserveice.viewMeta(dataParam).subscribe((response:any) => {
-   let respData = response.RESPONSE_DATA;
-   let respToken = response.RESPONSE_TOKEN;
- 
-   let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-   if(respToken == verifyToken){
-    let res:any = Buffer.from(respData,'base64'); 
-    let responseResult = JSON.parse(res)
-     
-      if (responseResult.status == 200) {
-  
-        let metalist = responseResult.result;
-        this.getmetaType=metalist[0].metaType;
- 
-      
- 
-      }
-      else if(responseResult.status==501){
-        
-        this.authService.directlogout();
-      }
-   }
-   else{
-     this.loading = false;
-     this.authService.directlogout();
-   }
-  
 
- })
+     this.commonserveice.viewMeta(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+      
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+         let res:any = Buffer.from(respData,'base64'); 
+         let responseResult = JSON.parse(res)
+          
+           if (responseResult.status == 200) {
+       
+             let metalist = responseResult.result;
+             this.getmetaType=metalist[0].metaType;
+      
+           
+      
+           }
+           else if(responseResult.status==501){
+             
+             this.authService.directlogout();
+           }
+        }
+        else{
+          this.loading = false;
+          this.authService.directlogout();
+        }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+
+
  
  
  }
@@ -335,11 +338,8 @@ else{
     
    } 
    else if(this.metaListDetails.length == 0) {
-     
-     Swal.fire({
-       icon: 'error',
-       text: this.commonserveice.langReplace(this.messaageslist.addMeta)
-      });
+    this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.messaageslist.addMeta))
+ 
    } 
   
    
@@ -368,82 +368,75 @@ for(let i=0;i<this.scanfileeList.length;i++){
     this.loading=true;
     
    // console.log(uploadParams)
-          this.uploadfiles.finaluploadFile(uploadParams).subscribe((response:any) => {
-       let respData = response.RESPONSE_DATA;
-       let respToken = response.RESPONSE_TOKEN;
-       //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
+   this.uploadfiles.finaluploadFile(uploadParams).subscribe({
+    next: (response) => {
+      let respData = response.RESPONSE_DATA;
+      let respToken = response.RESPONSE_TOKEN;
+      //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
 
-       let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-       if(respToken == verifyToken){
-        
-       let res:any = Buffer.from(respData,'base64'); 
-       let responseResult = JSON.parse(res)
-     
-       if (responseResult.status == 200) {
-         counter++
-
-         if(filelistlength == counter){
-    this.loading=false;
-         Swal.fire({
-             
-           text: this.commonserveice.langReplace(this.messaageslist.successMsg),
-           icon: 'success',
-           confirmButtonColor: '#3085d6',
-           confirmButtonText: this.commonserveice.langReplace('Ok')
-         }).then((result) => {
-           
-          
-          let reData:any= this.folderid+':'+'0'
-           let encSchemeStr = this.encDec.encText(reData.toString());
-           this.route.navigate(['/admin/viewupload',encSchemeStr])
-
-     
-         })
-         }
-    
-
-
-        }
-        else if(responseResult.status==400){
-         this.loading=false;
-         Swal.fire({
-           icon: 'error',
-           text:responseResult.message,
-           
-         });
-       }
-        else if(responseResult.status==500){
-         this.loading=false;
-         Swal.fire({
-           icon: 'error',
-           text:responseResult.message,
-           
-         });
-       }
-       else if(responseResult.status==501){
+      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+      if(respToken == verifyToken){
        
-         this.authService.directlogout();
-       }
-        else{
-         this.loading=false;
-         Swal.fire({
-          icon: 'error',
-          text: this.commonserveice.langReplace(environment.somethingWrong),
- });
+      let res:any = Buffer.from(respData,'base64'); 
+      let responseResult = JSON.parse(res)
+    
+      if (responseResult.status == 200) {
+        counter++
+
+        if(filelistlength == counter){
+   this.loading=false;
+        Swal.fire({
+            
+          text: this.commonserveice.langReplace(this.messaageslist.successMsg),
+          icon: 'success',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: this.commonserveice.langReplace('Ok')
+        }).then((result) => {
+          
+         
+         let reData:any= this.folderid+':'+'0'
+          let encSchemeStr = this.encDec.encText(reData.toString());
+          this.route.navigate(['/admin/viewupload',encSchemeStr])
+
+    
+        })
         }
+   
+
+
        }
+       else if(responseResult.status==400){
+
+        this.loading=false;
+        this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+      
+      }
+       else if(responseResult.status==500){
+        this.loading=false;
+        this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+      
+      }
+      else if(responseResult.status==501){
+      
+        this.authService.directlogout();
+      }
        else{
-         this.loading = false;
-         this.authService.directlogout();
+        this.loading=false;
+        this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+       
        }
+      }
+      else{
+        this.loading = false;
+        this.authService.directlogout();
+      }
 
+    },
+    error: (msg) => {
+        this.authService.directlogout();
+   }
+ })
 
-     
-     },
-     (error:any) =>{
-       this.loading=false;
-       this.authService.directlogout();
-     }) 
 }
 
  
@@ -661,67 +654,72 @@ scanImage(folderid: any) {
       newFile.append('fileType', f.FileType.toLowerCase())
       newFile.append('folderId', currObj.folderid)
 
-      currObj.uploadfiles.uploadFile(newFile).subscribe((response: any) => {
-
-        // alert(0)
-        let respData = response.RESPONSE_DATA;
-        let respToken = response.RESPONSE_TOKEN;
-        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        if (respToken == verifyToken) {
-          let res: any = Buffer.from(respData, 'base64');
-          let responseResult = JSON.parse(res)
-
-          if (responseResult.status == 200) {
-            
-           
-            currObj.scannerfolderid = folderid;
-           
-            let obj: any = {};
-            obj['fileName'] = responseResult.result.fileName;
-            obj['filePath'] = responseResult.result.filePath;
-            obj['fileType'] = responseResult.result.fileType;
-            currObj.scanfileeList.push(obj);
-
-
-            if(currObj.scanfileeList.length==1){
-              let filetype=currObj.scanfileeList[0].fileType
-              let filepath=currObj.scanfileeList[0].filePath
-              currObj.loadDocPreview(filetype,filepath)
-           }
-           else{
-            currObj.previewFile=false;
-           }
-
-
-          }
-          else if (responseResult.status == 400) {
-            Swal.fire({
-              icon: 'error',
-              text: responseResult.message,
-
-            });
-          }
-          else if (responseResult.status == 501) {
-
+      currObj.uploadfiles.uploadFile(newFile).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if (respToken == verifyToken) {
+            let res: any = Buffer.from(respData, 'base64');
+            let responseResult = JSON.parse(res)
+  
+            if (responseResult.status == 200) {
+              
+             
+              currObj.scannerfolderid = folderid;
+             
+              let obj: any = {};
+              obj['fileName'] = responseResult.result.fileName;
+              obj['filePath'] = responseResult.result.filePath;
+              obj['fileType'] = responseResult.result.fileType;
+              currObj.scanfileeList.push(obj);
+  
+  
+              if(currObj.scanfileeList.length==1){
+                let filetype=currObj.scanfileeList[0].fileType
+                let filepath=currObj.scanfileeList[0].filePath
+                currObj.loadDocPreview(filetype,filepath)
+             }
+             else{
+              currObj.previewFile=false;
+             }
+  
+  
+            }
+            else if (responseResult.status == 400) {
+              
+              Swal.fire({
+                icon: 'error',
+                text: responseResult.message,
+  
+              });
+            }
+            else if (responseResult.status == 501) {
+  
+            }
+            else {
+             
+            }
           }
           else {
-           
+  
+            Swal.fire({
+              icon: 'error',
+              text: "Invalid Response",
+  
+            });
           }
-        }
-        else {
+        },
+        error: (msg) => {
+             Swal.fire({
+             icon: 'error',
+             text: "Error In api response "+ msg
+             });
+       }
+     })
 
-          Swal.fire({
-            icon: 'error',
-            text: "Invalid Response",
-
-          });
-        }
 
 
-      },
-        (error: any) => {
-          alert("error")
-        })
 
   
     }

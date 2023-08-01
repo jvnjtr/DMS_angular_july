@@ -8,7 +8,7 @@
             <th *ngFor="let flist of tablecollist">
               <i
                 *ngIf="flist.sortable"
-                (click)="onSortClick(flist.cname, $event)"
+                (click)="commonserveice.onSortClick(flist.cname, $event,filevesions)"
                 class="my-icon bi bi-arrow-up"
               ></i>
               {{ flist.name | langReplace}}
@@ -53,16 +53,12 @@
               {{flist.activityPerformed}}
             </td>
   
-            <!-- <td>v{{ flist.fileVersion | number : "1.1-5" }}</td>
-            <td>
-              {{ formatBytes(flist.fileSize, 2) }}
-            </td> -->
+        
             <td>
               {{ flist.createdBy }}
-              <small class="text-primary d-block mt-1"
-                >on {{ flist.createdOn }}</small
-              >
+              
             </td>
+            <td>{{ flist.createdOn }}</td>
   
             <!-- <td>
               {{ flist.changedBy ? flist.changedBy : "" }}

@@ -159,7 +159,7 @@
                     <th width="50px"> {{"Sl No"| langReplace}}</th>
 
                     <th *ngFor="let flist of tablecollist">
-                      <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)"
+                      <i *ngIf="flist.sortable" (click)="commonserveice.onSortClick(flist.cname,$event,queryList)"
                         class="my-icon bi bi-arrow-up"></i>  {{flist.name | langReplace}}
                     </th>
 
@@ -186,7 +186,7 @@
    -->
                     <td width="140px" class="text-center">{{plist.fileCount}}</td>
 
-                    <td class="text-right">{{formatBytes(plist.fileSize,2)}}</td>
+                    <td class="text-right">{{commonserveice.formatBytes(plist.fileSize,2)}}</td>
 
 
                     <td>{{plist.createdByName}}</td>

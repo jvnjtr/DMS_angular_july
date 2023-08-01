@@ -93,7 +93,7 @@
                                     <th width="50px"> {{"Sl No"| langReplace}}</th>
 
                                     <th *ngFor="let flist of tablecollist">
-                                      <i *ngIf="flist.sortable" (click)="onSortClick(flist.cname,$event)" class="my-icon bi bi-arrow-up"></i>
+                                      <i *ngIf="flist.sortable" (click)="commonserveice.onSortClick(flist.cname,$event,ffdetailsArr)" class="my-icon bi bi-arrow-up"></i>
                                       
                                       {{flist.name | langReplace}}
                                      
@@ -123,35 +123,35 @@
                                 }}</td>
                               <td>
                                 <div class="d-flex justify-content-between ">
+                                  <span>
+                                  <i class="h6" [ngClass]="commonserveice.getfiletype(flist.fileType)" ></i>
                                         <a class="text-primary" *ngIf="flist.type == 1"  >
                                                 {{flist.fileName}}
                                             </a>
                                     <span *ngIf="flist.type == 2">
                                        
-                                       {{flist.fileName}}
+                                      {{flist.fileName}}
                                        <i ngbTooltip="Locked File" class='{{flist.lockStatus==1? "bi bi-lock-fill text-danger ml-1" :""}}'></i>
                                         <small class="d-block text-dark mt-1">{{flist.copiedFrom ? '( copy of '+flist.copiedFrom+' )' :''}}
                                         </small>
                                     </span>
+                                  </span>
                                <a title="bookmark" ngbTooltip="Bookmark" href="javascript:void(0)"><i class="bi" (click)="addBookmark(flist.type == 1 ? '' : flist.fileId,flist.type == 2 ? '':flist.folderId,flist.BookmarkStatus == null ? '1' :'0');" [ngClass]="flist.BookmarkStatus == null ?  'bi-star' : 'bi-star-fill text-warning'">
                                 </i></a>
                               </div>
                             
                               </td>
-                              <td  width="50px" class="text-center">
-                                 
-                                <i class="h6" [ngClass]="getfiletype(flist.fileType)" ></i>
-                            </td>
+                            
                              <td>{{flist.type > 1 ? 'v': ''}}{{flist.fileVersion | number:'1.1-5' }}</td> 
                              
-                              <td class="text-right">{{ formatBytes(flist.fileSize,2) }}</td>
+                              <td class="text-right">{{ commonserveice.formatBytes(flist.fileSize,2) }}</td>
                               
                               <td>{{flist.createdByName}} 
-                                    <small class="d-block text-primary mt-1">on {{flist.CreatedOn }}</small>
+                                  
                               </td>
-                              <!-- <td>
+                              <td>
                                     {{flist.CreatedOn }}
-                              </td> -->
+                              </td> 
                               <!-- <td> {{flist.retentionDate}}</td> -->
                              
 

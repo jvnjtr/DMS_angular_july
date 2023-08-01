@@ -366,5 +366,10 @@ console.log( this.userlist)
     })
    
 }
-
+getIframeContent(){
+  let frameObj:any = document.getElementById("frameID");
+ var frameContent = frameObj.contentWindow.document.body.innerHTML;
+  
+alert("frame content : " + frameContent);
+}
 }

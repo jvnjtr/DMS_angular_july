@@ -30,7 +30,7 @@ export class ViewMetaComponent implements OnInit {
   tableSize: number = 10;
   pageSizes = [10, 20, 50,100,500,1000];
 
-mettypelist:any=['-','String','Date','Intiger']
+mettypelist:any=['-','String','Date','Integer']
 txtSearch:any;
 searchColList:any=["Meta Name","Description","Type","Created By"]
 searchselcteditems:any=[];
@@ -61,7 +61,7 @@ tablecollist=[
   {"name":"Type","cname":"metaType","sortable":true },
   
   {"name":"Created By","cname":"createdBy","sortable":true },
-
+  {"name":"Created On","cname":"createdOn","sortable":true },
 ]
 
 
@@ -85,19 +85,17 @@ tablecollist=[
   }
   
   loadconfig(){
-    this.httpClient.get<any>(this.jsonurl).subscribe((data:any)=>
-     {
-      this.tablist=data[0].tabList;
-      this.utillist=data[0].utils
-      this.messaageslist=data[0].messages; 
-      this.title =data[0].pagetitle;
-     },
-     (error:any) =>{
-       Swal.fire({
-         icon: 'error',
-         text: error
-       });
-     })
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
    }
 
 
@@ -120,42 +118,39 @@ viewMetaLit(){
     "intMetaId": ''
     };
     this.loading=true
-this.commonserveice.viewMeta(dataParam).subscribe((response:any) => {
-  let respData = response.RESPONSE_DATA;
-  let respToken = response.RESPONSE_TOKEN;
-
-  let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-  if(respToken == verifyToken){
-    let res:any = Buffer.from(respData,'base64'); 
-    let responseResult = JSON.parse(res)
-     
-      if (responseResult.status == 200) {
-        this.loading=false;
-      this.metalist = responseResult.result;
-      }
-      else if(responseResult.status==501){
-          
+    this.commonserveice.viewMeta(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+      
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+          let responseResult = JSON.parse(res)
+           
+            if (responseResult.status == 200) {
+              this.loading=false;
+            this.metalist = responseResult.result;
+            }
+            else if(responseResult.status==501){
+                
+              this.authService.directlogout();
+            }
+            else{
+              this.loading=false;
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+            }
+        }
+        else{
+          this.loading = false;
+          this.authService.directlogout();
+        }
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      }
-      else{
-        this.loading=false;
-        Swal.fire({
-          icon: 'error',
-          text: this.commonserveice.langReplace(environment.somethingWrong)
-        });
-      }
-  }
-  else{
-    this.loading = false;
-    this.authService.directlogout();
-  }
- 
+     }
+   })
 
-},
-(error:any) =>{
-  this.loading=false;
-  this.authService.directlogout();
-})
 
 
 }
@@ -191,53 +186,47 @@ onTableSizeChange(event: any): void {
     }).then((result:any) => {
 
       if (result.isConfirmed) {
-        this.commonserveice.deleteMeta(formParams).subscribe((response:any)=>{
-          let respData = response.RESPONSE_DATA;
-          let respToken = response.RESPONSE_TOKEN;
-
-          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-          if(respToken == verifyToken){
-            
-          let res:any = Buffer.from(respData,'base64'); 
-          let responseResult = JSON.parse(res)
-          if(responseResult.status==200){
-            Swal.fire(
-              this.commonserveice.langReplace('Deleted')+' !',
-              this.commonserveice.langReplace(this.messaageslist.deleteMsg),
-              'success'
-            )
-            this.viewMetaLit()
-            
-          }
-          else if(responseResult.status==400){
-          
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace("Meta details used in different files")
-            });
-          }
-          else if(responseResult.status==501){
-          
-            this.authService.directlogout();
-          }
-          
-          else{
+        this.commonserveice.deleteMeta(formParams).subscribe({
+          next: (response) => { let respData = response.RESPONSE_DATA;
+            let respToken = response.RESPONSE_TOKEN;
+  
+            let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+            if(respToken == verifyToken){
+              
+            let res:any = Buffer.from(respData,'base64'); 
+            let responseResult = JSON.parse(res)
+            if(responseResult.status==200){
+              Swal.fire(
+                this.commonserveice.langReplace('Deleted')+' !',
+                this.commonserveice.langReplace(this.messaageslist.deleteMsg),
+                'success'
+              )
+              this.viewMetaLit()
+              
+            }
+            else if(responseResult.status==400){
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace("Meta details used in different files"))
            
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(environment.somethingWrong)
-            });
-          }
-          }
-          else{
-            this.loading = false;
-          
-          }
-
-      },
-      (error:any) =>{
-        this.authService.directlogout();
-      });
+            }
+            else if(responseResult.status==501){
+            
+              this.authService.directlogout();
+            }
+            
+            else{
+             
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+            }
+            }
+            else{
+              this.loading = false;
+            
+            }},
+          error: (msg) => {
+            this.authService.directlogout();
+         }
+       })
+     
       }
     })
  }
@@ -246,48 +235,6 @@ onTableSizeChange(event: any): void {
 
 
 
-   onSortClick(name:any,event:any) {
-   
-    let target = event.currentTarget,
-      classList = target.classList;
-  
-  
-    if (classList.contains('bi-arrow-up')) {
-      classList.remove('bi-arrow-up');
-      classList.add('bi-arrow-down');
-      this.sortDir=-1;
-    } else {
-      classList.add('bi-arrow-up');
-      classList.remove('bi-arrow-down');
-      this.sortDir=1;
-    }
-    this.sortArr(name);
-    
-    //this.sortArr('departmentName');
-  }
-  
-  sortArr(colName:any){
-   
-   this.sortColumn = colName;
-   if (this.sortOrder == 'asc'){
-    this.sortOrder = 'desc';
-   }
-  else{
-    this.sortOrder = 'asc';
-  }
-  
-      
-    
-    this.metalist = this.metalist.sort((a:any, b:any) => {
-      if (a[colName] < b[colName])
-        return this.sortOrder == 'asc' ? -1 : 1;
-      if (a[colName] > b[colName])
-        return this.sortOrder == 'asc' ? 1 : -1;
-      return 0;
-    })
-  
-  
-  }
   
     //\\ ======================== // Data sorting // ======================== //\\
 

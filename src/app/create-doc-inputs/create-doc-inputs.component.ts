@@ -195,19 +195,17 @@ let filepath:any=environment.tempurl+this.txtFileName;
 
      //\\ ======================== // Config // ======================== //\\
      loadconfig(){
-      this.httpClient.get<any>(this.jsonurl).subscribe((data:any)=>
-       {
-        this.tablist=data[0].tabList;
-        this.utillist=data[0].utils
-        this.messaageslist=data[0].messages; 
-        this.title = data[0].pagetitle;
-       },
-       (error:any) =>{
-         Swal.fire({
-           icon: 'error',
-           text: error
-         });
-       })
+      this.httpClient.get<any>(this.jsonurl).subscribe({
+        next: (data) => {
+           this.tablist=data[0].tabList;
+             this.utillist=data[0].utils
+             this.messaageslist=data[0].messages; 
+             this.title = data[0].pagetitle;
+        },
+        error: (msg) => {
+          this.authService.directlogout();
+       }
+     })
      }
     //\\ ======================== // Config // ======================== //\\
 
@@ -226,8 +224,9 @@ this.previewFile=false;
     let dataParam = {
       "folderId": 0,
       };
-  this.commonserveice.getFolders(dataParam).subscribe((response:any) => {
-    let respData = response.RESPONSE_DATA;
+      this.commonserveice.getFolders(dataParam).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
     let respToken = response.RESPONSE_TOKEN;
    
     let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
@@ -245,27 +244,23 @@ this.previewFile=false;
         this.authService.directlogout();
       }
       else{
-        Swal.fire({
-          icon: 'error',
-          text: this.commonserveice.langReplace(environment.somethingWrong)
-  });
+        this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+       
       }
         }
         else{
          
           this.authService.directlogout();
         }
-  
-  
-   
-  
-  
-    
-  },
-  (error:any) =>{
-    
-    this.authService.directlogout();
-  })
+        },
+        error: (msg) => {
+          this.authService.directlogout();
+       }
+     })
+     
+
+
+
   }
   //\\ ======================== // get Folders // ======================== //\\
 
@@ -279,48 +274,47 @@ this.previewFile=false;
   let dataParam = {
     "folderId": folderid,
     };
-    
-this.commonserveice.getFoldersSingle(dataParam).subscribe((response:any) => {
-  let respData = response.RESPONSE_DATA;
-  let respToken = response.RESPONSE_TOKEN;
-  let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-  if(respToken == verifyToken){
-    let res:any = Buffer.from(respData,'base64'); 
-    let responseResult = JSON.parse(res)
- 
-
-  if(responseResult.status == '200'){
-
-    this.folderlist=responseResult.result;
-   console.log(this.folderlist)
-    if(this.folderlist.length > 0){
-    this.folderName=this.folderlist[0].folderName;
-    //this.selFolderName=this.folderlist[0].parentFolderId;
-    this.permissionlist=this.folderlist[0].folderPermission;
-   
-    }
-
-  }
-  else if(responseResult.status==501){
+    this.commonserveice.getFoldersSingle(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+          let responseResult = JSON.parse(res)
+       
       
-    this.authService.directlogout();
-  }
-  else{
-   // this.authService.directlogout();
-  }
-  }
-  else{
-    this.loading = false;
-    this.authService.directlogout();
-  }
- 
+        if(responseResult.status == '200'){
+      
+          this.folderlist=responseResult.result;
+         console.log(this.folderlist)
+          if(this.folderlist.length > 0){
+          this.folderName=this.folderlist[0].folderName;
+          //this.selFolderName=this.folderlist[0].parentFolderId;
+          this.permissionlist=this.folderlist[0].folderPermission;
+         
+          }
+      
+        }
+        else if(responseResult.status==501){
+            
+          this.authService.directlogout();
+        }
+        else{
+         // this.authService.directlogout();
+        }
+        }
+        else{
+          this.loading = false;
+          this.authService.directlogout();
+        }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+   
 
-
-  
-} ,(error:any) => {
-  this.authService.directlogout();
- 
-})
     
 
 
@@ -339,33 +333,37 @@ this.commonserveice.getFoldersSingle(dataParam).subscribe((response:any) => {
       let dataParam = {
         "intMetaId": ''
         };
-    this.commonserveice.viewMeta(dataParam).subscribe((response:any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-    
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-        let responseResult = JSON.parse(res)
-       
-        if (responseResult.status == 200) {
-    
-          this.metalist = responseResult.result;
-       
-  
-        }
-        else if(responseResult.status==501){
+
+        this.commonserveice.viewMeta(dataParam).subscribe({
+          next: (response) => {  let respData = response.RESPONSE_DATA;
+            let respToken = response.RESPONSE_TOKEN;
           
-          this.authService.directlogout();
-        }
-      }
-      else{
-        this.loading = false;
-        this.authService.directlogout();
-      }
-     
+            let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+            if(respToken == verifyToken){
+              let res:any = Buffer.from(respData,'base64'); 
+              let responseResult = JSON.parse(res)
+             
+              if (responseResult.status == 200) {
+          
+                this.metalist = responseResult.result;
+             
+        
+              }
+              else if(responseResult.status==501){
+                
+                this.authService.directlogout();
+              }
+            }
+            else{
+              this.loading = false;
+              this.authService.directlogout();
+            }},
+          error: (msg) => {
+            this.authService.directlogout();
+         }
+       })
+
     
-    })
     
     
     }
@@ -377,35 +375,39 @@ this.commonserveice.getFoldersSingle(dataParam).subscribe((response:any) => {
       let dataParam = {
         "intMetaId": metaId
         };
-    this.commonserveice.viewMeta(dataParam).subscribe((response:any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-    
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-        let responseResult = JSON.parse(res)
-         
-          if (responseResult.status == 200) {
-      
-            let metalist = responseResult.result;
-            this.getmetaType=metalist[0].metaType;
-    
+
+        this.commonserveice.viewMeta(dataParam).subscribe({
+          next: (response) => {   let respData = response.RESPONSE_DATA;
+            let respToken = response.RESPONSE_TOKEN;
           
-    
-          }
-          else if(responseResult.status==501){
+            let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+            if(respToken == verifyToken){
+              let res:any = Buffer.from(respData,'base64'); 
+              let responseResult = JSON.parse(res)
+               
+                if (responseResult.status == 200) {
             
+                  let metalist = responseResult.result;
+                  this.getmetaType=metalist[0].metaType;
+          
+                
+          
+                }
+                else if(responseResult.status==501){
+                  
+                  this.authService.directlogout();
+                }
+            }
+            else{
+              this.loading = false;
+              this.authService.directlogout();
+            }},
+          error: (msg) => {
             this.authService.directlogout();
-          }
-      }
-      else{
-        this.loading = false;
-        this.authService.directlogout();
-      }
-     
-   
-    })
+         }
+       })
+
+  
     
     
     }
@@ -433,23 +435,14 @@ this.commonserveice.getFoldersSingle(dataParam).subscribe((response:any) => {
       let metaitems=this.metasellist;
       let tags=this.txtTags;
       let fileindexing=true;
-      let workflowMode=this.workflowMode;
-      let authorityRoleId=this.authorityRoleId;
+  
    if(!(this.vldChkLst.selectDropdown(this.folderid,this.commonserveice.langReplace(this.messaageslist.selFolder),'selfolder'))) {}
    
   else if((this.rdoSetretention == 1) && (!this.vldChkLst.blankCheck(this.txtExpDate,this.commonserveice.langReplace("Please select the retention date"),'expiryDate'))){} 
   else if(!this.vldChkLst.blankCheck(subject,this.commonserveice.langReplace(this.messaageslist.subject),'txtSubject')) { } 
-  else if(workflowMode==2 && authorityRoleId==0) { 
-    Swal.fire({
-      icon: 'error',
-      text: this.commonserveice.langReplace(this.messaageslist.addAuthority)
-     });
-  } 
   else if(this.metaListDetails.length == 0) {
-       Swal.fire({
-          icon: 'error',
-          text: this.commonserveice.langReplace(this.messaageslist.addMeta)
-         });
+    this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.messaageslist.addMeta))
+
       } 
      
       
@@ -470,85 +463,78 @@ this.commonserveice.getFoldersSingle(dataParam).subscribe((response:any) => {
           "indexing":fileindexing,
           "expiryDate":this.txtExpDate,
           "ocrLanguage":this.selOcrLang,
-          "filePermission":this.permissionlist,
-          "authorityRoleId":this.authorityRoleId,
-        "workflowMode":this.workflowMode
+          "filePermission":this.permissionlist
          
         }
 
 
       
         this.loading=true;
-             this.uploadfiles.finaluploadFile(uploadParams).subscribe((response:any) => {
-          let respData = response.RESPONSE_DATA;
-          let respToken = response.RESPONSE_TOKEN;
-          //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
-  
-          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-          if(respToken == verifyToken){
-            let res:any = Buffer.from(respData,'base64'); 
-            let responseResult = JSON.parse(res)
-          
-            if (responseResult.status == 200) {
-             
+
+        this.uploadfiles.finaluploadFile(uploadParams).subscribe({
+          next: (response) => {
+            let respData = response.RESPONSE_DATA;
+            let respToken = response.RESPONSE_TOKEN;
+            //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
     
+            let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+            if(respToken == verifyToken){
+              let res:any = Buffer.from(respData,'base64'); 
+              let responseResult = JSON.parse(res)
             
-         this.loading=false;
-              Swal.fire({
-                  
-                text: this.commonserveice.langReplace(this.messaageslist.successMsg),
-                icon: 'success',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: this.commonserveice.langReplace('Ok')
-              }).then((result) => {
-                
-             
-                this.resetform();
-            this.commonserveice.reloadpage()
-             
-              })
+              if (responseResult.status == 200) {
+               
+      
               
-         
-    
-    
-             }
-             else if(responseResult.status==400){
-              this.loading=false;
-              Swal.fire({
-                icon: 'error',
-                text:responseResult.message,
+           this.loading=false;
+                Swal.fire({
+                    
+                  text: this.commonserveice.langReplace(this.messaageslist.successMsg),
+                  icon: 'success',
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: this.commonserveice.langReplace('Ok')
+                }).then((result) => {
+                  
+               
+                  this.resetform();
+              this.commonserveice.reloadpage()
+               
+                })
                 
-              });
-            }
-             else if(responseResult.status==500){
-              this.loading=false;
-              Swal.fire({
-                icon: 'error',
-                text:responseResult.message,
-                
-              });
-            }
-            else if(responseResult.status==501){
+           
+      
+      
+               }
+               else if(responseResult.status==400){
+                this.loading=false;
+                this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+              
+              }
+               else if(responseResult.status==500){
+                this.loading=false;
+                this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
             
+              }
+              else if(responseResult.status==501){
+              
+                this.authService.directlogout();
+              }
+               else{
+                this.loading=false;
+              //  this.authService.directlogout();
+               }
+            }
+            else{
+              this.loading = false;
               this.authService.directlogout();
             }
-             else{
-              this.loading=false;
-            //  this.authService.directlogout();
-             }
-          }
-          else{
-            this.loading = false;
+          },
+          error: (msg) => {
             this.authService.directlogout();
-          }
-  
-          
-        
-        },
-        (error:any) =>{
-          this.loading=false;
-          this.authService.directlogout();
-        }) 
+         }
+       })
+
+       
  
   
     
@@ -666,89 +652,108 @@ this.commonserveice.getFoldersSingle(dataParam).subscribe((response:any) => {
     },1000)
     
   }
-  
   workflowModedoClick(e:any){
     let userSelection=e.target.value;
     if(userSelection==2){
       this.workflowMode=userSelection;
       this.showForwardAuthority=true;
-      this.getRoles(this.folderid);
+      if(this.folderid < 1){
+        
+        Swal.fire({
+          title: 'Please Select Folder',
+          confirmButtonText: 'Ok',
+        }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+            this.workflowMode="1";
+        this.showForwardAuthority=false;
+          }
+        })
+        
+      }else{
+        this.getRoles(this.folderid);
+      }
+      
     }else{
-      this.workflowMode='1';
+      this.workflowMode="1";
       this.showForwardAuthority=false;
     }
   }
   //\\ ======================== // Authorities // ======================== //\\ 
-  getRoles(folderid:any) {
-    let dataParam = {
-     "folderId": folderid
-   };
-   this.workFlowServices.getAdminRoles(dataParam).subscribe((response: any) => {
-     let respData = response.RESPONSE_DATA;
-     let respToken = response.RESPONSE_TOKEN;
-     let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-     if(respToken == verifyToken){
-       let res:any = Buffer.from(respData,'base64'); 
-       let responseResult= JSON.parse(res)
-  if (responseResult.status == '200') {
-  let authorities:any=responseResult.result;
-  this.folderName=authorities.folderName;
-  
-  let result:any=[];
-  result = authorities.data;
-  for (let i = 0; i < result.length; i++) {
-    let obj: any = {};
+  getRoles(folderid: any) {
+      let dataParam = {
+        "folderId": folderid
+      };
+      this.workFlowServices.getAdminRoles(dataParam).subscribe((response: any) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+          if (responseResult.status == '200') {
+            let authorities: any = responseResult.result;
+            this.folderName = authorities.folderName;
+
+            let result: any = [];
+            result = authorities.data;
+            for (let i = 0; i < result.length; i++) {
+              let obj: any = {};
+
+              if (this.logedinRoleId != result[i].roleId) {
+                obj['fileOrFolderId'] = result[i].fileOrFolderId;
+                obj['intId'] = result[i].intId;
+                obj['type'] = result[i].type;
+                obj['roleName'] = result[i].roleName;
+                obj['userFullName'] = result[i].userFullName;
+                obj['roleId'] = result[i].roleId;
+                let permissions: any = JSON.parse(result[i].permission);
+                for (let j = 0; j < permissions.length; j++) {
+                  if (permissions[j].label == 'WorkFlow' && permissions[j].selected == true) {
+                    obj['permission'] = permissions[j].label
+                  }
+                }
+
+                this.roleArr.push(obj);
+              }
+
+
+
+            }
+            console.log(this.roleArr);
+          }
+
+          else if ((responseResult.status == 500)) {
+            Swal.fire({
+              icon: 'error',
+              text: responseResult.message
+            });
+          }
+        }
+        else {
+          this.loading = false;
+          this.authService.directlogout();
+        }
+
+
+
+
+
+      },
+        (error: any) => {
+          this.authService.directlogout();
+        })
     
-    if(this.logedinRoleId !=result[i].roleId){
-      obj['fileOrFolderId'] = result[i].fileOrFolderId;
-      obj['intId'] = result[i].intId;
-      obj['type'] = result[i].type;
-      obj['roleName'] = result[i].roleName;
-      obj['userFullName'] = result[i].userFullName;
-      obj['roleId'] = result[i].roleId;
-      let permissions:any=JSON.parse(result[i].permission);
-     for(let j = 0; j < permissions.length; j++){
-         if(permissions[j].label == 'WorkFlow' && permissions[j].selected == true){
-             obj['permission'] = permissions[j].label
-         }
-     }
-   
-    this.roleArr.push(obj);
-    }
-    
-    
-  
-  }
-  console.log(this.roleArr);
-       }
-      
-       else if((responseResult.status==500)){
-         Swal.fire({
-           icon: 'error',
-           text: responseResult.message
-         });
-       }
-     }
-     else{
-       this.loading = false;
-   this.authService.directlogout();
-     }
-  
-  
-  
-  
-  
-   },
-   (error:any) =>{
-     this.authService.directlogout();
-   })
-  
-  
-  
+
+
+
+
   }
   
   //\\ ======================== // Authorities // ======================== //\\ 
   getFOrwardAuthority(e:any){
     this.authorityRoleId=e.target.value;
   }
+  
+
 }

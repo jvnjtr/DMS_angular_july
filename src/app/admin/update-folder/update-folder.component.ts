@@ -78,18 +78,17 @@ ngOnInit(): void {
 }
 //\\ ======================== // Config // ======================== //\\
 loadconfig() {
-  this.httpClient.get<any>(this.jsonurl).subscribe((data: any) => {
-    this.tablist = data[0].tabList;
-    this.utillist = data[0].utils
-    this.messaageslist = data[0].messages;
-    this.title = data[0].pagetitle;
-  },
-  (error:any) =>{
-    Swal.fire({
-      icon: 'error',
-      text: error
-    });
-  })
+  this.httpClient.get<any>(this.jsonurl).subscribe({
+    next: (data) => {
+       this.tablist=data[0].tabList;
+         this.utillist=data[0].utils
+         this.messaageslist=data[0].messages; 
+         this.title = data[0].pagetitle;
+    },
+    error: (msg) => {
+      this.authService.directlogout();
+   }
+ })
 }
 
  //\\ ======================== // get Folders // ======================== //\\
@@ -98,43 +97,41 @@ loadconfig() {
     "folderId": folderid,
     };
     this.loading=true;    
-this.commonserveice.getFolders(dataParam).subscribe((response:any) => {
-  let respData = response.RESPONSE_DATA;
-  let respToken = response.RESPONSE_TOKEN;
-  let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-  if(respToken == verifyToken){
-    let res:any = Buffer.from(respData,'base64'); 
-    let responseResult = JSON.parse(res)
-if(responseResult.status == '200'){
-this.loading=false;    
-this.folderlist=responseResult.result;
-  if(this.folderlist.length > 0){
-  this.parentfolderName=this.folderlist[0].folderName
-  }
-// console.log(this.folderlist)
-}
-else if(responseResult.status==501){
-    
-  this.authService.directlogout();
-}
-else{
-  this.loading=false; 
-  this.authService.directlogout();
-}
-  }
-  else{
-    this.loading = false;
-    this.authService.directlogout();
-  }
- 
+    this.commonserveice.getFolders(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+          let responseResult = JSON.parse(res)
+      if(responseResult.status == '200'){
+      this.loading=false;    
+      this.folderlist=responseResult.result;
+        if(this.folderlist.length > 0){
+        this.parentfolderName=this.folderlist[0].folderName
+        }
+      // console.log(this.folderlist)
+      }
+      else if(responseResult.status==501){
+          
+        this.authService.directlogout();
+      }
+      else{
+        this.loading=false; 
+        this.authService.directlogout();
+      }
+        }
+        else{
+          this.loading = false;
+          this.authService.directlogout();
+        }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
 
-
-  
-} ,(error:any) => {
-  this.loading=false; 
-  this.authService.directlogout();
- 
-})
     
 
 
@@ -149,58 +146,51 @@ viewfolderDetails(fldrId: any) {
   let dataParam = {
     "folderId": fldrId,
   };
+  this.commonserveice.getFoldersSingle(dataParam).subscribe({
+    next: (response) => {
+      let respData = response.RESPONSE_DATA;
+      let respToken = response.RESPONSE_TOKEN;
+      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+      if(respToken == verifyToken){
+        let res:any = Buffer.from(respData,'base64'); 
+        let responseResult = JSON.parse(res)
+  if (responseResult.status == '200') {
+  this.loading=false; 
+      let folderDetails = responseResult.result;
   
-  this.commonserveice.getFoldersSingle(dataParam).subscribe((response: any) => {
-    let respData = response.RESPONSE_DATA;
-    let respToken = response.RESPONSE_TOKEN;
-    let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-    if(respToken == verifyToken){
-      let res:any = Buffer.from(respData,'base64'); 
-      let responseResult = JSON.parse(res)
-if (responseResult.status == '200') {
-this.loading=false; 
-    let folderDetails = responseResult.result;
-
-
-
-    this.selParentFolderId = folderDetails[0].parentFolderId;
-    this.getFolders(folderDetails[0].parentFolderId)
-    this.txtFolderName = folderDetails[0].folderName;
-    this.selSizeType = folderDetails[0].folderSizeType;
-    this.txtAllowSize = Math.round(folderDetails[0].folderSize);
-    this.selectroleList = folderDetails[0].folderPermission;
-    this.txtAllowFileSize=Math.round(folderDetails[0].allowedFileSize);
-    this.selFileSizeType= folderDetails[0].allowedFileSizeType;
-    this.selDepartmentName= folderDetails[0].departmentId;
-   }
-   else if(responseResult.status==501){
-      
-    this.authService.directlogout();
-  }
-  else {
-    this.loading=false; 
-    Swal.fire({
-      icon: 'error',
-      text: this.commonserveice.langReplace(environment.somethingWrong),
-});
-
-  }
-    }
-    else{
-      this.loading = false;
+  
+  
+      this.selParentFolderId = folderDetails[0].parentFolderId;
+      this.getFolders(folderDetails[0].parentFolderId)
+      this.txtFolderName = folderDetails[0].folderName;
+      this.selSizeType = folderDetails[0].folderSizeType;
+      this.txtAllowSize = Math.round(folderDetails[0].folderSize);
+      this.selectroleList = folderDetails[0].folderPermission;
+      this.txtAllowFileSize=Math.round(folderDetails[0].allowedFileSize);
+      this.selFileSizeType= folderDetails[0].allowedFileSizeType;
+      this.selDepartmentName= folderDetails[0].departmentId;
+     }
+     else if(responseResult.status==501){
+        
       this.authService.directlogout();
     }
-
-
-
-
-
-
-  },
-  (error:any) =>{
-    this.loading=false; 
-    this.authService.directlogout();
-  })
+    else {
+      this.loading=false; 
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+  
+    }
+      }
+      else{
+        this.loading = false;
+        this.authService.directlogout();
+      }
+  
+    },
+    error: (msg) => {
+      this.authService.directlogout();
+   }
+ })
+  
 
 
 }
@@ -230,14 +220,12 @@ updateFolder() {
   let department = this.selDepartmentName;
     let allowfileSize = this.txtAllowFileSize;
     let sizefileType = this.selFileSizeType;
-
+    const specialChars = /[`!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~]/;
         
   if (!this.vldChkLst.blankCheck(foldername,this.commonserveice.langReplace(this.messaageslist.foldername),'txtFolderName')) {}
-  else if (!this.vldChkLst.containsSpecialChars(foldername)) {
-    Swal.fire({
-      icon: 'error',
-      text: this.commonserveice.langReplace('Special Char Not allowed in foldername')
-    });
+  else if (specialChars.test(foldername)) {
+    this.commonserveice.swalfire('error',this.commonserveice.langReplace('Special Char Not allowed in foldername'))
+
   }
   else if (!this.vldChkLst.blankCheck(allowSize,this.commonserveice.langReplace(this.messaageslist.allowsize),'txtAllowSize')) { }
   else if ((allowSize != '') && (!this.vldChkLst.selectDropdown(sizeType,this.commonserveice.langReplace(this.messaageslist.allowsizeType),'selSizeType'))) { }
@@ -258,93 +246,89 @@ updateFolder() {
       "archieveDate": ''
     }
    
-
-    this.commonserveice.createFolders(forlderParams).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-        let responseResult = JSON.parse(res)
+    this.commonserveice.createFolders(forlderParams).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
   
-        if (responseResult.status == 202) {
-          Swal.fire({
-  
-            text: this.messaageslist.updatesuccessMsg,
-            icon: 'success',
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'Ok'
-          }).then((result) => {
-            let reData:any= this.folderid+':'+'0'
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+          let responseResult = JSON.parse(res)
+    
+          if (responseResult.status == 202) {
+            Swal.fire({
+    
+              text: this.messaageslist.updatesuccessMsg,
+              icon: 'success',
+              confirmButtonColor: '#3085d6',
+              confirmButtonText: 'Ok'
+            }).then((result) => {
+              let reData:any= this.folderid+':'+'0'
+                
+              let encSchemeStr = this.encDec.encText(reData.toString());
+              this.route.navigate(['/admin/viewupload',encSchemeStr])
+             
+              this.resetform();
+            })
+    
+    
+    
+          }
+          
+          else if(responseResult.status == 400){
+    
+            
+            Swal.fire({
+              icon: 'error',
+              text:responseResult.message,
               
-            let encSchemeStr = this.encDec.encText(reData.toString());
-            this.route.navigate(['/admin/viewupload',encSchemeStr])
-           
-            this.resetform();
-          })
-  
-  
-  
-        }
+            });
+    
         
-        else if(responseResult.status == 400){
-  
-          
-          Swal.fire({
-            icon: 'error',
-            text:responseResult.message,
+           }
+           else if(responseResult.status == 401){
+    
             
-          });
-  
-      
-         }
-         else if(responseResult.status == 401){
-  
-          
-          Swal.fire({
-            icon: 'error',
-            text:responseResult.message
+            Swal.fire({
+              icon: 'error',
+              text:responseResult.message
+              
+            });
+    
+        
+           }
+           else if(responseResult.status == 500){
+    
             
-          });
-  
-      
-         }
-         else if(responseResult.status == 500){
-  
-          
-          Swal.fire({
-            icon: 'error',
-            text:responseResult.message
+            Swal.fire({
+              icon: 'error',
+              text:responseResult.message
+              
+            });
+    
+        
+           }
+           else if(responseResult.status==501){
             
-          });
-  
-      
-         }
-         else if(responseResult.status==501){
-          
+            this.authService.directlogout();
+          }
+          else {
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+    
+          }
+        }
+        else{
+          this.loading = false;
           this.authService.directlogout();
         }
-        else {
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(environment.somethingWrong),
-   });
   
-        }
-      }
-      else{
-        this.loading = false;
+      },
+      error: (msg) => {
         this.authService.directlogout();
-      }
-
-
+     }
+   })
    
-
-    },
-    (error:any) =>{
-      this.authService.directlogout();
-    })
 
 
 

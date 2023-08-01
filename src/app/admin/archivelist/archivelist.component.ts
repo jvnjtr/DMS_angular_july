@@ -87,9 +87,10 @@ tagsarray: any = [];
       {"name":"Folder Name","cname":"folderName","sortable":true },
      
     {"name":"Name","cname":"fileName","sortable":true },
-    {"name":"Type","cname":"fileType","sortable":true },
+   
     {"name":"Size","cname":"fileSize","sortable":true },
     {"name":"Created By","cname":"createdByName","sortable":true },
+    {"name":"Created On","cname":"CreatedOn","sortable":true },
   ]
   langKey: any = 'en';
 
@@ -114,12 +115,20 @@ tagsarray: any = [];
   }
 
   loadconfig() {
-    this.httpClient.get<any>(this.jsonurl).subscribe((data: any) => {
-      this.tablist = data[0].tabList;
-      this.utillist = data[0].utils
-      this.messaageslist = data[0].messages;
-      this.title = data[0].pagetitle;
-    })
+    
+    this.httpClient.get<any>(this.jsonurl).subscribe({
+      next: (data) => {
+         this.tablist=data[0].tabList;
+           this.utillist=data[0].utils
+           this.messaageslist=data[0].messages; 
+           this.title = data[0].pagetitle;
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+
+
   }
 
 
@@ -134,48 +143,51 @@ tagsarray: any = [];
     let dataParam = {
       "searchfilter": searchitems
     };
-    this.commonserveice.getArchiveFiles(dataParam).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res: any = Buffer.from(respData, 'base64');
-        let responseResult = JSON.parse(res.toString());
-  
-        if (responseResult.status == 200) {
-  
-          this.loading = false;
-          this.ffdetailsArr = responseResult.result;
-         
-  
-        }
-       else if (responseResult.status == 400) {
-          this.loading = false;
-          this.ffdetailsArr = responseResult.result;
-        }
-        else if (responseResult.status == 501) {
-  
-          this.authService.directlogout();
+
+
+
+    this.commonserveice.getArchiveFiles(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res.toString());
+    
+          if (responseResult.status == 200) {
+    
+            this.loading = false;
+            this.ffdetailsArr = responseResult.result;
+           
+    
+          }
+         else if (responseResult.status == 400) {
+            this.loading = false;
+            this.ffdetailsArr = responseResult.result;
+          }
+          else if (responseResult.status == 501) {
+    
+            this.authService.directlogout();
+          }
+          else{
+            this.loading = false;
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+          }
         }
         else{
           this.loading = false;
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(environment.somethingWrong ),
-  
-          });
+         this.authService.directlogout();
         }
-      }
-      else{
-        this.loading = false;
-       this.authService.directlogout();
-      }
-   
-    },
-      (error: any) => {
-        this.loading = false;
-      this.authService.directlogout();
-      })
+      },
+      error: (msg) => {
+       
+        this.authService.directlogout();
+     }
+   })
+
+
+
 
   }
   //\\ ======================== // Load Data // ======================== //\\ 
@@ -219,53 +231,47 @@ tagsarray: any = [];
     }).then((result: any) => {
 
       if (result.isConfirmed) {
-        this.commonserveice.archiveAction(formParams).subscribe((response: any) => {
-          let respData = response.RESPONSE_DATA;
-          let respToken = response.RESPONSE_TOKEN;
-          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-          if(respToken == verifyToken){
-            let res: any = Buffer.from(respData, 'base64');
-          let responseResult = JSON.parse(res.toString());
-          if (responseResult.status == 200) {
-
-            Swal.fire(
-              this.commonserveice.langReplace('Deleted')+' !',
-              this.messaageslist.deleteMsg,
-              'success'
-            )
-            this.viewDetails(this.finalobj)
-
-          }
-          else if (responseResult.status == 501) {
-
+        this.commonserveice.archiveAction(formParams).subscribe({
+          next: (response) => {
+            let respData = response.RESPONSE_DATA;
+            let respToken = response.RESPONSE_TOKEN;
+            let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+            if(respToken == verifyToken){
+              let res: any = Buffer.from(respData, 'base64');
+            let responseResult = JSON.parse(res.toString());
+            if (responseResult.status == 200) {
+  
+              Swal.fire(
+                this.commonserveice.langReplace('Deleted')+' !',
+                this.messaageslist.deleteMsg,
+                'success'
+              )
+              this.viewDetails(this.finalobj)
+  
+            }
+            else if (responseResult.status == 501) {
+  
+              this.authService.directlogout();
+            }
+            else if (responseResult.status == 400) {
+              this.commonserveice.swalfire('error',responseResult.message)
+             
+            }
+            else {
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+  
+            }
+            }
+            else{
+              this.loading = false;
+              this.authService.directlogout();
+            }
+          },
+          error: (msg) => {
             this.authService.directlogout();
-          }
-          else if (responseResult.status == 400) {
-
-            Swal.fire({
-              icon: 'error',
-              text: responseResult.message,
-
-            });
-          }
-          else {
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(environment.somethingWrong),
-    
-            });
-
-          }
-          }
-          else{
-            this.loading = false;
-            this.authService.directlogout();
-          }
-         
-        },
-          (error: any) => {
-            this.authService.directlogout();
-          });
+         }
+       })
+  
       }
     })
   }
@@ -280,61 +286,51 @@ tagsarray: any = [];
     };
 
     //console.log(formParams);
-
-
-    this.commonserveice.archiveAction(formParams).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res: any = Buffer.from(respData, 'base64');
-        let responseResult = JSON.parse(res.toString());
+    this.commonserveice.archiveAction(formParams).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
   
-  
-        if (responseResult.status == 200) {
-  
-          Swal.fire({
-            icon: 'success',
-            text: this.commonserveice.langReplace(this.messaageslist.restoreSuccess),
-  
-          });
-          this.viewDetails(this.finalobj)
-  
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res.toString());
+    
+    
+          if (responseResult.status == 200) {
+    
+           
+            this.commonserveice.swalfire('success',this.commonserveice.langReplace(this.messaageslist.restoreSuccess))
+            this.viewDetails(this.finalobj)
+    
+          }
+          else if (responseResult.status == 501) {
+    
+            this.authService.directlogout();
+          }
+          else if (responseResult.status == 400) {
+            this.loading = false;
+            this.commonserveice.swalfire('error',responseResult.message)
+         
+          }
+          else {
+            this.loading = false;
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+          
+          }
         }
-        else if (responseResult.status == 501) {
-  
-          this.authService.directlogout();
-        }
-        else if (responseResult.status == 400) {
+        else{
           this.loading = false;
-          Swal.fire({
-            icon: 'error',
-            text: responseResult.message,
-  
-          });
+         this.authService.directlogout();
         }
-        else {
-          this.loading = false;
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(environment.somethingWrong),
   
-          });
-        }
-      }
-      else{
-        this.loading = false;
-       this.authService.directlogout();
-      }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
 
 
-
-    },
-      (error: any) => {
-        this.loading = false;
-      this.authService.directlogout();
-      });
 
 
   }
@@ -483,91 +479,7 @@ closeModal(){
 
 
 
-getfiletype(filename:any){
-  
-  let icon:any;
-  let iconsGroups:any=environment.iconsGroups;
-   for(let i=0;i<iconsGroups.length;i++){
-   let filetype:any= iconsGroups[i].groups.includes(filename);
-     if(filetype==true){
-       icon=iconsGroups[i].name;
-     }
-    
-   }
- return icon;
 
-}
-
-
-   //\\ ======================== // Data sorting // ======================== //\\
-
-
-
-   onSortClick(name:any,event:any) {
-   
-    let target = event.currentTarget,
-      classList = target.classList;
-  
-  
-    if (classList.contains('bi-arrow-up')) {
-      classList.remove('bi-arrow-up');
-      classList.add('bi-arrow-down');
-      this.sortDir=-1;
-    } else {
-      classList.add('bi-arrow-up');
-      classList.remove('bi-arrow-down');
-      this.sortDir=1;
-    }
-    this.sortArr(name);
-    
-    //this.sortArr('departmentName');
-  }
-  
-  sortArr(colName:any){
-   
-   this.sortColumn = colName;
-   if (this.sortOrder == 'asc'){
-    this.sortOrder = 'desc';
-   }
-  else{
-    this.sortOrder = 'asc';
-  }
-  
-     this.ffdetailsArr = this.ffdetailsArr.sort((a: any, b: any) => {
-     
-    if(this.sortOrder == 'asc'){
-      return a[colName].localeCompare(b[colName], undefined, { numeric: true });
-    }
-    else{
-      return b[colName].localeCompare(a[colName], undefined, { numeric: true });
-    }
- 
-  })    
-    
-    // this.ffdetailsArr = this.ffdetailsArr.sort((a:any, b:any) => {
-    //   if (a[colName] < b[colName])
-    //     return this.sortOrder == 'asc' ? -1 : 1;
-    //   if (a[colName] > b[colName])
-    //     return this.sortOrder == 'asc' ? 1 : -1;
-    //   return 0;
-    // })
-  
-  
-  }
-  
-    //\\ ======================== // Data sorting // ======================== //\\
-    formatBytes(bytes:any, decimals:any) {
-      if (!+bytes) return '0 Bytes'
-  
-      const k = 1024
-      const dm = decimals < 0 ? 0 : decimals
-      const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-  
-      const i = Math.floor(Math.log(bytes) / Math.log(k))
-  
-      return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-  }
-  
 
 }
 
