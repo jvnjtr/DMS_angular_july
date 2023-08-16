@@ -1,0 +1,31 @@
+[
+      {
+        "pagetitle":"OCR Configuration",
+        "tabList":[
+        
+          {"tabName":"Add","tabUrl":"../ocrconfig","tabClass":"active add d-none"}
+        
+                  
+                  ],
+        "utils":[
+          {"utilName":"mandatory"}
+         
+         
+          ],
+        "messages":{
+          "successMsg":"OCR Configuration Added Successfully",
+          "updatesuccessMsg":"OCR Configuration Updated Successfully",
+          "errorMsg":"Error in Meta creation",
+          "fromname":"Please Select Form Name",
+          "metaname":"Please Enter Meta Name",
+          "metadesc":"Please Enter Meta Description",
+           "metaType":"Meta Type",
+           "ocrStatus":"Please Select Ocr Status",
+           "ocrFrequency":"Please Enter Ocr Frequency",
+           "ocrFrequencyDuration":"Please Select Ocr Frequency Type",
+           "ocrExtension":"Please Select File Extension"
+         }
+      }
+    ]
+
+

@@ -29,8 +29,7 @@
   "chkrolepermission":"Select the Permission type",
   "chkusername":"user name",
   "chkuserpermission":" the Permission type",
-   "selectuser":" User",
-   "addAuthority":"Please Select Authority"
+   "selectuser":" User"
          }
       }
     ]

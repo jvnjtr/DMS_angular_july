@@ -4,95 +4,56 @@
   "ContentOfFrame.html" width="700px" height="600px">
 </iframe> -->
 
-<a href="#" class="btn btn-primary" (click)="getIframeContent()">
+<!-- <a href="#" class="btn btn-primary" (click)="getIframeContent()">
   Get the content of Iframe
-</a>
-  </div>
-  </div>
+</a> -->
+ 
 
- <ckeditor [(ngModel)]="mycontent" 
+ <!-- <ckeditor [(ngModel)]="mycontent" 
             #myckeditor="ngModel"
             name="myckeditor"
             required
             [config]="ckeConfig" 
             debounce="500" 
-            (ngModelChange)="onChange($event)"
+            
     >
-	</ckeditor>
+</ckeditor> -->
     <ckeditor [(ngModel)]="mycontent2['test']" 
     #myckeditor="ngModel"
     name="myckeditor"
     required
     [config]="ckeConfig" 
     debounce="500" 
-    (ngModelChange)="onChange($event)"
+
 >
-</ckeditor>
-<!-- <form [formGroup]="apply_check_two" (ngSubmit)="submitForm()">
-  <div class="onegrid">
-  <input type="hidden" formControlName="intId" >
-  <div class="form-group" >
-                                      <label Class="w-full text-md " >Name</label>
-                                      <div class="control-item">
-<input type="text" formControlName="txtName"  id="txtName" minlength="" maxlength="" placeholder="" class="form-control" autocomplete="off">
+</ckeditor> 
 
-                                </div>
-                                </div>
-                                <div class="form-group" >
-                                      <label Class="w-full text-md " >Hobbies</label>
-                                      <div class="control-item">
-            <div class="form-check form-check-inline" formArrayName="chkHobbies" *ngFor="let chkItems of chkHobbies; let i = index">
-            <input class="form-check-input"  type="checkbox" [value]="chkItems.name" [id]="chkItems.name" (change)="onchkHobbiesChange($event)"/>
-            <label class="form-check-label" for="chkHobbies">{{chkItems.value}}</label>
-            </div>
-            
-                                </div>
-                                </div> 
-                                <div class="form-group" >
-                                  <label Class="w-full text-md " >Skills</label>
-                                  <div class="control-item">
-        <div class="form-check form-check-inline" formArrayName="chkSkills" *ngFor="let chkItems of chkSkillsArr.controls;   let i = index">
-        <input class="form-check-input"  type="checkbox" [formControlName]="i"  [value]="chkSkills[i].name"  (change)="onchkHobbiesChange($event)"/>
-        <label class="form-check-label" for="chkHobbies">{{chkSkills[i].name}}</label>
-        </div>
-
-    
-
-        
-                            </div>
-                            </div>                  
-                            <div class="form-group" >
-                              <label Class="w-full text-md " >User List</label>
-                              <div class="control-item">
-    <div class="form-check form-check-inline" formArrayName="userlist" *ngFor="let chkItems of userlistArr.controls; let i = index">
-    <input class="form-check-input"  type="checkbox" [formControlName]="i"  />
-    <label class="form-check-label" for="chkHobbies">{{userlist[i].name}}</label>
+<form [formGroup]="myForm">
+  <div class="row">
+    <div class="col-md-4">
+      <label>DOB (Accept current and previous dates)</label>
+      <input class="form-control" [maxDate]="maxDate" bsDatepicker formControlName="dob" 
+      [bsConfig]="{ isAnimated: true ,showWeekNumbers: false ,dateInputFormat: 'DD-MMM-YYYY',containerClass: 'theme-dark-blue',showClearButton: true, clearPosition: 'right'}"	 >
     </div>
+    <div class="col-md-4">
+      <label>Accept current and after dates</label>
+      <input class="form-control" [minDate]="minDate"  bsDatepicker formControlName="afterdates"
+      [bsConfig]="{ isAnimated: true ,showWeekNumbers: false ,dateInputFormat: 'DD-MMM-YYYY',containerClass: 'theme-dark-blue', showClearButton: true, clearPosition: 'right'}"	 >
+    </div>
+    <div class="col-md-4">
+      <label>All dates</label>
+      <input class="form-control"  bsDatepicker formControlName="alldates"
+      [bsConfig]="{ isAnimated: true ,showWeekNumbers: false , dateInputFormat: 'DD-MMM-YYYY', containerClass: 'theme-dark-blue', showClearButton: true, clearPosition: 'right',useUtc:true }"	 >
+    </div>
+  </div>
 
 
+</form>
+<pre>{{myForm.value |json}}</pre>
 
-    
-                        </div>
-                        </div> 
-  </div>   
-  <div class="mt-10 onegrid btn-div">
-        <button type="submit" class="btn btn-success"> Submit </button>
-
-
-        
-  </div>                 
-  </form><button type="submit" (click)="setvaluesss()" class="btn btn-success"> Set </button>
-
-<pre>{{apply_check_two.value |json}}</pre>
 </div>
-</div> -->
- 
+</div>
 
 
-<!-- 
- <div class="option-one"><i class="bi bi-emoji-frown"></i>  50 </div>
-                    <div class="option-two"><i class="bi bi-emoji-frown"></i> 23  </div>
-                    <div class="option-three"> <i class="bi bi-emoji-neutral"></i> 12  </div>
-                    <div class="option-four"><i class="bi bi-emoji-smile"></i> 45 </div>
-                    <div class="option-five"> <i class="bi bi-emoji-smile"></i> 65</div> -->
+
 

@@ -262,13 +262,13 @@
                         
                      
 
-                    <input class="form-control" type="search" placeholder="Search by folder name..." style="width:400px" (keyup)="updateFilter($event)" aria-label="Search">
+                    <input class="form-control width400" type="search" placeholder="Search by folder name..."  (keyup)="updateFilter($event)" aria-label="Search">
                     
                     </div>
                    </div>
 
    
-
+<div class="table-responsive">
          
                    <ngx-datatable
                    #table
@@ -322,6 +322,8 @@
                   </ngx-datatable-column>
 
                  </ngx-datatable>
+                </div>
+
                  <!-- { prop: 'Name' }, 
     { name: 'Allocetd Size' },
    { name: 'Free Space' },

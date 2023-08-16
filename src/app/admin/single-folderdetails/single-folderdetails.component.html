@@ -48,7 +48,7 @@
                 </table>
               
     </div>
-    <div class="col-md-12 col-lg-4 col-xxl-6 text-center pt-5" *ngIf="folderid > 1">
+    <div class="col-md-12 col-lg-4 col-xxl-6 text-center pt-1" *ngIf="folderid > 1">
      <div class="file-property-btns">
              <a href="javascript:void(0)" ngbTooltip='{{"Delete Folder"| langReplace}}' class="" *ngIf="folderDelete == true" (click)="delete(folderid)"  ><i class="bi bi-trash"></i></a>
              <a class="" ngbTooltip="Duplicate" ngbTooltip='{{"Duplicate Folder"| langReplace}}'  *ngIf="folderModify == true" (click)="duplicateFolder(folderid)"  ><i class="bi bi-folder"></i></a> 

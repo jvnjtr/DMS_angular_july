@@ -104,8 +104,11 @@ box-shadow: 0 0 8px none;
     display: flex;
     background: var(--white);
     min-height: 100vh;
+    justify-content: center;
+    align-items: center;
     .login-left{
         padding:1.5rem;
+      
         img{
             height: 42px;
             margin-bottom: 2.5rem;

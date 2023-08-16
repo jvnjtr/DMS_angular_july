@@ -524,7 +524,75 @@ export class CommonServicesService {
     let loginResponse = this.http.post(serviceURL, reqData);
     return loginResponse;
 }
+public viewDraftFile(formParams:any):Observable<any> {
 
+  let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+   let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+   let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+   let serviceURL = environment.serviceURL + 'file_module/getDraftData';
+   let loginResponse = this.http.post(serviceURL, reqData);
+   return loginResponse;
+}
+public setGeneralConfiguration(formParams:any):Observable<any> {
+
+  let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+   let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+   let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+   let serviceURL = environment.serviceURL + 'config_module/setGeneralConfiguration';
+   let loginResponse = this.http.post(serviceURL, reqData);
+   return loginResponse;
+}
+public getGeneralConfiguration(formParams:any):Observable<any> {
+
+  let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+   let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+   let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+   let serviceURL = environment.serviceURL + 'config_module/getGeneralConfiguration';
+   let loginResponse = this.http.post(serviceURL, reqData);
+   return loginResponse;
+}
+public setOcrConfiguration(formParams:any):Observable<any> {
+
+  let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+   let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+   let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+   let serviceURL = environment.serviceURL + 'config_module/setOcrConfiguration';
+   let loginResponse = this.http.post(serviceURL, reqData);
+   return loginResponse;
+}
+public getOcrConfiguration(formParams:any):Observable<any> {
+
+  let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+   let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+   let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+   let serviceURL = environment.serviceURL + 'config_module/getOcrConfiguration';
+   let loginResponse = this.http.post(serviceURL, reqData);
+   return loginResponse;
+}
+
+public stampImageUpload(formParams:any):Observable<any> {
+  let serviceURL = environment.serviceURL + 'config_module/stampingFileUpload';
+  let moduleResponse = this.http.post(serviceURL, formParams);
+  return moduleResponse;
+}
+public setStampConfiguration(formParams:any):Observable<any> {
+
+  let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+   let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+   let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+   let serviceURL = environment.serviceURL + 'config_module/setStampConfiguration';
+   let loginResponse = this.http.post(serviceURL, reqData);
+   return loginResponse;
+}
+public getStampConfiguration(formParams:any):Observable<any> {
+
+  let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+   let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+   let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+   let serviceURL = environment.serviceURL + 'config_module/getStampConfiguration';
+   let loginResponse = this.http.post(serviceURL, reqData);
+   return loginResponse;
+}
 public reloadpage(){
 
   window.history.back()

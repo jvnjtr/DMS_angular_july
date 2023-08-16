@@ -188,6 +188,7 @@ p{ line-height: 1.4;}
   
     background: var(--card-color);
     border: 1px solid var(--bs-gray-300);
+    margin-bottom: .5rem;	
     @media screen and (min-width:992px) {
         margin-bottom: 1rem;	
         }
@@ -220,7 +221,7 @@ p{ line-height: 1.4;}
     }
     .card-body {
         padding: 1rem;
-        padding-top:0;
+       
         @media screen and (min-width:992px) {
 padding: 1rem;
 }
@@ -558,20 +559,25 @@ font-size: .9rem;
 	// === Tabs === //
 	.nav-tabs {
 	    margin-bottom: 0;
-	
+      border-bottom: 0;
     width: 100%;
     padding: 0;
-
+    flex-wrap: nowrap;
+    overflow: hidden;
+    overflow-x: auto;
+    
     @media screen and (min-width:992px) {
 float: none;
 margin-bottom: 0;
 border-bottom: 0;
 width: 100%;	
  padding: 0;
+ 
 }
 @media screen and (min-width:1440px) {
 padding: 0;	
 }
+li{display: flex;}
 	    .nav-link {
 	        color: #505050;
 	        padding: .4rem 1.2rem;
@@ -586,7 +592,7 @@ padding: 0;
             
      @media screen and (min-width:992px) {
 				
-				padding: .5rem 1rem;
+				padding: .5rem .75rem;
 				}
 				@media screen and (min-width:1440px) {
 				padding: .5rem 1rem;
@@ -621,6 +627,8 @@ padding: 0;
         justify-content: flex-end;
         align-items: center;
         padding: .2rem 1rem;
+        background: #f5f5f5;
+        margin-bottom: 0.5rem;
                @media screen and (min-width:992px) {
     flex:0 0 40%;
             position: relative;
@@ -629,7 +637,8 @@ padding: 0;
             top:-6px;
              padding: 0;
             padding-right: 0rem;	
-            
+            background: transparent;
+        margin-bottom: 0;
     }
     @media screen and (min-width:1440px) {
     padding: 0rem;	
@@ -680,15 +689,14 @@ padding: 0;
         
         // === Indicator list === //
         .controls-section-header
-        { display: flex;
-         background: var(--card-color);
-         
+        { 
+          display: flex;
+          background: var(--card-color);
           align-items: flex-start;
-          padding:1rem 1rem;
+          padding: 0.5rem 1rem 0;
           border-bottom: 1px solid var(--bs-gray-200);
-          flex-flow: column;
-         
-            @media screen and (min-width:1140px) {
+          flex-flow: column-reverse;
+            @media screen and (min-width:990px) {
                 
                  align-items: center;
                  padding:1rem 1rem 0;
@@ -1521,6 +1529,9 @@ background: #fff;
 @media screen and (max-width:1370px) {
   width:350px;
 }
+@media screen and (max-width:660px) {
+  width:100%;
+}
 .search-ctrldiv{
   display: flex;
   flex-wrap: wrap;
@@ -1618,6 +1629,9 @@ font-size: 1.2rem;
   @media screen and (max-width:1370px) {
     height:42vh;
   }
+  @media screen and (max-width:992px) {
+    height:auto;
+  }
 }
 .portletfix-height2{
   height:35vh;
@@ -1628,6 +1642,9 @@ font-size: 1.2rem;
   }
   @media screen and (max-width:1370px) {
     height:42vh;
+  }
+  @media screen and (max-width:992px) {
+    height:auto;
   }
 }
 
@@ -1729,7 +1746,10 @@ font-size: 1.2rem;
 }
 .file-property-btns{
   display: flex;
-  flex-flow: column;
+  flex-flow: row;
+  @media screen and (min-width:992px) {
+    flex-flow: column;
+  }
   a{
     display: block;
     width: 60px;
@@ -1769,3 +1789,19 @@ font-size: 1.2rem;
       padding: 1.5rem;
     }
   }
+  .width400{
+
+    width: 100%;
+    @media screen and (min-width:800px) {
+      width: 400px;
+    }
+  }
+
+  .mobile-view{
+   
+ 
+    @media screen and (min-width:992px) {
+        display: none;
+        
+      }
+ }

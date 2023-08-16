@@ -36,19 +36,32 @@ originurl:any = '';
 
 
   constructor() {
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-    'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.10.377/build/pdf.worker.js';
-  fabric.Object.prototype.objectCaching = false;
+
     
    }
 
+ 
   ngOnInit(): void {
-    
-
-
+    this.initPdf();
   }
 
+  initPdf() {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.14.305/build/pdf.worker.js';
+    fabric.Object.prototype.objectCaching = false;
 
+    this._getPdf();
+  }
 
+  _getPdf() {
+    this.currPage = 1;
+   // document.getElementById('canvas-container').innerHTML = '';
+    pdfjsLib.getDocument(this.url).promise.then((pdf) => {
+      this.pdfDocument = pdf;
+      this.numPages = pdf.numPages;
+      // this._drowPageContainer();
+      // pdf.getPage(1).then(this._handlePages);
+    });
+  }
 
 }

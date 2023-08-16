@@ -1,0 +1,97 @@
+<!--===Page Title===-->
+<div class="page-title">
+
+    <h4>{{title| langReplace}} </h4>
+</div>
+<!--===Page Title===-->
+<!--===controle section===-->
+<div class="page-controls-section" id="page-content">
+    <div class="card">
+        <div class="controls-section-header">
+            <ul class="nav nav-tabs nav-fill" role="tablist">
+                <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="metaid"
+                    [tabMessage]="tablist"></app-tabs>
+            </ul>
+            <div class="indicatorslist" *ngIf="showTouser==true">
+                <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils>
+            </div>
+            
+        </div>
+
+        <div class="card-body" >
+            <p class="showToUser">{{messagesToUser}}</p>
+            <div class="controls-section" *ngIf="showTouser==true">
+
+               
+                <div class="row">
+                    <label for="" class="col-md-4 col-lg-3">
+                        * {{"Max Size"| langReplace}} (in GB)
+                    </label>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <input type="text"  class="form-control" id="txtMaxsize" [(ngModel)]="txtMaxsize" minlength="1" maxlength="4" (keypress)="vldChkLst.isNumberKey($event)">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <label for="" class="col-md-4 col-lg-3">
+                        * {{"Max Users"| langReplace}}
+                    </label>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="txtMaxusers" [(ngModel)]="txtMaxusers" minlength="1" maxlength="4" (keypress)="vldChkLst.isNumberKey($event)"> 
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+                    <label for="" class="col-md-4 col-lg-3">
+                        * {{"Welcome Message"| langReplace}}
+                    </label>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <textarea class="form-control" id="txtWelcomemsg" rows="3"
+                                [(ngModel)]="txtWelcomemsg"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <label for="" class="col-md-4 col-lg-3">
+                        * {{"Session Timeout"| langReplace}} (in Min)
+                    </label>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <input type="text" (keypress)="vldChkLst.isNumberKey($event)" minlength="1" maxlength="3" class="form-control" id="txtSessionTime" [(ngModel)]="txtSessionTime">
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+                <div class="row form-group">
+                    <label class="col-md-4 col-lg-3"> </label>
+                    <div class="col-md-9"> 
+                        <button class="btn btn-success"
+                            (click)="createConfigGeneral()">{{(configId>0? "Update": "Save") | langReplace}}</button>
+                            <button (click)="formReset()" class="btn btn-danger ml-2" > {{"Reset" | langReplace}} </button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="loader" *ngIf="loading">
+        <div class="loader-item"></div>
+        <p>Loading...</p>
+    </div>

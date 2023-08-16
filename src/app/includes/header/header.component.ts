@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import { Buffer } from 'buffer';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from 'src/app/services/language.service';
+import { EncrypyDecrpyService } from 'src/app/services/encrypy-decrpy.service';
 
 @Component({
   selector: 'app-header',
@@ -35,6 +36,7 @@ export class HeaderComponent implements OnInit {
   roleId: any;
   totalNotificationCount: any;
   notificationList: any = [];
+  config:any=false;
   //\\ ======================== // Variables // ======================== //\\
 
 
@@ -42,7 +44,7 @@ export class HeaderComponent implements OnInit {
   constructor(private authService: AuthenticationService, private router: Router,
     public commonserveice: CommonServicesService,
     private route: ActivatedRoute,
-
+    private encDec:EncrypyDecrpyService,
     private labelLanguage: LanguageService
   ) {
 
@@ -122,8 +124,8 @@ export class HeaderComponent implements OnInit {
     this.roleName = SeetionParsed.ROLE_NAME;
     this.desgName = SeetionParsed.DESG_NAME;
     this.roleId = SeetionParsed.ROLE_ID;
-
-
+    this.config = SeetionParsed.CONFIG;
+   
     let pagecontent: any = document.querySelector('.page-container');
 
     // Full width less than 800
@@ -364,7 +366,7 @@ export class HeaderComponent implements OnInit {
         this.totalNotificationCount = responseResult.result.length;
         this.notificationList = responseResult.result;
 
-console.log(this.notificationList)
+
 
       }
 
@@ -403,6 +405,26 @@ console.log(this.notificationList)
 
   }
 
+  loadpreview(fileid:any,fileType:any,filePath:any,logid:any,lockStatus:any)
+  {
+  //  this.open(this.previewModal);
+    
+       
+      let encSchemeStr = this.encDec.encText((fileid+':'+filePath+':'+lockStatus+':'+logid+':'+fileType).toString());
+     
+      const url = environment.siteURL+`#/windowPrev/`+encSchemeStr;
+      const w = screen.width * 0.9;
+      const h = screen.height * 0.8;
+      const left = (screen.width / 2) - (w / 2);
+      const top = (screen.height / 2) - (h / 2);
+      const randomnumber = Math.floor((Math.random() * 100) + 1);
+      // tslint:disable-next-line:max-line-length
+      window.open(url, '_blank', 'PopUp' + randomnumber + ',scrollbars=1,menubar=0,resizable=1,width = ' + w + ', height = ' + h + ', top = ' + top + ', left = ' + left);
+     
+       
+        
+      
+  }
 
 
 }

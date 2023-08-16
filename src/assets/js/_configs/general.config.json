@@ -1,0 +1,34 @@
+[
+      {
+        "pagetitle":"General Configuration",
+        "tabList":[
+        
+         
+          
+                  
+                  ],
+        "utils":[
+          {"utilName":"mandatory"}
+         
+         
+          ],
+        "messages":{
+          "successMsg":"General Configuration Added Successfully",
+          "updatesuccessMsg":"General Configuration Updated Successfully",
+          "errorMsg":"Error in Meta creation",
+          "fromname":"Please Select Form Name",
+          "metaname":"Please Enter Meta Name",
+          "metadesc":"Please Enter Meta Description",
+           "metaType":"Meta Type",
+           "maxUser":"Please Enter Max User",
+           "maxSize":"Please Enter Max Size",
+           "welcomeMessage":"Please Enter Welcome Message",
+           "sessionTime":"Please Enter Session Time Out",
+           "successMsgAfterAdd":"General Configuration Added Successfully, Please Logout To Start The Session",
+           "successMsgAfterUpdate":"General Configuration Updated Successfully, Please Logout To Start The Session",
+           "messagesToUser":"General Has Not Been Set, Please Contact To Administrator"
+         }
+      }
+    ]
+
+

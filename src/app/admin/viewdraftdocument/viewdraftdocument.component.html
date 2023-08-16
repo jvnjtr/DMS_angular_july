@@ -1,0 +1,99 @@
+<!--===Page Title===-->
+<div class="page-title">
+
+    <h4>{{title | langReplace}}</h4>
+</div>
+<!--===Page Title===-->
+<!--===controle section===-->
+<div class="page-controls-section" id="page-content">
+    <div class="card">
+        <div class="controls-section-header">
+            <ul class="nav nav-tabs nav-fill" role="tablist">
+                <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="letterID"
+                    [tabMessage]="tablist"></app-tabs>
+            </ul>
+            <div class="indicatorslist">
+                <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="controls-section">
+
+                <div class="d-flex justify-content-between mb-3 ">
+                    <div>
+
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <input class="form-control" type="search" placeholder="{{'Search' | langReplace}}.."
+                            style="width:400px" [(ngModel)]="txtSearch" aria-label="Search">
+                    </div>
+                </div>
+                <div *ngIf="metalist?.length > 0; else norecord">
+
+                    <div class="table-responsive print-section">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="50px"> {{"Sl No"| langReplace}}</th>
+                                    <th *ngFor="let flist of tablecollist">
+                                        <i *ngIf="flist.sortable"
+                                            (click)="commonserveice.onSortClick(flist.cname,$event,metalist)"
+                                            class="my-icon bi bi-arrow-up"></i>
+                                        {{flist.name | langReplace}}
+                                    </th>
+                                    <!-- 
+                                            <th >Meta Name</th>
+                                            <th>Description</th>
+                                            <th>Type</th>
+                                            
+                                            <th>Created By</th> -->
+                                    <th width="100px" class="p-none">
+                                        {{"Action"| langReplace}}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr *ngFor="let mlist of metalist | metasearch:txtSearch | paginate
+                                        : {
+                                            itemsPerPage: tableSize,
+                                            currentPage: page,
+                                            totalItems: count
+                                          }; let i = index">
+                                    <td>{{tableSize *(page-1)+ i+1}} </td>
+                                   
+                                    <td> <i
+                                        class="h6"
+                                        [ngClass]="
+                                          commonserveice.getfiletype(mlist.fileType)
+                                        "
+                                      ></i> {{mlist.fileName}}</td>
+                                    
+                                    <td>{{mlist.userFullName}}</td>
+                                    <td>{{mlist.createdOn}}</td>
+                                    <td class="p-none">
+                                        <a class="text-primary" title="Edit" href="javascript:void(0)"
+                                            (click)="gotoDraftEdit(mlist.draftId+':'+mlist.fileType+':'+mlist.fileName)"><i class="icon-edit-solid"></i></a>
+                                        <a class="text-danger" href="javascript:void(0)"
+                                            (click)="deletDraft(mlist.draftId)"><i class="icon-trash-solid"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <app-pagination [page]="page" [count]="count" [tableSize]="tableSize"
+                        (callfunction)="onTableDataChange($event)"></app-pagination>
+
+                </div>
+                <ng-template #norecord>
+                    <h6 class="no-content"> {{"No Record Found"| langReplace}} </h6>
+
+                </ng-template>
+            </div>
+        </div>
+    </div>
+    <div class="loader" *ngIf="loading">
+        <div class="loader-item"></div>
+        <p>Loading...</p>
+    </div>

@@ -65,7 +65,10 @@ import { LanguagelabelsComponent } from './languagelabels/languagelabels.compone
 import { ViewalllanguagesComponent } from './viewalllanguages/viewalllanguages.component';
 import { CommonPipeModule } from '../common-pipe/common-pipe.module';
 import { CreatedocComponent } from './createdoc/createdoc.component';
-
+import { ConfigGeneralComponent } from './config-general/config-general.component';
+import { ConfigOCRComponent } from './config-ocr/config-ocr.component';
+import { ConfigStampingComponent } from './config-stamping/config-stamping.component';
+import { ViewdraftdocumentComponent } from './viewdraftdocument/viewdraftdocument.component';
 
 
 
@@ -118,7 +121,10 @@ import { CreatedocComponent } from './createdoc/createdoc.component';
                  LanguagelabelsComponent,
                  ViewalllanguagesComponent,
                  CreatedocComponent,
-           
+                 ConfigGeneralComponent,
+                 ConfigOCRComponent,
+                 ConfigStampingComponent,
+                 ViewdraftdocumentComponent,
          
   ],
   imports: [

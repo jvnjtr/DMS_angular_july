@@ -29,6 +29,10 @@ import { ManageLanguageComponent } from './manage-language/manage-language.compo
 import { LanguagelabelsComponent } from './languagelabels/languagelabels.component';
 import { ViewalllanguagesComponent } from './viewalllanguages/viewalllanguages.component';
 import { CreatedocComponent } from './createdoc/createdoc.component';
+import { ConfigGeneralComponent } from './config-general/config-general.component';
+import { ConfigOCRComponent } from './config-ocr/config-ocr.component';
+import { ConfigStampingComponent } from './config-stamping/config-stamping.component';
+import { ViewdraftdocumentComponent } from './viewdraftdocument/viewdraftdocument.component';
 
 // import { AddgetwayconfigComponent } from 'projects/msgengine-lib/src/lib/addgetwayconfig/addgetwayconfig.component';
 // import { ViewgetwayconfigComponent } from 'projects/msgengine-lib/src/lib/viewgetwayconfig/viewgetwayconfig.component';
@@ -79,6 +83,10 @@ const routes: Routes = [
 
    { path: 'createdoc', component:CreatedocComponent,canActivate: [AuthGuard]},
    { path: 'createdoc/:id', component:CreatedocComponent,canActivate: [AuthGuard]},
+   { path: 'generalconfig', component:ConfigGeneralComponent,canActivate: [AuthGuard]},
+   { path: 'ocrconfig', component:ConfigOCRComponent,canActivate: [AuthGuard]},
+   { path: 'stampingconfig', component:ConfigStampingComponent,canActivate: [AuthGuard]},
+   { path: 'viewdraftdocument', component: ViewdraftdocumentComponent,canActivate: [AuthGuard] },
 
 
     ]

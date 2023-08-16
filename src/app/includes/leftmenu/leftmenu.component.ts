@@ -55,7 +55,7 @@ export class LeftmenuComponent implements OnInit {
   desgId:any;
   roleId:any;
 approvalcheck:any=false;
-
+config:any=false;
 
 
   constructor(
@@ -76,6 +76,7 @@ approvalcheck:any=false;
  
    this.desgId=SeetionParsed.USER_ID;
    this.roleId=SeetionParsed.ROLE_ID;  
+   this.config=SeetionParsed.CONFIG;  
 
   
 

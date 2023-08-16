@@ -15,6 +15,7 @@ import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { ValidatorchecklistService } from 'src/app/services/validatorchecklist.service';
 import { ReportsService } from 'src/app/services/reports.service';
+import { Observable, Subscription, fromEvent } from 'rxjs'
 
 @Component({
   selector: 'app-feedbackreport',
@@ -38,7 +39,7 @@ export class FeedbackreportComponent implements OnInit {
 DemoDoc:any;
 
 
-apply_check_two : FormGroup;
+myForm : FormGroup;
 serviceURL = environment.serviceURL;
   itemID:any;
   sessiontoken:any;
@@ -47,48 +48,69 @@ serviceURL = environment.serviceURL;
   username:any='';
   resubmitstatus:any=0;
   chkHobbies:any=[
-    { name:'Dancing',value:'Dancing' },
+{ name:'Dancing',value:'Dancing' },
 { name:'Singing',value:'Singing' },
 { name:'Playing',value:'Playing' },
 ];
     
 chkSkills:any=[
-  { name:'React',value:'React' },  
-{ name:'Dotnet',value:'Dotnet' },
-{ name:'java',value:'java' },
-{ name:'Python',value:'Python' },
-{ name:'PHP',value:'PHP' },
-{ name:'Angular',value:'Angular' },
+{ name:"1",value:'React' },  
+{ name:"2",value:'Dotnet' },
+{ name:"3",value:'java' },
+{ name:"4",value:'Python' },
+{ name:"5",value:'PHP' },
+{ name:"6",value:'Angular' },
 ];  
 userlist:any=[];
+
+
+
+
+myDateValue: Date;
+bsInlineValue: Date;
+isOpen: boolean = false;
+@ViewChild('dp') dp : ElementRef;
+customButtonsSubscription : Subscription;
+customButtons$:any;
+error : boolean = true
+
+dpCustomButtons : string = `<div class="d-flex justify-content-between py-1">
+<button id="dpTodayButton" class="two btn btn-success dpCustomButton">Today</button>
+<button id="dpResetButton" class="two btn btn-primary dpCustomButton ">Reset</button>
+<button id="dpCloseButton" class="two btn btn-danger dpCustomButton">Close</button>
+</div>`;
+
+
+minDate:Date;
+maxDate:Date;
+
+
+
   constructor(private modalService: NgbModal,
      private httpClient: HttpClient,
      public encDec:EncrypyDecrpyService,
      private uploadfiles:UploadfilesService,public fb: FormBuilder,  
      private router: ActivatedRoute,  public vldChkLst : ValidatorchecklistService,
-     public reportService:ReportsService
+     public reportService:ReportsService,
+     private el : ElementRef
      
      ) {
-
+      this.minDate=new Date();
+      this.maxDate=new Date();
+      this.bsInlineValue=new Date();
 this.loadusers(0)
 
     this.mycontent = `<p>My html content</p>`;
-setTimeout(() => {
-  const ctrls = this.chkSkills.map((control:any) => this.fb.control(false));
-  const userlistctrls = this.userlist.map((control:any) => this.fb.control(false));
 
-  this.apply_check_two = this.fb.group({
-    intId:'',
-    intCreatedBy: this.userid ,
-    intUpdatedBy: this.userid ,
-    
-txtName : '',
 
-chkSkills : this.fb.array(ctrls),
-userlist : this.fb.array(userlistctrls),      
-});
+  this.myForm = this.fb.group({
+   
+    dob:new Date(),
+    afterdates:new Date(),
+    alldates:new Date(),
+  });
 
-}, 500);
+
 
 
 
@@ -102,6 +124,7 @@ userlist : this.fb.array(userlistctrls),
 
 
   ngOnInit(): void {
+    this.myDateValue = new Date();
     this.mycontent2['test'] = 'testval';
     
     // this.ckeConfig = {
@@ -126,9 +149,9 @@ userlist : this.fb.array(userlistctrls),
       filebrowserImageBrowseUrl:
         'https://ckeditor.com/apps/ckfinder/3.4.5/ckfinder.html?type=Images',
       filebrowserUploadUrl:
-        'http://172.27.30.93:7001/DMS_PHP/admin/ckEditorFileUpload',
+        'http://172.27.30.93:7001/dms_php_admin/admin/ckEditorFileUpload',
       filebrowserImageUploadUrl:
-        'http://172.27.30.93:7001/DMS_PHP/admin/ckEditorImageUpload',
+        'http://172.27.30.93:7001/dms_php_admin/admin/ckEditorImageUpload',
     
     };
     let encSchemeId= this.router.snapshot.paramMap.get('id');
@@ -146,13 +169,6 @@ userlist : this.fb.array(userlistctrls),
       }
   }
  
-  get chkSkillsArr() {
-    return this.apply_check_two.get('chkSkills') as FormArray;
-  }
-
-  get userlistArr() {
-    return this.apply_check_two.get('userlist') as FormArray;
-  }
 
 
 //\\ ======================== // Modal Open // ======================== //\\ 
@@ -161,40 +177,14 @@ open(content: any) {
  }, (reason: any) => { });
 }
 //\\ ======================== // Modal Open // ======================== //\\ 
-closeModal(){
-  this.modalService.dismissAll();
- }
-  onChange($event: any): void {
-    console.log("onChange");
-    //this.log += new Date() + "<br />";
-  }
 
-  onPaste($event: any): void {
-    console.log("onPaste");
-    //this.log += new Date() + "<br />";
-  }
-
-  onFileUploadRequest($event: any): void {
-    console.log("onPaste");
-    //this.log += new Date() + "<br />";
-  }
-
-  onFileUploadResponse($event: any): void {
-    console.log("onPaste");
-    //this.log += new Date() + "<br />";
-  }
-  
   
           
 /*
 |------------------------------------------------------------------------------
 |This function is used for submit data /Insert data in to database
 |------------------------------------------------------------------------------
-*/             
-submitForm(){
-console.log(this.apply_check_two.value)
-}
-/*
+
 |------------------------------------------------------------------------------
 |This function is used for preview all data from database for preview button
 |------------------------------------------------------------------------------
@@ -236,8 +226,6 @@ for(let i=0;i<userlist.length;i++){
   let obj:any={}
   obj["name"]=userlist[i].userFullName;
   obj["value"]=userlist[i].userId;
- 
-
   this.userlist.push(obj)
 
 }
@@ -316,60 +304,14 @@ for(let i=0;i<userlist.length;i++){
    }
  }
 
- removeFile(UploadFile:any) {
-   let upurl:any = document.getElementById(UploadFile);
-   upurl.value=[];
-   this.apply_check_two.controls[UploadFile].setValue('');
- }
-
- onchkHobbiesChange(e:any){
-  const checkArray: FormArray = this.apply_check_two.get('userlist') as FormArray;
-  if (e.target.checked) {
-    checkArray.push(new FormControl(e.target.value));
-  } else {
-    let i: number = 0;
-    checkArray.controls.forEach((item: any) => {
-      if (item.value == e.target.value) {
-        checkArray.removeAt(i);
-        return;
-      }
-      i++;
-    });
-  }
-
- }
-setvaluesss(){
-
-  let rolePermissionList:any = ["React"];
-  let luserList:any = [4,8];
-  this.apply_check_two.patchValue({
-    intId:'',
-    intCreatedBy: this.userid ,
-    intUpdatedBy: this.userid ,
-    txtName : 'Bikash',
-   // chkHobbies:[]
-    });
 
 
-    this.chkSkills.map((perm:any, i:any) => {
-      if (rolePermissionList.indexOf(perm.name) !== -1) {
-        this.chkSkillsArr.at(i).patchValue(true)
-       
-      }
-    })
-console.log( this.userlist)
-    this.userlist.map((perm:any, i:any) => {
-      if (luserList.indexOf(perm.value) !== -1) {
-        this.userlistArr.at(i).patchValue(true)
-       
-      }
-    })
-   
-}
-getIframeContent(){
-  let frameObj:any = document.getElementById("frameID");
- var frameContent = frameObj.contentWindow.document.body.innerHTML;
-  
-alert("frame content : " + frameContent);
-}
+
+
+
+
+
+
+
+
 }

@@ -43,7 +43,9 @@ loading:any=false;
 getfiletype:any;
 previewFile:any=false;
 otherDetails:any=false;
-
+draftId:any=0;
+fileType:any;
+nfileName:any;
   constructor(  private route: Router,
    private httpClient: HttpClient,
    private uploadfiles:UploadfilesService,
@@ -55,8 +57,25 @@ otherDetails:any=false;
    private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
-
+  
     this.token=sessionStorage.getItem('TOKEN');
+    let encSchemeId = this.router.snapshot.paramMap.get('id');
+    if(encSchemeId != ""){
+      let schemeStr = this.encDec.decText(encSchemeId);
+      let schemeArr:any = schemeStr.split(':');
+      this.draftId = schemeArr[0];
+      console.log(this.draftId);
+      let nfileType = schemeArr[1];
+      this.nfileName = schemeArr[2];
+      //console.log(nfileType);
+      if(nfileType == 'pdf'){
+        this.rdoDocuemntType = "1";
+      }else if(nfileType == 'docx'){
+        this.rdoDocuemntType = "1";
+      }else if(nfileType == 'xlsx'){
+        this.rdoDocuemntType = "2";
+      }
+     }
     this.loadCreateeditor(this.rdoDocuemntType)
     this.loadconfig();
 
@@ -72,7 +91,7 @@ otherDetails:any=false;
     if(doctype == '1'){
       setTimeout(() => {
        
-        let iframeurl:any=`${this.createPDFURL}?token=${this.token}&`;
+        let iframeurl:any=`${this.createPDFURL}?token=${this.token}&draftId=${this.draftId}&fileName=${this.nfileName}&`;
         this.pdfweriterURL=this.sanitizer.bypassSecurityTrustResourceUrl(iframeurl);
         this.loading=false;
    
@@ -81,7 +100,7 @@ otherDetails:any=false;
     }else{
       setTimeout(() => {
         
-        let iframeurl:any=`${this.createExcelURL}?token=${this.token}`;
+        let iframeurl:any=`${this.createExcelURL}?token=${this.token}&draftId=${this.draftId}&fileName=${this.nfileName}&`;
         this.pdfweriterURL=this.sanitizer.bypassSecurityTrustResourceUrl(iframeurl);
         this.loading=false;
    

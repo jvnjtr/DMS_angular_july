@@ -1,0 +1,32 @@
+[
+      {
+        "pagetitle":"Stamp Configuration",
+        "tabList":[
+        
+          {"tabName":"Add","tabUrl":"../stampingconfig","tabClass":"active add d-none"}
+         
+                  
+                  ],
+        "utils":[
+          {"utilName":"mandatory"}
+         
+         
+          ],
+        "messages":{
+          "successMsg":"Stamping Configuration Added Successfully",
+          "updatesuccessMsg":"Stamping Configuration Updated Successfully",
+          "errorMsg":"Error in Meta creation",
+          "fromname":"Please Select Form Name",
+          "metaname":"Please Enter Meta Name",
+          "metadesc":"Please Enter Meta Description",
+           "metaType":"Meta Type",
+           "rdoType":"Please Select Stamp Type",
+           "eventList":"Please Select Event",
+           "txtPage":"Please Select Page",
+           "txtStampingText":"Please Enter Stamping Text",
+           "txtStampingImage":"Please Choose Stamping Image"
+         }
+      }
+    ]
+
+

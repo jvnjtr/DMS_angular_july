@@ -4,4 +4,7 @@
    padding: 0;
    transition: all 1s ease-in-out;
   height:430px;
+  @media screen and (max-width:992px) {
+    height:auto;
+  }
 }

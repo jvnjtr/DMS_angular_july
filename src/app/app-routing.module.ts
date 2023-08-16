@@ -5,11 +5,13 @@ import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './admin/auth.guard';
 import { WindowPrevComponent } from './window-prev/window-prev.component';
 import { CreateDocInputsComponent } from './create-doc-inputs/create-doc-inputs.component';
+import { ConfigurationComponent } from './configuration/configuration.component';
 
 
 const routes: Routes = [
 {path: '', pathMatch: 'full', redirectTo: '/login'},
 {path:'login',component: LoginComponent},
+{path:'configuraion',component: ConfigurationComponent},
 {path:'windowPrev/:id',component: WindowPrevComponent},
 {path:'createdocument/:id',component: CreateDocInputsComponent},
 { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),canActivate: [AuthGuard] }, 

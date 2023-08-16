@@ -5,7 +5,6 @@ import { UploadfilesService } from '../../services/uploadfiles.service';
 import Swal from 'sweetalert2';
 import { environment } from '../../../environments/environment';
 import { CommonServicesService } from '../../services/common-services.service';
-import { WorkflowService } from '../../services/workflow.service';
 import * as CryptoJS from 'crypto-js';
 import { AuthenticationService } from '../../services/authentication.service';
 import { EncrypyDecrpyService } from '../../services/encrypy-decrpy.service';
@@ -86,11 +85,6 @@ fileeList:any=[];
 token:any;
 getfiletype:any;
 previewFile:any=false;
-workflowMode:any="1";
-showForwardAuthority:any=false;
-authorityRoleId:any=0;
-logedinRoleId:any;
-roleArr: any = [];
   //\\ ======================== // Variables // ======================== //\\
   constructor(
     private route: Router,
@@ -101,7 +95,7 @@ roleArr: any = [];
    public encDec:EncrypyDecrpyService,
    private router:ActivatedRoute,
    private vldChkLst:ValidatorchecklistService,
-   private sanitizer: DomSanitizer,private workFlowServices: WorkflowService
+   private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit(): void {
@@ -141,7 +135,6 @@ roleArr: any = [];
 
     // let SeetionParsed =JSON.parse(this.sessiontoken).toString(); 
     let SeetionParsed =JSON.parse(CryptoJS.AES.decrypt(this.sessiontoken, environment.apiHashingKey).toString(CryptoJS.enc.Utf8)); 
-    this.logedinRoleId=SeetionParsed.ROLE_ID;
      //console.log(SeetionParsed)
     // this.username=SeetionParsed.USER_NAME;
     // this.desgId=SeetionParsed.USER_ID;
@@ -707,103 +700,5 @@ this.getfiletype=getfiletype;
   },1000)
   }
 }
-workflowModedoClick(e:any){
-  let userSelection=e.target.value;
-  if(userSelection==2){
-    this.workflowMode=userSelection;
-    this.showForwardAuthority=true;
-    if(this.folderid < 1){
-        
-      Swal.fire({
-        title: 'Please Select Folder',
-        confirmButtonText: 'Ok',
-      }).then((result) => {
-        /* Read more about isConfirmed, isDenied below */
-        if (result.isConfirmed) {
-          this.workflowMode="1";
-      this.showForwardAuthority=false;
-        }
-      })
-      
-    }else{
-      this.getRoles(this.folderid);
-    }
-  }else{
-    this.workflowMode='1';
-    this.showForwardAuthority=false;
-  }
-}
-//\\ ======================== // Authorities // ======================== //\\ 
-getRoles(folderid:any) {
-  let dataParam = {
-   "folderId": folderid
- };
- this.workFlowServices.getAdminRoles(dataParam).subscribe((response: any) => {
-   let respData = response.RESPONSE_DATA;
-   let respToken = response.RESPONSE_TOKEN;
-   let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-   if(respToken == verifyToken){
-     let res:any = Buffer.from(respData,'base64'); 
-     let responseResult= JSON.parse(res)
-if (responseResult.status == '200') {
-let authorities:any=responseResult.result;
-this.folderName=authorities.folderName;
 
-let result:any=[];
-result = authorities.data;
-for (let i = 0; i < result.length; i++) {
-  let obj: any = {};
-  
-  if(this.logedinRoleId !=result[i].roleId){
-    obj['fileOrFolderId'] = result[i].fileOrFolderId;
-    obj['intId'] = result[i].intId;
-    obj['type'] = result[i].type;
-    obj['roleName'] = result[i].roleName;
-    obj['userFullName'] = result[i].userFullName;
-    obj['roleId'] = result[i].roleId;
-    let permissions:any=JSON.parse(result[i].permission);
-   for(let j = 0; j < permissions.length; j++){
-       if(permissions[j].label == 'WorkFlow' && permissions[j].selected == true){
-           obj['permission'] = permissions[j].label
-       }
-   }
- 
-  this.roleArr.push(obj);
-  }
-  
-  
-
-}
-console.log(this.roleArr);
-     }
-    
-     else if((responseResult.status==500)){
-       Swal.fire({
-         icon: 'error',
-         text: responseResult.message
-       });
-     }
-   }
-   else{
-     this.loading = false;
- this.authService.directlogout();
-   }
-
-
-
-
-
- },
- (error:any) =>{
-   this.authService.directlogout();
- })
-
-
-
-}
-
-//\\ ======================== // Authorities // ======================== //\\ 
-getFOrwardAuthority(e:any){
-  this.authorityRoleId=e.target.value;
-}
 }

@@ -211,10 +211,7 @@ takeAction(id: any, checkinstatus:any) {
   }
   else{
     this.commonserveice.swalfire('error',this.commonserveice.langReplace("Someone checked out the document")+'. '+this.commonserveice.langReplace("Document must check in before being taken action on")+".")
-    Swal.fire({
-      icon: 'error',
-       text: this.commonserveice.langReplace("Someone checked out the document")+'. '+this.commonserveice.langReplace("Document must check in before being taken action on")+"." 
-      });
+
   }
 }
 

@@ -5,7 +5,7 @@
       <p>Document Management System</p>
     </a>
   
-    <nav class="navbar">
+    <nav class="navbar" *ngIf="config==true">
       <div class="navbar-collapse justify-content-end" id="basicExampleNav">
 
           
@@ -18,7 +18,12 @@
             ><span>{{"dashboard"| langReplace}}</span></a
             >
           </li>
-
+          <li class="nav-item mobile-view" routerLinkActive="active">
+            <a class="nav-link route-link" routerLink="../admin/createdoc"
+              ><i class="icon-file-image" ></i
+            ><span> {{"Create Document"| langReplace}}</span></a
+            >
+          </li>
     <li class="nav-item" *ngFor="let item of folderarr;let j = index " [ngClass]="item.expand ? 'active' : ''">
               <a class="nav-link route-link"  (click)="loadFolderData(1+':'+'0',item.expand)"  > 
               

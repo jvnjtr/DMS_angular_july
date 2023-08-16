@@ -352,10 +352,10 @@ lockstatus:any;
               if (responseResult.status == 200) {
 
                   let docresult = responseResult.result[0];
-                 // console.log(docresult)
+                 
                   this.noofdocumets = docresult.totalDocumentCount;
-                  this.sizeofdocuments = docresult.totalSize[2];
-                  this.sizeofdocumentsingb = docresult.totalSize[0];
+                  this.sizeofdocuments = this.commonserveice.formatBytes(docresult.totalSize,2);
+                  this.sizeofdocumentsingb = this.commonserveice.formatBytes(docresult.totalSize,2);
               }
               else if (responseResult.status == 400) {
   
@@ -403,10 +403,10 @@ lockstatus:any;
             if (responseResult.status == 200) {
   
                 let folderresult = responseResult.result;
-                //console.log(folderresult)
+               
                  this.nooffolders = folderresult.totalFolderCount;
-                 this.sizeoffolders = folderresult.childsize[0];
-                 this.folderfreespace=folderresult.freeSpaceLeft[0]
+                 this.sizeoffolders = this.commonserveice.formatBytes(folderresult.childsize,2) ;
+                 this.folderfreespace=this.commonserveice.formatBytes(folderresult.freeSpaceLeft,2)
              
             }
            else if (responseResult.status == 400) {
@@ -464,7 +464,7 @@ lockstatus:any;
   
                 let sharedfilesList = responseResult.result[0];
                 this.noofsharedfiles = sharedfilesList.totalDocumentCount;
-                 this.sizeofsharedfiles = sharedfilesList.totalSize[2];
+                 this.sizeofsharedfiles = this.commonserveice.formatBytes(sharedfilesList.totalSize,2) ;
                 
             }
             else if (responseResult.status == 400) {
