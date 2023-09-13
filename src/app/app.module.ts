@@ -19,6 +19,7 @@ import { WindowPrevComponent } from './window-prev/window-prev.component';
 import { CommonPipeModule } from './common-pipe/common-pipe.module';
 import { CreateDocInputsComponent } from './create-doc-inputs/create-doc-inputs.component';
 import { NgxTagsInputModule } from 'ngx-tags-input';
+import { DynamicFormToPdfComponent } from './dynamic-form-to-pdf/dynamic-form-to-pdf.component';
 
 
 
@@ -36,7 +37,8 @@ import { NgxTagsInputModule } from 'ngx-tags-input';
     BlockCopyPasteDirective,
     SortableHeaderDirective,
     WindowPrevComponent,
-    CreateDocInputsComponent
+    CreateDocInputsComponent,
+    DynamicFormToPdfComponent
    
   ],
   imports: [

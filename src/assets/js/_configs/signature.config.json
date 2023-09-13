@@ -1,0 +1,33 @@
+[
+      {
+        "pagetitle":"Signature Configuration",
+        "tabList":[
+        
+          {"tabName":"Add","tabUrl":"../signatureconfig","tabClass":"active add d-none"}
+                  
+                  ],
+                  
+        "utils":[
+          {"utilName":"mandatory"}
+         
+         
+          ],
+        "messages":{
+          "successMsg":"Signature Configuration Added Successfully",
+          "updatesuccessMsg":"Signature Configuration Updated Successfully",
+          "errorMsg":"Error in Meta creation",
+          "fromname":"Please Select Form Name",
+          "metaname":"Please Enter Meta Name",
+          "metadesc":"Please Enter Meta Description",
+           "metaType":"Meta Type",
+           "rdoType":"Please Select Signature Type",
+           "eventList":"Please Select Event",
+           "txtPage":"Please Select Page",
+           "txtStampingText":"Please Enter Signature Text",
+           "txtStampingImage":"Please Choose Signature Image",
+           "signaturePosition":"Please Provide Signature Position"
+         }
+      }
+    ]
+
+

@@ -4,7 +4,7 @@
     "tabList":[
       {"tabName":"create","tabUrl":"../createdoc","tabClass":"active add d-none"}, 
       {"tabName":"create","tabUrl":"","tabClass":"active edit d-none"},      
-      {"tabName":"view","tabUrl":"../viewdraftdocument","tabClass":"add d-none"}     
+      {"tabName":"View Drafted Document","tabUrl":"../viewdraftdocument","tabClass":"add d-none"}     
               
               ],
     "utils":[

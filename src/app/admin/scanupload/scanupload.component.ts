@@ -66,6 +66,8 @@ scanfileeList:any=[];
  permissionlist:any;
  rolewisepermissions:any=[];
  userwisepermissions:any=[];
+ getmetaTypeList:any=[];
+ 
  permissionlistitems:any=[
    {label: 'Read'},
    {label: 'Write'},
@@ -229,101 +231,126 @@ getFolderbased(folderid:any){
 
 
 
-  //\\ ======================== // get meta list // ======================== //\\
-  viewMetaList(){
+   //\\ ======================== // get meta list // ======================== //\\
+   viewMetaList(){
 
 
-
-   let dataParam = {
-     "intMetaId": ''
-     };
-     this.commonserveice.viewMeta(dataParam).subscribe({
-      next: (response) => {
-        let respData = response.RESPONSE_DATA;
-        let respToken = response.RESPONSE_TOKEN;
-      
-        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        if(respToken == verifyToken){
-         let res:any = Buffer.from(respData,'base64'); 
-         let responseResult = JSON.parse(res)
+ 
+    let dataParam = {
+      "intMetaId": ''
+      };
+      this.commonserveice.viewMeta(dataParam).subscribe({
+        next: (response) => {    let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
         
-         if (responseResult.status == 200) {
-     
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if(respToken == verifyToken){
+            let res:any = Buffer.from(respData,'base64'); 
+            let responseResult = JSON.parse(res)
+           
+            if (responseResult.status == 200) {
+        
+              
            this.metalist = responseResult.result;
+
+
+   
+      
+            }
+            else if(responseResult.status==501){
+              
+              this.authService.directlogout();
+            }
+          }
+          else{
+            this.loading = false;
+            this.authService.directlogout();
+          }},
+        error: (msg) => {
+          this.authService.directlogout();
+       }
+     })
+
+  
+  
+  }
+  //\\ ======================== // Get Mata Type // ======================== //\\
+  getMetaType(metaId:any){
+
+    this.metaDesable=true;
+    this.getmetaTypeList=[]
+    let dataParam = {
+      "intMetaId": metaId
+      };
+      this.commonserveice.viewMeta(dataParam).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
         
-     
-         }
-         else if(responseResult.status==501){
-           
-           this.authService.directlogout();
-         }
-        }
-        else{
-          this.loading = false;
-          this.authService.directlogout();
-        }
-      },
-      error: (msg) => {
-        this.authService.directlogout();
-     }
-   })
-
- 
- 
- }
- //\\ ======================== // Get Mata Type // ======================== //\\
- getMetaType(metaId:any){
-
-   this.metaDesable=true;
-
-   let dataParam = {
-     "intMetaId": metaId
-     };
-
-     this.commonserveice.viewMeta(dataParam).subscribe({
-      next: (response) => {
-        let respData = response.RESPONSE_DATA;
-        let respToken = response.RESPONSE_TOKEN;
-      
-        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        if(respToken == verifyToken){
-         let res:any = Buffer.from(respData,'base64'); 
-         let responseResult = JSON.parse(res)
-          
-           if (responseResult.status == 200) {
-       
-             let metalist = responseResult.result;
-             this.getmetaType=metalist[0].metaType;
-      
-           
-      
-           }
-           else if(responseResult.status==501){
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if(respToken == verifyToken){
+            let res:any = Buffer.from(respData,'base64'); 
+            let responseResult = JSON.parse(res)
              
-             this.authService.directlogout();
-           }
-        }
-        else{
-          this.loading = false;
+              if (responseResult.status == 200) {
+          
+                let metalist = responseResult.result;
+
+                let metaarrayList:any=[];
+                metaarrayList=metalist[0].templateData;
+                
+                for(let i=0;i<metaarrayList.length;i++){
+                  let obj:any={};
+                  obj['metaId']=metaarrayList[i].metaId;
+                  obj['labelName']=metaarrayList[i].labelName;
+                  obj['metaType']=metaarrayList[i].metaType;
+                  obj['value']='';
+                  this.getmetaTypeList.push(obj);
+                }
+
+
+        
+              }
+              else if(responseResult.status==501){
+                
+                this.authService.directlogout();
+              }
+          }
+          else{
+            this.loading = false;
+            this.authService.directlogout();
+          }
+        },
+        error: (msg) => {
           this.authService.directlogout();
-        }
-      },
-      error: (msg) => {
-        this.authService.directlogout();
-     }
-   })
+       }
+     })
+     
 
-
- 
- 
- }
+  
+  
+  }
 //\\ ======================== // Get Mata Type // ======================== //\\
- 
  onTagsChanged(e:any){
 
  }
 
 //\\ ======================== // Final File upload  // ======================== //\\
+
+metavalid(){
+  let metavalidstatus = true;
+  for(let i=0;i<this.getmetaTypeList.length;i++){
+   
+    if(!this.vldChkLst.blankCheck(this.getmetaTypeList[i].value,this.commonserveice.langReplace(this.getmetaTypeList[i].labelName + " Can not be blank"),this.getmetaTypeList[i].labelName)){
+      metavalidstatus =  false;
+      break;
+    }
+   
+  }
+  return metavalidstatus;
+}
+
+
  finalfileupload(){
    let fileName=this.txtFileName;
    let folderName=this.selFolderName;
@@ -331,23 +358,19 @@ getFolderbased(folderid:any){
    let metaitems=this.metasellist;
    let tags=this.txtTags;
    let fileindexing=true;
-
+   let templateid=this.selMeta;
    if((this.rdoSetretention == 1) && (!this.vldChkLst.blankCheck(this.txtExpDate,this.commonserveice.langReplace("Please select the retention date"),'expiryDate'))){} 
   
-   else if(!this.vldChkLst.blankCheck(subject,this.commonserveice.langReplace(this.messaageslist.subject),'txtSubject')) {
-    
-   } 
-   else if(this.metaListDetails.length == 0) {
-    this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.messaageslist.addMeta))
- 
-   } 
+   else if(!this.vldChkLst.blankCheck(subject,this.commonserveice.langReplace(this.messaageslist.subject),'txtSubject')) { } 
+   else if(!this.vldChkLst.selectDropdown(templateid,this.commonserveice.langReplace(this.messaageslist.template),'selMeta')) { } 
+   else if(!this.metavalid()) { } 
   
    
    else{
 
      let filelistlength:any=this.scanfileeList.length;
      let counter:any=0;
-     console.log(this.scanfileeList)
+   
 for(let i=0;i<this.scanfileeList.length;i++){
 
 
@@ -355,7 +378,8 @@ for(let i=0;i<this.scanfileeList.length;i++){
        "folderId":this.folderid,
        "fileName":this.scanfileeList[i].fileName,
        "subject":this.txtSubject,
-       "meta":this.metaListDetails,
+       "templateId":this.selMeta,
+       "meta":this.getmetaTypeList,
        "tags":this.txtTags,
        "indexing":fileindexing,
        "expiryDate":this.txtExpDate,

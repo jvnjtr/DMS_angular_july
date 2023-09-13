@@ -1,0 +1,17 @@
+[
+      {
+        "utils":[
+         {"utilName":"print"},
+           {"utilName":"download"},
+           {"utilName":"search"}
+         ],
+       "messages":[
+         {"successMsg":"Date saved successfully"},
+         {"errorMsg":"Error in database"},
+         {"warningtype":"print"}
+        
+       ]
+      }
+    ]
+
+

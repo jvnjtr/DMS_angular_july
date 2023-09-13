@@ -105,42 +105,39 @@ this.sevName=varlist.serviceName;
 //\\ ======================== // Get getway types // ======================== //\\ 
 getGetwaytypes() {
    let getwayparm={}
-   this.commonserveice.viewGatwayTypes(getwayparm).subscribe((resp: any) => {
-     let respData = resp.RESPONSE_DATA;
-     let respToken = resp.RESPONSE_TOKEN;
-     let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-    
-     if (respToken == verifyToken) {
-       let res: any = Buffer.from(respData, 'base64');
-       res = JSON.parse(res.toString());
-       if (res.status == "200") {
-         this.getwaytypes = res.result;
+   this.commonserveice.viewGatwayTypes(getwayparm).subscribe({
+    next: (response) => {
+      let respData = response.RESPONSE_DATA;
+      let respToken = response.RESPONSE_TOKEN;
+      let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+     
+      if (respToken == verifyToken) {
+        let res: any = Buffer.from(respData, 'base64');
+        res = JSON.parse(res.toString());
+        if (res.status == "200") {
+          this.getwaytypes = res.result;
+        
+        }
+        else if(res.status==501){
+        
+          this.commonserveice.directlogoutlib()
+        }
        
+        else {
+          console.log(res.messages)
+        }
        }
-       else if(res.status==501){
-       
-         this.commonserveice.directlogoutlib()
+       else{
+        //this.loading=false;
+        this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.somethingWrong))
+     
        }
-      
-       else {
-         console.log(res.messages)
-       }
-      }
-      else{
-       //this.loading=false;
-       Swal.fire({
-         icon: 'error',
-         text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-       });
-      }
-      
-   } ,(error:any) =>{
-     Swal.fire({
-       icon: 'error',
-       text:this.commonserveice.langReplace(this.varlist.invalidResponse),
-   });
+    },
+    error: (msg) => {
+           this.commonserveice.directlogoutlib()
    }
-    );
+ })
+
  }
 
 //\\ ======================== // Get getway types // ======================== //\\ 
@@ -168,52 +165,45 @@ getGetwaytypes() {
       };
     this.loading = true;
     this.pubUnpStatus = [];
-    
-    this.commonserveice.viewGetwayConfig(formParams).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-  let respToken = response.RESPONSE_TOKEN;
+    this.commonserveice.viewGetwayConfig(formParams).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+      
+        let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+          
+           if (respToken == verifyToken) {
+       
+        let res:any = Buffer.from(respData,'base64'); 
+        let responseResult = JSON.parse(res)
+         
+      
+      
+          if (responseResult.status == 200) {
+            this.loading=false;
+            this.getwayList = responseResult.result;
+          // console.log(this.getwayList)
+          }
+          else if(responseResult.status==501){
+              
+            this.commonserveice.directlogoutlib()
+          }
+          else{
+            this.loading=false;
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.somethingWrong))
+           
+          }
+        }
+        else{
+         //this.loading=false;
+         this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.somethingWrong))
+        }
+      },
+      error: (msg) => {
+             this.commonserveice.directlogoutlib()
+     }
+   })
 
-  let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-    
-     if (respToken == verifyToken) {
- 
-  let res:any = Buffer.from(respData,'base64'); 
-  let responseResult = JSON.parse(res)
-   
-
-
-    if (responseResult.status == 200) {
-      this.loading=false;
-      this.getwayList = responseResult.result;
-    // console.log(this.getwayList)
-    }
-    else if(responseResult.status==501){
-        
-      this.commonserveice.directlogoutlib()
-    }
-    else{
-      this.loading=false;
-      Swal.fire({
-        icon: 'error',
-        text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-      });
-    }
-  }
-  else{
-   //this.loading=false;
-   Swal.fire({
-     icon: 'error',
-     text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-   });
-  }
-},
-(error:any) =>{
-  this.loading=false;
-  Swal.fire({
-    icon: 'error',
-    text:this.commonserveice.langReplace(this.varlist.invalidResponse),
-});
-})
   }
 // //\\ ======================== // View All records // ======================== //\\ 
  
@@ -292,54 +282,46 @@ getGetwaytypes() {
       "intId": intId
     };
     this.typeName=typeName;
-    console.log(formParams)
-    this.commonserveice.getPrevDetails(formParams).subscribe((response: any) => {
-
- let respData = response.RESPONSE_DATA;
- let respToken = response.RESPONSE_TOKEN;
-
- let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
     
- if (respToken == verifyToken) {
-let res:any = Buffer.from(respData,'base64'); 
-let responseResult= JSON.parse(res)
-  
-   if (responseResult.status == 200) {
-    this.getwayDetails = responseResult.result.data;
-   // console.log(responseResult.result)
-     this.getDetailslist = responseResult.result.result;
-    
-  
-     
-    }
+    this.commonserveice.getPrevDetails(formParams).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+       
+        let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+           
+        if (respToken == verifyToken) {
+       let res:any = Buffer.from(respData,'base64'); 
+       let responseResult= JSON.parse(res)
+         
+          if (responseResult.status == 200) {
+           this.getwayDetails = responseResult.result.data;
+          // console.log(responseResult.result)
+            this.getDetailslist = responseResult.result.result;
+           
+         
+            
+           }
+       
+          else if(responseResult.status==501){
+            
+          //this.commonserveice.directlogoutlib()
+          }
+          else{
+           
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.somethingWrong))
+          }
+         }
+         else{
+          //this.loading=false;
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.somethingWrong))
+         }
+      },
+      error: (msg) => {
+             this.commonserveice.directlogoutlib()
+     }
+   })
 
-   else if(responseResult.status==501){
-     
-   //this.commonserveice.directlogoutlib()
-   }
-   else{
-    
-     Swal.fire({
-       icon: 'error',
-       text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-     });
-   }
-  }
-  else{
-   //this.loading=false;
-   Swal.fire({
-     icon: 'error',
-     text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-   });
-  }
-},
-(error:any) =>{
-
- Swal.fire({
-   icon: 'error',
-   text:this.commonserveice.langReplace(this.varlist.invalidResponse),
-});
-})
 
   }
 

@@ -1,0 +1,84 @@
+<!--===Page Title===-->
+<div class="page-title">
+
+    <h4>{{title| langReplace}} </h4>
+</div>
+<!--===Page Title===-->
+<!--===controle section===-->
+<div class="page-controls-section" id="page-content">
+    <div class="card">
+        <div class="controls-section-header">
+            <ul class="nav nav-tabs nav-fill" role="tablist">
+                <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="metaid"
+                    [tabMessage]="tablist"></app-tabs>
+            </ul>
+            <div class="indicatorslist">
+                <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils>
+            </div>
+        </div>
+
+        <div class="card-body">
+            
+
+                
+                
+                
+
+                <div class="row">
+                    <label for="" class="col-md-4 col-lg-3 form-label">* {{"Position"| langReplace}} </label>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">x-axis</span>
+                                <input type="text" class="form-control" id="txtXaxis" [(ngModel)]="txtXaxis">
+                                <span class="input-group-text">y-axis</span>
+                                <input type="text" class="form-control" id="txtYaxis" [(ngModel)]="txtYaxis">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <label for="" class="col-md-4 col-lg-3 form-label"> {{"Rotation"| langReplace}} </label>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <select id="txtRotation" class="form-select" [(ngModel)]="txtRotation">
+                                <option value="0">Select</option>
+                                    <option *ngFor="let item of rotationArray" [value]="item.value">{{item.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <label for="" class="col-md-4 col-lg-3 form-label"> {{"Opacity"| langReplace}} </label>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="txtOpacity" [(ngModel)]="txtOpacity">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <label for="" class="col-md-4 col-lg-3 form-label">* {{"Page"| langReplace}} </label>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <select id="txtPage" class="form-select" [(ngModel)]="txtPage">
+                                <option value="0">Select</option>
+                                <option value="1">Each</option>
+                                <option value="2">First</option>
+                                <option value="3">Last</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-md-4 col-lg-3"> </label>
+                    <div class="col-md-9"> <button class="btn btn-success" (click)="createStamping()">{{(configId>0?
+                            "Update": "Save") | langReplace}}</button><button (click)="formReset()" class="btn btn-danger ml-2" > {{"Reset" | langReplace}} </button> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loader" *ngIf="loading">
+        <div class="loader-item"></div>
+        <p>Loading...</p>
+    </div>

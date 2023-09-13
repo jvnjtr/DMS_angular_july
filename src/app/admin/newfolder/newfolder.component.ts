@@ -96,7 +96,7 @@ export class NewfolderComponent implements OnInit {
   filteredData:any = [];
   public temp: Array<object> = [];
 departmentsList:any=[];
-selDepartmentName:any='0';
+selDepartmentName:any='Select';
 txtAllowFileSize:any;
 selFileSizeType:any='0';
 txtDepartmentName:any;
@@ -718,7 +718,7 @@ childvalidaterolebased() {
     this.rdoPermissiontype = '0';
     this.txtAllowSize = '';
     this.selSizeType = '0';
-    this.selDepartmentName = '0';
+    this.selDepartmentName = 'Select';
     this.userslist = [];
     this.rolelist = [];
     this.txtAllowFileSize='';
@@ -792,8 +792,8 @@ crateFolder() {
 
 
            
-   else if (!this.vldChkLst.selectDropdown(department,this.commonserveice.langReplace(this.messaageslist.selectdepartment),'seldept')) {
-        
+   else if (department =="Select") {
+    this.commonserveice.swalfire('error',this.commonserveice.langReplace('Select '+this.messaageslist.selectdepartment))
              }
              
     else if (!this.vldChkLst.blankCheck(permissiontype,this.commonserveice.langReplace(this.messaageslist.permisstionType))) {
@@ -1013,19 +1013,13 @@ crateFolder() {
       
       if(this.selParentFolderName == 1){
               setTimeout(() => {
-      
               let selectIfElement: any = document.getElementById("seldept");
-      
-      
+              let selparentFolder: any = document.getElementById("parentFId");
+              if (selparentFolder != null || selparentFolder != undefined) {
+                selparentFolder.dispatchEvent( new Event("change"));
+              }
               if (selectIfElement != null || selectIfElement != undefined) {
-                selectIfElement.dispatchEvent(
-                  new Event("change")
-      
-      
-                );
-      
-      
-      
+                selectIfElement.dispatchEvent( new Event("change"));
               }
               },500)
         //alert(this.selParentFolderName)
@@ -1243,7 +1237,7 @@ crateFolder() {
                  this.childSizeInKb=this.permissionlist[0].childSizeInKb ;
         
         this.txtDepartmentName=this.permissionlist[0].departmentName;
-        this.selDepartmentName=this.permissionlist[0].departmentId ? this.permissionlist[0].departmentId : '0';
+        this.selDepartmentName=this.permissionlist[0].departmentId ? this.permissionlist[0].departmentId : 'Select';
                 let foldrpermissions:any=JSON.parse(this.permissionlist[0].folderPermission)
                 let rolewisepermissions=foldrpermissions[0].rolebased;
                 let userwisepermissions=foldrpermissions[0].userbased;

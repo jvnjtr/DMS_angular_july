@@ -49,6 +49,7 @@ export class DashboardComponent implements OnInit {
     recentlist: any = [];
     activitylist: any = [];
     graphdata: any = [];
+    retentionList:any=[];
     sessiontoken: any;
     userLoginId: any;
     downloaditem: any
@@ -72,6 +73,7 @@ export class DashboardComponent implements OnInit {
     sizeofdocumentsingb:any;
     pendingLoader:any=false;
     recentdocLoader:any=false;
+    retentiondocLoader:any=false;
     logLoader:any=false;
     approvedfiles:any;
 pendingfiles:any;
@@ -82,6 +84,9 @@ previewfileid:any;
 filePath:any;
 logId:any=0;
 lockstatus:any;
+retentionOneWeek:any=0;
+retentionFifteenDays:any=0;
+retentionThirtyDays:any=0;
     //=============================================================================
     // Required Variables
     //=============================================================================
@@ -113,6 +118,7 @@ lockstatus:any;
           this.totalFilesShared()
           this.viewPendingList(this.finalobj);
           this.recentfilelist('1', this.finalobj);
+          this.retentionDocList()
         },1000);
 
      
@@ -570,7 +576,9 @@ viewAll(e:any){
   else if(e==3){
     this.route.navigateByUrl('/admin/recentFiles');
   }
- 
+  else if(e==4){
+    this.route.navigateByUrl('/reports/newarretiondate');
+  }
 }
 //=============================================================================
 // View All
@@ -746,6 +754,67 @@ closeModal(){
 
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
+
+
+  //=============================================================================
+    // Retention Documents
+    // Created by Bikash Kumar Panda on 16-Aug-2023
+    //============================================================================= 
+    retentionDocList() {
+
+      let dataParam = {};
+      this.retentiondocLoader=true;
+      this.dashboardServices.getRetentionDetails(dataParam).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
+
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if(respToken == verifyToken){
+            let res: any = Buffer.from(respData, 'base64');
+            let responseResult = JSON.parse(res)
+
+            if (responseResult.status == 200) {
+                this.retentiondocLoader=false;
+                this.retentionList = responseResult.result;
+                console.log(this.retentionList);
+                this.retentionOneWeek=this.retentionList.oneWeek;
+                this.retentionFifteenDays=this.retentionList.fifteenDays;
+                this.retentionThirtyDays=this.retentionList.oneMonth;
+               
+            }
+           else if (responseResult.status == 400) {
+              this.retentiondocLoader=false;
+              
+               
+            }
+            else if(responseResult.status==501){
+        
+                this.authService.directlogout();
+              }
+               else {
+                this.retentiondocLoader=false;
+                this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+            }
+          }
+          else{
+            this.retentiondocLoader=false;
+          this.authService.directlogout();
+          }
+        },
+        error: (msg) => {
+             this.authService.directlogout();
+       }
+     })
+      
+
+  }
+  //=============================================================================
+  // Retention Documents
+  //============================================================================= 
+
+
+
 
 
 }

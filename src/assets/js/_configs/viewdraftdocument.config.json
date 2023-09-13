@@ -1,9 +1,9 @@
 [
     {
-      "pagetitle":"Create Document",
+      "pagetitle":"Drafted Document",
       "tabList":[
-        {"tabName":"create","tabUrl":"../createdoc","tabClass":"add d-none"},     
-        {"tabName":"view","tabUrl":"../viewdraftdocument","tabClass":"active add d-none"}     
+        {"tabName":"Create","tabUrl":"../createdoc","tabClass":"add d-none"},     
+        {"tabName":"View Drafted Document","tabUrl":"../viewdraftdocument","tabClass":"active add d-none"}     
                 
                 ],
       "utils":[

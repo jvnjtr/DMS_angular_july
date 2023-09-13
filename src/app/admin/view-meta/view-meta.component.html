@@ -96,25 +96,16 @@
                                             
 
                                             <td>{{tableSize *(page-1)+ i+1}} </td>
-                                            <td>{{mlist.metaName}}</td>
+                                            <td>{{mlist.templateName}}</td>
                                             <td>{{mlist.description}}</td>
-                                            <td >
-                                                {{mettypelist[mlist.metaType]}}
-                                                 
-                                                    <!-- {{ colName.typeid == mlist.metaType ? colName.typeName : ''}} -->
-                                              
-                                                  
-                                                  </td>
                                             
-                                          
-                                           
                                             <td>{{mlist.createdBy}}
                                                    
                                             </td>
                                             <td>{{mlist.createdOn}}</td>
                                             <td class="p-none">
-                                                    <a class="text-primary" title="Edit" href="javascript:void(0)" (click)="gotoEdit(mlist.intMetaId)"><i class="icon-edit-solid"></i></a>
-                                                    <a class="text-danger" href="javascript:void(0)" (click)="deletMeta(mlist.intMetaId)"><i class="icon-trash-solid"></i></a>
+                                                    <a class="text-primary" title="Edit" href="javascript:void(0)" (click)="gotoEdit(mlist.templateId)"><i class="icon-edit-solid"></i></a>
+                                                    <a class="text-danger" href="javascript:void(0)" (click)="deletMeta(mlist.templateId)"><i class="icon-trash-solid"></i></a>
                                             </td>
 
 

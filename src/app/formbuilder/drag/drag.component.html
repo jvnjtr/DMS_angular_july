@@ -1,0 +1,12 @@
+<div class="control-list" id="control-list">
+    <div cdkDropList [cdkDropListData]="origin" class="movie-list">
+      <div *ngFor="let item of origin" cdkDrag>
+        <div class="draggable ui-draggable ui-draggable-handle {{item.ctrlclass+currentDateTime}}"
+          id="{{item.ctrlclass+currentDateTime}}">
+          <i class="{{item.ctrlicon}} mr-1"></i>{{ item.controlname }}
+        </div>
+      </div>
+    </div>
+  
+  
+  </div>

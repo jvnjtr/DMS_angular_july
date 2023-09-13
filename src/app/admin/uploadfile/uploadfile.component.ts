@@ -47,7 +47,7 @@ export class UploadfileComponent implements OnInit {
   metasellist:any=[];
   tags:any=[];
   loading:any=false;
-  getmetaType:any;
+  getmetaTypeList:any=[];
   metatype:any='';
   metaDesable:any=false;
   metaListDetails:any=[];
@@ -329,8 +329,11 @@ if(this.fileeList.length== 0){
            
             if (responseResult.status == 200) {
         
-              this.metalist = responseResult.result;
-           
+              
+           this.metalist = responseResult.result;
+
+
+   
       
             }
             else if(responseResult.status==501){
@@ -354,7 +357,7 @@ if(this.fileeList.length== 0){
   getMetaType(metaId:any){
 
     this.metaDesable=true;
- 
+    this.getmetaTypeList=[]
     let dataParam = {
       "intMetaId": metaId
       };
@@ -371,9 +374,26 @@ if(this.fileeList.length== 0){
               if (responseResult.status == 200) {
           
                 let metalist = responseResult.result;
-                this.getmetaType=metalist[0].metaType;
-        
-              
+
+                let metaarrayList:any=[];
+                metaarrayList=metalist[0].templateData;
+            
+                for(let i=0;i<metaarrayList.length;i++){
+                  let obj:any={};
+                  obj['metaId']=metaarrayList[i].metaId;
+                  obj['labelName']=metaarrayList[i].labelName;
+                  obj['metaType']=metaarrayList[i].metaType;
+                 
+                  obj['value']='';
+
+
+
+
+
+                  this.getmetaTypeList.push(obj);
+                }
+               
+
         
               }
               else if(responseResult.status==501){
@@ -408,24 +428,35 @@ if(this.fileeList.length== 0){
     this.txtExpDate='';
   }
 //\\ ======================== // Final File upload  // ======================== //\\
+
+metavalid(){
+  let metavalidstatus = true;
+  for(let i=0;i<this.getmetaTypeList.length;i++){
+   
+    if(!this.vldChkLst.blankCheck(this.getmetaTypeList[i].value,this.commonserveice.langReplace(this.getmetaTypeList[i].labelName + " Can not be blank"),this.getmetaTypeList[i].labelName)){
+      metavalidstatus =  false;
+      break;
+    }
+   
+  }
+  return metavalidstatus;
+}
+
+
   finalfileupload(){
     let fileName=this.txtFileName;
     let folderName=this.selFolderName;
     let subject=this.txtSubject;
-    let metaitems=this.metasellist;
+    let metaitems:any=this.getmetaTypeList;
     let tags=this.txtTags;
     let fileindexing=true;
+let templateid=this.selMeta;
 
-
- if((this.rdoSetretention == 1) && (!this.vldChkLst.blankCheck(this.txtExpDate,this.commonserveice.langReplace("Please select the retention date"),'expiryDate'))){} 
+if((this.rdoSetretention == 1) && (!this.vldChkLst.blankCheck(this.txtExpDate,this.commonserveice.langReplace("Please select the retention date"),'expiryDate'))){} 
 else if(!this.vldChkLst.blankCheck(subject,this.commonserveice.langReplace(this.messaageslist.subject),'txtSubject')) { } 
-    else if(this.metaListDetails.length == 0) {
-      this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.messaageslist.addMeta))
-   
-    } 
-   
-    
-    else{
+else if(!this.vldChkLst.selectDropdown(templateid,this.commonserveice.langReplace(this.messaageslist.template),'selMeta')) { } 
+else if(!this.metavalid()) { } 
+else{
 
       let filelistlength:any=this.fileeList.length;
       let counter:any=0;
@@ -437,7 +468,8 @@ for(let i=0;i<this.fileeList.length;i++){
         "folderId":this.folderid,
         "fileName":this.fileeList[i].fileName,
         "subject":this.txtSubject,
-        "meta":this.metaListDetails,
+        "templateId":this.selMeta,
+        "meta":this.getmetaTypeList,
         "tags":this.txtTags,
         "indexing":fileindexing,
         "expiryDate":this.txtExpDate,
@@ -445,7 +477,7 @@ for(let i=0;i<this.fileeList.length;i++){
         "filePermission":this.permissionlist
        
       }
-
+console.log(uploadParams)
     
      this.loading=true;
      this.uploadfiles.finaluploadFile(uploadParams).subscribe({
@@ -548,36 +580,11 @@ for(let i=0;i<this.fileeList.length;i++){
     this.rdoSetretention='2';
     this.txtExpDate='';
     this.metaListDetails=[];
+    this.selMeta=0;
+    this.getmetaTypeList=[]
   }
   //\\ ======================== // Reset Form  // ======================== //\\
-  //\\ ======================== // Add Meta Value  // ======================== //\\
-  addMetaVals(){
 
-
-    if(!this.vldChkLst.selectDropdown(this.selMeta,this.commonserveice.langReplace(this.messaageslist.selMeta),'selMeta') ) {
-    
-    }
-    else if(!this.vldChkLst.blankCheck(this.metatype,this.commonserveice.langReplace(this.messaageslist.entermetadesc),'metatype')) {
-  
-    }
-    else{
-      let elm:any      = (<HTMLInputElement>document.getElementById("selMetaType"));
-      let elmValText        = elm.options[elm.selectedIndex].text;
-     
-      // metaListDetails
-      let obj: any = {};
-      obj['metaId'] = this.selMeta;
-      obj["metaName"] = elmValText;
-      obj['metaDetails'] = this.metatype;
-     
-      this.metaListDetails.push(obj)
-     
-      this.metatype=''; 
-      this.selMeta='0';
-      this.metaDesable=false;
-    }
-  }
-   //\\ ======================== // Add Meta Value  // ======================== //\\
     //\\ ======================== // Remove Meta  // ======================== //\\
   removeSectionval(i:any){
      this.metaListDetails.splice(i,1);

@@ -1,0 +1,411 @@
+<div class="page-title">
+      <h4>{{title}}</h4>
+</div>
+
+<div class="card">
+      <div class="controls-section-header">
+            <ul class="nav nav-tabs">
+                  <li class="nav-item">
+                        <a class="nav-link " aria-current="page"
+                              routerLink="{{itemID > 0 ? '../../../adminconsole/manage-users':'../../adminconsole/manage-users'}}"
+                              routerLinkActive="active" href="#">{{itemID > 0 ? "Edit":"Add"}} </a>
+                  </li>
+                  <li class="nav-item">
+                        <a class="nav-link " href="#"
+                              routerLink="{{itemID > 0 ? '../../../adminconsole/viewmanage-users':'../../adminconsole/viewmanage-users'}}"
+                              routerLinkActive="active">View</a>
+                  </li>
+            </ul>
+      </div>
+      <div class="card-body">
+
+
+            <form [formGroup]="manage_users" (ngSubmit)="submitForm()">
+                  <div class="generator">
+
+
+                        <div class="">
+                              <input type="hidden" formControlName="intId">
+
+                              <div class="row">
+                                    <div class="col-md-8">
+                                          <h5 class="mb-4">Basic Information</h5>
+                                          <div class="row">
+                                                <div class="col-md-12">
+                                                      <div class="form-group">
+                                                            <label Class="w-full text-md ">Full Name <span
+                                                                        class="text-danger">*</span> &nbsp;<a
+                                                                        href="javascript:void(0)"
+                                                                        data-bs-toggle="Enter Your Full Name"
+                                                                        data-bs-placement="top"
+                                                                        title="Enter Your Full Name">
+                                                                        <i class="bi bi-info-circle"></i>
+                                                                  </a> </label>
+
+                                                            <div class="control-item">
+                                                                  <input type="text"
+                                                                        (keyup)="vldChkLst.blockSpecialCharacterAllPostion($event,false)"
+                                                                        formControlName="txtFullName" minlength="2"
+                                                                        maxlength="100" placeholder=""
+                                                                        class="form-control ">
+                                                            </div>
+                                                      </div>
+                                                </div>
+                                                <div class="col-md-6">
+
+                                                      <div class="form-group">
+                                                            <label Class="w-full text-md ">Gender <span
+                                                                        class="text-danger">*</span></label>
+                                                            <div class="control-item">
+
+                                                                  <!-- <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="radio" formControlName="selGender"  id="inlineRadio1" value="1">
+                                          <label class="form-check-label" for="inlineRadio1">Male</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="radio" formControlName="selGender"  id="inlineRadio2" value="2">
+                                          <label class="form-check-label" for="inlineRadio2">Female</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="radio" formControlName="selGender"  id="inlineRadio3" value="3">
+                                          <label class="form-check-label" for="inlineRadio3">Other</label>
+                                        </div> -->
+
+
+                                                                  <select formControlName="selGender" id="selGender"
+                                                                        #selGender class="form-select">
+                                                                        <option value="0" selected>--Select--</option>
+                                                                        <option value=1>Male</option>
+                                                                        <option value=2>Female</option>
+                                                                        <option value=3>Other</option>
+                                                                  </select>
+                                                            </div>
+                                                      </div>
+
+                                                </div>
+                                                <div class="col-md-6">
+                                                      <div class="form-group">
+                                                            <label Class="w-full text-md ">Email Id <span
+                                                                        class="text-danger">*</span> </label>
+                                                            <div class="control-item"><input type="email"
+                                                                        formControlName="txtEmailId" minlength=""
+                                                                        maxlength="" formControlName="txtEmailId"
+                                                                        placeholder="" class="form-control ">
+                                                            </div>
+                                                      </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                      <div class="form-group">
+
+                                                            <label Class="w-full text-md ">Mobile No <span
+                                                                        class="text-danger">*</span> </label>
+                                                            <div class="control-item"><input type="tel"
+                                                                        (keyup)="vldChkLst.blockSpecialCharacterAllPostion($event,false)"
+                                                                        formControlName="txtMobileNo" minlength=""
+                                                                        maxlength="" formControlName="txtMobileNo"
+                                                                        placeholder="" class="form-control "
+                                                                        (keypress)="vldChkLst.isNumberKey($event)">
+                                                            </div>
+                                                      </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                      <div class="form-group">
+
+                                                            <label Class="w-full text-md ">Alternate Mobile
+                                                                  Number</label>
+                                                            <div class="control-item"><input type="tel"
+                                                                        (keyup)="vldChkLst.blockSpecialCharacterAllPostion($event,false)"
+                                                                        formControlName="txtAlternateMobileNumber"
+                                                                        minlength="" maxlength=""
+                                                                        formControlName="txtAlternateMobileNumber"
+                                                                        placeholder="" class="form-control ">
+                                                            </div>
+                                                      </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                      <div class="form-group">
+                                                            <label Class="w-full text-md ">Address</label>
+                                                            <div class="control-item"><textarea minlength="" rows="3"
+                                                                        maxlength="500"
+                                                                        (keypress)="vldChkLst.isAlphaNumeric($event)"
+                                                                        formControlName="txtrAddress" placeholder=""
+                                                                        id="address" class="form-control "></textarea>
+                                                            </div>
+                                                      </div>
+                                                </div>
+
+                                          </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                          <div class="user-profile mb-3">
+                                                <div class="img-div">
+                                                      <a *ngIf="fileName" class="filesremovebtn btn-sm"
+                                                            href="javascript:void(0)" (click)="removeFile()"
+                                                            title="Remove file"><i
+                                                                  class="icon-times-circle-solid"></i></a>
+                                                      <img *ngIf="!fileName"
+                                                            [src]="siteUrl+'assets/img/male-profile.jpg'"
+                                                            alt="user Profile">
+                                                      <img *ngIf="fileName" [id]="'fileDownloadDiv_filePhoto'"
+                                                            [src]="storagePath+fileName" alt="user Profile">
+                                                </div>
+                                                <span class="pull-left btn btn-primary btn-file">
+                                                      Add Profile Pic... <input type="file" id="filePhoto"
+                                                            accept="image/*" (change)="UploadFile($event,'5','mb')">
+                                                </span>
+                                          </div>
+                                          <div class="text-center">
+                                                <small class="text-danger ">Accept only image, max size 5 mb</small>
+                                          </div>
+                                          
+                                                
+                                                
+                                    </div>
+                              </div>
+                              <div class="separator separator-dashed"></div>
+                              <h5 class="mb-4">Signature Information</h5>
+                              <div class="row">
+                                    <div class="col-md-4">
+                                          <span class="pull-left btn btn-primary btn-file">
+                                                Add Signature... <input type="file" id="filePhotoSignature"
+                                                      accept="image/*" (change)="UploadFileSignature($event,'5','mb')">
+                                          </span>
+                                    </div>  
+                                    <!-- <div class="col-md-4">
+                                          <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text">x-axis</span>
+                                                    <input type="text" class="form-control" id="txtXaxis" formControlName="txtXaxis">
+                                                    <span class="input-group-text">y-axis</span>
+                                                    <input type="text" class="form-control" id="txtYaxis" formControlName="txtYaxis">
+                                                </div>
+                                            </div>
+                                    </div>   -->
+                                    <div class="col-md-4" *ngIf="userSignature!=''">
+                                          <!-- <div class="form-group"> -->
+                                                <div class="user-profile mb-1">
+                                                      <div class="img-div-signature">
+                                                            <a *ngIf="userSignature" class="filesremovebtn btn-sm"
+                                                            href="javascript:void(0)" (click)="removeFileSignature()"
+                                                            title="Remove file"><i
+                                                                  class="icon-times-circle-solid"></i></a>
+                                                <img [src]="userSignature" alt="User Signature" [id]="'fileDownloadDiv_filePhotoSignature'">
+                                                      </div>
+                                                </div>
+                                                
+                                                
+                                          <!-- </div> -->
+                                          
+                                    </div>
+                              </div>
+                              <div class="separator separator-dashed"></div>
+                              <h5 class="mb-4">Other Information</h5>
+                              <div class="row">
+                                    <div class="col-md-4">
+                                          <div class="form-group">
+                                                <label Class="w-full text-md ">Date Of Joining</label>
+                                                <div class="control-item"><input type="date"
+                                                            formControlName="txtDateOfJoining" minlength="" maxlength=""
+                                                            formControlName="txtDateOfJoining" placeholder=""
+                                                            class="form-control ">
+                                                </div>
+                                          </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                          <div class="form-group">
+                                                <label Class="w-full text-md ">Department <span
+                                                            class="text-danger">*</span></label>
+                                                <div class="control-item"><select formControlName="selDepartment"
+                                                            id="selDepartment" #selDepartment class="form-select"
+                                                            (change)="getRoleList(selDepartment.value)">
+                                                            <option value="0" selected>--Select--</option>
+                                                            <option *ngFor="let datalist of selDepartmentlist"
+                                                                  [value]="datalist.intId">
+                                                                  {{datalist.vchDeptName}}
+                                                            </option>
+                                                      </select>
+                                                </div>
+                                          </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                          <div class="form-group">
+                                                <label Class="w-full text-md ">Role <span
+                                                            class="text-danger">*</span></label>
+                                                <div class="control-item"><select formControlName="selRole" id="selRole"
+                                                            #selRole class="form-select">
+                                                            <option value="0" selected>--Select--</option>
+                                                            <option *ngFor="let datalist of selRolelist"
+                                                                  [value]="datalist.intId">
+                                                                  {{datalist.vchRolename}}
+                                                            </option>
+                                                      </select>
+                                                </div>
+                                          </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                          <div class="form-group">
+                                                <label Class="w-full text-md ">Designation <span
+                                                            class="text-danger">*</span></label>
+                                                <div class="control-item"><select formControlName="selDesignation"
+                                                            id="selDesignation" #selDesignation class="form-select">
+                                                            <option value="0" selected>--Select--</option>
+                                                            <option *ngFor="let datalist of selDesignationlist"
+                                                                  [value]="datalist.intId">
+                                                                  {{datalist.vchDesignation}}
+                                                            </option>
+                                                      </select>
+                                                </div>
+                                          </div>
+                                    </div>
+                                    <div class="col-md-4">
+
+                                          <div class="form-group">
+                                                <label Class="w-full text-md ">Employee Type</label>
+                                                <div class="control-item"><select formControlName="selEmployeeType"
+                                                            id="selEmployeeType" #selEmployeeType class="form-select">
+                                                            <option value="0" selected>--Select--</option>
+                                                            <option *ngFor="let datalist of selEmployeeTypelist"
+                                                                  [value]="datalist.intId">
+                                                                  {{datalist.vchEmpType}}
+                                                            </option>
+                                                      </select>
+                                                </div>
+                                          </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                          <div class="form-group">
+                                                <label Class="w-full text-md ">Group</label>
+                                                <div class="control-item"><select formControlName="selGroup"
+                                                            id="selGroup" #selGroup class="form-select">
+                                                            <option value="0" selected>--Select--</option>
+                                                            <option *ngFor="let datalist of selGrouplist"
+                                                                  [value]="datalist.intId">
+                                                                  {{datalist.vchGroupName}}
+                                                            </option>
+                                                      </select>
+                                                </div>
+                                          </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                          <div class="form-group">
+                                                <label Class="w-full text-md ">Hierarchy</label>
+                                                <div class="control-item">
+
+                                                      <select formControlName="selHierarchy" id="selHierarchy"
+                                                            #selHierarchy class="form-select">
+                                                            <option value="0" selected>--Select--</option>
+                                                            <option value="1">ODISHA</option>
+                                                            <!-- <option *ngFor="let datalist of selHierarchylist" [value]="datalist.id">{{datalist.itemName}}</option> -->
+                                                      </select>
+
+
+
+
+                                                </div>
+                                          </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                          <div class="form-group">
+                                                <label Class="w-full text-md ">Previlege</label>
+                                                <div class="control-item">
+                                                      <!-- <input type="text" (keyup)="vldChkLst.blockSpecialCharacterAllPostion($event,false)" formControlName="txtPrevilege" minlength="" maxlength=""   formControlName="txtPrevilege" placeholder="" class="form-control "> -->
+                                                      <input class="form-check-input permissionChk" type="checkbox"
+                                                            formControlName="txtPrevilege">
+                                                      <label Class="w-full text-md "> Admin</label>
+
+                                                </div>
+                                          </div>
+                                    </div>
+
+                              </div>
+                              <div class="separator separator-dashed"></div>
+
+                              <div class="row">
+                                    <h5 class="mb-4">Login Information</h5>
+                                    <div class="col-md-4">
+                                          <div class="form-group">
+                                                <label Class="w-full text-md ">User Id <span
+                                                            class="text-danger">*</span> </label>
+                                                <div class="control-item"><input type="text" formControlName="txtUserId"
+                                                            [readonly]="editId > 0 ? true : false" minlength=""
+                                                            maxlength="" formControlName="txtUserId" placeholder=""
+                                                            class="form-control "
+                                                            (keypress)="vldChkLst.isAlphaNumeric($event)">
+                                                </div>
+                                          </div>
+                                    </div>
+                                    <div class="col-md-4" *ngIf="editId == 0">
+                                          <div class="form-group">
+                                                <label Class="w-full text-md ">Password <span
+                                                            class="text-danger">*</span>
+                                                </label>
+                                                <div class="control-item"><input type="password"
+                                                            formControlName="txtPassword" minlength="" maxlength=""
+                                                            placeholder="" class="form-control ">
+                                                </div>
+                                          </div>
+                                    </div>
+                                    <div class="col-md-4" *ngIf="editId == 0">
+                                          <div class="form-group">
+                                                <label Class="w-full text-md ">Confirm Password <span
+                                                            class="text-danger">*</span> </label>
+                                                <div class="control-item"><input type="password"
+                                                            formControlName="txtConfirmPassword" minlength=""
+                                                            maxlength="" placeholder="" class="form-control ">
+                                                </div>
+                                          </div>
+                                    </div>
+                              </div>
+
+
+
+                              <!-- <angular2-multiselect [data]="dropdownList" [(ngModel)]="selectedItems" 
+      [settings]="dropdownSettings" 
+      (onSelect)="onItemSelect($event)" 
+      (onDeSelect)="OnItemDeSelect($event)"
+      (onSelectAll)="onSelectAll($event)"
+      (onDeSelectAll)="onDeSelectAll($event)">
+  </angular2-multiselect> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        </div>
+                        <div class="mt-10 threegrid btn-div">
+                              <button type="submit" class="btn btn-primary"> {{itemID > 0 ? 'Update':'Submit'}}
+                              </button>
+                              <button type="reset" (click)="itemID >  0 ? onCancel() : onReset()"
+                                    class="btn btn-danger ml-1"> {{itemID > 0 ? 'Cancel':'Reset'}} </button>
+
+
+                        </div>
+                  </div>
+            </form>
+            <!-- <pre>{{manage_users.value | json}}</pre>  -->
+      </div>
+</div>
+
+
+<div class="loader" *ngIf="loading">
+      <div class="loader-item"></div>
+      <p>Loading...</p>
+</div>

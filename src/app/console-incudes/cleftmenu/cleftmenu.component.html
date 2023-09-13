@@ -1,0 +1,206 @@
+<div class="sidemenu-container">
+  <a class="navbar-brand" routerLink="../adminconsole/manage-department" title="CSM Technologies">
+       
+    <img src="{{siteUrl}}assets/img/logowhite.svg" alt="Logo">
+  <p>Document Management System</p>
+</a>
+  
+    <nav class="navbar">
+      <div class="navbar-collapse justify-content-end" id="basicExampleNav">
+        <ul class="navbar-nav">
+          <li class="nav-item" routerLinkActive="active">
+            <a class="nav-link route-link" routerLink="./adminconsole-dashboard"
+              ><i class="icon-Dashboard1"
+                ><span class="path1"></span><span class="path2"></span></i
+              ><span>{{"Dashboard" | langReplace}}</span></a
+            >
+          </li>
+  
+  
+  
+  
+           <!--==============This is Used For manage-master Module=================-->  
+          <ng-container >                                
+  
+           <li class="nav-item dropdown" routerLinkActive="active">
+            <a
+                  class="nav-link dropdown-indicator collapsed"
+                  href="#manage-master"
+                  role="button"
+                  data-bs-toggle="collapse"
+                  aria-expanded="false"
+                  aria-controls="manage-master">
+                  <i class="icon-blocks">
+                  <span class="path1"></span><span class="path2"></span></i>
+                  <span>{{"Manage Configuration" | langReplace}}</span>
+            </a>
+            <ul class="sub-menu nav collapse" id="manage-master">
+   <!--======== This is Used For Manage Department Component =========-->            
+   <a
+   class="dropdown-item route-link"
+   routerLink="./manage-department"
+   routerLinkActive="active">{{"Department" | langReplace}}</a>
+<!--======= This is Used For Manage Department Component ==========-->
+  
+  <!--======== This is Used For Manage Designation Component =========-->            
+      <a
+      class="dropdown-item route-link"
+      routerLink="./manage-designation"
+      routerLinkActive="active">{{"Designation" | langReplace}}</a>
+  <!--======= This is Used For Manage Designation Component ==========-->
+  
+  
+ 
+  
+  
+  
+  <!--======== This is Used For Manage Role Component =========-->            
+      <a
+      class="dropdown-item route-link"
+      routerLink="./manage-role"
+      routerLinkActive="active">{{"Role" | langReplace}}</a>
+  <!--======= This is Used For Manage Role Component ==========-->
+  
+  
+  <!--======== This is Used For Manage Groups Component =========-->            
+      <a
+      class="dropdown-item route-link"
+      routerLink="./manage-groups"
+      routerLinkActive="active">{{"Groups" | langReplace}}</a>
+  <!--======= This is Used For Manage Groups Component ==========-->
+  
+  
+  <!--======== This is Used For Manage Employee Type Component =========-->            
+      <a
+      class="dropdown-item route-link"
+      routerLink="./manage-employee-type"
+      routerLinkActive="active">{{"Employee Type" | langReplace}}</a>
+  <!--======= This is Used For Manage Employee Type Component ==========-->
+  
+  
+  <!--======== This is Used For Manage Users Component =========-->            
+      <a
+      class="dropdown-item route-link"
+      routerLink="./manage-users"
+      routerLinkActive="active">{{"Users" | langReplace}}</a>
+  <!--======= This is Used For Manage Users Component ==========-->
+  
+    <!--======== This is Used For Manage Links Component =========-->            
+    <a
+    class="dropdown-item route-link"
+    routerLink="./manage-links"
+    routerLinkActive="active">{{"Links" | langReplace}}</a>
+<!--======= This is Used For Manage Links Component ==========-->
+  <!--======== This is Used For Set Role Permission Component =========-->            
+            <a
+              class="dropdown-item route-link"
+              routerLink="./set-role-permission"
+              routerLinkActive="active">{{"Set Role Permission" | langReplace}}</a>
+  <!--======= This is Used For Set Role Permission Component ==========-->
+         
+
+         
+  
+  
+            </ul>
+            </li>
+            </ng-container>
+  <!--==============This is Used For manage-master Module End=================-->
+  
+  
+  
+
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+       
+  
+  <!-- 
+          <li class="nav-item dropdown" routerLinkActive="active">
+            <a
+              class="nav-link dropdown-indicator collapsed"
+              href="#ManageCms"
+              role="button"
+              data-bs-toggle="collapse"
+              aria-expanded="false"
+              aria-controls="ManageCms"
+            >
+              <i class="icon-blocks"
+                ><span class="path1"></span><span class="path2"></span></i
+              ><span>Manage CMS</span>
+            </a>
+            <ul class="sub-menu nav collapse" id="ManageCms">
+              <a class="dropdown-item route-link" routerLink="./contentManagement/addpage" routerLinkActive="active">Manage Pages</a>   
+              <a
+                class="dropdown-item route-link"
+                routerLink="./cms/addpage"
+                routerLinkActive="active"
+                >Page</a
+              >
+              <a
+                class="dropdown-item route-link"
+                routerLink="./cms/addplugin"
+                routerLinkActive="active"
+                >Plugin</a
+              >
+              <a
+                class="dropdown-item route-link"
+                routerLink="./cms/menu"
+                routerLinkActive="active"
+                >Menu</a
+              >
+              <a
+                class="dropdown-item route-link"
+                routerLink="./cms/templateconfiguration"
+                routerLinkActive="active"
+                >Template Configuration</a
+              >
+            </ul>
+          </li> -->
+  
+          <!-- <li class="nav-item dropdown" routerLinkActive="active">
+            <a
+              class="nav-link dropdown-indicator collapsed"
+              href="#ManageApplications"
+              role="button"
+              data-bs-toggle="collapse"
+              aria-expanded="false"
+              aria-controls="ManageApplications"
+            >
+              <i class="icon-blocks"
+                ><span class="path1"></span><span class="path2"></span></i
+              ><span>Manage Applications</span>
+            </a>
+            <ul class="sub-menu nav collapse" id="ManageApplications">
+              <a
+                class="dropdown-item route-link"
+                routerLink="./application/view-form-list"
+                routerLinkActive="active"
+                >Applications</a
+              >
+            </ul>
+          </li> -->
+        </ul>
+      </div>
+    </nav>
+  
+    <footer>
+      <p>Copyright {{ currentYear }} CSM</p>
+    </footer>
+  </div>
+  

@@ -147,71 +147,41 @@
 
                                                         <div class="row">
                                                             <div class="col-6">
-                                                                    <label>*  {{"Meta Type"| langReplace}}</label>
-                                                                <select class="form-select" [(ngModel)]="selMeta" id="selMetaType" (change)="getMetaType(selMeta)">
+                                                                    <label>*  {{"Select Template"| langReplace}}</label>
+                                                                <select class="form-select" [(ngModel)]="selMeta" id="selMeta" (change)="getMetaType(selMeta)">
                                                                     <option value="0"> {{"Select"| langReplace}} </option>
-                                                                    <option *ngFor="let flist of metalist" [value]="flist.intMetaId">{{flist.metaName}}</option>
-                                                                  </select>    
+                                                                    <option *ngFor="let flist of metalist" [value]="flist.templateId">{{flist.templateName}}</option>
+                                                                  </select>   
+                                                                  
+                                                                 
+
                                                             </div>
-                                                            <div class="col-5" *ngIf="metaDesable">
-                                                                    
-                                                                 <div *ngIf="getmetaType==1">
-                                                                        <label>*  {{"Details"| langReplace}}</label>
-                                                                    <input type="text" class="form-control" id="metatype" [(ngModel)]="metatype">
-                                                                 </div>
-                                                                 <div *ngIf="getmetaType==2">
-                                                                        <label>*  {{"Details"| langReplace}}</label>
-                                                                        <input type="date" class="form-control" id="metatype" max="2100-12-31" [(ngModel)]="metatype">
-                                                                    </div>
-                                                                    <div *ngIf="getmetaType==3">
-                                                                            <label>*  {{"Details"| langReplace}}</label>
-                                                                        <input type="number" class="form-control" id="metatype" [(ngModel)]="metatype">
+                                                         
+                                                        </div>  
+                                                    </div>
+                                                       <div class="p-3 bg-light mb-3" *ngIf="getmetaTypeList?.length > 0">
+                                                        <div class="row">
+                                                                <div class="col-md-6" *ngFor="let gtype of getmetaTypeList;let x=index">
+                                                                    <div class="form-group">
+                                                                         <label>*  {{gtype.labelName}}</label>
+                                                                         <div *ngIf="gtype.metaType==1">
+                                                                           <input type="text" class="form-control" id="{{gtype.labelName}}" [(ngModel)]="gtype.value">
                                                                         </div>
-                                                                
-
-                                                            </div>
-                                                            <div class="col-1 pt-4" *ngIf="metaDesable">
-                                                                    <a class="btn btn-info px-2" (click)="addMetaVals()"><i class="icon-plus-solid"></i></a>
-                                                            </div>
-                                                        </div>    
-
-
-                                                        <!-- <angular2-multiselect [data]="metalist"  
-                                                        [settings]="dropdownSettings" 
-                                                        (onSelect)="onItemSelect($event)" 
-                                                        (onDeSelect)="OnItemDeSelect($event)"
-                                                        (onSelectAll)="onSelectAll($event)"
-                                                        (onDeSelectAll)="onDeSelectAll($event)">
-                                                    </angular2-multiselect> -->
-
+                                                                        <div *ngIf="gtype.metaType==2">
+                                                                           <input type="date" class="form-control" id="{{gtype.labelName}}" max="2100-12-31" [(ngModel)]="gtype.value">
+                                                                        </div>
+                                                                        <div *ngIf="gtype.metaType==3">
+                                                                            <input type="number" class="form-control" id="{{gtype.labelName}}" [(ngModel)]="gtype.value">
+                                                                         </div>
+                                                                    </div>
+                                                                   
+                                                                </div>
+                                                        </div>
+                                                   
+                                                     
                                                      
                                         </div>
-                                        <div class="table-responsive" *ngIf="metaListDetails?.length > 0">
-                                            <table class="table table-bordered">
-                                                    <thead>
-                                                        <tr><th width="50px">{{"Sl No"| langReplace}}</th>
-                                                            <th>  {{"Meta Name"| langReplace}}</th>
-                                                            <th> {{"Details"| langReplace}}</th>
-                                                            <th width="50px"> {{"Action"| langReplace}}</th> </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                            <!-- <td *ngFor="let colName of dataCols">
-                                                                    {{ rows[colName.colName] }}
-                                                                  </td> -->
-                                                        <tr *ngFor="let mListD of metaListDetails;let i=index">
-                                                            <td>{{i+1}}</td>
-
-                                                            <!-- <td *ngFor="let colName of metalist">
-                                                                {{ mListD[colName.intMetaId] }}
-                                                              </td> -->
-                                                            <td>{{mListD.metaName}}</td>
-                                                            <td>{{mListD.metaDetails}}</td>
-                                                            
-                                                            <td><a class="text-danger px-2" (click)="removeSectionval(i)"><i class="icon-trash-alt"></i></a></td>
-                                                        </tr>
-                                                    </tbody>
-                                            </table>
-                                        </div>
+                                      
 
                                                 </div>
                                                 

@@ -22,6 +22,7 @@
           "metaitems":" Meta type",
           "fileindexing":"index",
           "selMeta":"Meta Type",
+          "template":"Template",
            "entermetadesc":"Enter Meta Details",
            "addMeta":"Add Meta Details",
            "selectRole":"Please Select role",

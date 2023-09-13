@@ -1,3 +1,4 @@
+/// <reference types="sweetalert2" />
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -30,6 +31,7 @@ export declare class MsgengineLibService {
     getConfigurationKeys(messageParams: any): Observable<any>;
     msguploadFile(formParams: any): Observable<any>;
     langReplace(languageText: any, languageName?: any): any;
+    swalfire(type: any, message: any): Promise<import("sweetalert2").SweetAlertResult<any>>;
     static ɵfac: i0.ɵɵFactoryDeclaration<MsgengineLibService, never>;
     static ɵprov: i0.ɵɵInjectableDeclaration<MsgengineLibService>;
 }

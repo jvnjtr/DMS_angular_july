@@ -1,0 +1,197 @@
+<!--===Page Title===-->
+
+<div class="page-title">
+
+    <h4>{{title|langReplace}}</h4>
+
+</div>
+
+<!--===Page Title===-->
+
+<!--===controle section===-->
+
+<div class="page-controls-section" id="page-content">
+
+
+
+    <form [formGroup]="dynamicForm">
+
+        <div class="card">
+
+            <div class="controls-section-header">
+
+                <ul class="nav nav-tabs nav-fill" role="tablist">
+
+                    <app-tabs *ngFor="let tablist of tablist" [tabMessage]="tablist"></app-tabs>
+
+                </ul>
+
+                <div class="indicatorslist">
+
+                    <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="controls-section">
+
+                    <div>
+
+                        <div class="row">
+
+                            <label class="col-md-4 col-lg-2 mt-2">*{{"Module Name"|langReplace}} </label>
+
+                            <div class="col-md-8 col-lg-3">
+
+                                <div class="form-group">
+                                    <input type="text" class="form-control" readonly [value]="txtModuleName">
+
+                                    <input type="hidden" formControlName="otherStatus">
+
+                                    <input type="hidden" formControlName="updatedBy" [value]="userId">
+
+                                    <input type="hidden" formControlName="createdBy" [value]="userId">
+
+                                    <input type="hidden" formControlName="status">
+
+                                </div>
+
+                            </div>
+
+                            <label class="col-md-4 col-lg-2 mt-2">*{{"Form Name"|langReplace}} </label>
+
+                            <div class="col-md-8 col-lg-3">
+
+                                <div class="form-group">
+
+                                    <input type="text" class="form-control" readonly [value]="txtFormName">
+
+                                    <input type="hidden" formControlName="itemId">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div *ngIf="sectionitems?.length > 0">
+
+                            <div class="row">
+
+                                <label class="col-md-4 col-lg-2 mt-2">*{{"Section Names"|langReplace}} </label>
+
+                                <div class="col-md-8 col-lg-10">
+
+                                    <ul class="nav nav-tabs mb-2">
+
+                                        <li class="nav-item" *ngFor="let sNames of sectionitems">
+
+                                            <a class="nav-link " aria-current="page" [id]="sNames.sectionid"
+                                                [ngClass]="(getsectionId == sNames.sectionid) ? 'active' : '' "
+                                                href="javascript:void(0)"> {{ sNames.sectionName|langReplace }}</a>
+
+                                        </li>
+
+
+
+                                    </ul>
+
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="form-builder " cdkDropListGroup>
+
+
+
+                        <app-drag  class="control-list"> </app-drag> 
+
+
+
+                   <app-drop *ngIf="loadComponent" [dyformData]="dynamicForm" 
+ 
+                                        [dynamicForm]="dynamicForm" 
+ 
+                                        [txtFormId]="txtFormId" 
+ 
+                                        [getsectionId]="getsectionId"
+ 
+                                        [nextbtnval]="nextbtnDisabled"
+ 
+                                        (callfunction)="createForm(getsectionId)"
+ 
+                                        class="parent-dropzone"
+ 
+                                        [arrsecColumnDetails]="arrsecColumnDetails"
+ 
+                                        [tableExistsCheck]="tableExistsCheck"
+ 
+                                        ></app-drop>
+
+
+
+                    </div>
+
+
+
+                </div>
+
+
+
+            </div>
+
+            <div class="card-footer text-center">
+
+                <div *ngIf="getsectionId == 0; else elseblock">
+
+                    <button class="btn btn-success ml-1"
+                        (click)="createForm(getsectionId)">{{"Submit"|langReplace}}</button>
+
+                </div>
+
+                <ng-template #elseblock>
+
+                    <button class="btn btn-info" [disabled]="prevbtnDisabled"
+                        (click)="prevBtn(getsectionId)">{{"Previous"|langReplace}}</button>
+
+                    <button class="btn btn-primary ml-1" *ngIf="i != sectionitems?.length-1"
+                        [disabled]="nextbtnDisabled" (click)="createForm(getsectionId)">{{"Save"|langReplace}} &amp;
+                        {{"Next"|langReplace}}</button>
+
+                    <button class="btn btn-success ml-1" *ngIf="i == sectionitems?.length-1"
+                        (click)="createForm(getsectionId)">{{"Submit"|langReplace}}</button>
+
+                </ng-template>
+
+            </div>
+
+        </div>
+
+    </form>
+
+
+    <!-- <pre>
+                      {{dynamicForm.value | json}}
+                    </pre> -->
+
+
+</div>
+
+<div class="loader" *ngIf="loading">
+
+    <div class="loader-item"></div>
+
+    <p>{{"Loading"|langReplace}}...</p>
+
+</div>

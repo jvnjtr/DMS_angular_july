@@ -11,33 +11,34 @@
       <ul class="navbar-nav mb-2 mb-lg-0">
 
 
-         <li class="hideinmobile" *ngIf="config==true"><a href="javascript:void(0)" routerLink="../admin/createdoc"
+         <li class="hideinmobile"><a href="javascript:void(0)" routerLink="../admin/createdoc"
                class="btn btn-warning text-dark btn-sm px-2 shadow-none rounded">{{"Create Document"| langReplace }}</a>
          </li>
-         <li *ngIf="config==true"><a href="javascript:void(0)" id="notifications" data-target="#newnotification-section"
+         <li><a href="javascript:void(0)" id="notifications" data-target="#newnotification-section"
                (click)="notificationOpen()" class="notifications"><i class="icon-bell"></i><span
                   class="badge badge-pill bg-danger">{{totalNotificationCount}}</span></a></li>
-         <li *ngIf="config==true"><a href="javascript:void(0)" title="Configuration">
+         <li><a href="javascript:void(0)" title="Configuration">
                <span class="text-right ">
                   <i class="bi bi-gear"></i>
                </span>
             </a>
             <div class="header-dropdown">
 
+               <ng-container *ngFor="let mlist of menulistarr;let mi=index">
 
-               <a routerLinkActive="active" routerLink="../admin/addgateway" *ngIf="roleId == 1"><i
-                     class="bi bi-box-arrow-right"></i> {{"Gateway"| langReplace }} </a>
-               <a routerLinkActive="active" routerLink="../admin/addmessageengine"><i class="bi bi-chat-right-text"></i>
-                  {{"Message"| langReplace }} </a>
-               <a routerLinkActive="active" routerLink="../admin/managelanguage" *ngIf="roleId == 1"><i
-                     class="bi bi-translate"></i> {{"Language"| langReplace }} </a>
-               <a routerLinkActive="active" routerLink="../admin/labelLanguage"><i class="bi bi-translate"></i>
-                  {{"Language labels"| langReplace }} </a>
-                  <a routerLinkActive="active" routerLink="../admin/generalconfig" *ngIf="roleId==1"><i class="bi bi-file-break"></i> {{"General Configuration"| langReplace }} </a>
-               <a routerLinkActive="active" routerLink="../admin/ocrconfig" *ngIf="roleId==1"><i class="bi bi-file-break"></i> {{"Ocr Configuration"| langReplace }} </a>
-               <a routerLinkActive="active" routerLink="../admin/stampingconfig" *ngIf="roleId==1"><i class="bi bi-postage"></i>
-                  {{"Stamping Configuration"| langReplace }} </a>
+
+                  <a routerLinkActive="active"
+                     *ngIf="roleName == 'Administrator' || roleName == 'Admin'  || mlist.intViewManageRight==1"
+                     routerLink="..{{mlist.vchUrl}}"><i
+                        [ngClass]="commonserveice.getmenuicons(mlist.vchLinkName)"></i><span>{{ mlist.vchLinkName|
+                        langReplace}} </span></a>
+
+               </ng-container>
+
             </div>
+
+
+
 
          </li>
          <li>
@@ -68,6 +69,8 @@
             <div class="header-dropdown">
 
                <!-- <a href="profile.html" class=""><i class="icon-user-circle"></i> Profile</a> -->
+               <a routerLink="../adminconsole/adminconsole-dashboard" class=""
+                  *ngIf="roleName == 'Administrator' || roleName == 'Admin'"><i class="bi bi-shield-check"></i>{{"AdminConsole"| langReplace }} </a>
                <a routerLink="./changepassword" class=""><i class="icon-lock-solid"></i>{{"Change Password"| langReplace
                   }} </a>
                <a href="javascript:void(0)" (click)="logout()" class="bg-theme text-light"><i class="icon-arrow60"></i>
@@ -92,6 +95,9 @@
                   </span>
                </a>
             </li>
+            <li *ngIf="roleName == 'Administrator' || roleName == 'Admin'">
+               <a routerLink="./adminconsole/adminconsole-dashboard" class="">{{"Admin Console"| langReplace }} </a>
+            </li>
             <li>
                <a routerLink="./changepassword" class="">{{"Change Password"| langReplace }} </a>
             </li>
@@ -99,14 +105,7 @@
                <a href="javascript:void(0)" (click)="logout()">{{"SignOut"| langReplace }}</a>
             </li>
 
-
-
-
-
-
-
-
-         </ul>
+ </ul>
 
 
       </div>
@@ -126,18 +125,34 @@
             class="bi bi-arrow-right"></i></a>
    </div>
 
-   <ul>
 
-      <li class="unread" *ngFor="let flist of notificationList">
-         <a href="javascript:void(0)"
-            (click)="loadpreview(flist.fileId,flist.fileType,flist.filePath,0,flist.lockStatus)" class="text-dark">
-            <span class="d-block text-primary">{{flist.fileName }}
-            </span>
-            {{flist.notificationMessage }}
-            <small class="d-block">{{flist.notificationMessageDate}}</small>
-         </a>
+   <a class="notification-items">
+      Next 5 Days Retention Documents <span> {{fileRetention ? fileRetention : 0}}</span>
+   </a>
 
-      </li>
+   <a class="notification-items">
+      Last 7 Days Shared Documents <span> {{fileShared ? fileShared :0}}</span>
+   </a>
+
+   <a class="notification-items">
+      Pendding Documents <span> {{takeAction ? takeAction : 0}}</span>
+   </a>
+
+   <!-- <a class="notification-items">
+  <span> {{otherNotification}}</span>
+</a> -->
+
+ <ul>
+
+      <!-- <li class="unread" *ngFor="let flist of notificationList">
+                                      <a href="javascript:void(0)" (click)="loadpreview(flist.fileId,flist.fileType,flist.filePath,0,flist.lockStatus)" class="text-dark">
+                                        <span class="d-block text-primary">{{flist.fileName }}
+                                      </span> 
+                                         {{flist.notificationMessage }}
+                                         <small class="d-block">{{flist.notificationMessageDate}}</small>
+                                      </a>
+                                     
+                                   </li> -->
 
    </ul>
 

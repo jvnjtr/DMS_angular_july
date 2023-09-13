@@ -1,57 +1,58 @@
 <div class="sidemenu-container">
-    <a class="navbar-brand" routerLink="../admin/dashboard" title="CSM Technologies">
-       
-        <img src="{{siteUrl}}assets/img/logowhite.svg" alt="Logo">
-      <p>Document Management System</p>
-    </a>
-  
-    <nav class="navbar" *ngIf="config==true">
-      <div class="navbar-collapse justify-content-end" id="basicExampleNav">
+  <a class="navbar-brand" routerLink="../admin/dashboard" title="CSM Technologies">
 
-          
+    <img src="{{siteUrl}}assets/img/logowhite.svg" alt="Logo">
+    <p>Document Management System</p>
+  </a>
 
-        <ul class="navbar-nav">
-          <li class="nav-item" routerLinkActive="active">
-            <a class="nav-link route-link" routerLink="../admin/dashboard"
-              ><i class="icon-Dashboard1"
-              ><span class="path1"></span><span class="path2"></span></i
-            ><span>{{"dashboard"| langReplace}}</span></a
-            >
+  <nav class="navbar" *ngIf="config==true">
+    <div class="navbar-collapse justify-content-end" id="basicExampleNav">
+
+
+
+      <ul class="navbar-nav">
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link route-link" routerLink="../admin/dashboard"><i class="icon-Dashboard1"><span
+                class="path1"></span><span class="path2"></span></i><span>{{"dashboard"| langReplace}}</span></a>
+        </li>
+        <li class="nav-item mobile-view" routerLinkActive="active">
+          <a class="nav-link route-link" routerLink="../admin/createdoc"><i class="icon-file-image"></i><span> {{"CreateDocument"| langReplace}}</span></a>
+        </li>
+        <li class="nav-item" *ngFor="let item of folderarr;let j = index " [ngClass]="item.expand ? 'active' : ''">
+          <a class="nav-link route-link" (click)="loadFolderData(1+':'+'0',item.expand)">
+
+            <i class="tree-icon" [ngClass]="item.expand ? 'bi bi-folder2-open' : 'bi bi-folder-fill text-warning'"></i>
+            <span class="">{{item.folderName | langReplace}}</span>
+          </a>
+          <ul class="sub-menu nav tree-submenu" [class.d-none]="!item.expand">
+            <ng-container *ngFor="let node of item.children" [ngTemplateOutlet]="treeNode"
+              [ngTemplateOutletContext]="{ $implicit: node }">
+            </ng-container>
+          </ul>
+        </li>
+
+
+
+
+
+
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link route-link" (click)="loadFolderData('1'+':'+'1',true)"><i
+              class="icon-bookmark"></i><span>{{"Bookmark Document"| langReplace}} </span></a>
+        </li>
+        <ng-container *ngFor="let mlist of menulistarr;let mi=index">
+
+          <li class="nav-item" routerLinkActive="active"
+            *ngIf="roleName == 'Administrator' || roleName == 'Admin'  || mlist.intViewManageRight==1">
+            <a class="nav-link route-link" routerLink="..{{mlist.vchUrl}}"><i
+                [ngClass]="commonserveice.getmenuicons(mlist.vchLinkName)"></i><span>{{ mlist.vchLinkName| langReplace}}
+              </span></a>
           </li>
-          <li class="nav-item mobile-view" routerLinkActive="active">
-            <a class="nav-link route-link" routerLink="../admin/createdoc"
-              ><i class="icon-file-image" ></i
-            ><span> {{"Create Document"| langReplace}}</span></a
-            >
-          </li>
-    <li class="nav-item" *ngFor="let item of folderarr;let j = index " [ngClass]="item.expand ? 'active' : ''">
-              <a class="nav-link route-link"  (click)="loadFolderData(1+':'+'0',item.expand)"  > 
-              
-                <i class="tree-icon"  [ngClass]="item.expand ? 'bi bi-folder2-open' : 'bi bi-folder-fill text-warning'" ></i>
-                <span class="" >{{item.folderName | langReplace}}</span> 
-                </a>
- <ul class="sub-menu nav tree-submenu" [class.d-none]="!item.expand">
-  <ng-container
-    *ngFor="let node of item.children"
-    [ngTemplateOutlet]="treeNode"
-    [ngTemplateOutletContext]="{ $implicit: node }">
-  </ng-container>
-  </ul>
-  </li>
- 
+        </ng-container>
 
 
 
-
-      
-          <li class="nav-item" routerLinkActive="active">
-            <a class="nav-link route-link"  (click)="loadFolderData('1'+':'+'1',true)"
-              ><i class="icon-bookmark" ></i
-              ><span>{{"Bookmark Document"| langReplace}} </span></a
-            >
-          </li> 
-
-          <li class="nav-item" routerLinkActive="active">
+        <!-- <li class="nav-item" routerLinkActive="active">
             <a class="nav-link route-link" routerLink="../admin/recentFiles"
               ><i class="icon-history-solid" ></i
               ><span>{{"Recent Documents"| langReplace}} </span></a
@@ -76,8 +77,8 @@
               ><i class="icon-address-book" ></i
               ><span>{{"Contact Address"| langReplace}} </span></a
             >
-          </li>  
-            <!-- <li class="nav-item dropdown" routerLinkActive="active">
+          </li>   -->
+        <!-- <li class="nav-item dropdown" routerLinkActive="active">
           <a
             class="nav-link dropdown-indicator collapsed"
             href="#ManageReports"
@@ -97,7 +98,7 @@
             >
           </ul>
         </li> -->
-        <li class="nav-item" routerLinkActive="active" *ngIf="roleId == 1">
+        <!-- <li class="nav-item" routerLinkActive="active" *ngIf="roleId == 1">
           <a class="nav-link"  routerLink="../reports/allreports"><i class="icon-file-code"></i> {{"Reports"| langReplace}} </a> 
         </li>
           <li class="nav-item" routerLinkActive="active">
@@ -109,8 +110,8 @@
             </li> 
             <li class="nav-item" routerLinkActive="active">
               <a class="nav-link"  routerLink="../admin/archivefiles"><i class="icon-archive-solid"></i> {{"Archive"| langReplace}} </a> 
-            </li>
-<!--  
+            </li> -->
+        <!--  
             <li class="nav-item dropdown" >
               <a
                 class="nav-link dropdown-indicator collapsed"
@@ -131,41 +132,39 @@
 
 
 
-           
-
-        </ul>
 
 
+      </ul>
 
 
-      </div>
-    </nav>
 
-    <footer>
-      <p>Copyright {{ currentYear }} CSM, V.1.0 </p>
-    </footer>
-  </div>
+
+    </div>
+  </nav>
+
+  <footer>
+    <p>Copyright {{ currentYear }} CSM, V.1.0 </p>
+  </footer>
+</div>
 
 
 <ng-template #treeNode let-data>
 
-  <li >
-  <a  class="dropdown-item route-link" (click)="data.expand = !data.expand; loadFolderData(data.folderId+':'+'0',data.expand);" >
+  <li>
+    <a class="dropdown-item route-link"
+      (click)="data.expand = !data.expand; loadFolderData(data.folderId+':'+'0',data.expand);">
       <i class="bi expandicon" [ngClass]="data.expand ? 'bi-dash-square' : 'bi-plus-square'"></i>
-      <span class="caret"  [ngClass]="data.expand ? 'bi bi-folder2-open' : 'bi bi-folder-fill text-warning'" ></span> &nbsp;
-  <span class="" > {{ data.folderName }} </span>
-</a>
-  <ng-container *ngIf="data.children">
-    <ul class="sub-menu nav" [class.d-none]="!data.expand">
-      <ng-container
-        *ngFor="let child of data.children"
-        [ngTemplateOutlet]="treeNode"
-        [ngTemplateOutletContext]="{ $implicit: child }">
-      </ng-container>
-    </ul>
-  </ng-container>
+      <span class="caret" [ngClass]="data.expand ? 'bi bi-folder2-open' : 'bi bi-folder-fill text-warning'"></span>
+      &nbsp;
+      <span class=""> {{ data.folderName }} </span>
+    </a>
+    <ng-container *ngIf="data.children">
+      <ul class="sub-menu nav" [class.d-none]="!data.expand">
+        <ng-container *ngFor="let child of data.children" [ngTemplateOutlet]="treeNode"
+          [ngTemplateOutletContext]="{ $implicit: child }">
+        </ng-container>
+      </ul>
+    </ng-container>
   </li>
 
 </ng-template>
-
- 

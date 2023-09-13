@@ -148,6 +148,7 @@ export class LoginComponent implements OnInit {
         },
 
         error: (msg) => {
+          this.loading=false;
           Swal.fire({
             icon: 'error',
             text: "Error In api response "

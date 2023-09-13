@@ -1,0 +1,2109 @@
+<!-- <div
+  cdkDropList
+  #destinationList="cdkDropList"
+  [cdkDropListData]="destination"
+  class="field-list"
+  (cdkDropListDropped)="drop($event)">
+  <div class="field-box" *ngFor="let item of destination" cdkDrag>{{item.title}}</div>
+</div> -->
+<div [formGroup]="dyformData">
+    <div cdkDropList [cdkDropListData]="destination"   class="movie-list dropzone"
+       (cdkDropListDropped)="onDrop($event)">
+       <div *ngFor="let item of ctrlElementList;let ctrlIndex = index" cdkDrag [cdkDragDisabled]="true"
+          formArrayName="formDetails" class="question-box">
+          <div class="UiTextField draggable ui-draggable ui-draggable-handle" [formGroupName]="ctrlIndex"
+             id="{{ctrlIndex}}">
+             <div class="preview-div">
+                <div class="form-group firstgroup UiTextField">
+                   <input type="hidden" formControlName="ctrlTypeId" [value]="item.ctrlTypeId">
+                   <div [ngSwitch]="item.ctrlTypeId">
+                      <div *ngSwitchCase=1>dsfsdf
+                         <div class="d-flex align-itmes-center"> <input type="text" value="" placeholder="Sl No. *"
+                               maxlength="3" (keypress)="vldChkLst.isNumberKey($event)" formControlName="ctrlSlNo"
+                               class="fld-name form-control form-control-sm width80 mr-2"><label
+                               class="mandatory-label ctrlLabel">{{"Label"|langReplace}} <small
+                                  class="text-primary">( ID = {{ctrlId.value}})
+                                  {{(item.ctrlLabel!='' && item.ctrlLabel!=undefined) ? '('+item.ctrlLabel+')' : ''}}
+                               </small></label></div>
+                      </div>
+                      <div *ngSwitchCase=2>
+                         <div class="d-flex align-itmes-center"> <input type="text" value="" placeholder="Sl No. *"
+                               maxlength="3" (keypress)="vldChkLst.isNumberKey($event)" formControlName="ctrlSlNo"
+                               class="fld-name form-control form-control-sm width80 mr-2"><label
+                               class="mandatory-label ctrlLabel">{{"TextBox"|langReplace}} <small
+                                  class="text-primary">( ID = {{ctrlId.value}} )
+                                  {{(item.ctrlLabel!='' && item.ctrlLabel!=undefined) ? '('+item.ctrlLabel+')' : ''}}</small></label>
+                         </div>
+                      </div>
+                      <div *ngSwitchCase=3>
+                         <div class="d-flex align-itmes-center"><input type="text" value="" placeholder="Sl No. *"
+                               maxlength="3" (keypress)="vldChkLst.isNumberKey($event)" formControlName="ctrlSlNo"
+                               class="fld-name form-control form-control-sm width80 mr-2"><label
+                               class="mandatory-label ctrlLabel">{{"Dropdown"|langReplace}} <small
+                                  class="text-primary">( ID = {{ctrlId.value}} )
+                                  {{(item.ctrlLabel!='' && item.ctrlLabel!=undefined) ? '('+item.ctrlLabel+')' : ''}}</small></label>
+                         </div>
+                      </div>
+                      <div *ngSwitchCase=4>
+                         <div class="d-flex align-itmes-center"><input type="text" value="" placeholder="Sl No. *"
+                               maxlength="3" (keypress)="vldChkLst.isNumberKey($event)" formControlName="ctrlSlNo"
+                               class="fld-name form-control form-control-sm width80 mr-2"><label
+                               class="mandatory-label ctrlLabel">{{"TextArea"|langReplace}} <small
+                                  class="text-primary">( ID = {{ctrlId.value}} )
+                                  {{(item.ctrlLabel!='' && item.ctrlLabel!=undefined) ? '('+item.ctrlLabel+')' : ''}}</small></label>
+                         </div>
+                      </div>
+                      <div *ngSwitchCase=5>
+                         <div class="d-flex align-itmes-center"><input type="text" value="" placeholder="Sl No. *"
+                               maxlength="3" (keypress)="vldChkLst.isNumberKey($event)" formControlName="ctrlSlNo"
+                               class="fld-name form-control form-control-sm width80 mr-2"><label
+                               class="mandatory-label ctrlLabel">{{"Checkbox"|langReplace}} <small
+                                  class="text-primary">( ID = {{ctrlId.value}} )
+                                  {{(item.ctrlLabel!='' && item.ctrlLabel!=undefined) ? '('+item.ctrlLabel+')' : ''}}</small></label>
+                         </div>
+                      </div>
+                      <div *ngSwitchCase=6>
+                         <div class="d-flex align-itmes-center"><input type="text" value="" placeholder="Sl No. *"
+                               maxlength="3" (keypress)="vldChkLst.isNumberKey($event)" formControlName="ctrlSlNo"
+                               class="fld-name form-control form-control-sm width80 mr-2"><label
+                               class="mandatory-label ctrlLabel">{{"Radio"|langReplace}} <small
+                                  class="text-primary">( ID = {{ctrlId.value}} )
+                                  {{(item.ctrlLabel!='' && item.ctrlLabel!=undefined) ? '('+item.ctrlLabel+')' : ''}}</small></label>
+                         </div>
+                      </div>
+                      <div *ngSwitchCase=7>
+                         <div class="d-flex align-itmes-center"><input type="text" value="" placeholder="Sl No. *"
+                               maxlength="3" (keypress)="vldChkLst.isNumberKey($event)" formControlName="ctrlSlNo"
+                               class="fld-name form-control form-control-sm width80 mr-2"><label
+                               class="mandatory-label ctrlLabel">{{"File Upload"|langReplace}} <small
+                                  class="text-primary">( ID = {{ctrlId.value}} )
+                                  {{(item.ctrlLabel!='' && item.ctrlLabel!=undefined) ? '('+item.ctrlLabel+')' : ''}}</small></label>
+                         </div>
+                      </div>
+                      <div *ngSwitchCase=8>
+                         <div class="d-flex align-itmes-center"><input type="text" value="" placeholder="Sl No. *"
+                               maxlength="3" (keypress)="vldChkLst.isNumberKey($event)" formControlName="ctrlSlNo"
+                               class="fld-name form-control form-control-sm width80 mr-2"><label
+                               class="mandatory-label ctrlLabel">{{"Heading"|langReplace}} <small
+                                  class="text-primary">( ID = {{ctrlId.value}} )
+                                  {{(item.ctrlLabel!='' && item.ctrlLabel!=undefined) ? '('+item.ctrlLabel+')' : ''}}</small></label>
+                         </div>
+                      </div>
+                      <div *ngSwitchCase=9>
+                         <div class="d-flex align-itmes-center"><input type="text" value="" placeholder="Sl No. *"
+                               maxlength="3" (keypress)="vldChkLst.isNumberKey($event)" formControlName="ctrlSlNo"
+                               class="fld-name form-control form-control-sm width80 mr-2"><label
+                               class="mandatory-label ctrlLabel">{{"Link Button"|langReplace}} <small
+                                  class="text-primary">( ID = {{ctrlId.value}} )
+                                  {{(item.ctrlLabel!='' && item.ctrlLabel!=undefined) ? '('+item.ctrlLabel+')' : ''}}</small></label>
+                         </div>
+                      </div>
+                      <div *ngSwitchCase=10>
+                         <div class="d-flex align-itmes-center"><input type="text" value="" placeholder="Sl No. *"
+                               maxlength="3" (keypress)="vldChkLst.isNumberKey($event)" formControlName="ctrlSlNo"
+                               class="fld-name form-control form-control-sm width80 mr-2"><label
+                               class="mandatory-label ctrlLabel">{{"Addmore"|langReplace}} <small
+                                  class="text-primary">( ID = {{ctrlId.value}} )
+                                  {{(item.ctrlLabel!='' && item.ctrlLabel!=undefined) ? '('+item.ctrlLabel+')' : ''}}</small></label>
+                         </div>
+                      </div>
+                      <div *ngSwitchCase=11>
+                         <div class="d-flex align-itmes-center"><input type="text" value="" placeholder="Sl No. *"
+                               maxlength="3" (keypress)="vldChkLst.isNumberKey($event)" formControlName="ctrlSlNo"
+                               class="fld-name form-control form-control-sm width80 mr-2"><label
+                               class="mandatory-label ctrlLabel">{{"Hidden"|langReplace}} <small
+                                  class="text-primary">( ID = {{ctrlId.value}} )
+                                  {{(item.ctrlLabel!='' && item.ctrlLabel!=undefined) ? '('+item.ctrlLabel+')' : ''}}</small></label>
+                         </div>
+                      </div>
+                      <div *ngSwitchCase=12>
+                         <div class="d-flex align-itmes-center"><input type="text" value="" placeholder="Sl No. *"
+                               maxlength="3" (keypress)="vldChkLst.isNumberKey($event)" formControlName="ctrlSlNo"
+                               class="fld-name form-control form-control-sm width80 mr-2"><label
+                               class="mandatory-label ctrlLabel">{{"Paragraph"|langReplace}} <small
+                                  class="text-primary">( ID = {{ctrlId.value}} )
+                                  {{(item.ctrlLabel!='' && item.ctrlLabel!=undefined) ? '('+item.ctrlLabel+')' : ''}}</small></label>
+                         </div>
+                      </div>
+                      <!-- (blur)="chkDuplicate($event,ctrlId.value)" -->
+                   </div>
+                </div>
+             </div>
+             <div class="top-right-items">
+                <a class="element-edit" href="javascript:void(0)" id="itemEdit{{ctrlIndex}}"
+                   (click)="editItem(ctrlId.value,ctrlIndex)"><i class="icon-pencil-alt-solid"></i></a>
+                <a class="element-close" href="javascript:void(0)" id="itemdelete{{ctrlIndex}}"
+                   (click)="delete(ctrlIndex)"><i class="icon-trash-alt"></i></a>
+ 
+             </div>
+             <!--=== Control Section Start ===-->
+             <div class="ctrlproperies d-none mt-3">
+                <h5>{{"Basic Info"|langReplace}}</h5>
+                <div class="row">
+                   <div class="col-md-4 required-div"
+                      *ngIf="item.ctrlTypeId != 1 && item.ctrlTypeId != 8 && item.ctrlTypeId != '9' && item.ctrlTypeId != '10' && item.ctrlTypeId != '11' && item.ctrlTypeId != '12'">
+                      <div class="form-group ">
+                         <div class="form-check">
+                            <input name="required" class="fld-name form-check-input required-check"
+                               formControlName="ctrlMandatory" type="checkbox" value="" id="Required_{{ctrlIndex}}">
+                            <label class="from-label"
+                               for="Required_{{ctrlIndex}}">{{"Mandatory"|langReplace}}</label>
+                         </div>
+                      </div>
+                   </div>
+                   <div class="col-md-4 required-div"
+                      *ngIf="item.ctrlTypeId != 1 && item.ctrlTypeId != 8 && item.ctrlTypeId != '9' && item.ctrlTypeId != '10' && item.ctrlTypeId != '11' && item.ctrlTypeId != '12'">
+                      <div class="form-group ">
+                         <div class="form-check">
+                            <input name="required" class="fld-name form-check-input required-check"
+                               formControlName="ctrlforSearch" type="checkbox" value="" id="search_{{ctrlIndex}}">
+                            <label class="from-label" for="search_{{ctrlIndex}}">{{"View In
+                               Search"|langReplace}}</label>
+                         </div>
+                      </div>
+                   </div>
+                   <div class="col-md-4 required-div"
+                      *ngIf="item.ctrlTypeId != 1 && item.ctrlTypeId != 8 && item.ctrlTypeId != '9' && item.ctrlTypeId != '10' && item.ctrlTypeId != '11' && item.ctrlTypeId != '12'">
+                      <div class="form-group ">
+                         <div class="form-check">
+                            <input name="required" class="fld-name form-check-input required-check"
+                               formControlName="ctrlforViePage" type="checkbox" value="" id="viewPage_{{ctrlIndex}}">
+                            <label class="from-label" for="viewPage_{{ctrlIndex}}">{{"View In View
+                               Page"|langReplace}}</label>
+                         </div>
+                      </div>
+                   </div>
+                   <div class="col-md-6 ">
+                      <label class="from-label">{{"ID"|langReplace}}</label>
+                      <div class="form-group ">
+                         <input type="text" class="fld-name ctrlName form-control" #ctrlId formControlName="ctrlId"
+                            readonly="">
+                      </div>
+                   </div>
+                   <div class="col-md-6 ">
+                      <label class="from-label">{{"Name"|langReplace}}</label>
+                      <div class="form-group ">
+                         <input type="text" class="fld-name ctrlName form-control" formControlName="ctrlName"
+                            readonly="">
+                      </div>
+                   </div>
+                   <div class="col-md-6 " *ngIf="item.ctrlTypeId != '11'">
+                      <label class="from-label">* {{"Label"|langReplace}} </label>
+                      <div class="form-group ">
+ 
+                         <input type="text" class="fld-name form-control" #ctrlLabel formControlName="ctrlLabel">
+ 
+                      </div>
+                   </div>
+                   <!-- <div class="col-md-6 " *ngIf="item.ctrlTypeId != '11'">
+                      <label class="from-label"> {{"Label in "+ languagelable | langReplace}} </label>
+                      <div class="form-group ">
+ 
+                         <input type="text" class="fld-name form-control" formControlName="ctrlLabelinOdia">
+ 
+                      </div>
+                   </div> -->
+                   <div class="col-md-6 helptext-div"
+                      *ngIf="item.ctrlTypeId != 8 && item.ctrlTypeId != 9 && item.ctrlTypeId != 11 && item.ctrlTypeId != 12 && item.ctrlTypeId != 10">
+                      <label class="from-label">{{"Help Text"|langReplace}}</label>
+                      <div class="form-group ">
+                         <input name="description" type="text" class="fld-name form-control"
+                            formControlName="ctrlhelptext">
+                      </div>
+                   </div>
+                   <div class="col-md-6 placeholder-div"
+                      *ngIf="item.ctrlTypeId != 1 && item.ctrlTypeId != 3 && item.ctrlTypeId != 5 && item.ctrlTypeId != 6 && item.ctrlTypeId != 7 && item.ctrlTypeId != 8 && item.ctrlTypeId != 9 && item.ctrlTypeId != 11 && item.ctrlTypeId != 12 && item.ctrlTypeId != 10">
+                      <label class="from-label">{{"Placeholder"|langReplace}}</label>
+                      <div class="form-group ">
+                         <input name="placeholder" type="text" class="fld-name form-control"
+                            formControlName="ctrlPlaceholder">
+                      </div>
+                   </div>
+                   <div class="col-md-6 class-div" *ngIf="item.ctrlTypeId != 11 && item.ctrlTypeId != 10">
+                      <label class="from-label">{{"Class"|langReplace}}</label>
+                      <div class="form-group ">
+                         <input name="class" type="text" class="fld-name form-control" formControlName="ctrlClass"
+                            [value]="item.controlname === 'Button' ? 'btn' : 'form-control'">
+                      </div>
+                   </div>
+ 
+                   <div class="col-md-6 headings-div" *ngIf="item.ctrlTypeId == 8 && item.ctrlTypeId != 1">
+                      <label class="from-label">{{"Heading Type"|langReplace}}</label>
+                      <div class="form-group ">
+                         <select name="heading" class="fld-name form-select" formControlName="ctrlHeadingType">
+                            <option value="0">Select</option>
+                            <option value="h1">h1</option>
+                            <option value="h2">h2</option>
+                            <option value="h3">h3</option>
+                            <option value="h4">h4</option>
+                            <option value="h5">h5</option>
+                            <option value="h6">h6</option>
+                         </select>
+                      </div>
+                   </div>
+                   <div class="col-md-6 btnclasses-div" *ngIf="item.ctrlTypeId == 9 && item.ctrlTypeId != 1">
+                      <label class="from-label">{{"Link URL"|langReplace}}</label>
+                      <div class="form-group ">
+                         <input type="text" class="form-control" formControlName="ctrlOtherButtonClass">
+                      </div>
+                   </div>
+                   <div class="col-md-6 btnclasses-div" *ngIf="item.ctrlTypeId == 9 && item.ctrlTypeId != 1">
+                      <label class="from-label">{{"Link Type"|langReplace}}</label>
+                      <div class="form-group ">
+                         <select name="btntpye" class="fld-name form-select" formControlName="ctrlbtnType">
+                            <option value="0">Select</option>
+                            <option value="same">Same Window</option>
+                            <option value="other">Other Window</option>
+                            <option value="modal">Modal</option>
+                            <option value="void">Void(0)</option>
+                         </select>
+                      </div>
+                   </div>
+                   <div class="col-md-6 minlength-div"
+                      *ngIf="item.ctrlTypeId != 1 && item.ctrlTypeId != 3 && item.ctrlTypeId != 5 && item.ctrlTypeId != 6 && item.ctrlTypeId != 7 && item.ctrlTypeId != 8 && item.ctrlTypeId != 9 && item.ctrlTypeId != 11 && item.ctrlTypeId != 12 && item.ctrlTypeId != 10">
+                      <label class="from-label">{{"Min Length"|langReplace}}</label>
+                      <div class="form-group ">
+                         <input name="minlength" type="number" min="1" max="99999" formControlName="ctrlMinLength"
+                            class="fld-name form-control">
+                      </div>
+                   </div>
+                   <div class="col-md-6 maxlength-div"
+                      *ngIf="item.ctrlTypeId != 1 && item.ctrlTypeId != 3 && item.ctrlTypeId != 5 && item.ctrlTypeId != 6 && item.ctrlTypeId != 7 && item.ctrlTypeId != 8 && item.ctrlTypeId != 9 && item.ctrlTypeId != 11 && item.ctrlTypeId != 12 && item.ctrlTypeId != 10">
+                      <label class="from-label">{{"Max Length"|langReplace}}</label>
+                      <div class="form-group ">
+                         <input name="maxlength" type="number" min="1" max="99999" formControlName="ctrlMaxLength"
+                            class="fld-name form-control">
+                      </div>
+                   </div>
+                   <div class="col-md-6 type-div"
+                      *ngIf="item.ctrlTypeId != 1 && item.ctrlTypeId != 3 && item.ctrlTypeId != 4 && item.ctrlTypeId != 5 && item.ctrlTypeId != 6 && item.ctrlTypeId != 7 && item.ctrlTypeId != 8 && item.ctrlTypeId != 9 && item.ctrlTypeId != 11 && item.ctrlTypeId != 12 && item.ctrlTypeId != 10">
+                      <label class="from-label">{{"*Attribute Type"|langReplace}}</label>
+                      <div class="form-group ">
+                         <select name="ctrltype" class="fld-name form-select" #ctrlAttributeType (change)="getvalidationlist(ctrlAttributeType.value)"  id="attributeType_{{ctrlIndex}}" formControlName="ctrlAttributeType">
+                            <option value="0">Select</option>
+                            <option value="text">Text</option>
+                            <option value="email">Email</option>
+                            <option value="number">Number</option>
+                            <option value="date">Date</option>
+                            <option value="time">Time</option>
+                            <option value="tel">Telephone</option>
+                            <option value="password">Password</option>
+                         </select>
+                      </div>
+                   </div>
+                   <div class="col-md-6 filessection-div" *ngIf="item.ctrlTypeId == 7">
+                      <label class="from-label">* {{"Max Length"|langReplace}} </label>
+                      <div class="form-group ">
+                         <div class="input-group">
+                            <input name="fileMax" type="text" class="fld-name form-control"
+                               formControlName="ctrlFileMaxLength">
+                            <select class="form-select" formControlName="ctrlFileSizeType">
+                               <option value="0">Select</option>
+                               <option value="kb">KB</option>
+                               <option value="mb">MB</option>
+                            </select>
+ 
+                         </div>
+ 
+                      </div>
+                   </div>
+                   <div class="col-md-6 required-div" *ngIf="item.ctrlTypeId == 7">
+                      <div class="form-group ">
+                         <div class="form-check">
+                            <input name="required" class="fld-name form-check-input required-check"
+                               formControlName="ctrlForApproval" type="checkbox" value=""
+                               id="enableforapproval_{{ctrlIndex}}">
+                            <label class="from-label" for="enableforapproval_{{ctrlIndex}}">{{"Enable for
+                               Approval"|langReplace}}</label>
+                         </div>
+                      </div>
+                   </div>
+                   <div class="col-md-6 filessection-div" *ngIf="item.ctrlTypeId == 7">
+                      <label class="from-label">* {{"File Type"|langReplace}}</label>
+                      <div class="form-group ">
+                         <select name="ctrltype" class="fld-name form-select" multiple formControlName="ctrlFileType">
+                       
+                            <option *ngFor="let loopvalidateFileTypes of validateFileTypes"[value]="loopvalidateFileTypes">.{{loopvalidateFileTypes}}</option>
+                         </select>
+                      </div>
+                   </div>
+                   <div class="col-md-6 addmoretype-div" *ngIf="item.ctrlTypeId == 10">
+                      <label class="from-label">* {{"Addmore view type"|langReplace}}</label>
+                      <div class="form-group ">
+                         <select name="ctrltype" class="form-select" id="radioAddmoreviewtype_{{ctrlIndex}}"
+                            #radioAddmoreviewtype (change)="rdaddmoreChange(radioAddmoreviewtype.value,$event)"
+                            formControlName="radioAddmoreviewtype">
+                            <option value="0">Select</option>
+                            <option value="row">Row</option>
+                            <option value="column">Column</option>
+                            <option value="table">Table</option>
+                         </select>
+ 
+ 
+                      </div>
+                   </div>
+                   <div class="col-md-6 " *ngIf="item.ctrlTypeId == 10">
+                      <label class="from-label">* {{"Table Name"|langReplace}} </label>
+                      <div class="form-group ">
+                         <input type="text" class="fld-name form-control" value="" id="ctrlTablename"
+                            (keyup)="vldChkLst.blockspecialchar_first($event,false);vldChkLst.chkblankspace($event)"
+                            (mouseout)="loadAddMoreTableDetails(ctrlTableName.value,ctrlIndex)" minlength="0"
+                            maxlength="16" appUppercase #ctrlTableName formControlName="ctrlTableName">
+                         <small class="text-gray d-block mt-1"><i class="text-danger">( {{"Ex. ABC, DEMO_ABC, Maximum 16 chars &amp; Space not allowed"|langReplace}})</i></small></div>
+                   </div>
+                   <div class="col-md-6 d-none addmorerowdata">
+ 
+                      <label class="from-label">* {{"Row Data"|langReplace}} <button type="button"
+                            class="btn btn-sm btn-primary ml-1" (click)="addrowdataOptions(ctrlIndex)">{{"Add
+                            Option"|langReplace}}</button></label>
+                      <div formArrayName="addmorerowdata">
+                         <div class="form-group"
+                            *ngFor="let adrowData of addmorerowdata(ctrlIndex).controls; let amdataIndex=index">
+                            <div class="row" [formGroupName]="amdataIndex">
+                               <div class="col-2 pr-0">
+ 
+                                  <input type="text" (keypress)="vldChkLst.isNumberKey($event)"
+                                     class="fld-name form-control" placeholder="Sl#" formControlName="ctrlRowdataSlNo">
+                               </div>
+                               <div class="col-8">
+                                  <input type="text" class="fld-name form-control" formControlName="ctrlRowdataName">
+                               </div>
+                               <div class="col-2">
+                                  <!-- (click)="removeSectionval(i)" -->
+                                  <button class="btn btn-danger px-2"
+                                     (click)="removerowdataOptions(ctrlIndex,amdataIndex)"><i
+                                        class="icon-trash-alt"></i></button>
+                               </div>
+                            </div>
+ 
+                         </div>
+                      </div>
+                   </div>
+ 
+ 
+ 
+                   <div class="col-md-6 validation-div"
+                      *ngIf="item.ctrlTypeId != 1 && item.ctrlTypeId != 3 && item.ctrlTypeId != 5 && item.ctrlTypeId != 6 && item.ctrlTypeId != 7 && item.ctrlTypeId != 8 && item.ctrlTypeId != 9 && item.ctrlTypeId != 11 && item.ctrlTypeId != 12 && item.ctrlTypeId != 10">
+                      <label class="from-label">{{"Validations"|langReplace}}</label>
+                      <div class="form-group ">
+                          <select name="validationdtls" class="form-select" formControlName="validationDetails"
+                            #ctrlSelDependParent>
+                            <option value="0">Select</option> 
+                            
+                               <ng-container *ngFor="let data of attributetype">
+                                  <option [value]="data">{{data}}</option>
+                               </ng-container>
+                        
+ 
+                           
+                         </select> 
+                      </div>
+                   </div>
+                   <div class="col-md-6 validation-div"
+                   *ngIf="item.ctrlTypeId != 10 && item.ctrlTypeId != 8 && item.ctrlTypeId != 12">
+                   <label class="from-label">{{"Grid class"|langReplace}}</label>
+                   <div class="form-group ">
+                       <select name="validationdtls" class="form-select" formControlName="gridClass"
+                         #ctrlSelDependParent>
+                         <option value="0">Select</option> 
+                         <option value="1">One Grid</option> 
+                         <option value="2">Two Grid</option> 
+                         <option value="3">Three Grid</option> 
+ 
+                        
+                      </select> 
+                   </div>
+                </div>
+                   <div class="col-md-6 validation-div"
+                      *ngIf="item.ctrlTypeId != 1 && item.ctrlTypeId != 3 && item.ctrlTypeId != 5 && item.ctrlTypeId != 6 && item.ctrlTypeId != 7 && item.ctrlTypeId != 8 && item.ctrlTypeId != 9 && item.ctrlTypeId != 11 && item.ctrlTypeId != 12 && item.ctrlTypeId != 10">
+                      <!-- <label class="from-label">Block Special Char </label> -->
+                      <div class="form-group ">
+                         <div class="form-check">
+                            <input name="blockSpclChar" id="blockSpclChar_{{ctrlIndex}}"
+                               formControlName="blockSpecialChars" class="form-check-input" type="checkbox" value=true>
+                            <label class="from-label " for="blockSpclChar_{{ctrlIndex}}">{{"Allow special
+                               characters"|langReplace}} </label>
+                         </div>
+                      </div>
+                   </div>
+ 
+                   <!--  -->
+                   <!-- <div class="col-md-6 otherValidation-div d-none"  *ngIf="item.ctrlTypeId != 1 && item.ctrlTypeId != 8 && item.ctrlTypeId != 12 && item.ctrlTypeId != 10">
+                          <label class="from-label">Other Validation Script</label>
+                          <div class="form-group ">
+                             <textarea name="othervalidation" class="fld-name form-control" cols="3" formControlName="ctrlOthervalidation" id="Othervalidation_{{ctrlIndex}}" rows="3">                      </textarea>
+                          </div>
+                       </div>
+                  </div> -->
+ 
+                   <!--============================================= API Details====================================-->
+                   <!-- Api checkbox for Label,Textbox,Dropdown,Checkbox,Radio  -->
+                   <div class="API-div">
+                      <div formArrayName="apiCtrlDetails">
+                         
+                         <div *ngFor="let cascadingcols of apiCtrlDetails(ctrlIndex).controls; let apiIndex=index">
+                            <div [formGroupName]="apiIndex">
+                               <div class="col-md-6 validation-div"
+                                  *ngIf="item.ctrlTypeId == 2 || item.ctrlTypeId == 1 || item.ctrlTypeId == 3 || item.ctrlTypeId == 5 || item.ctrlTypeId == 6 ">
+                                  <div class="form-group ">
+                                     <input name="APIChar" id="api_{{ctrlIndex}}" (change)="apiCheck($event)"
+                                        formControlName="APIChar" class="form-check-input" type="checkbox" value="true">
+                                     <label class="from-label "
+                                        for="api_{{ctrlIndex}}">{{"API"|langReplace}}
+                                     </label>
+                                  </div>
+                               </div>
+                               <div class="col-md-6 statictableAdd d-none" >
+                                  <div class="form-group mt-1">
+                                     <label class="from-label">* {{"Function Name"|langReplace}}</label>
+                                     <div class="form-group ">
+                                        <input class="form-control cascadingfld" formControlName="ctrlCCDFunctionName"
+                                           name="FunctionName" type="text" value=""
+                                           (blur)='setValueColumn($event,ctrlIndex,item.ctrlTypeId)'>
+                                     </div>
+                                     <div class="form-group  ">
+                                        <label class="from-label">* {{"Events"|langReplace}}</label>
+                                        <select class="form-select" formControlName="ctrlCCDEventName"
+                                           (blur)='setValueColumn($event,ctrlIndex,item.ctrlTypeId)'>
+                                           <option value="0" disabled selected>Select</option>
+                                           <option value="1">OnLoad</option>
+                                           <option value="2">OnChange</option>
+                                           <option value="3">OnClick</option>
+                                        </select>
+                                     </div>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                   <!-- ==================================   Dependant Details    =============================== -->
+                   <div class="DisplayDependent-div">
+                      <div class="separator separator-dashed"></div>
+                      <div formArrayName="dependctrlDetails">
+                         <div *ngFor="let dependcols of dependctrlDetails(ctrlIndex).controls; let dependIndex=index">
+                            <div [formGroupName]="dependIndex">
+                               <div class="row">
+                                  <div class="col-md-6 ">
+                                     <label class="from-label"></label>
+                                     <div class="form-group ">
+                                        <div class="form-check">
+                                           <input name="displayonotherfield" formControlName="ctrlChkDepend"
+                                              #ctrlChkDepend class="form-check-input" (change)="toggleShow($event)"
+                                              type="checkbox" id="dispalayother_{{ctrlIndex}}">
+                                           <label class="from-label "
+                                              for="dispalayother_{{ctrlIndex}}">{{"Display on other field"|langReplace}}
+                                           </label>
+                                        </div>
+                                     </div>
+                                  </div>
+                                  <div class="col-md-6 "></div>
+ 
+                                  <div class="col-md-6 displaydepend d-none">
+                                     <label class="from-label">* {{"Select Parent Field"|langReplace}} </label>
+                                     <div class="form-group ">
+                                        <select name="patentfield" class="form-select depend-fld-name"
+                                           formControlName="ctrlSelDependParent" #ctrlSelDependParent
+                                           (change)="optionChange(ctrlIndex,ctrlSelDependParent.value,ctrlSelDependParent.id)"
+                                           id="parentfiels_{{ctrlIndex}}">
+                                           <option value="0">Select</option>
+                                           <ng-container *ngFor="let deps of depOtherlist">
+                                              <option *ngIf="deps.controlid != ctrlId.value" [value]="deps.controlid">
+                                                 {{deps.controlname}}</option>
+ 
+                                           </ng-container>
+                                        </select>
+                                     </div>
+                                  </div>
+                                  <div class="col-md-6 displaydepend d-none">
+                                     <label class="from-label">* {{"Select Parent Value"|langReplace}} </label>
+                                     <div class="form-group ">
+ 
+                                        <select name="patentfield" class="form-select depend-fld-value" multiple
+                                           formControlName="ctrlSelDependValue" id="parentfielsval_{{ctrlIndex}}">
+                                           <option value="0">Select</option>
+                                        </select>
+ 
+                                     </div>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+ 
+                   <!-- ==================================   Dependant Details    =============================== -->
+ 
+                   <!-- ==================================   Language Details    =============================== -->
+ 
+                   <div class="DisplayDependent-div">
+                      <div class="separator separator-dashed"></div>
+                      <h5>{{'Language Labels'|langReplace}}</h5>
+                      <div formArrayName="languageDetails">
+                         <div *ngFor="let langcols of languageDetails(ctrlIndex).controls; let langIndex=index">
+                            <div [formGroupName]="langIndex">
+                               <div class="row">
+                                  <ng-container *ngFor="let lglist of getLanguageList">
+                                     <ng-container *ngIf="defaultLan!=lglist.aliasName">
+                                        <div class="col-md-6">
+                                           <label class="from-label">{{'Label in '|langReplace}}
+                                              {{lglist.langName}}</label>
+                                           <div class="form-group ">
+                                              <input class="form-control" [formControlName]="lglist.aliasName">
+                                           </div>
+                                        </div>
+ 
+                                     </ng-container>
+                                     <!-- <ng-container *ngIf="defaultLan!=lglist.aliasName" >
+ 
+                                     </ng-container> -->
+ 
+                                  </ng-container>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                   <!-- ==================================   Language Details    =============================== -->
+ 
+                   <!-- ==================================   CasCading  Details    =============================== -->
+                   <div class="cascading-div"
+                      *ngIf="item.ctrlTypeId == 1 || item.ctrlTypeId == 3 || item.ctrlTypeId == 5 || item.ctrlTypeId == 6">
+                      <div class="separator separator-dashed"></div>
+                      <div class="">
+                         <h5>{{"Cascading Field"|langReplace}}</h5>
+                         <div formArrayName="cascadingCtrlDetails">
+                            <div
+                               *ngFor="let cascadingcols of cascadingCtrlDetails(ctrlIndex).controls; let cascadingIndex=index">
+                               <div [formGroupName]="cascadingIndex">
+                                  <div class="row">
+                                     <div class="col-md-6 ">
+                                        <label class="from-label">* {{"Bind Data Type"|langReplace}}</label>
+                                        <div class="form-group ">
+                                           <select class="form-select" formControlName="ctrlCCbindDatatype"
+                                              [attr.data-typeid]="item.ctrlTypeId" #ctrlCCbindDatatype
+                                              id="radiobind_{{ctrlIndex}}"
+                                              (change)="staticChange($event,ctrlCCbinddepentOther.id,ctrlCCbinddepentOther.value)">
+                                              <option value="">Select</option>
+                                              <option value="static">Static</option>
+                                              <option value="dynamic">Dynamic</option>
+                                           </select>
+                                           <!-- (change)="staticChange($event,ctrlCCbinddepentOther.id,ctrlCCbinddepentOther.value)" -->
+                                        </div>
+                                     </div>
+ 
+                                     <div class="col-md-6 dependantOther">
+                                        <label class="from-label">{{"Dependent on other
+                                           field"|langReplace}}</label>
+                                        <div class="form-group ">
+                                           <select class="form-select" formControlName="ctrlCCbinddepentOther"
+                                              #ctrlCCbinddepentOther id="radiodepend_{{ctrlIndex}}">
+ 
+                                              <option value="yes">Yes</option>
+                                              <option value="no">No</option>
+                                           </select>
+                                        </div>
+                                     </div>
+                                     <!-- (change)="ccDependChange(setbindval,ctrlCCbinddepentOther.value, $event)" -->
+                                     <div class="col-md-6 ccdependfieldSelect"
+                                        [ngClass]="{'d-none':ctrlCCbinddepentOther.value == 'no'} ">
+                                        <label class="from-label">* {{"Select Field"|langReplace}}</label>
+                                        <div class="form-group ">
+                                           <select class="form-select cascadingfld" formControlName="ctrlCCbinddepentfld"
+                                              #ctrlCCbinddepentfld id="dispalayccdother_{{ctrlIndex}}"
+                                              (change)="optionChangecacding(ctrlIndex,ctrlCCbinddepentfld.id,ctrlCCbinddepentfld.value)">
+                                              <option value="0">Select</option>
+                                              <ng-container *ngFor="let deps of dependantlist">
+                                                 <option *ngIf="deps.controlid != ctrlId.value" [value]="deps.controlid">
+                                                    {{deps.controlname}}</option>
+                                              </ng-container>
+                                           </select>
+                                        </div>
+                                     </div>
+                                     <div class="col-md-6 ccdependfieldcolumn"
+                                        *ngIf="(ctrlCCbindDatatype.value == 'dynamic') && (ctrlCCbinddepentOther.value == 'yes')">
+                                        <label class="from-label"> * {{"Tag Child Column"|langReplace}}</label>
+                                        <div class="form-group ">
+                                           <input class="form-control cascadingfld" formControlName="ctrlCCbinddecldClm"
+                                              name="TagChildColumn" type="text" value="">
+                                        </div>
+                                     </div>
+                                     <div class="col-md-6 dynamic-columens-section"
+                                        *ngIf="ctrlCCbindDatatype.value == 'dynamic'">
+                                        <label class="from-label">* {{"Table Name"|langReplace}}</label>
+                                        <div class="form-group ">
+                                           <input class="form-control cascadingfld" formControlName="ctrlCCDTableName"
+                                              name="TableName" type="text" value="">
+                                        </div>
+                                     </div>
+                                     <div class="col-md-6 dynamic-columens-section "
+                                        *ngIf="ctrlCCbindDatatype.value == 'dynamic'">
+                                        <label class="from-label">{{"Alias"|langReplace}}</label>
+                                        <div class="form-group ">
+                                           <input class="form-control cascadingfld" formControlName="ctrlCCDAlias"
+                                              name="Alias" type="text" value="">
+                                        </div>
+                                     </div>
+                                     <div class="col-md-6 dynamic-columens-section"
+                                        *ngIf="ctrlCCbindDatatype.value == 'dynamic' && item.ctrlTypeId != 1">
+                                        <label class="from-label">* {{"Value Column Name"|langReplace}}</label>
+                                        <div class="form-group ">
+                                           <input class="form-control cascadingfld"
+                                              formControlName="ctrlCCDValueColumnName" name="ValueColumnName" type="text"
+                                              value="">
+                                        </div>
+                                     </div>
+                                     <div class="col-md-6 dynamic-columens-section "
+                                        *ngIf="ctrlCCbindDatatype.value == 'dynamic'">
+                                        <label class="from-label">* {{"Text Column Name"|langReplace}}</label>
+                                        <div class="form-group ">
+                                           <input class="form-control cascadingfld"
+                                              formControlName="ctrlCCDTextColumnName" name="TextColumnName" type="text"
+                                              value="" (blur)='setValueColumn($event,ctrlIndex,item.ctrlTypeId)'>
+                                        </div>
+                                     </div>
+                                     <div class="col-md-6 dynamic-columens-section "
+                                        *ngIf="ctrlCCbindDatatype.value == 'dynamic'">
+                                        <label class="from-label">{{"Conditions"|langReplace}}</label>
+                                        <div class="form-group ">
+                                           <textarea class="form-control cascadingfld"
+                                              formControlName="ctrlCCDConditions" name="Conditions" cols="2"
+                                              rows="2"></textarea>
+                                        </div>
+                                     </div>
+                                     <div class="col-md-12 statictableAdd "
+                                        *ngIf="ctrlCCbindDatatype.value == 'static' && item.ctrlTypeId != 1">
+                                        <label class="from-label">{{"Options"|langReplace}}</label>
+                                        <button type="button" class="btn btn-sm btn-primary ml-1"
+                                           id="staticOptBtn_{{ctrlIndex}}"
+                                           (click)="addNewOptions(ctrlIndex,cascadingIndex,ctrlCCbinddepentOther.value,ctrlCCbinddepentfld.id,ctrlCCbinddepentfld.value,ctrlCCbindDatatype.value)">{{"Add
+                                           Option"|langReplace}}</button>
+                                        <div class="form-group mt-1">
+                                           <table class="table table-bordered  bg-white mb-0 staticoptionstable">
+                                              <thead>
+                                                 <tr>
+                                                    <th>* {{"Value"|langReplace}} </th>
+                                                    <th>* {{"Name"|langReplace}} </th>
+                                                    <th
+                                                       *ngIf="(ctrlCCbindDatatype.value == 'static') && (ctrlCCbinddepentOther.value == 'yes')">
+                                                       * {{"Field Value"|langReplace}} </th>
+                                                    <th width="50px">{{"Action"|langReplace}}</th>
+                                                 </tr>
+                                              </thead>
+                                              <tbody class="ccstaticTabledata" formArrayName="ctrlStaticOptions">
+                                                 <tr *ngFor="let skill of ctrlStaticOptions(ctrlIndex,cascadingIndex).controls; let stOptIndex=index"
+                                                    id="staticrow_{{ctrlIndex}}_{{stOptIndex}}">
+                                                    <ng-container [formGroupName]="stOptIndex">
+                                                       <td><input class="form-control" type="text"
+                                                             formControlName="ctrlCCStaticValue"></td>
+                                                       <td> <input class="form-control " type="text"
+                                                             formControlName="ctrlCCStaticName"></td>
+                                                       <td
+                                                          *ngIf="(ctrlCCbindDatatype.value == 'static') && (ctrlCCbinddepentOther.value == 'yes')">
+                                                          <select class="form-select ccddepend-fld-value"
+                                                             formControlName="ctrlCCStaticFieldValue"
+                                                             id="ctrlCCStaticFieldValue_{{ctrlIndex}}_{{stOptIndex}}">
+                                                             <option value="0">Select</option>
+                                                          </select>
+                                                       </td>
+                                                       <td class="text-center">
+                                                          <a class="text-danger h6"
+                                                             (click)="removeOption(ctrlIndex,cascadingIndex,stOptIndex)"><i
+                                                                class="icon-trash-alt"></i></a>
+                                                       </td>
+                                                    </ng-container>
+                                                 </tr>
+                                              </tbody>
+                                           </table>
+                                        </div>
+                                     </div>
+                                     <div class="col-md-6 class-div"
+                                        *ngIf="item.ctrlTypeId == 1 && ctrlCCbindDatatype.value == 'static'">
+                                        <label class="from-label">* {{"Label Data"|langReplace}}</label>
+                                        <div class="form-group ">
+                                           <input name="class" type="text" class="fld-name form-control"
+                                              formControlName="ctrlCCLabelData">
+                                        </div>
+                                     </div>
+ 
+                                     <div class="col-md-6 d-none">
+                                        <label class="from-label">{{"Select Parent Field"|langReplace}}</label>
+                                        <div class="form-group ">
+                                           <select name="patentfield" class="form-select depend-fld-name"
+                                              id="parentfiels_{{ctrlIndex}}">
+                                              <option value="0">Select</option>
+                                           </select>
+                                        </div>
+                                     </div>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+ 
+                   </div>
+                   <!-- Add adpi textbox and dropdown -->
+                   <!--  <div formArrayName="apiCtrlDetails">
+                      <div *ngFor="let cascadingcols of apiCtrlDetails(ctrlIndex).controls; let apiIndex=index">
+                         <div [formGroupName]="apiIndex">
+                            <div class="col-md-6 validation-div"
+                               *ngIf="item.ctrlTypeId == 1 || item.ctrlTypeId == 3 || item.ctrlTypeId == 5 || item.ctrlTypeId == 6">
+                               <div class="form-group ">
+                                  <input name="APIChar" id="blockSpclChar_{{ctrlIndex}}" (change)="apiCheck($event)"
+                                     formControlName="APIChar" class="form-check-input" type="checkbox" value={}>
+                                  <label class="from-label "
+                                     for="blockSpclChar_{{ctrlIndex}}">{{"API"|langReplace}}
+                                  </label>
+                               </div>
+                            </div>
+                            <div class="col-md-6 statictableAdd " *ngIf="showInputs">
+                               <div class="form-group mt-1">
+                                  <label class="from-label"> {{"Function Name"|langReplace}}</label>
+                                  <div class="form-group ">
+                                     <input class="form-control cascadingfld" formControlName="ctrlCCDFunctionName"
+                                        name="FunctionName" type="text" value=""
+                                        (blur)='setValueColumn($event,ctrlIndex,item.ctrlTypeId)'>
+                                  </div>
+                                  <div class="form-group  ">
+                                     <label class="from-label"> {{"Events"|langReplace}}</label>
+                                     <select class="form-select" formControlName="ctrlCCDEventName"
+                                        (blur)='setValueColumn($event,ctrlIndex,item.ctrlTypeId)'>
+                                        <option value="0" disabled selected>Select</option>
+                                        <option value="1">OnLoad</option>
+                                        <option value="2">OnChange</option>
+                                        <option value="3">OnClick</option>
+                                     </select>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                   </div> -->
+ 
+                   <!-- ==================================   CasCading  Details    =============================== -->
+                   <!-- ==================================   API  Details    =============================== -->
+                   <!-- <div class="api-div " [ngClass]="{'d-none' : item.ctrlTypeId == 3 || item.ctrlTypeId == 5 || item.ctrlTypeId == 6 || item.ctrlTypeId == 10 || item.ctrlTypeId == 7 || item.ctrlTypeId == 8 || item.ctrlTypeId == 9 || item.ctrlTypeId == 11 || item.ctrlTypeId == 12}"  >
+ 
+            <div class="separator separator-dashed"></div>
+            <div class="">
+ 
+               <div formArrayName="apiCtrlDetails">
+                  <div *ngFor="let cascadingcols of apiCtrlDetails(ctrlIndex).controls; let apiIndex=index">
+                     <div [formGroupName]="apiIndex">
+                         <div class="row">
+                                <div class="col-md-12">
+                                        <label class="from-label"></label>
+                                        <div class="form-group ">
+                                           <div class="form-check">
+                                              <input name="displayonotherfield" formControlName="ctrlChkAPIDetails" #ctrlChkAPIDetails class="form-check-input"  (change)="toggleApiDetails($event,ctrlId)"  type="checkbox"  id="ctrlChkAPIDetails_{{ctrlIndex}}">
+                                              <label class="from-label " for="ctrlChkAPIDetails_{{ctrlIndex}}">API Details </label>
+                                           </div>
+                                        </div>
+                                     </div>
+ 
+                         </div>
+                            <div class="row displayAPIDetails d-none">
+ 
+                            <div class="col-4">
+                                    <label class="from-label">* Method</label>
+                                    <div class="form-group ">
+                                            <select name="patentfield" class="form-select " formControlName="ctrlSelApiMethod" id="parentfiels_{{ctrlIndex}}">
+                                                    <option value="0">Select</option>
+                                                    <option value="get">Get</option>
+                                                    <option value="post">Post</option>
+                                                 </select>
+                                    </div>
+                                 </div>
+                            <div class="col-8">
+                                    <label class="from-label">* URL</label>
+                                    <div class="form-group ">
+                                       <input class="form-control" formControlName="ctrlTxtApiUrl" name="TextColumnName" type="text" value="" >
+                                    </div>
+                                 </div>
+ 
+                                 <div class="col-md-12 ">
+                                        <label class="from-label">Input Parameters</label>
+                                        <button type="button" class="btn btn-sm btn-primary ml-1" (click)="addapiInputParam(ctrlIndex,apiIndex)">Add Option</button>
+ 
+                                        <div class="form-group mt-1">
+                                           <table class="table table-bordered  bg-white mb-0" >
+                                              <thead>
+                                                 <tr>
+                                                    <th>* Key </th>
+                                                    <th>* Type </th>
+                                                    <th>* Value </th>
+ 
+                                                    <th width="50px">Action</th>
+                                                 </tr>
+                                              </thead>
+                                              <tbody class="" formArrayName="ctrlinputParams">
+                                                 <tr *ngFor="let skill of ctrlinputParams(ctrlIndex,apiIndex).controls; let apiInputparamIndex=index">
+                                                    <ng-container [formGroupName]="apiInputparamIndex">
+                                                       <td><input class="form-control" type="text" formControlName="ctrlinputparamKey"></td>
+ 
+                                                       <td >
+ 
+                                                          <select class="form-select ccddepend-fld-value"  formControlName="ctrlinputparamType" #ctrlinputparamType id="ctrlCCStaticFieldValue_{{ctrlIndex}}_{{apiInputparamIndex}}">
+                                                             <option value="0">Select</option>
+                                                             <option value="static">Static</option>
+                                                             <option value="dynamic">Dynamic</option>
+                                                          </select>
+                                                       </td>
+                                                       <td>
+ 
+                                                           <input class="form-control " *ngIf="ctrlinputparamType.value =='static'" type="text" formControlName="ctrlinputparamValue">
+                                                           <select class="form-select ccddepend-fld-value" *ngIf="ctrlinputparamType.value =='dynamic'" formControlName="ctrlinputparamValue" >
+                                                                <option value="">Select</option>
+                                                                <ng-container *ngFor="let deps of ItemCtrllist">
+                                                                    <option  [value]="deps.controlid" >{{deps.controlname}}</option>
+                                                                 </ng-container>
+                                                             </select>
+                                                        </td>
+                                                       <td class="text-center">
+                                                          <a class="text-danger h6" (click)="removeInputParam(ctrlIndex,apiIndex,apiInputparamIndex)"><i class="icon-trash-alt"></i></a>
+ 
+                                                       </td>
+                                                    </ng-container>
+                                                 </tr>
+                                              </tbody>
+                                           </table>
+                                        </div>
+                                     </div>
+                                     <div class="col-md-6">
+                                            <label class="from-label">* Type</label>
+                                            <div class="form-group ">
+                                                    <select name="patentfield" class="form-select " formControlName="ctrlApiSelType" >
+                                                            <option value="0">Select</option>
+                                                            <option value="XML">XML</option>
+                                                            <option value="Json">Json</option>
+                                                         </select>
+                                            </div>
+                                         </div>
+                                         <div class="col-md-6">
+                                                <label class="from-label">* Event Type</label>
+                                                <div class="form-group ">
+                                                        <select name="patentfield" class="form-select " formControlName="ctrlApiSelEventType" >
+                                                                <option value="0">Select</option>
+                                                                <option value="onClick">On Click</option>
+                                                                 <option value="onBlur">On Blur</option>
+                                                             </select>
+                                                </div>
+                                             </div>
+                                             <div class="col-md-12 ">
+                                                    <label class="from-label">Out Parameters</label>
+                                                    <button type="button" class="btn btn-sm btn-primary ml-1" (click)="addapiOutputParam(ctrlIndex,apiIndex)">Add Option</button>
+ 
+                                                    <div class="form-group mt-1">
+                                                       <table class="table table-bordered  bg-white mb-0 " >
+                                                          <thead>
+                                                             <tr>
+                                                                <th>* Parameter </th>
+                                                                <th>* Key </th>
+ 
+                                                                <th>* Value </th>
+ 
+                                                                <th width="50px">Action</th>
+                                                             </tr>
+                                                          </thead>
+                                                           <tbody class="" formArrayName="ctrloutputParams">
+                                                             <tr *ngFor="let skill of ctrloutputParams(ctrlIndex,apiIndex).controls; let apiOutParamIndex=index">
+                                                                <ng-container [formGroupName]="apiOutParamIndex">
+                                                                    <td>
+                                                                        <select class="form-select ccddepend-fld-value"  formControlName="ctrlOutparams">
+                                                                            <option value="0">Select</option>
+                                                                            <ng-container *ngFor="let deps of ItemCtrllist">
+                                                                                <option  [value]="deps.controlid" >{{deps.controlname}}</option>
+                                                                             </ng-container>
+                                                                         </select>
+                                                                        </td>
+                                                                   <td><input class="form-control" type="text" formControlName="ctrlOutparamKey"></td>
+                                                                   <td> <input class="form-control " type="text" formControlName="ctrlOutparamVal"></td>
+ 
+                                                                   <td class="text-center">
+                                                                      <a class="text-danger h6" (click)="removeOutParam(ctrlIndex,apiIndex,apiOutParamIndex)"><i class="icon-trash-alt"></i></a>
+                                                                   </td>
+                                                                </ng-container>
+                                                             </tr>
+                                                          </tbody>
+                                                       </table>
+                                                    </div>
+                                                 </div>
+                             </div>
+ 
+                     </div>
+                   </div>
+                </div>
+            </div>
+        </div>      -->
+                   <!-- ==================================   API  Details    =============================== -->
+                   <!-- ==================================   Calculation Details    =============================== -->
+                   <div class="cascading-div" *ngIf="item.ctrlTypeId == 2">
+                      <div class="separator separator-dashed"></div>
+                      <h5>{{"Calculation Details"|langReplace}}</h5>
+                      <div formArrayName="calculationDetails">
+                         <div *ngFor="let calccols of calculationDetails(ctrlIndex).controls; let calcIndex=index">
+                            <div [formGroupName]="calcIndex">
+                               <div class="row">
+                                  <div class="col-md-6 ">
+                                     <label class="from-label"></label>
+                                     <div class="form-group ">
+                                        <div class="form-check">
+                                           <input name="displayonotherfield" formControlName="ctrlChkCalculation"
+                                              #ctrlChkCalculation class="form-check-input"
+                                              (change)="toggleShowCalc($event)" type="checkbox"
+                                              id="dispalayCalc_{{ctrlIndex}}">
+                                           <label class="from-label "
+                                              for="dispalayCalc_{{ctrlIndex}}">{{"Calculation"|langReplace}}
+                                           </label>
+                                        </div>
+                                     </div>
+                                  </div>
+                                  <div class="col-md-12 displayCalculation d-none">
+                                     <div class="form-group mt-1">
+                                        <table class="table table-bordered  bg-white mb-0 staticoptionstable">
+                                           <thead>
+                                              <tr>
+                                                 <th>{{"Input Fields"|langReplace}} </th>
+                                                 <th>{{"Field Value"|langReplace}} </th>
+                                                 <th width="120px">{{"Action"|langReplace}} <button type="button"
+                                                       class="btn btn-sm btn-primary ml-1"
+                                                       (click)="addcalcOptions(ctrlIndex,calcIndex,ctrlChkCalculation.id)">{{"Add"|langReplace}}
+                                                    </button></th>
+                                              </tr>
+                                           </thead>
+                                           <tbody class="" formArrayName="ctrlCalcOptions">
+                                              <tr
+                                                 *ngFor="let calcOpts of ctrlCalcOptions(ctrlIndex,calcIndex).controls; let calcOptIndex=index">
+                                                 <ng-container [formGroupName]="calcOptIndex" #ctrlCalcFieldtypeitems>
+                                                    <td>
+                                                       <select class="form-select ctrlCalcFieldtype" #ctrlCalcFieldtype
+                                                          (change)="calccChange(ctrlCalcFieldtype.id,ctrlId.value)"
+                                                          formControlName="ctrlCalcFieldtype"
+                                                          id="calccChange_{{ctrlIndex}}_{{calcOptIndex}}">
+                                                          <option value="0">Select</option>
+                                                          <option value="fieldValue">Field Value</option>
+                                                          <option value="operator">Operator</option>
+                                                          <option value="constant">Constant</option>
+                                                       </select>
+                                                    </td>
+                                                    <td>
+                                                       <select class="form-select txtfieldvalues"
+                                                          *ngIf="ctrlCalcFieldtype.value == 'fieldValue'"
+                                                          id="calccfvalue_{{ctrlIndex}}_{{calcOptIndex}}"
+                                                          formControlName="ctrlCalcValue">
+                                                          <option value="">Select</option>
+                                                          <!-- <ng-container *ngFor="let txtflds of textctrllist">
+                                            <option [value]="txtflds.controlid" >{{txtflds.controlname}}</option>
+                                            </ng-container> -->
+                                                       </select>
+                                                       <select class="form-select"
+                                                          *ngIf="ctrlCalcFieldtype.value == 'operator'"
+                                                          formControlName="ctrlCalcValue">
+                                                          <option value="">Select</option>
+                                                          <option value="+">+</option>
+                                                          <option value="-">-</option>
+                                                          <option value="*">*</option>
+                                                          <option value="/">/</option>
+                                                          <option value="%">%</option>
+                                                       </select>
+                                                       <input type="text" *ngIf="ctrlCalcFieldtype.value == 'constant'"
+                                                          class="form-control" formControlName="ctrlCalcValue">
+                                                    </td>
+                                                    <td class="text-center">
+                                                       <a class="text-danger h6"
+                                                          (click)="removeCalcOption(ctrlIndex,calcIndex,calcOptIndex)"><i
+                                                             class="icon-trash-alt"></i></a>
+                                                    </td>
+                                                 </ng-container>
+                                              </tr>
+                                           </tbody>
+                                        </table>
+                                     </div>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+ 
+                   <!-- ==================================   Calculation Details    =============================== -->
+ 
+ 
+ 
+                   <!-- ==================================   Table Column Details    =============================== -->
+                   <div class="DisplayDependent-div"
+                      *ngIf="item.ctrlTypeId != 10 && item.ctrlTypeId != 8 && item.ctrlTypeId != 12">
+                      <div class="separator separator-dashed"></div>
+                      <h5>{{"Table Column Details"|langReplace}}</h5>
+                      <div formArrayName="tablecolDetails">
+                         <div *ngFor="let tblcols of tablecolDetails(ctrlIndex).controls; let tblColIndex=index">
+                            <div class="row" [formGroupName]="tblColIndex">
+                               <ng-container *ngIf="tableExistsCheck!=1;else loadTableExist">
+                                  <div class="col-md-4">
+                                     <label class="from-label">*{{"Column Name"|langReplace}}</label>
+                                     <div class="form-group ">
+                                        <input type="text" class="fld-name ctrlName form-control" #ctrlTblColName
+                                           minlength="0" maxlength="16" appUppercase
+                                           (keyup)="vldChkLst.chkblankspace(ctrlTblColName.value)"
+                                           formControlName="ctrlTblColName">
+                                        <small class="text-gray d-block mt-1"><i class="text-danger">({{"Ex. ABC,
+                                              DEMO_ABC, Maximum 16 chars &amp; Space not
+                                              allowed"|langReplace}})</i></small>
+                                     </div>
+                                  </div>
+                                  <div class="col-md-3">
+                                     <label class="from-label">* {{"Type"|langReplace}}</label>
+                                     <div class="form-group ">
+                                        <select class="form-select" #ctrlTblColType formControlName="ctrlTblColType">
+                                              <option value="0">Select</option>
+                                              <ng-container >
+                                                    <ng-container *ngFor="let data of mysqlDataType">
+                                                       <option [value]="data.value">{{data.dataType}}</option>
+                                                    </ng-container>
+                                              </ng-container>
+                                 
+                                        </select>
+                                     </div>
+                                  </div>
+                                  <div class="col-md-3" *ngIf="ctrlTblColType.value == 'VARCHAR' ||             ctrlTblColType.value == 'TINYINT' ||  
+                                  ctrlTblColType.value == 'SMALLINT'||
+                                  ctrlTblColType.value == 'MEDIUMINT'||
+                                  ctrlTblColType.value == 'BIGINT'||
+                                  ctrlTblColType.value == 'DECIMAL'||
+                                  ctrlTblColType.value == 'FLOAT'||
+                                  ctrlTblColType.value == 'DOUBLE'||
+                                  ctrlTblColType.value == 'CHAR'||
+                                 
+                                  ctrlTblColType.value == 'ENUM'
+                                  ">
+                                     <label class="from-label">* {{"Length"|langReplace}}</label>
+                                     <div class="form-group ">
+                                        <input type="text" class="fld-name ctrlName form-control"
+                                           (keypress)="vldChkLst.isNumberKey($event)" formControlName="ctrlTblColLength">
+                                     </div>
+                                  </div>
+                                  <div class="col-md-2" *ngIf="ctrlTblColType.value == 'DECIMAL' ||ctrlTblColType.value == 'FLOAT' ||
+                                  ctrlTblColType.value == 'DOUBLE' ">
+                                     <label class="from-label">{{"Precision"|langReplace}}*</label>
+                                     <div class="form-group ">
+                                        <input type="text" class="fld-name ctrlName form-control"
+                                           formControlName="ctrlTblColprecision">
+                                     </div>
+                                  </div>
+ 
+ 
+                                  <div class="col-md-2" *ngIf="(ctrlTblColType.value!== 'DECIMAL' && ctrlTblColType.value!== 'FLOAT'  && ctrlTblColType.value !== 'DOUBLE' )">
+                                     <label class="from-label">{{"Default"|langReplace}}</label>
+                                     <div class="form-group ">
+                                        <input type="text" class="fld-name ctrlName form-control"
+                                           formControlName="ctrlTblColDeafult">
+ 
+                                     </div>
+                                  </div>
+                                  <div class="col-md-4 d-none">
+                                     <label class="from-label">{{"Constraints"|langReplace}}</label>
+                                     <div class="form-group ">
+                                        <select class="form-select" #ctrlTblColConstraints
+                                           formControlName="ctrlTblColConstraints"
+                                           id="selConst_{{item.ctrlclass + ctrlIndex}}"
+                                           (change)="constraintsChange(ctrlTblColConstraints.value, $event)">
+                                           <option value="">Select</option>
+                                           <option value="Foreign key">Foreign key</option>
+                                           <option value="Check">Check</option>
+                                        </select>
+                                     </div>
+                                  </div>
+                                  <div class="col-md-3 constraintsfields d-none">
+                                     <label class="from-label">{{"Parent Table"|langReplace}}</label>
+                                     <div class="form-group ">
+                                        <select class="form-select" formControlName="ctrlTblColParentTbl">
+                                           <option value="0">Select</option>
+                                           <option value="table_1">table_1</option>
+                                           <option value="table_2">table_2</option>
+                                        </select>
+                                     </div>
+                                  </div>
+                                  <div class="col-md-3 constraintsfields d-none">
+                                     <label class="from-label">{{"Parent Table Column"|langReplace}}</label>
+                                     <div class="form-group ">
+                                        <select class="form-select" formControlName="ctrlTblColParentTblClmName">
+                                           <option value="0">Select</option>
+                                           <option value="table_1">table_1</option>
+                                           <option value="table_2">table_2</option>
+                                        </select>
+                                     </div>
+                                  </div>
+                               </ng-container>
+                               <ng-template #loadTableExist>
+                                  <div class="col-md-4">
+                                     <label class="from-label">*{{"Column Name"|langReplace}}</label>
+                                     <div class="form-group ">
+                                        <select class="form-select" id="ctrlTblColName{{ctrlIndex}}"
+                                           formControlName="ctrlTblColName" #ctrlTblColName
+                                           (change)="setTabularDetails($event,ctrlIndex)">
+                                           <option value="">Select</option>
+                                           <!-- <option  *ngFor="let opr of operators;" [value]="opr['Id']">{{opr['value']}}</option> -->
+                                           <option *ngFor="let kloop of arrsecColumnDetails; let kctr = index"
+                                              [attr.data-seccolval]="kctr" value="{{kloop.columnName}}">
+                                              {{kloop.columnName}}</option>
+                                        </select>
+                                     </div>
+ 
+ 
+ 
+                                  </div>
+                               </ng-template>
+                            </div>
+                         </div>
+                      </div>
+ 
+ 
+ 
+ 
+                   </div>
+                   <!-- ==================================   Table Column Details    =============================== -->
+                   <!-- ==================================  Addmore Details    =============================== -->
+                   <div class="DisplayDependent-div" *ngIf="item.ctrlTypeId == 10">
+ 
+ 
+                      <div class="separator separator-dashed"></div>
+                      <h5>{{"Addmore Details"|langReplace}}</h5>
+ 
+                      <div class="row">
+ 
+                         <div class="col-md-4">
+                            <label class="from-label">{{"Control Type"|langReplace}}</label>
+                            <div class="form-group">
+                               <select class="form-select" #addmorectrlType>
+                                  <option value="0">Select</option>
+ 
+ 
+                                  <option *ngFor="let ctrls of origin" [value]="ctrls.ctrlTypeId">{{ctrls.controlname}}
+                                  </option>
+ 
+                               </select>
+                            </div>
+                         </div>
+                         <div class="col-md-4">
+                            <a href="javascript:void(0)"
+                               (click)="addctrl(ctrlIndex,addmoreDetails(ctrlIndex).controls.length,addmorectrlType.value,$event)"
+                               class="btn btn-primary mt-3">{{"Add"|langReplace}}</a>
+                         </div>
+ 
+ 
+                      </div>
+ 
+                      <div class="addmoreCtrlList">
+                         <div formArrayName="addmoreDetails" class="addmorectrls">
+                            <div *ngIf="addmoreDetails(ctrlIndex).controls.length > 0">
+ 
+ 
+                               <div
+                                  *ngFor="let addmorectrls of addmoreDetails(ctrlIndex).controls; let addmoreIndex=index"
+                                  class="addmoreitem-box">
+                                  <!-- // <pre>{{ | json}} </pre>   -->
+ 
+                                  <div class="addmorectrls draggable" [formGroupName]="addmoreIndex">
+ 
+ 
+                                     <div class="preview-div">
+                                        <div class="form-group firstgroup UiTextField">
+ 
+                                           <input type="hidden" formControlName="ctrlTypeId"
+                                              [value]="addmorectrlType.value">
+                                           <div [ngSwitch]="this.addmorectrls.value.ctrlTypeId">
+ 
+ 
+ 
+ 
+                                              <div *ngSwitchCase=1>
+                                                 <div class="d-flex align-itmes-center">
+                                                    <input type="text" value="" placeholder="Sl No. *" maxlength="3"
+                                                       (keypress)="vldChkLst.isNumberKey($event)"
+                                                       formControlName="ctrlSlNo"
+                                                       class="fld-name form-control form-control-sm width80 mr-2"><label
+                                                       class="mandatory-label ctrlLabel">{{"Label"|langReplace}}
+                                                       <small class="text-primary">( ID = {{amctrlId.value}}
+                                                          )</small></label>
+                                                 </div>
+                                              </div>
+                                              <div *ngSwitchCase=2>
+                                                 <div class="d-flex align-itmes-center"> 
+                                                    <input type="text" value="" placeholder="Sl No. *" maxlength="3"
+                                                       (keypress)="vldChkLst.isNumberKey($event)"
+                                                       formControlName="ctrlSlNo"
+                                                       class="fld-name form-control form-control-sm width80 mr-2"><label
+                                                       class="mandatory-label ctrlLabel">{{"TextBox"|langReplace}}
+                                                       <small class="text-primary">( ID = {{amctrlId.value}}
+                                                          )</small></label>
+                                                 </div>
+                                              </div>
+                                              <div *ngSwitchCase=3>
+                                                 <div class="d-flex align-itmes-center">
+                                                    <input type="text" value="" placeholder="Sl No. *" maxlength="3"
+                                                       (keypress)="vldChkLst.isNumberKey($event)"
+                                                       formControlName="ctrlSlNo"
+                                                       class="fld-name form-control form-control-sm width80 mr-2"><label
+                                                       class="mandatory-label ctrlLabel">{{"Dropdown"|langReplace}}
+                                                       <small class="text-primary">( ID = {{amctrlId.value}}
+                                                          )</small></label>
+                                                 </div>
+                                              </div>
+                                              <div *ngSwitchCase=4>
+                                                 <div class="d-flex align-itmes-center">
+                                                    <input type="text" value="" placeholder="Sl No. *" maxlength="3"
+                                                       (keypress)="vldChkLst.isNumberKey($event)"
+                                                       formControlName="ctrlSlNo"
+                                                       class="fld-name form-control form-control-sm width80 mr-2"><label
+                                                       class="mandatory-label ctrlLabel">{{"TextArea"|langReplace}}
+                                                       <small class="text-primary">( ID = {{amctrlId.value}}
+                                                          )</small></label>
+                                                 </div>
+                                              </div>
+                                              <div *ngSwitchCase=5>
+                                                 <div class="d-flex align-itmes-center">
+                                                    <input type="text" value="" placeholder="Sl No. *" maxlength="3"
+                                                       (keypress)="vldChkLst.isNumberKey($event)"
+                                                       formControlName="ctrlSlNo"
+                                                       class="fld-name form-control form-control-sm width80 mr-2"><label
+                                                       class="mandatory-label ctrlLabel">{{"Checkbox"|langReplace}}
+                                                       <small class="text-primary">( ID = {{amctrlId.value}}
+                                                          )</small></label>
+                                                 </div>
+                                              </div>
+                                              <div *ngSwitchCase=6>
+                                                 <div class="d-flex align-itmes-center">
+                                                    <input type="text" value="" placeholder="Sl No. *" maxlength="3"
+                                                       (keypress)="vldChkLst.isNumberKey($event)"
+                                                       formControlName="ctrlSlNo"
+                                                       class="fld-name form-control form-control-sm width80 mr-2"><label
+                                                       class="mandatory-label ctrlLabel">{{"Radio"|langReplace}}
+                                                       <small class="text-primary">( ID = {{amctrlId.value}}
+                                                          )</small></label>
+                                                 </div>
+                                              </div>
+                                              <div *ngSwitchCase=7>
+                                                 <div class="d-flex align-itmes-center">
+                                                    <input type="text" value="" placeholder="Sl No. *" maxlength="3"
+                                                       (keypress)="vldChkLst.isNumberKey($event)"
+                                                       formControlName="ctrlSlNo"
+                                                       class="fld-name form-control form-control-sm width80 mr-2"><label
+                                                       class="mandatory-label ctrlLabel">{{"File
+                                                       Upload"|langReplace}} <small class="text-primary">( ID =
+                                                          {{amctrlId.value}} )</small></label>
+                                                 </div>
+                                              </div>
+ 
+                                           </div>
+                                        </div>
+                                     </div>
+                                     <div class="top-right-items">
+                                        <a class="element-edit" href="javascript:void(0)"
+                                           id="AMitemEdit{{ctrlIndex}}_{{addmoreIndex}}"
+                                           (click)="addmoreeditItem(amctrlId.value,ctrlIndex,addmoreIndex)"><i
+                                              class="icon-pencil-alt-solid"></i></a>
+                                        <a class="element-close" href="javascript:void(0)"
+                                           id="AMitemdelete{{ctrlIndex}}_{{addmoreIndex}}"
+                                           (click)="Amdelete(ctrlIndex,addmoreIndex)"><i class="icon-trash-alt"></i></a>
+ 
+                                     </div>
+                                     <div class=" addmorectrlproperies d-none mt-3">
+                                        <h5>{{"Basic Info"|langReplace}}</h5>
+                                        <div class="row">
+                                           <div class="col-md-12 required-div"
+                                              *ngIf="this.addmorectrls.value.ctrlTypeId != 1">
+                                              <div class="form-group ">
+                                                 <div class="form-check">
+                                                    <input name="required"
+                                                       class="fld-name form-check-input required-check"
+                                                       formControlName="ctrlMandatory" type="checkbox" value=""
+                                                       id="Required_{{addmoreIndex}}">
+                                                    <label class="from-label"
+                                                       for="Required_{{addmoreIndex}}">{{"Mandatory"|langReplace}}</label>
+                                                 </div>
+                                              </div>
+                                           </div>
+ 
+                                           <div class="col-md-6 ">
+                                              <label class="from-label">{{"ID"|langReplace}}</label>
+                                              <div class="form-group ">
+                                                 <input type="text" class="fld-name ctrlName form-control" #amctrlId
+                                                    formControlName="ctrlId" readonly="">
+                                              </div>
+                                           </div>
+                                           <div class="col-md-6 ">
+                                              <label class="from-label">{{"Name"|langReplace}}</label>
+                                              <div class="form-group ">
+                                                 <input type="text" class="fld-name ctrlName form-control"
+                                                    formControlName="ctrlName" readonly="">
+                                              </div>
+                                           </div>
+                                       
+                                           <div class="col-md-6 ">
+                                              <label class="from-label">* {{"Label"|langReplace}} </label>
+                                              <div class="form-group ">
+                                                 <input type="text" class="fld-name form-control" (blur)="storeAddMoreCtrlDetails(this.addmorectrls.value.ctrlTypeId,ctrlId.value,this.addmorectrls.value.ctrlLabel,this.addmorectrls.value.ctrlId)"
+                                                    formControlName="ctrlLabel" >
+ 
+                                              </div>
+                                           </div>
+                                           <div class="col-md-6 helptext-div">
+                                              <label class="from-label">{{"Help Text"|langReplace}}</label>
+                                              <div class="form-group ">
+                                                 <input name="description" type="text" class="fld-name form-control"
+                                                    formControlName="ctrlhelptext">
+                                              </div>
+                                           </div>
+                                           <div class="col-md-6 placeholder-div"
+                                              *ngIf="this.addmorectrls.value.ctrlTypeId != 1 && this.addmorectrls.value.ctrlTypeId != 3 && this.addmorectrls.value.ctrlTypeId != 5 && this.addmorectrls.value.ctrlTypeId != 6 && this.addmorectrls.value.ctrlTypeId != 7 ">
+                                              <label class="from-label">{{"Placeholder"|langReplace}}</label>
+                                              <div class="form-group ">
+                                                 <input name="placeholder" type="text" class="fld-name form-control"
+                                                    formControlName="ctrlPlaceholder">
+                                              </div>
+                                           </div>
+                                           <div class="col-md-6 class-div">
+                                              <label class="from-label">{{"Class"|langReplace}}</label>
+                                              <div class="form-group ">
+                                                 <input name="class" type="text" class="fld-name form-control"
+                                                    formControlName="ctrlClass"
+                                                    [value]="item.controlname === 'Button' ? 'btn' : 'form-control'">
+                                              </div>
+                                           </div>
+ 
+                                           <!-- <div class="col-md-6 class-div"
+                                           *ngIf="this.addmorectrls.value.ctrlTypeId == 1">
+                                           <label class="from-label">* {{"Label Data"|langReplace}}</label>
+                                           <div class="form-group ">
+                                              <input name="class" type="text" class="fld-name form-control" formControlName="ctrlCCLabelData">
+                                           </div>
+                                        </div> -->
+                                           <div class="col-md-6 minlength-div"
+                                              *ngIf="this.addmorectrls.value.ctrlTypeId != 1 && this.addmorectrls.value.ctrlTypeId != 3 && this.addmorectrls.value.ctrlTypeId != 5 && this.addmorectrls.value.ctrlTypeId != 6 && this.addmorectrls.value.ctrlTypeId != 7 ">
+                                              <label class="from-label">{{"Min Length"|langReplace}}</label>
+                                              <div class="form-group ">
+                                                 <input name="minlength" type="number" min="1" max="99999"
+                                                    formControlName="ctrlMinLength" class="fld-name form-control">
+                                              </div>
+                                           </div>
+                                           <div class="col-md-6 maxlength-div"
+                                              *ngIf="this.addmorectrls.value.ctrlTypeId != 1 && this.addmorectrls.value.ctrlTypeId != 3 && this.addmorectrls.value.ctrlTypeId != 5 && this.addmorectrls.value.ctrlTypeId != 6 && this.addmorectrls.value.ctrlTypeId != 7 ">
+                                              <label class="from-label">{{"Max Length"|langReplace}}</label>
+                                              <div class="form-group ">
+                                                 <input name="maxlength" type="number" min="1" max="99999"
+                                                    formControlName="ctrlMaxLength" class="fld-name form-control">
+                                              </div>
+                                           </div>
+                                           <div class="col-md-6 type-div"
+                                              *ngIf="this.addmorectrls.value.ctrlTypeId != 1 && this.addmorectrls.value.ctrlTypeId != 3 && this.addmorectrls.value.ctrlTypeId != 4 && this.addmorectrls.value.ctrlTypeId != 5 && this.addmorectrls.value.ctrlTypeId != 6 && this.addmorectrls.value.ctrlTypeId != 7 ">
+                                              <label class="from-label">{{"*Attribute Type"|langReplace}}</label>
+                                              <div class="form-group ">
+                                                 <select name="ctrltype" class="fld-name form-select" #ctrlAttributeType id="amattributeType_{{ctrlIndex}}_{{addmoreIndex}}" (change)="getvalidationlist(ctrlAttributeType.value)"
+                                                    formControlName="ctrlAttributeType">
+                                                    <option value="0">Select</option>
+                                                    <option value="text">Text</option>
+                                                    <option value="email">Email</option>
+                                                    <option value="number">Number</option>
+                                                    <option value="date">Date</option>
+                                                    <option value="time">Time</option>
+                                                    <option value="tel">Telephone</option>
+                                                    <option value="password">Password</option>
+                                                 </select>
+                                              </div>
+                                           </div>
+                                           <div class="col-md-6 filessection-div"
+                                              *ngIf="this.addmorectrls.value.ctrlTypeId == 7">
+                                              <label class="from-label">* {{"Max Length"|langReplace}} </label>
+                                              <div class="form-group ">
+                                                 <div class="input-group">
+                                                    <input name="fileMax" type="text" class="fld-name form-control"
+                                                       formControlName="ctrlFileMaxLength">
+                                                    <select class="form-select" formControlName="ctrlFileSizeType">
+                                                       <option value="0">Select</option>
+                                                       <option value="kb">KB</option>
+                                                       <option value="mb">MB</option>
+                                                    </select>
+ 
+                                                 </div>
+ 
+                                              </div>
+                                           </div>
+                                           <div class="col-md-6 required-div"
+                                              *ngIf="this.addmorectrls.value.ctrlTypeId == 7">
+                                              <div class="form-group ">
+                                                 <div class="form-check">
+                                                    <input name="required"
+                                                       class="fld-name form-check-input required-check"
+                                                       formControlName="ctrlForApproval" type="checkbox" value=""
+                                                       id="enableforapproval_{{ctrlIndex}}">
+                                                    <label class="from-label" for="enableforapproval_{{ctrlIndex}}">{{"Enable for
+                                                       Approval"|langReplace}}</label>
+                                                 </div>
+                                              </div>
+                                           </div>
+                                           <div class="col-md-6 filessection-div"
+                                              *ngIf="this.addmorectrls.value.ctrlTypeId == 7">
+                                              <label class="from-label">* {{'File Type'|langReplace}}</label>
+                                              <div class="form-group ">
+                                                 <select name="ctrltype" class="fld-name form-select" multiple formControlName="ctrlFileType">
+                       
+                                                    <option *ngFor="let loopvalidateFileTypes of validateFileTypes"[value]="loopvalidateFileTypes">.{{loopvalidateFileTypes}}</option>
+                                                 </select>
+                                              </div>
+                                           </div>
+ 
+ 
+ 
+                                           <div class="col-md-6 validation-div"
+                                              *ngIf="this.addmorectrls.value.ctrlTypeId != 1 && this.addmorectrls.value.ctrlTypeId != 3 && this.addmorectrls.value.ctrlTypeId != 5 && this.addmorectrls.value.ctrlTypeId != 6 && this.addmorectrls.value.ctrlTypeId != 7 ">
+                                              <label class="from-label">{{"Validations"|langReplace}}</label>
+                                              <div class="form-group ">
+                                                 <select name="validationdtls" class="form-select"
+                                                    formControlName="validationDetails" #ctrlSelDependParent>
+                                                    <option value="0">Select</option>
+                                                    
+                                                       <ng-container *ngFor="let data of attributetype">
+                                                          <option [value]="data">{{data}}</option>
+                                                       </ng-container>
+                                                
+          
+                                                 </select>
+                                              </div>
+                                           </div>
+                                           <div class="col-md-6 validation-div"
+                                              *ngIf="this.addmorectrls.value.ctrlTypeId != 1 && this.addmorectrls.value.ctrlTypeId != 3 && this.addmorectrls.value.ctrlTypeId != 5 && this.addmorectrls.value.ctrlTypeId != 6 && this.addmorectrls.value.ctrlTypeId != 7 && this.addmorectrls.value.ctrlTypeId != 8 && this.addmorectrls.value.ctrlTypeId != 9 && this.addmorectrls.value.ctrlTypeId != 11 && this.addmorectrls.value.ctrlTypeId != 12 && this.addmorectrls.value.ctrlTypeId != 10">
+                                              <!-- <label class="from-label">Block Special Char </label> -->
+                                              <div class="form-group ">
+                                                 <div class="form-check">
+                                                    <input name="blockSpclChar" id="blockSpclChar_{{ctrlIndex}}"
+                                                       formControlName="blockSpecialChars" class="form-check-input"
+                                                       type="checkbox" value=true>
+                                                    <label class="from-label " for="blockSpclChar_{{ctrlIndex}}">{{"Allow
+                                                       special characters"|langReplace}} </label>
+                                                 </div>
+                                              </div>
+                                           </div>
+ 
+                                           <div class="col-md-6 validation-div"
+                                              *ngIf="this.addmorectrls.value.ctrlTypeId == 2">
+                                              <div class="form-group ">
+                                                 <div class="form-check">
+                                                    <input name="totalCalcAddMore" id="totalCalcAddMore_{{ctrlIndex}}"
+                                                       formControlName="totalCalcAddMore" class="form-check-input"
+                                                       type="checkbox" value=true>
+                                                    <label class="from-label " for="totalCalcAddMore_{{ctrlIndex}}">{{"Total Calculation"|langReplace}} </label>
+                                                 </div>
+                                              </div>
+                                           </div>
+ 
+ 
+ 
+ 
+                                           <!-- <div class="col-md-6 otherValidation-div"  *ngIf="this.addmorectrls.value.ctrlTypeId != 1">
+                                                                <label class="from-label">Other Validation Script</label>
+                                                                <div class="form-group ">
+                                                                   <textarea name="othervalidation" class="fld-name form-control" cols="3" formControlName="ctrlOthervalidation" id="Othervalidation_{{ctrlIndex}}" rows="3">                      </textarea>
+                                                                </div>
+                                                             </div> -->
+ 
+ 
+ 
+ 
+                                        </div>
+ 
+                                        <!-- ==================================   Language Details    =============================== -->
+ 
+                                        <div class="DisplayDependent-div">
+                                           <div class="separator separator-dashed"></div>
+                                           <h5>{{"Language Labels"|langReplace}}</h5>
+                                           <div formArrayName="addmorelanguageDetails">
+                                              <div
+                                                 *ngFor="let amlangcols of addmorelanguageDetails(ctrlIndex,addmoreIndex).controls; let amlangIndex=index">
+                                                 <div [formGroupName]="amlangIndex">
+                                                    <div class="row">
+ 
+                                                       <ng-container *ngFor="let lglist of getLanguageList">
+                                                          <ng-container *ngIf="defaultLan!=lglist.aliasName">
+                                                             <div class="col-md-6">
+                                                                <label
+                                                                   class="from-label">{{"Label in "|langReplace}}
+                                                                   {{lglist.langName}}</label>
+                                                                <div class="form-group ">
+                                                                   <input class="form-control"
+                                                                      [formControlName]="lglist.aliasName">
+                                                                </div>
+                                                             </div>
+ 
+                                                          </ng-container>
+                                                          <!-- <label class="from-label">Label in {{lglist.langName}}</label>
+                                                          <div class="form-group ">
+ 
+                                                                <input  class="form-control"  [formControlName]="lglist.aliasName"  >
+ 
+ 
+                                                          </div> -->
+                                                       </ng-container>
+ 
+                                                    </div>
+                                                 </div>
+                                              </div>
+                                           </div>
+                                        </div>
+                                        <!-- ==================================   Language Details    =============================== -->
+ 
+                                        <!-- ==================================   Addmore CasCading  Details    =============================== -->
+                                        <div class="cascading-div"
+                                           *ngIf="this.addmorectrls.value.ctrlTypeId == 3 || this.addmorectrls.value.ctrlTypeId == 5 || this.addmorectrls.value.ctrlTypeId == 6 || this.addmorectrls.value.ctrlTypeId == 1">
+                                           <div class="separator separator-dashed"></div>
+                                           <div class="">
+                                              <h5>{{"Cascading Field"|langReplace}}</h5>
+ 
+                                              <div formArrayName="addmorecascadingCtrlDetails">
+                                                 <div
+                                                    *ngFor="let cascadingcols of addmorecascadingCtrlDetails(ctrlIndex,addmoreIndex).controls; let addmorecascadingIndex=index">
+                                                    <div [formGroupName]="addmorecascadingIndex">
+                                                       <div class="row">
+                                                          <div class="col-md-6 ">
+                                                             <label class="from-label">*
+                                                                {{"Bind Data Type"|langReplace}}</label>
+                                                             <div class="form-group ">
+                                                                <select class="form-select"
+                                                                   formControlName="ctrlCCbindDatatype"
+                                                                   #ctrlCCbindDatatype
+                                                                   id="amradiobind_{{ctrlIndex}}_{{addmoreIndex}}"
+                                                                   (change)="addmorestaticChange($event,AMctrlCCbinddepentOther.id,amctrlId.value)">
+                                                                   <option value="">Select</option>
+                                                                   <option value="static">Static</option>
+                                                                   <option value="dynamic">Dynamic</option>
+                                                                </select>
+                                                                <!--  -->
+                                                             </div>
+                                                          </div>
+                                                          <div class="col-md-6 ">
+                                                             <label
+                                                                class="from-label">{{"Dependent on other field"|langReplace}}</label>
+                                                             <div class="form-group ">
+                                                                <select class="form-select"
+                                                                   formControlName="AMctrlCCbinddepentOther"
+                                                                   #AMctrlCCbinddepentOther
+                                                                   id="amradiodepend_{{ctrlIndex}}_{{addmoreIndex}}">
+                                                                   <option value="yes">Yes</option>
+                                                                   <option value="no">No</option>
+                                                                </select>
+                                                             </div>
+                                                          </div>
+                                                          <div class="col-md-6 ccdependfieldSelect"
+                                                             [ngClass]="{'d-none':AMctrlCCbinddepentOther.value == 'no'} ">
+                                                             <label class="from-label">* {{"Select
+                                                                Field"|langReplace}}</label>
+                                                             <div class="form-group ">
+                                                                <select class="form-select cascadingfld"
+                                                                   formControlName="AMctrlCCbinddepentfld"
+                                                                   #AMctrlCCbinddepentfld
+                                                                   (change)="addmoreoptionChangecacding(ctrlIndex,addmoreIndex,AMctrlCCbinddepentfld.id,AMctrlCCbinddepentfld.value)"
+                                                                   id="amdispalayccdother_{{ctrlIndex}}_{{addmoreIndex}}">
+                                                                   <option value="0">Select</option>
+                                                                   <ng-container
+                                                                      *ngFor="let addeps of addmoredependantlist">
+                                                                      <option *ngIf="addeps.controlid != amctrlId.value"
+                                                                         [value]="addeps.controlid">
+                                                                         {{addeps.controlname}}</option>
+                                                                   </ng-container>
+                                                                </select>
+                                                             </div>
+                                                          </div>
+                                                          <div class="col-md-6  ccdependfieldcolumn"
+                                                             *ngIf="(ctrlCCbindDatatype.value == 'dynamic') && (AMctrlCCbinddepentOther.value == 'yes')">
+                                                             <label class="from-label">* {{"Tag Child
+                                                                Column"|langReplace}}</label>
+                                                             <div class="form-group ">
+                                                                <input class="form-control cascadingfld"
+                                                                   formControlName="ctrlCCbinddecldClm"
+                                                                   name="TagChildColumn" type="text" value="">
+                                                             </div>
+                                                          </div>
+                                                          <div class="col-md-6 dynamic-columens-section "
+                                                             *ngIf="ctrlCCbindDatatype.value == 'dynamic'">
+                                                             <label class="from-label">* {{"Table
+                                                                Name"|langReplace}}</label>
+                                                             <div class="form-group ">
+                                                                <input class="form-control cascadingfld"
+                                                                   formControlName="ctrlCCDTableName" name="TableName"
+                                                                   type="text" value="">
+                                                             </div>
+                                                          </div>
+                                                          <div class="col-md-6 dynamic-columens-section"
+                                                             *ngIf="ctrlCCbindDatatype.value == 'dynamic'">
+                                                             <label
+                                                                class="from-label">{{"Alias"|langReplace}}</label>
+                                                             <div class="form-group ">
+                                                                <input class="form-control cascadingfld"
+                                                                   formControlName="ctrlCCDAlias" name="Alias"
+                                                                   type="text" value="">
+                                                             </div>
+                                                          </div>
+                                                          <div class="col-md-6 dynamic-columens-section "
+                                                             *ngIf="ctrlCCbindDatatype.value == 'dynamic' &&  this.addmorectrls.value.ctrlTypeId != 1">
+                                                             <label class="from-label">* {{"Value Column
+                                                                Name"|langReplace}}</label>
+                                                             <div class="form-group ">
+                                                                <input class="form-control cascadingfld"
+                                                                   formControlName="ctrlCCDValueColumnName"
+                                                                   name="ValueColumnName" type="text" value="">
+                                                             </div>
+                                                          </div>
+                                                          <div class="col-md-6 dynamic-columens-section "
+                                                             *ngIf="ctrlCCbindDatatype.value == 'dynamic' &&  this.addmorectrls.value.ctrlTypeId != 1">
+                                                             <label class="from-label">* {{"Text Column
+                                                                Name"|langReplace}}</label>
+                                                             <div class="form-group ">
+                                                                <input class="form-control cascadingfld"
+                                                                   formControlName="ctrlCCDTextColumnName"
+                                                                   name="TextColumnName" type="text" value="">
+                                                             </div>
+                                                          </div>
+                                                          <div class="col-md-6 dynamic-columens-section "
+                                                             *ngIf="ctrlCCbindDatatype.value == 'dynamic' &&  this.addmorectrls.value.ctrlTypeId == 1">
+                                                             <label class="from-label">* {{"Text Column
+                                                             Name"|langReplace}}</label>
+                                                             <div class="form-group ">
+                                                                <input class="form-control cascadingfld"
+                                                                   formControlName="ctrlCCDTextColumnName"
+                                                                   name="TextColumnName" type="text" value=""
+                                                                   (blur)='setAddMoreValueColumn($event,ctrlIndex,addmoreIndex, this.addmorectrls.value.ctrlTypeId)'>
+                                                             </div>
+                                                          </div>
+ 
+ 
+                                                          <div class="col-md-6 dynamic-columens-section"
+                                                             *ngIf="ctrlCCbindDatatype.value == 'dynamic'">
+                                                             <label
+                                                                class="from-label">{{"Conditions"|langReplace}}</label>
+                                                             <div class="form-group ">
+                                                                <textarea class="form-control cascadingfld"
+                                                                   formControlName="ctrlCCDConditions" name="Conditions"
+                                                                   cols="2" rows="2"></textarea>
+                                                             </div>
+                                                          </div>
+                                                          <div class="col-md-12 statictableAdd "
+                                                             *ngIf="ctrlCCbindDatatype.value == 'static' && this.addmorectrls.value.ctrlTypeId != 1">
+                                                             <label
+                                                                class="from-label">{{"Options"|langReplace}}</label>
+                                                             <button type="button" class="btn btn-sm btn-primary ml-1"
+                                                                (click)="AmaddNewOptions(ctrlIndex,addmoreIndex,addmorecascadingIndex,AMctrlCCbinddepentOther.value,AMctrlCCbinddepentfld.id,AMctrlCCbinddepentfld.value)">Add
+                                                                Option</button>
+ 
+                                                             <div class="form-group mt-1">
+                                                                <table
+                                                                   class="table table-bordered  bg-white mb-0 staticoptionstable">
+                                                                   <thead>
+                                                                      <tr>
+                                                                         <th>* {{"Value"|langReplace}} </th>
+                                                                         <th>* {{"Name"|langReplace}} </th>
+                                                                         <th
+                                                                            *ngIf="(ctrlCCbindDatatype.value == 'static') && (AMctrlCCbinddepentOther.value == 'yes')">
+                                                                            * {{"Field Value"|langReplace}} </th>
+                                                                         <th width="50px">
+                                                                            {{"Action"|langReplace}}</th>
+                                                                      </tr>
+                                                                   </thead>
+                                                                   <tbody class="adccstaticTabledata"
+                                                                      formArrayName="addmorectrlStaticOptions">
+                                                                      <tr *ngFor="let skill of addmorectrlStaticOptions(ctrlIndex,addmoreIndex,addmorecascadingIndex).controls; let addmorestOptIndex=index"
+                                                                         id="adstaticrow_{{ctrlIndex}}_{{addmoreIndex}}_{{addmorestOptIndex}}">
+                                                                         <ng-container
+                                                                            [formGroupName]="addmorestOptIndex">
+                                                                            <td><input class="form-control" type="text"
+                                                                                  formControlName="ctrlCCStaticValue">
+                                                                            </td>
+                                                                            <td> <input class="form-control " type="text"
+                                                                                  formControlName="ctrlCCStaticName">
+                                                                            </td>
+                                                                            <td
+                                                                               *ngIf="(ctrlCCbindDatatype.value == 'static') && (AMctrlCCbinddepentOther.value == 'yes')">
+                                                                               <select
+                                                                                  class="form-select ccddepend-fld-value"
+                                                                                  formControlName="ctrlCCStaticFieldValue"
+                                                                                  id="amctrlCCStaticFieldValue_{{ctrlIndex}}_{{addmoreIndex}}_{{addmorestOptIndex}}">
+                                                                                  <option value="0">Select</option>
+                                                                               </select>
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                               <a class="text-danger h6"
+                                                                                  (click)="removeAmOption(ctrlIndex,addmoreIndex,addmorecascadingIndex,addmorestOptIndex)"><i
+                                                                                     class="icon-trash-alt"></i></a>
+                                                                            </td>
+                                                                         </ng-container>
+                                                                      </tr>
+                                                                   </tbody>
+                                                                </table>
+                                                             </div>
+                                                          </div>
+ 
+                                                          <div class="col-md-6"
+                                                             *ngIf="this.addmorectrls.value.ctrlTypeId == 1 && ctrlCCbindDatatype.value == 'static'">
+                                                             <label class="from-label">*
+                                                                {{"Label Data"|langReplace}}</label>
+                                                             <div class="form-group ">
+                                                                <input name="class" type="text"
+                                                                   class="fld-name form-control"
+                                                                   formControlName="ctrlCCLabelData">
+                                                             </div>
+                                                          </div>
+ 
+                                                          <div class="col-md-6 d-none">
+                                                             <label class="from-label">{{"Select Parent
+                                                                Field"|langReplace}}</label>
+                                                             <div class="form-group ">
+                                                                <select name="patentfield"
+                                                                   class="form-select depend-fld-name"
+                                                                   id="parentfiels_{{ctrlIndex}}">
+                                                                   <option value="0">Select</option>
+                                                                </select>
+                                                             </div>
+                                                          </div>
+                                                       </div>
+                                                    </div>
+                                                 </div>
+                                              </div>
+                                           </div>
+                                        </div>
+ 
+                                        <!-- ==================================   Addmore CasCading  Details    =============================== -->
+                                        <!-- ==================================  Addmore Calculation Details    =============================== -->
+                                        <div class="cascading-div" *ngIf="this.addmorectrls.value.ctrlTypeId  == 2">
+                                           <div class="separator separator-dashed"></div>
+                                           <h5>{{"Calculation Details"|langReplace}}</h5>
+                                           <div formArrayName="addmorecalculationDetails">
+                                              <div
+                                                 *ngFor="let calccols of addmorecalculationDetails(ctrlIndex,addmoreIndex).controls; let amcalcIndex=index">
+                                                 <div [formGroupName]="amcalcIndex">
+                                                    <div class="row">
+                                                       <div class="col-md-6 ">
+                                                          <label class="from-label"></label>
+                                                          <div class="form-group ">
+                                                             <div class="form-check">
+                                                                <input name="displayonotherfield"
+                                                                   formControlName="ctrlChkCalculation"
+                                                                   #amctrlChkCalculation class="form-check-input"
+                                                                   (change)="amtoggleShowCalc($event)" type="checkbox"
+                                                                   id="amdispalayCalc_{{ctrlIndex}}_{{addmoreIndex}}">
+                                                                <label class="from-label "
+                                                                   for="amdispalayCalc_{{ctrlIndex}}_{{addmoreIndex}}">{{"Calculation"|langReplace}}
+                                                                </label>
+                                                             </div>
+                                                          </div>
+                                                       </div>
+ 
+                                                       <div class="col-md-12 displayCalculation d-none">
+                                                          <div class="form-group mt-1">
+                                                             <table
+                                                                class="table table-bordered  bg-white mb-0 staticoptionstable">
+                                                                <thead>
+                                                                   <tr>
+                                                                      <th>{{"Input Fields"|langReplace}} </th>
+                                                                      <th>{{"Field Value"|langReplace}} </th>
+                                                                      <th width="120px">{{"Action"|langReplace}}
+                                                                         <button type="button"
+                                                                            class="btn btn-sm btn-primary ml-1"
+                                                                            (click)="amaddcalcOptions(ctrlIndex,addmoreIndex,amcalcIndex,amctrlChkCalculation.id)">{{"Add"|langReplace}}
+                                                                         </button>
+                                                                      </th>
+ 
+                                                                   </tr>
+                                                                </thead>
+                                                                <tbody class="" formArrayName="addmorectrlCalcOptions">
+                                                                   <tr
+                                                                      *ngFor="let calcOpts of addmorectrlCalcOptions(ctrlIndex,addmoreIndex,amcalcIndex).controls; let amcalcOptIndex=index">
+                                                                      <ng-container [formGroupName]="amcalcOptIndex"
+                                                                         #amctrlCalcFieldtypeitems>
+                                                                         <td>
+                                                                            <select class="form-select ctrlCalcFieldtype"
+                                                                               #amctrlCalcFieldtype
+                                                                               (change)="amcalccChange(amctrlCalcFieldtype.id,amctrlId.value)"
+                                                                               formControlName="ctrlCalcFieldtype"
+                                                                               id="amcalccChange_{{ctrlIndex}}_{{addmoreIndex}}_{{amcalcOptIndex}}">
+                                                                               <option value="0">Select</option>
+                                                                               <option value="fieldValue">Field Value
+                                                                               </option>
+                                                                               <option value="operator">Operator</option>
+                                                                               <option value="constant">Constant</option>
+                                                                            </select>
+                                                                         </td>
+                                                                         <td>
+                                                                            <select class="form-select txtfieldvalues"
+                                                                               *ngIf="amctrlCalcFieldtype.value == 'fieldValue'"
+                                                                               id="amcalccfvalue_{{ctrlIndex}}_{{addmoreIndex}}_{{amcalcOptIndex}}"
+                                                                               formControlName="ctrlCalcValue">
+                                                                               <option value="">Select</option>
+                                                                               <!-- <ng-container *ngFor="let txtflds of textctrllist">
+                                                   <option [value]="txtflds.controlid" >{{txtflds.controlname}}</option>
+                                                   </ng-container> -->
+                                                                            </select>
+                                                                            <select class="form-select"
+                                                                               *ngIf="amctrlCalcFieldtype.value == 'operator'"
+                                                                               formControlName="ctrlCalcValue">
+                                                                               <option value="">Select</option>
+                                                                               <option value="+">+</option>
+                                                                               <option value="-">-</option>
+                                                                               <option value="*">*</option>
+                                                                               <option value="/">/</option>
+                                                                               <option value="%">%</option>
+                                                                            </select>
+                                                                            <input type="text"
+                                                                               *ngIf="amctrlCalcFieldtype.value == 'constant'"
+                                                                               class="form-control"
+                                                                               formControlName="ctrlCalcValue">
+                                                                         </td>
+                                                                         <td class="text-center">
+                                                                            <a class="text-danger h6"
+                                                                               (click)="amremoveCalcOption(ctrlIndex,addmoreIndex,amcalcIndex,amcalcOptIndex)"><i
+                                                                                  class="icon-trash-alt"></i></a>
+                                                                         </td>
+                                                                      </ng-container>
+                                                                   </tr>
+                                                                </tbody>
+                                                             </table>
+                                                          </div>
+                                                       </div>
+ 
+                                                    </div>
+                                                 </div>
+                                              </div>
+                                           </div>
+                                        </div>
+ 
+                                        <!-- ==================================  Addmore Calculation Details    =============================== -->
+                                        <!-- ==================================  Addmore Table Column Details    =============================== -->
+                                        <div class="DisplayDependent-div">
+                                           <div class="separator separator-dashed"></div>
+                                           <h5>{{"Table Column Details"|langReplace}}</h5>
+                                           <div formArrayName="addmoretablecolDetails">
+                                              <div
+                                                 *ngFor="let tblcols of addmoretablecolDetails(ctrlIndex,addmoreIndex).controls; let tblColIndex=index">
+                                     
+                                                 <div class="row" [formGroupName]="tblColIndex">
+                                                    <ng-container *ngIf="tableExistsCheck!=1;else loadAddMoreTableExist">
+                                                       <div class="col-md-4">
+                                                          <label class="from-label">* {{"Column
+                                                             Name"|langReplace}}</label>
+                                                          <div class="form-group ">
+                                                             <input type="text" class="fld-name ctrlName form-control"
+                                                                (keyup)="vldChkLst.chkblankspace(ctrlTblColName.value)"
+                                                                minlength="0" maxlength="16" appUppercase #ctrlTblColName
+                                                                formControlName="ctrlTblColName">
+                                                             <small class="text-gray d-block mt-1"><i
+                                                                   class="text-danger">({{"Ex. ABC, DEMO_ABC, Maximum 16
+                                                                   chars &amp; Space not
+                                                                   allowed"|langReplace}})</i></small>
+                                                          </div>
+                                                       </div>
+                                                       <div class="col-md-3">
+                                                          <label class="from-label">*
+                                                             {{"Type"|langReplace}}</label>
+                                                          <div class="form-group ">
+                                                             <select class="form-select" #ctrlTblColType
+                                                                formControlName="ctrlTblColType">
+                                                                <option value="0">Select</option>
+                                              <ng-container >
+                                                    <ng-container *ngFor="let data of mysqlDataType">
+                                                       <option [value]="data.value">{{data.dataType}}</option>
+                                                    </ng-container>
+                                              </ng-container>
+                                              
+                                              
+                                              
+ 
+                                                             </select>
+                                                          </div>
+                                                       </div>
+                                                       <div class="col-md-3" *ngIf="ctrlTblColType.value == 'VARCHAR' ||ctrlTblColType.value == 'TINYINT' ||  
+                                                       ctrlTblColType.value == 'SMALLINT'||
+                                                       ctrlTblColType.value == 'MEDIUMINT'||
+                                                       ctrlTblColType.value == 'BIGINT'||
+                                                       ctrlTblColType.value == 'DECIMAL'||
+                                                       ctrlTblColType.value == 'FLOAT'||
+                                                       ctrlTblColType.value == 'DOUBLE'||
+                                                       ctrlTblColType.value == 'CHAR'
+                                                       ">
+                                                          <label class="from-label">*
+                                                             {{"Length"|langReplace}}</label>
+                                                          <div class="form-group ">
+                                                             <input type="text" class="fld-name ctrlName form-control"
+                                                                (keypress)="vldChkLst.isNumberKey($event)"
+                                                                formControlName="ctrlTblColLength">
+                                                          </div>
+                                                       </div>
+                                                       <div class="col-md-2" *ngIf="ctrlTblColType.value == 'DECIMAL' ||ctrlTblColType.value == 'FLOAT' ||
+                                                       ctrlTblColType.value == 'DOUBLE' ">
+                                                          <label class="from-label">{{"Precision"|langReplace}}*</label>
+                                                          <div class="form-group ">
+                                                             <input type="text" class="fld-name ctrlName form-control"
+                                                                formControlName="ctrlTblColprecision">
+                                                          </div>
+                                                       </div>
+ 
+                                                       <div class="col-md-2" *ngIf="(ctrlTblColType.value!== 'DECIMAL' && ctrlTblColType.value!== 'FLOAT'  && ctrlTblColType.value !== 'DOUBLE' )">
+                                                          <label
+                                                             class="from-label">{{"Default"|langReplace}}</label>
+                                                          <div class="form-group ">
+                                                             <input type="text" class="fld-name ctrlName form-control"
+                                                                formControlName="ctrlTblColDeafult">
+ 
+                                                          </div>
+                                                       </div>
+                                                       <div class="col-md-4 d-none">
+                                                          <label
+                                                             class="from-label">{{"Constraints"|langReplace}}</label>
+                                                          <div class="form-group ">
+                                                             <select class="form-select" #ctrlTblColConstraints
+                                                                formControlName="ctrlTblColConstraints"
+                                                                id="selConst_{{item.ctrlclass + ctrlIndex}}"
+                                                                (change)="constraintsChange(ctrlTblColConstraints.value, $event)">
+                                                                <option value="">Select</option>
+                                                                <option value="Foreign key">Foreign key</option>
+                                                                <option value="Check">Check</option>
+                                                             </select>
+                                                          </div>
+                                                       </div>
+                                                       <div class="col-md-3 constraintsfields d-none">
+                                                          <label class="from-label">{{"Parent
+                                                             Table"|langReplace}}</label>
+                                                          <div class="form-group ">
+                                                             <select class="form-select"
+                                                                formControlName="ctrlTblColParentTbl">
+                                                                <option value="0">Select</option>
+                                                                <option value="table_1">table_1</option>
+                                                                <option value="table_2">table_2</option>
+                                                             </select>
+                                                          </div>
+                                                       </div>
+                                                       <div class="col-md-3 constraintsfields d-none">
+                                                          <label class="from-label">{{"Parent Table
+                                                             Column"|langReplace}}</label>
+                                                          <div class="form-group ">
+                                                             <select class="form-select"
+                                                                formControlName="ctrlTblColParentTblClmName">
+                                                                <option value="0">Select</option>
+                                                                <option value="table_1">table_1</option>
+                                                                <option value="table_2">table_2</option>
+                                                             </select>
+                                                          </div>
+                                                       </div>
+                                                    </ng-container>
+                                                    <ng-template #loadAddMoreTableExist>
+                                                       <div class="col-md-4">
+                                                          <label class="from-label">* {{"Column
+                                                             Name"|langReplace}}</label>
+                                                          <div class="form-group ">
+                                                             <select class="form-select" #ctrlTblColName
+                                                                formControlName="ctrlTblColName"
+                                                                (change)="setAddmoreTabularDetails($event,ctrlIndex,addmoreIndex)">
+                                                                <option value="">Select</option>
+                                                                <option
+                                                                   *ngFor="let kloop of arrsecAddMoreColumnDetails[ctrlIndex]; let kctr = index"
+                                                                   [attr.data-seccolval]="kctr"
+                                                                   value="{{kloop.columnName}}">{{kloop.columnName}}
+                                                                </option>
+ 
+                                                             </select>
+                                                          </div>
+ 
+                                                       </div>
+                                                    </ng-template>
+                                                 </div>
+                                              </div>
+                                           </div>
+                                        </div>
+                                        <!-- ==================================  Addmore Table Column Details    =============================== -->
+ 
+                                        <a href="javascript:void(0)" id="AMitemClose_{{ctrlIndex}}_{{addmoreIndex}}"
+                                           (click)="addmorecloseItem($event)"
+                                           class="dropzone-close">{{"Close"|langReplace}}</a>
+                                     </div>
+ 
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+ 
+ 
+ 
+ 
+                      </div>
+                      <!-- ==================================  Addmore Column wise Heading    =============================== -->
+                    
+                      <div class="separator separator-dashed"></div>
+                      <h5 >{{"Column Merge"|langReplace}}</h5>
+                      <div class="row">
+                         <div class="col-md-3">
+                            <label class="from-label">{{"Merge Column Label"|langReplace}}</label>
+                            <div class="form-group" >
+                            <input type="text" class="form-control mergeColumnLabel" id="mergeColumnlabel{{ctrlIndex}}" value="" > 
+                            </div>
+                            
+  
+                         </div>
+                         <div class="col-md-3"> 
+                            <label class="from-label">{{"Initial Column"|langReplace}}</label>
+                            <div class="form-group">
+                               <select class="form-select initialColumnName" id="initialColumnName{{ctrlIndex}}">
+                                  <option value="0">Select</option>
+                                 <option *ngFor="let ctrls of addMoreArrHeadingDetails[ctrlId.value]" [value]="ctrls.addMoreCtrlId">{{ctrls.ctrlLabel}}
+                                  </option>
+                                 
+                               </select>
+                            </div>
+                         </div>
+                         <div class="col-md-3"> 
+                            <label class="from-label">{{"Number of columns to be merged"|langReplace}}</label>
+                            <div class="form-group">
+                               <input type="text" class="form-control noOfColumnsMergerd" id="noOfColumnsMergerd{{ctrlIndex}}">
+                            </div>
+                         </div>
+                         <div class="col-md-3">
+                            <a href="javascript:void(0)"
+                               (click)="addctrlMerge(ctrlIndex,ctrlId.value)"
+                               class="btn btn-primary mt-3">{{"Add"|langReplace}}</a>
+                         </div>
+ 
+                      </div>
+                      <div class="row" *ngIf="this.arrColumnMergeDetails[ctrlIndex]!=undefined">
+                         <div class="col-md-12">
+                         <table class="table table-bordered">
+                            <thead class="thead-light">
+                              <tr>
+                                <th scope="col">Sl#</th>
+                                <th scope="col">Merge Column Label</th>
+                                <th scope="col">Initial Column</th>
+                                <th scope="col">Number of columns to be merged</th>
+                                <th scope="col">Delete</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              
+                              <tr *ngFor="let cd of this.dynamicForm.value.formDetails[ctrlIndex].addmoreMergeColumnDetails ;let i=index;">
+                                <th scope="row">{{i+1}}</th>
+                                <td>{{cd.mergeCtrlLabel}}</td>
+                                <td>{{cd.initialColumnNameDataText}}</td>
+                                <td>{{cd.noOfColumnsMerged}}</td>
+                                <td> <a class="text-danger"href="javascript:void(0)" title="Remove"  (click)="deleteAddMergeColumnDetails(ctrlIndex,i)"><i class="icon-trash-solid"></i></a></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          </div>
+                      </div>
+                   </div>
+                   <!-- ==================================  Addmore Details    =============================== -->
+                   <a href="javascript:void(0)" id="itemClose{{ctrlIndex}}" (click)="closeItem($event)"
+                      class="dropzone-close">{{"Close"|langReplace}}</a>
+                </div>
+ 
+             </div>
+          </div>
+       </div>
+ 
+       <div class="loader" *ngIf="loading">
+          <div class="loader-item"></div>
+          <p>{{"Loading"|langReplace}}...</p>
+       </div>

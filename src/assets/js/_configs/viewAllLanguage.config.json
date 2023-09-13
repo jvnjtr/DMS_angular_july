@@ -8,9 +8,9 @@
                 ],
       "utils":[
         
-        {"utilName":"delete"}
+        {"utilName":"delete"},
        
-       
+        {"utilName":"print"}
         ],
       "messages":{
         "successMsg":"Data saved successfully",

@@ -1852,4 +1852,292 @@ export class ValidatorchecklistService {
   
       //  return specialChars.test(str);
       }
+
+
+
+      blockSpecialCharacterAllPostion(evt:any,type:any=0)
+      {
+        if((type == true) || (type == 'true') || evt.target.type=="email"){
+          return true;
+        }
+      
+        let txtValue:string = evt.target.value;
+        let length = txtValue.length;
+        let validStatus = true;
+        
+        if(txtValue.charCodeAt(0) == 32)  {
+         
+          evt.target.value='';
+        }
+    
+        switch (txtValue.charCodeAt(length-1)) {
+          case 44:
+          {
+            
+             // viewAlert(", Not allowed!!!");
+    
+              validStatus =  false;
+              break;
+          }
+    
+          case 47:
+          {
+            
+              validStatus =  false;
+              break;
+          }
+    
+          case 58:
+          {
+            
+              validStatus =  false;
+              break;
+          }
+    
+          case 46:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+    
+          case 39:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+    
+          // case 32:
+          // {
+          //     Swal.fire({
+          //       icon: 'error',
+          //       text: 'White Space not allowed'+'!!!'
+          //     });
+          //     validStatus =  false;
+          //     break;
+          //    // return false;
+          // }
+    
+          case 40:
+          {
+            
+            validStatus =  false;
+           break;
+          }
+    
+          case 41:
+          {
+            
+    
+            validStatus =  false;
+            break;
+          }
+    
+          case 45:
+          {
+              
+              validStatus =  false;
+                break;
+          }
+    
+          case 95:
+          {if(type !=1)
+            {
+              
+              validStatus =  false;
+            }
+    
+            break;
+          }
+    
+          case 59:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+    
+          case 124:
+          {
+    
+            
+            validStatus =  false;
+            break;
+          }
+    
+          case 63:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+    
+    
+          case 34:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+    
+          case 35:
+          {
+            
+            validStatus =  false;
+            break;
+    
+          }
+    
+          case 36:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+    
+          case 38:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+    
+          case 126:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+    
+          case 96:
+          {
+           
+            validStatus =  false;
+            break;
+          }
+    
+          case 33:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+    
+          case 37:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+    
+          case 94:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+    
+          case 42:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+          case 92:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+    
+          case 43:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+          case 61:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+          case 123:
+          {
+           
+            validStatus =  false;
+            break;
+          }
+    
+          case 125:
+          {
+           
+            validStatus =  false;
+            break;
+          }
+    
+          case 91:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+    
+          case 93:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+    
+          case 60:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+    
+          case 62:
+          {
+            
+            validStatus =  false;
+            break;
+          }
+          case 64:
+          {
+           
+            validStatus =  false;
+            break;
+          }
+          default :
+          validStatus =  true;
+          break;
+         }
+      if(validStatus == false)
+        {
+          // (<HTMLInputElement>document.getElementById(evt.target.id)).value='';
+          evt.target.value='';
+        }
+        return validStatus;
+    
+    
+        if(evt.target.value.indexOf(' ') > 0)
+          {
+            Swal.fire({
+              icon: 'error',
+              text: 'Space not allowed'
+            });
+            // (<HTMLInputElement>document.getElementById(evt.target.id)).value='';
+            evt.target.value='';
+            return false;
+          }
+          return true;
+    
+    
+    
+      }
+    
+    
+
 }

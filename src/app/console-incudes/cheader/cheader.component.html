@@ -1,0 +1,92 @@
+<div class="fixed-topmenu">
+  
+   <a class="nav-toggle-btn" (click)="togglemenu()">
+              
+              <span></span>
+              <span></span>
+              <span></span>
+              </a>
+  
+              <nav class="navbar navbar-expand-lg  p-0">
+                 <ul class="navbar-nav mb-2 mb-lg-0" >
+                   
+                 
+                  
+                         <li>
+                          <div class="language">
+                            <!-- <span class="text-light">Language &nbsp;</span>    -->
+                               <select class="langsel" #langSelect (change)="changeLang(langSelect.value)">
+                                       <option *ngFor="let lang of languageList" [selected]="(prefrenceLang==lang.vchAliasName) ? true : false" [value]="lang.vchAliasName"
+                                           >{{ lang.vchLanguageName | langReplace }}</option>
+      
+                                          
+                                       
+                                          
+      
+      
+                                </select>
+                                   <!-- <label>{{'Captcha Code' | translate}}</label> -->
+                       </div>
+                         </li> 
+                     
+      
+      
+                        <li class="hideinmobile"><a href="javascript:void(0)"  >  
+                          <span class="text-right me-2">
+                           {{"Hi"| langReplace }}, {{username}} <small class="d-block mt-1"> ( {{desgName}} )</small>
+                        </span>
+                          <img src="{{siteUrl}}assets/img/user.png" alt="user"> </a>
+                           <div class="header-dropdown">
+                           
+                              <a routerLink="../admin/dashboard" class=""><i class="bi bi-shield-check" ></i>{{"Back To Application"| langReplace }}  </a> 
+                              <a routerLink="../admin/changepassword" class=""><i class="icon-lock-solid" ></i>{{"Change Password"| langReplace }}  </a> 
+                               <a href="javascript:void(0)" (click)="logout()" class="bg-theme text-light"><i class="icon-arrow60"></i> {{"SignOut"| langReplace }}</a>
+                           </div>
+         
+                        </li>
+                     
+                     </ul>
+                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="bi bi-three-dots-vertical"></span>
+                  </button>
+                 <div  class="collapse navbar-collapse"  id="navbarSupportedContent">
+                   <ul class="mobile-profile" >
+                   
+                    <li class="profile">
+                       <a href="javascript:void(0)"  >  
+                          <img src="{{siteUrl}}assets/img/user.png" alt="user">
+                          <span class="text-left ml-2">
+                           {{"Hi"| langReplace }}, {{username}} <small class="d-block mt-1"> ( {{desgName}} )</small>
+                        </span>
+                           </a>
+                    </li>
+                    <li>
+                     <a routerLink="../admin/dashboard" class="">{{"Back To Application"| langReplace }}  </a> 
+                  </li>
+                     <li>
+                       <a routerLink="../admin/changepassword" class="">{{"Change Password"| langReplace }}  </a> 
+                    </li>
+                       <li>
+                       <a href="javascript:void(0)" (click)="logout()" >{{"SignOut"| langReplace }}</a>
+                    </li>
+                     
+                     
+                     
+                      
+       
+       
+                        
+                      
+                      </ul>
+                 
+                  
+                 </div>
+              
+             </nav>
+
+
+          
+  
+  </div>
+
+

@@ -36,7 +36,8 @@ export class ConfigStampingComponent implements OnInit {
   txtcolorpicker: any = "#000000"
   txtsetcolorpicker: any = '';
   nameList: any = [];
-  selectedItems: any = [];
+  selectedItems: any = '0';
+  selectedEvent: any = "0";
   dropdownSettings: any = {};
   userslist: any = [];
   approvalActions: any;
@@ -51,6 +52,9 @@ export class ConfigStampingComponent implements OnInit {
   txtYaxis: any;
   txtFontSize: any = '0';
   configId: any = 0;
+  eventId: any = 0;
+  showEventImage:any='';
+  stampImageUploadStatus:any=0;
   //\\ ======================== // Variables // ======================== //\\
 
   constructor(
@@ -70,12 +74,12 @@ export class ConfigStampingComponent implements OnInit {
     if (encSchemeId != "") {
       let schemeStr = this.encDec.decText(encSchemeId);
       let schemeArr: any = schemeStr.split(':');
-      this.metaid = schemeArr[0];
+      this.configId = schemeArr[0];
 
       //console.log(this.letterID+'-----'+this.txtFormId+'------'+this.selFormName)
-      if (this.metaid != '' || this.metaid != 0) {
+      if (this.configId != '' || this.configId != 0) {
 
-
+          console.log('hi');
       }
     }
     this.dropdownSettings = {
@@ -99,7 +103,7 @@ export class ConfigStampingComponent implements OnInit {
       this.rotationArray.push(obj);
     }
     this.loadEvents();
-    this.getStampingConfig();
+    this.getStampingConfig(this.configId,this.eventId);
   }
   //\\ ======================== // Config // ======================== //\\
   loadconfig() {
@@ -109,15 +113,15 @@ export class ConfigStampingComponent implements OnInit {
         this.utillist = data[0].utils
         this.messaageslist = data[0].messages;
         this.title = data[0].pagetitle;
-
-
+        if(this.configId )
+        {
+          this.title =  "Edit Stamping Configuration";
+        }
       },
       error: (msg) => {
         this.authService.directlogout();
       }
     })
-
-
   }
   //\\ ======================== // Config // ======================== //\\
 
@@ -129,7 +133,7 @@ export class ConfigStampingComponent implements OnInit {
     this.rdoType = '';
     this.stampingImage = '';
     this.stampingText = '';
-    this.txtPage = '';
+    this.txtPage = '0';
     this.txtOpacity = '';
     this.txtRotation = '0';
     this.txtXaxis = '';
@@ -137,7 +141,27 @@ export class ConfigStampingComponent implements OnInit {
     this.txtFontSize = '0';
     this.txtcolorpicker = '#000000';
     this.selectedItems = [];
+    // this.selectedEvent = "0";
+    this.stampImageUploadStatus=0;
   }
+  formResetEvent() {
+    this.configId=0;
+    this.rdoType = '';
+    this.stampingImage = '';
+    this.stampingText = '';
+    this.txtPage = '0';
+    this.txtOpacity = '';
+    this.txtRotation = '0';
+    this.txtXaxis = '';
+    this.txtYaxis = '';
+    this.txtFontSize = '0';
+    this.txtcolorpicker = '#000000';
+    this.selectedItems = [];
+    this.showEventImage='';
+    this.stampImageUploadStatus=0;
+    
+  }
+  
   //\\ ======================== // Reset Form // ======================== //\\
   //\\ ======================== // Get meta list // ======================== //\\
   viewMetaLit(metaid: any) {
@@ -157,7 +181,7 @@ export class ConfigStampingComponent implements OnInit {
     let txtOpacity = this.txtOpacity;
     let txtRotation = this.txtRotation;
     let txtPosition = [{ 'x-axis': this.txtXaxis, 'y-axis': this.txtYaxis }];
-    let eventList = this.selectedItems;
+    let eventList = this.selectedEvent;
     let txtFontSize = this.txtFontSize;
     let txtcolorpicker = this.txtcolorpicker;
     if (!this.vldChkLst.blankCheck(eventList, this.commonserveice.langReplace(this.messaageslist.eventList), 'selectedItems')) {
@@ -179,7 +203,7 @@ export class ConfigStampingComponent implements OnInit {
     else {
       let metaparams = {
         "configId": this.configId,
-        "stampEventList": eventList,
+        "stampEventId": eventList,
         "stampType": rdoType,
         "stampImage": stampingImage,
         "stampText": stampingText,
@@ -189,6 +213,7 @@ export class ConfigStampingComponent implements OnInit {
         "stampPage":txtPage,
         "stampTextColor":txtcolorpicker,
         "stampTextFontSize":txtFontSize,
+        "imageUploadStatus":this.stampImageUploadStatus
       }
       this.loading = true;
       this.commonserveice.setStampConfiguration(metaparams).subscribe({
@@ -211,7 +236,7 @@ export class ConfigStampingComponent implements OnInit {
                 confirmButtonText: 'Ok'
               }).then((result) => {
                 // this.formReset();
-                this.getStampingConfig()
+                this.getStampingConfig(this.configId,this.eventId);
               })
 
             }
@@ -228,7 +253,7 @@ export class ConfigStampingComponent implements OnInit {
                 confirmButtonText: 'Ok'
               }).then((result) => {
 
-                this.getStampingConfig();
+                this.getStampingConfig(this.configId,this.eventId);
               })
 
             }
@@ -260,10 +285,11 @@ export class ConfigStampingComponent implements OnInit {
     }
 
   }
-  getStampingConfig() {
+  getStampingConfig(configId:any,eventId:any) {
     
       let metaparams = {
         "configId": this.configId,
+        "stampEventId": eventId,
       }
       this.loading = true;
       this.commonserveice.getStampConfiguration(metaparams).subscribe({
@@ -279,25 +305,39 @@ export class ConfigStampingComponent implements OnInit {
             if (responseResult.status == 200) {
               this.loading = false;
               console.log(responseResult.result);
-              this.configId=responseResult.result.configId;
-              this.selectedItems=responseResult.result.stampEventList;
-              this.rdoType=responseResult.result.stampType.toString();
-              
-              if(responseResult.result.stampPosition.length > 0) {
-                this.txtXaxis=responseResult.result.stampPosition[0]['x-axis'];
-                this.txtYaxis=responseResult.result.stampPosition[0]['y-axis'];
-              }
-              this.txtRotation=responseResult.result.stampRotation;
-              this.txtOpacity=responseResult.result.stampOpacity;
-              this.txtPage=responseResult.result.stampPage;
-              this.txtcolorpicker=responseResult.result.stampTextColor;
-              this.txtcolorpicker=responseResult.result.stampTextColor;
-              this.txtsetcolorpicker=responseResult.result.stampTextColor;
-              if(responseResult.result.stampTextFontSize){
-                this.txtFontSize=responseResult.result.stampTextFontSize;
+              if(responseResult.result){
+                this.configId=responseResult.result.configId;
+                this.selectedEvent=responseResult.result.stampEventId.toString();
+                this.rdoType=responseResult.result.stampType.toString();
+                
+                if(responseResult.result.stampPosition.length > 0) {
+                  this.txtXaxis=responseResult.result.stampPosition[0]['x-axis'];
+                  this.txtYaxis=responseResult.result.stampPosition[0]['y-axis'];
+                }
+                if(responseResult.result.stampType==1){
+                  this.stampingText=responseResult.result.stampText;
+                  this.showEventImage='';
+                }else{
+                  if(responseResult.result.stampImage){
+                    this.showEventImage=responseResult.result.stampImage;
+                  }
+                }
+                this.txtRotation=responseResult.result.stampRotation;
+                this.txtOpacity=responseResult.result.stampOpacity;
+                this.txtPage=responseResult.result.stampPage;
+                this.txtcolorpicker=responseResult.result.stampTextColor;
+                this.txtcolorpicker=responseResult.result.stampTextColor;
+                this.txtsetcolorpicker=responseResult.result.stampTextColor;
+                
+                if(responseResult.result.stampTextFontSize){
+                  this.txtFontSize=responseResult.result.stampTextFontSize;
+                }else{
+                  this.txtFontSize='0';
+                }
               }else{
-                this.txtFontSize='0';
+                this.formResetEvent();
               }
+              
               
             }
 
@@ -465,11 +505,12 @@ export class ConfigStampingComponent implements OnInit {
 
         if (responseResult.status == '200') {
           this.stampingImage = responseResult.result.fileName;
-          // console.log(this.userFileName);
-
+          this.showEventImage=responseResult.result.fileUrl;
+          this.stampImageUploadStatus=1;
         }
 
         else if ((responseResult.status == 500)) {
+          this.stampImageUploadStatus=0;
           this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message))
 
         }

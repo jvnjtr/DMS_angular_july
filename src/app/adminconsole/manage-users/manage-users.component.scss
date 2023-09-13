@@ -1,0 +1,49 @@
+.user-profile{
+    text-align: center;
+    background-color: var(--bs-gray-100);
+    padding: 2rem;
+    display:flex;
+    flex-flow: column;
+    border-radius: 4px;
+    align-items: center;
+   .img-div{
+        position: relative;
+        margin-bottom: 1rem;
+        border-radius: 4px;
+        width: 160px;
+    height: 175px;
+        overflow: hidden;
+        img{
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+        .filesremovebtn{
+            color: #f00;
+            position: absolute;
+            right: 0;
+            top: 0;
+            font-size: 1.5em;
+        }
+   };
+   .img-div-signature{
+    position: relative;
+    // margin-bottom: 1rem;
+    border-radius: 4px;
+    width: 209px;
+height: auto !important;
+    overflow: hidden;
+    img{
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+    .filesremovebtn{
+        color: #f00;
+        position: absolute;
+        right: 0;
+        top: 0;
+        font-size: 1.5em;
+    }
+   }
+}

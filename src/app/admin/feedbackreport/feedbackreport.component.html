@@ -49,7 +49,121 @@
 
 
 </form>
-<pre>{{myForm.value |json}}</pre>
+
+
+<div class="register-form">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label>Full Name (Only Alphabets)</label>
+      <input type="text" formControlName="fullname" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['fullname'].errors }"/>
+      <div *ngIf="submitted && f['fullname'].errors" class="text-danger">
+        <div *ngIf="f['fullname'].errors['required']">Fullname is required</div>
+        <div *ngIf="f['fullname'].errors['minlength']">Fullname must be at least 6 characters</div>
+        <div *ngIf="f['fullname'].errors['maxlength']"> Fullname must not exceed 20 characters </div>
+        <div *ngIf="f['fullname'].errors['pattern']"> Full Name accept only Alphabets </div>
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <h6 Class="w-100 text-md fullwidthSection">student details</h6>
+      <div class="w-100 fullwidthSection" formArrayName="addMorestudentdetails">
+         <div *ngFor="let studentdetails of student_details.controls; let studentdetailsIndex=index">
+            <div [formGroupName]="studentdetailsIndex" class="border fullwidthSection mb-3 p-3 onegrid">
+               <div class="form-group">
+                  <label Class="w-full text-md">Std Name <span class="text-danger">*</span> </label>
+                  <div class="control-item">
+                     <input type="text" formControlName="amtxtStdName" id="amtxtStdName" minlength="3"
+                        maxlength="50" placeholder="" class="form-control " 
+                      autocomplete="off" [ngClass]="{ 'is-invalid':adsubmit && amtxtStdName(studentdetailsIndex)?.errors}">
+
+
+                      <div
+                      class="text-danger"
+                      *ngIf="adsubmit && amtxtStdName(studentdetailsIndex)?.errors"
+                      >
+                      <div *ngIf="amtxtStdName(studentdetailsIndex)?.errors?.['required']">
+                        Student Name Can not be blank
+                      </div>
+                      <div *ngIf="amtxtStdName(studentdetailsIndex)?.errors?.['minlength']">Student name must be at least 6 characters</div>
+                      <div *ngIf="amtxtStdName(studentdetailsIndex)?.errors?.['maxlength']"> Student name must not exceed 20 characters </div>
+                      <div *ngIf="amtxtStdName(studentdetailsIndex)?.errors?.['pattern']"> Student  Name accept only Alphabets </div>
+
+
+                      </div>
+
+                     
+
+                  </div>
+               </div>
+               <div class="form-group">
+                <label Class="w-full text-md">Age <span class="text-danger">*</span> </label>
+                <div class="control-item">
+                   <input type="text" formControlName="amtxtAge" id="amtxtAge" minlength="3"
+                      maxlength="50" placeholder="" class="form-control " 
+                    autocomplete="off" [ngClass]="{ 'is-invalid': adsubmit && amtxtAge(studentdetailsIndex)?.errors}">
+
+
+                    <div
+                    class="text-danger"
+                    *ngIf="adsubmit && amtxtAge(studentdetailsIndex)?.errors"
+                    >
+                    <div *ngIf="amtxtAge(studentdetailsIndex)?.errors?.['required']">
+                      Age Can not be blank
+                    </div>
+                    
+
+
+                    </div>
+
+                   
+
+                </div>
+             </div>
+
+
+               <div class="w-100 text-right px-3">
+                  <button class="btn btn-danger" (click)="removestudent_details(studentdetailsIndex,$event)"> -
+                  </button>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="w-100 text-right px-3">
+         <button type="button" class="btn btn-primary" (click)="addstudent_details($event)"> AddMore </button>
+      </div>
+    </div>
+   
+
+    
+    
+    
+    
+
+   
+
+   
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">Register</button>
+      <button
+        type="button"
+        (click)="onReset()"
+        class="btn btn-warning float-right"
+      >
+        Reset
+      </button>
+    </div>
+  </form>
+</div>
+
+<!--================================This section is used for addMore for student details=====================================-->
+
+
+
+
+
+
+<pre>{{form.value |json}}</pre>
 
 </div>
 </div>

@@ -7,6 +7,7 @@ import * as CryptoJS from 'crypto-js';
 
 import {Buffer} from 'buffer';
 import { VarlistService } from './varlist.service';
+import Swal from 'sweetalert2';
 
 
 
@@ -256,5 +257,15 @@ export class MsgengineLibService {
       return languageText;
     }
  }
+
+
+ swalfire(type: any, message: any) {
+  return  Swal.fire({
+           icon: type,
+           text: message
+           });
+ 
+ }
+
 
 }

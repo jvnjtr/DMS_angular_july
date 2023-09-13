@@ -1,19 +1,19 @@
 export const environment = {
   production: false,
   url: '',
-  siteURL: 'http://192.168.10.186/dms_stg/website/', 
-  serviceURL: 'http://192.168.10.186/dms_stg/admin/',
+  siteURL: 'http://164.164.122.169:8090/dms_stg/website/', 
+  serviceURL: 'http://164.164.122.169:8090/dms_stg/admin/',
   
   
-  pdfiframeURL: 'http://192.168.10.186/dms_stg/pdfjsnew/web/viewer.html',
-iframeURL: 'http://192.168.10.186/dms_stg/office_viewer/demos.html',
-excelViewer:'http://192.168.10.186/dms_stg/office-xlsx/index.html',
-apkpath:'http://192.168.10.186/dms_stg/website/assets/download.zip',
+  pdfiframeURL: 'http://164.164.122.169:8090/dms_stg/pdfjsnew/web/viewer.html',
+iframeURL: 'http://164.164.122.169:8090/dms_stg/office_viewer/demos.html',
+excelViewer:'http://164.164.122.169:8090/dms_stg/office-xlsx/index.html',
+apkpath:'http://164.164.122.169:8090/dms_stg/website/assets/download.zip',
 //frameworkserviceURL:'http://192.168.103.237:7001/eservice_product/admin/',
-iframeviewURL: 'http://192.168.10.186/dms_stg/office_viewer/demos-preview.html',
-createPDFURL:'http://192.168.10.186/dms_stg/document-writer/word-pdf/index.html',
-createExcelURL:'http://192.168.10.186/dms_stg/document-writer/xlsx-writer/index.html',
-tempurl:'http://192.168.10.186/dms_stg/admin/storage/temp/',
+iframeviewURL: 'http://164.164.122.169:8090/dms_stg/office_viewer/demos-preview.html',
+createPDFURL:'http://164.164.122.169:8090/dms_stg/document-writer/word-pdf/index.html',
+createExcelURL:'http://164.164.122.169:8090/dms_stg/document-writer/xlsx-writer/index.html',
+tempurl:'http://164.164.122.169:8090/dms_stg/admin/storage/temp/',
 
 
   apiHashingKey: '22CSMTOOL2022',
@@ -21,7 +21,7 @@ tempurl:'http://192.168.10.186/dms_stg/admin/storage/temp/',
   somethingWrong: 'something went wrong',
   invalidResponse: 'Invalid Response',
   errorApiResponse: 'Error in API response',
-  default_lang: "Hn",
+  default_lang: "en",
 ckconfig:{
       
   language: "en",
@@ -98,6 +98,23 @@ iconsGroups: [
 
 ],
 
+menuiconsGroups: [
+  { name: 'icon-history-solid', groups: ['Recent Documents'] },
+  { name: 'bi bi-diagram-3', groups: ['Task'] },
+  { name: 'icon-share-alt-solid', groups: ['Shared Documents'] },
+  { name: 'icon-address-book', groups: ['Contact Address'] },
+  { name: 'icon-file-code', groups: ['Reports'] },
+  { name: 'icon-tags-solid', groups: ['Meta'] },
+  { name: 'icon-file-image', groups: ['Activity Log'] },
+  { name: 'icon-archive-solid', groups: ['Archive'] }, 
+  { name: 'bi bi-box-arrow-right', groups: ['Gateway'] },
+  { name: 'bi bi-chat-right-text', groups: ['Message'] },
+  { name: 'bi bi-translate', groups: ['Language'] },
+  { name: 'bi bi-translate', groups: ['Language labels'] }, 
 
+], alphabets:"^[a-zA-Z ]*$",
+numeric:"^[0-9]*$",
+alphanumeric:"^[a-zA-Z0-9']*$",
+passwordpat:/^(?=\D*\d)(?=[^a-z]*[a-z])(?=.*[$@$!%*?&])(?=[^A-Z]*[A-Z]).{8,15}$/,
  };
  

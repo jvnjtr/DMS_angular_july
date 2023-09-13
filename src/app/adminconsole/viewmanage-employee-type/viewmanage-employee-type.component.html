@@ -1,0 +1,101 @@
+
+<div class="page-title">
+  <h4>{{title}}</h4>
+</div>   <div class="card">
+             
+               <div class="controls-section-header">
+               <ul class="nav nav-tabs">
+               <li class="nav-item">
+                 <a class="nav-link " aria-current="page" routerLink="../../adminconsole/manage-employee-type" routerLinkActive="active" href="#">Add</a>
+               </li>
+               <li class="nav-item">
+                 <a class="nav-link " href="#"  routerLink="../../adminconsole/viewmanage-employee-type" routerLinkActive="active">View</a>
+               </li>
+             </ul>
+             </div>
+             
+             <div class="card-body">
+             <div *ngIf="manage_employee_typelist?.length > 0; else norecord">         
+             <div class="table-responsive">
+               <table data-toggle="table" class="table table-bordered valign-middle">
+               <thead>
+                  <tr>
+                     <th scope="col" width="40px">Sl#</th>
+                     <th scope='col'>Employee Type</th>
+
+                     <th scope="col">Created On</th>
+                     <th scope="col" class="noPrint" width="100px">View</th>
+                     <th scope="col" class="noPrint" width="100px">Action</th>
+                  </tr>
+               </thead>
+               <tbody>
+               <tr *ngFor="let listItems of manage_employee_typelist | paginate
+               : {
+                   itemsPerPage: tableSize,
+                   currentPage: page,
+                   totalItems: count
+                 }; let i=index;">
+                <td>{{i+1}}</td>
+                <td>{{listItems.vchEmpType}}</td>
+  
+                <td>{{listItems.dtmCreatedOn}}</td>
+                <td><a class="text-info " href="javascript:void(0)" data-bs-toggle="modal" (click)="previewDetails(listItems.intId)" [attr.data-bs-target]="'#previewModal'+i">Preview</a>
+                <div class="modal fade" id="previewModal{{i}}" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+                     <div class="modal-dialog modal-lg">
+                       <div class="modal-content">
+                         <div class="modal-header">
+                           <h5 class="modal-title mb-0" id="previewModalLabel">Preview Details</h5>
+                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                         </div>
+                         <div class="modal-body">
+
+                           <div class="table-responsive">
+                              <table class="table table-bordered">
+                                 <tbody *ngFor="let prevItems of manage_employee_typelistPreview;">
+                                   
+                                       
+                          <tr><th width=30%>Employee Type</th>
+                          <td width=70%>{{prevItems.vchEmpType}}</td></tr>
+
+                          <tr><th width=30%>Alias Name</th>
+                          <td width=70%>{{prevItems.vchAliasName}}</td></tr>
+
+                                       
+                                      
+                                   
+                                 </tbody>
+                              </table>
+                           </div>
+      
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                
+                
+                
+                
+                </td>
+                <td><a class='text-primary mx-2' title='Edit' (click)='editData(listItems.intId)'><i class="icon-edit-solid"></i></a>  <a class='text-danger' title='Delete' (click)='deleteData(listItems.intId)'><i class="icon-trash-solid"></i></a></td>
+               </tr>
+               
+            </tbody>
+            </table>
+            </div>
+          </div>
+          <ng-template #norecord>
+            <h6 class="no-content"> No Record Found</h6>
+          </ng-template>
+            <div class="d-flex justify-content-end">
+              <pagination-controls
+              previousLabel="Prev"
+              nextLabel="Next"
+              (pageChange)="onTableDataChange($event)">
+            </pagination-controls>
+           </div>
+            </div>
+           </div>
+           <div class="loader" *ngIf="loading">
+            <div class="loader-item"></div>
+            <p>Loading...</p>
+          </div>

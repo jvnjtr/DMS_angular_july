@@ -11,272 +11,429 @@
 ============================================================================= -->
 <!--===Page Title===-->
 <div class="page-title">
-   
+
         <h4>{{title | langReplace }} </h4>
-        </div>
-        <!--===Page Title===-->
-        <!--===controle section===-->
-        <div class="page-controls-section" id="page-content">
-                <div class="row">
-                        <div class="col-md-6 col-lg-8">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                            <div class="card">
+</div>
+<!--===Page Title===-->
+<!--===controle section===-->
+<div class="page-controls-section" id="page-content">
+        <div class="row">
+                <div class="col-md-12 col-lg-8">
+                        <div class="row">
+                                <div class="col-md-12">
+                                        <div class="card">
                                                 <div class="card-header">
-                                                      
-                                                    <h6 class="card-title mb-0">{{"Pending Documents" | langReplace }} </h6>
-                                                    <a class="text-primary" (click)="viewAll(1)"><small>{{"View All" | langReplace }}</small></a>
+
+                                                        <h6
+                                                                class="card-title mb-0">{{"Pending Documents"
+                                                                | langReplace
+                                                                }} </h6>
+                                                        <a class="text-primary"
+                                                                (click)="viewAll(1)"><small>{{"View All"
+                                                                        |
+                                                                        langReplace
+                                                                        }}</small></a>
                                                 </div>
-                                                    <div class="card-body">
-                                                            <div class="fix-height">
-                                                                <div *ngIf="pendingDocList?.length > 0; else norecord">
-    
-                                                                        <div class="table-responsive print-section">
-                                                                             <table class="table table-bordered">
-                                                                                 <thead>
-                                                                                     <tr>
-                                                                                         <th width="50px">{{"Sl No" | langReplace }} </th>
-                                                                                         <th>{{"Document No" | langReplace }}.</th>
-                                                                                         <th class="text-center" width="50px">{{"Type" | langReplace }} </th>
-                                                                                         <th>{{"Name" | langReplace }}</th>
-                                                                                         <!-- <th>Size</th> -->
-                                                                                         <th *ngIf="userLoginId == 1">{{"Pending At" | langReplace }} </th>
-                                                                                        
-                                                                                         <!-- <th>Created By</th> -->
-                                                                                         <th  *ngIf="userLoginId != 1" width="140px">{{"Action" | langReplace }} </th>
-                                                                                     </tr>
-                                                                                 </thead>
-                                                                                 <tbody>
-                                                                                       
-                                                                                     <tr *ngFor="let plist of pendingDocList;let i = index"> 
-                                                                                            
-                                                                                     
-                                                                                      
-                                                                                      
-                                             
-                                                                                         <td>{{i+1}}</td>
-                                                                                         <td>{{plist.fileRefNo}}</td>
-                                                                                         <td class="text-center">
-                                                                                  
-                                                                                                 <i class="h6" [ngClass]="commonserveice.getfiletype(plist.fileType)" ></i>
-                                                                                             </td>
-                                                                                         <td>
-                                                                                            
-                                                                                                
-                                                                                                <a class="text-primary" (click)="loadpreview(plist.fileId,plist.fileType,plist.filePath,0,plist.lockStatus)"  >{{plist.fileName}}
-                                                                                                        <i ngbTooltip="Locked File" class='{{plist.lockStatus==1? "bi bi-lock-fill text-danger ml-1" :""}}'></i></a>
-                                                                                        </td>
-                                                                                         <!-- <td class="text-right">{{plist.fileSize}}</td> -->
-                                                                                         <td *ngIf="userLoginId == 1" >{{plist.pendingAtName}}</td>
-                                                                                        
-                                                                                         <!-- <td>{{plist.createdByName}}
+                                                <div class="card-body">
+                                                        <div class="fix-height">
+                                                                <div
+                                                                        *ngIf="pendingDocList?.length > 0; else norecord">
+
+                                                                        <div
+                                                                                class="table-responsive print-section">
+                                                                                <table
+                                                                                        class="table table-bordered">
+                                                                                        <thead>
+                                                                                                <tr>
+                                                                                                        <th
+                                                                                                                width="50px">{{"Sl
+                                                                                                                No"
+                                                                                                                |
+                                                                                                                langReplace
+                                                                                                                }}
+                                                                                                        </th>
+                                                                                                        <th>{{"Document
+                                                                                                                No"
+                                                                                                                |
+                                                                                                                langReplace
+                                                                                                                }}.</th>
+                                                                                                        <th
+                                                                                                                class="text-center"
+                                                                                                                width="50px">
+                                                                                                                {{"Type"
+                                                                                                                |
+                                                                                                                langReplace
+                                                                                                                }}
+                                                                                                        </th>
+                                                                                                        <th>{{"Name"
+                                                                                                                |
+                                                                                                                langReplace
+                                                                                                                }}</th>
+                                                                                                        <!-- <th>Size</th> -->
+                                                                                                        <th
+                                                                                                                *ngIf="userLoginId == 1">
+                                                                                                                {{"Pending
+                                                                                                                At"
+                                                                                                                |
+                                                                                                                langReplace
+                                                                                                                }}
+                                                                                                        </th>
+
+                                                                                                        <!-- <th>Created By</th> -->
+                                                                                                        <th
+                                                                                                                *ngIf="userLoginId != 1"
+                                                                                                                width="140px">
+                                                                                                                {{"Action"
+                                                                                                                |
+                                                                                                                langReplace
+                                                                                                                }}
+                                                                                                        </th>
+                                                                                                </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+
+                                                                                                <tr
+                                                                                                        *ngFor="let plist of pendingDocList;let i = index">
+
+                                                                                                        <td>{{i+1}}</td>
+                                                                                                        <td>{{plist.fileRefNo}}
+                                                                                                        </td>
+                                                                                                        <td
+                                                                                                                class="text-center">
+
+                                                                                                                <i
+                                                                                                                        class="h6"
+                                                                                                                        [ngClass]="commonserveice.getfiletype(plist.fileType)"></i>
+                                                                                                        </td>
+                                                                                                        <td>
+
+                                                                                                                <a
+                                                                                                                        class="text-primary"
+                                                                                                                        (click)="loadpreview(plist.fileId,plist.fileType,plist.filePath,0,plist.lockStatus)">{{plist.fileName}}
+                                                                                                                        <i
+                                                                                                                                ngbTooltip="Locked File"
+                                                                                                                                class='{{plist.lockStatus==1? "bi bi-lock-fill text-danger ml-1" :""}}'></i></a>
+                                                                                                        </td>
+                                                                                                        <!-- <td class="text-right">{{plist.fileSize}}</td> -->
+                                                                                                        <td
+                                                                                                                *ngIf="userLoginId == 1">
+                                                                                                                {{plist.pendingAtName}}
+                                                                                                        </td>
+
+                                                                                                        <!-- <td>{{plist.createdByName}}
                                                                                                  <small class="text-primary d-block mt-1">{{plist.CreatedOn}}</small>
                                                                                          </td> -->
-                                                                                         <td *ngIf="userLoginId != 1">
-                                                                                                 <a class="btn btn-sm btn-success"  href="javascript:void(0)" (click)="takeAction(plist.fileId+':'+plist.folderId+':'+plist.stageNo+':'+plist.workflowFolderId+':'+plist.intApprovalId+':'+plist.filePath+':'+plist.fileName+':'+0+':'+plist.lockStatus+':'+plist.fileType,plist.checkInCheckoutStatus)">{{"Take Action" | langReplace}}</a>
-                                                                                             
-                                                                                         </td>
-                                             
-                                             
-                                             
-                                             
-                                             
-                                               
-                                                                                     </tr>
-                                                                                    
-                                                                                       
-                                                                                 </tbody>
-                                                                             </table>
+                                                                                                        <td
+                                                                                                                *ngIf="userLoginId != 1">
+                                                                                                                <a
+                                                                                                                        class="btn btn-sm btn-success"
+                                                                                                                        href="javascript:void(0)"
+                                                                                                                        (click)="takeAction(plist.fileId+':'+plist.folderId+':'+plist.stageNo+':'+plist.workflowFolderId+':'+plist.intApprovalId+':'+plist.filePath+':'+plist.fileName+':'+0+':'+plist.lockStatus+':'+plist.fileType,plist.checkInCheckoutStatus)">{{"Take
+                                                                                                                        Action"
+                                                                                                                        |
+                                                                                                                        langReplace}}</a>
+
+                                                                                                        </td>
+
+                                                                                                </tr>
+
+                                                                                        </tbody>
+                                                                                </table>
                                                                         </div>
-                                                                       
-                                                                          
-                                                                     </div>
-                                                                     <ng-template #norecord>
-                                                                             <h6 class="no-content"> {{"No Pending Applications" | langReplace }} </h6>
-                                                                         
-                                                                         </ng-template>
-                                                                         <div class="loader loader3" *ngIf="pendingLoader">
-                                                                                <div class="loader-item"></div>
-                                                                                <p>Loading...</p>
-                                                                              </div>
-                                                
-                                                        </div>
-                                                    </div>
-                                                 </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                            <div class="card">
-               
-                                                    <div class="card-body ">
-                                                      <div class="icon-div">
-                                                            <i class="bi bi-file-text text-primary"></i>
-                                                      </div>
-                                                            <h6 class="card-title mb-3">{{"documents" | langReplace }}</h6>   
-                                                <div class="w-100 d-flex justify-content-between portletdata">
-                                                    <a href="javascript:voaid(0)"  routerLink="../../reports/allfiles" class="text-primary">{{noofdocumets}} {{"Documents" | langReplace }}  </a>
-                                                    <span>{{sizeofdocuments}}</span>
-                                                </div>
-                                                     
-                                                    </div>
-                                                 </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                            <div class="card">
-               
-                                                    <div class="card-body ">
-                                                            <div class="icon-div bg-light-yellow">
-                                                                    <i class="bi bi-folder-fill text-warning"></i>
-                                                              </div>
-                                                            <h6 class="card-title mb-3">{{"Folders" | langReplace }} </h6>    
-                                                            <div class="w-100 d-flex justify-content-between portletdata">
-                                                                    <a href="javascript:voaid(0)" routerLink="../../reports/folderwise"  class="text-warning">{{nooffolders}} {{"Folders" | langReplace }}  </a>
-                                                                    <span>{{sizeoffolders}}</span>
+
                                                                 </div>
-                                                     
-                                                    </div>
-                                                 </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                            <div class="card">
-               
-                                                    <div class="card-body ">
-                                                            <div class="icon-div bg-light-sky">
-                                                                    <i class="bi bi-share-fill text-info"></i>
-                                                              </div>
-                                                            <h6 class="card-title mb-3">{{"Share" | langReplace }} </h6>   
-                                                            <div class="w-100  d-flex justify-content-between portletdata">
-                                                                    <a href="javascript:voaid(0)" routerLink="../../reports/sharedfilewise" class="text-info">{{noofsharedfiles}} {{"Documents" | langReplace }} </a>
-                                                                    <span>{{sizeofsharedfiles}} </span>
+                                                                <ng-template
+                                                                        #norecord>
+                                                                        <h6
+                                                                                class="no-content">
+                                                                                {{"No
+                                                                                Pending
+                                                                                Applications"
+                                                                                |
+                                                                                langReplace
+                                                                                }}
+                                                                        </h6>
+
+                                                                </ng-template>
+                                                                <div
+                                                                        class="loader loader3"
+                                                                        *ngIf="pendingLoader">
+                                                                        <div
+                                                                                class="loader-item"></div>
+                                                                        <p>Loading...</p>
                                                                 </div>
-                                                                
-                                                                
-                                                    </div>
-                                                 </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                            <div class="card">
-                                                    <div class="card-header">
-                                                      
-                                                            <h6 class="card-title mb-0">{{"Recent Activities" | langReplace }} </h6>
-                                                            <a class="text-primary" (click)="viewAll(2)"><small>{{"View All" | langReplace }}</small></a>
+
                                                         </div>
-                                                    <div class="card-body">
-                                                            <div class="fix-height">
-                                                                      
-                                                        <ul class="listing" *ngIf="activitylist?.length > 0; else norecord">
-
-                                                                        <li *ngFor="let mlist of activitylist; let i = index">
-                                                                                        <a class="docs" href="javascript:void(0)"  (click)="loadpreview(mlist.fileOrFolderId,mlist.fileName,mlist.filePath,0,mlist.lockStatus)"  >
-                                                                                               
-                                                                                               <i class="h6" [ngClass]="mlist.fileType?commonserveice.getfiletype(mlist.fileType):'bi-folder-fill text-warning'" ></i>
-
-                                                                                                {{mlist.folderName ? mlist.folderName : mlist.fileName}} 
-                                                                                               
-                                                                                               <span class="text-primary mt-2"> {{mlist.activityPerformed}} 
-                                                                                                </span>
-                                                                                         <span>{{mlist.createdBy}} . {{mlist.createdOn}}  </span>
-                                                                                       
-                                                                                        </a>
-                                                                                    </li>
-
-                                                                                    
-                                                           
-                                                        </ul>
-                                                        <ng-template #norecord>
-                                                                        <h6 class="no-content"> No log found</h6>
-                                                                    
-                                                                    </ng-template>
-                                                                <div class="loader loader3" *ngIf="logLoader">
-                                                                        <div class="loader-item"></div>
-                                                                        <p>Loading...</p>
-                                                                      </div>
-                                                </div>
-                                                     
-                                                    </div>
-                                                 </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                            <div class="card">
-                                                    <div class="card-header">
-                                                      
-                                                            <h6 class="card-title mb-0">{{"Recent Documents" | langReplace }} </h6>
-                                                            <a class="text-primary" (click)="viewAll(3)"><small>{{"View All" | langReplace }}</small></a>
-                                                        </div>
-                                                    <div class="card-body">
-                                                            <div class="fix-height">
-                                                        
-                                                            <ul class="listing" *ngIf="recentlist?.length > 0; else norecord">
-                                                                    <li *ngFor="let flist of recentlist; let i = index" >
-                                                                        <a class="docs" (click)="loadpreview(flist.fileId,flist.fileName,flist.filePath,0,flist.lockStatus)"  >
-                                                                                        <i class="h6" [ngClass]="commonserveice.getfiletype(flist.fileType)" ></i>
-                                                                                        {{flist.fileName}}
-                                                                                        <i ngbTooltip="Locked File" style="font-size:1rem" class='position-relative  {{flist.lockStatus==1? "bi bi-lock-fill text-danger ml-1" :""}}'></i>
-                                                                            <span> {{flist.CreatedOn }}</span>
-                                                                        </a>
-                                                                    </li>
-                                                                   
-                                                                </ul>
-                                                                
-                                                                <ng-template #norecord>
-                                                                        <h6 class="no-content"> No Recent Documents</h6>
-                                                                    
-                                                                    </ng-template>
-                                                                <div class="loader loader3" *ngIf="recentdocLoader">
-                                                                        <div class="loader-item"></div>
-                                                                        <p>Loading...</p>
-                                                                      </div>
-                                                </div>
-                                                     
-                                                    </div>
-                                                 </div>
-                                    </div>
-                                </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                                <div class="card">
-                                        <div class="card-header">
-                                                      
-                                                <h6 class="card-title mb-0">{{"Document Summary" | langReplace }}</h6>
-                                            </div>
-                                                <div class="card-body mb-4">
-                                                  
-                                                        <highcharts-chart style="width: 100%; display: block" [Highcharts]="Highcharts"     
-                                                        [options]="chartOptions" [runOutsideAngular]="true" [oneToOne]="true"
-                                                        >
-                                                </highcharts-chart>
-                                            
-                                                 
                                                 </div>
                                         </div>
-                                                <div class="card">
+                                </div>
+                                <div class="col-md-4">
+                                        <div class="card">
+
+                                                <div class="card-body ">
+                                                        <div class="icon-div">
+                                                                <i
+                                                                        class="bi bi-file-text text-primary"></i>
+                                                        </div>
+                                                        <h6
+                                                                class="card-title mb-3">{{"documents"
+                                                                | langReplace }}</h6>
+                                                        <div
+                                                                class="w-100 d-flex justify-content-between portletdata">
+                                                                <a
+                                                                        href="javascript:voaid(0)"
+                                                                        routerLink="../../reports/allfiles"
+                                                                        class="text-primary">{{noofdocumets}}
+                                                                        {{"Documents"
+                                                                        |
+                                                                        langReplace
+                                                                        }} </a>
+                                                                <span>{{sizeofdocuments}}</span>
+                                                        </div>
+
+                                                </div>
+                                        </div>
+                                </div>
+                                <div class="col-md-4">
+                                        <div class="card">
+
+                                                <div class="card-body ">
+                                                        <div
+                                                                class="icon-div bg-light-yellow">
+                                                                <i
+                                                                        class="bi bi-folder-fill text-warning"></i>
+                                                        </div>
+                                                        <h6
+                                                                class="card-title mb-3">{{"Folders"
+                                                                | langReplace }}
+                                                        </h6>
+                                                        <div
+                                                                class="w-100 d-flex justify-content-between portletdata">
+                                                                <a
+                                                                        href="javascript:voaid(0)"
+                                                                        routerLink="../../reports/folderwise"
+                                                                        class="text-warning">{{nooffolders}}
+                                                                        {{"Folders"
+                                                                        |
+                                                                        langReplace
+                                                                        }} </a>
+                                                                <span>{{sizeoffolders}}</span>
+                                                        </div>
+
+                                                </div>
+                                        </div>
+                                </div>
+                                <div class="col-md-4">
+                                        <div class="card">
+
+                                                <div class="card-body ">
+                                                        <div
+                                                                class="icon-div bg-light-sky">
+                                                                <i
+                                                                        class="bi bi-share-fill text-info"></i>
+                                                        </div>
+                                                        <h6
+                                                                class="card-title mb-3">{{"Share"
+                                                                | langReplace }}
+                                                        </h6>
+                                                        <div
+                                                                class="w-100  d-flex justify-content-between portletdata">
+                                                                <a
+                                                                        href="javascript:voaid(0)"
+                                                                        routerLink="../../reports/sharedfilewise"
+                                                                        class="text-info">{{noofsharedfiles}}
+                                                                        {{"Documents"
+                                                                        |
+                                                                        langReplace
+                                                                        }} </a>
+                                                                <span>{{sizeofsharedfiles}}
+                                                                </span>
+                                                        </div>
+
+                                                </div>
+                                        </div>
+                                </div>
+                                <div class="col-md-6">
+                                        <div class="card">
                                                 <div class="card-header">
-                                                      
-                                                        <h6 class="card-title mb-0">{{"Storage Details" | langReplace }} </h6>
-                                                    </div>
-                                        <div class="card-body ">
-                                          
-                                                <div class="w-100 mb-3 d-flex justify-content-between align-items-center">
-                                                        <h6> {{"Total Space Allocation" | langReplace }}  </h6>
-                                                        <h6>{{sizeoffolders}}</h6>
+
+                                                        <h6
+                                                                class="card-title mb-0">{{"Recent Activities"
+                                                                | langReplace
+                                                                }} </h6>
+                                                        <a class="text-primary"
+                                                                (click)="viewAll(2)"><small>{{"View All"
+                                                                        |
+                                                                        langReplace
+                                                                        }}</small></a>
+                                                </div>
+                                                <div class="card-body">
+                                                        <div class="fix-height">
+
+                                                                <ul
+                                                                        class="listing"
+                                                                        *ngIf="activitylist?.length > 0; else norecord">
+
+                                                                        <li
+                                                                                *ngFor="let mlist of activitylist; let i = index">
+                                                                                <a
+                                                                                        class="docs"
+                                                                                        href="javascript:void(0)"
+                                                                                        (click)="loadpreview(mlist.fileOrFolderId,mlist.fileName,mlist.filePath,0,mlist.lockStatus)">
+
+                                                                                        <i
+                                                                                                class="h6"
+                                                                                                [ngClass]="mlist.fileType?commonserveice.getfiletype(mlist.fileType):'bi-folder-fill text-warning'"></i>
+
+                                                                                        {{mlist.folderName
+                                                                                        ?
+                                                                                        mlist.folderName
+                                                                                        :
+                                                                                        mlist.fileName}}
+
+                                                                                        <span
+                                                                                                class="text-primary mt-2">
+                                                                                                {{mlist.activityPerformed}}
+                                                                                        </span>
+                                                                                        <span>{{mlist.createdBy}}
+                                                                                                .
+                                                                                                {{mlist.createdOn}}
+                                                                                        </span>
+
+                                                                                </a>
+                                                                        </li>
+
+                                                                </ul>
+                                                                <ng-template
+                                                                        #norecord>
+                                                                        <h6
+                                                                                class="no-content">
+                                                                                No
+                                                                                log
+                                                                                found</h6>
+
+                                                                </ng-template>
+                                                                <div
+                                                                        class="loader loader3"
+                                                                        *ngIf="logLoader">
+                                                                        <div
+                                                                                class="loader-item"></div>
+                                                                        <p>Loading...</p>
+                                                                </div>
+                                                        </div>
+
+                                                </div>
+                                        </div>
+                                </div>
+                                <div class="col-md-6">
+                                        <div class="card">
+                                                <div class="card-header">
+
+                                                        <h6
+                                                                class="card-title mb-0">{{"Recent Documents"
+                                                                | langReplace
+                                                                }} </h6>
+                                                        <a class="text-primary"
+                                                                (click)="viewAll(3)"><small>{{"View All"
+                                                                        |
+                                                                        langReplace
+                                                                        }}</small></a>
+                                                </div>
+                                                <div class="card-body">
+                                                        <div class="fix-height">
+
+                                                                <ul
+                                                                        class="listing"
+                                                                        *ngIf="recentlist?.length > 0; else norecord">
+                                                                        <li
+                                                                                *ngFor="let flist of recentlist; let i = index">
+                                                                                <a
+                                                                                        class="docs"
+                                                                                        (click)="loadpreview(flist.fileId,flist.fileName,flist.filePath,0,flist.lockStatus)">
+                                                                                        <i
+                                                                                                class="h6"
+                                                                                                [ngClass]="commonserveice.getfiletype(flist.fileType)"></i>
+                                                                                        {{flist.fileName}}
+                                                                                        <i
+                                                                                                ngbTooltip="Locked File"
+                                                                                                style="font-size:1rem"
+                                                                                                class='position-relative  {{flist.lockStatus==1? "bi bi-lock-fill text-danger ml-1" :""}}'></i>
+                                                                                        <span>
+                                                                                                {{flist.CreatedOn
+                                                                                                }}</span>
+                                                                                </a>
+                                                                        </li>
+
+                                                                </ul>
+
+                                                                <ng-template
+                                                                        #norecord>
+                                                                        <h6
+                                                                                class="no-content">
+                                                                                No
+                                                                                Recent
+                                                                                Documents</h6>
+
+                                                                </ng-template>
+                                                                <div
+                                                                        class="loader loader3"
+                                                                        *ngIf="recentdocLoader">
+                                                                        <div
+                                                                                class="loader-item"></div>
+                                                                        <p>Loading...</p>
+                                                                </div>
+                                                        </div>
+
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+                <div class="col-md-12 col-lg-4">
+                        <div class="card">
+                                <div class="card-header">
+
+                                        <h6 class="card-title mb-0">{{"Document Summary"
+                                                | langReplace }}</h6>
+                                </div>
+                                <div class="card-body mb-4">
+
+                                        <highcharts-chart
+                                                style="width: 100%; display: block"
+                                                [Highcharts]="Highcharts"
+                                                [options]="chartOptions"
+                                                [runOutsideAngular]="true"
+                                                [oneToOne]="true">
+                                        </highcharts-chart>
+
+                                </div>
+                        </div>
+                        <div class="card">
+                                <div class="card-header">
+
+                                        <h6 class="card-title mb-0">{{"Storage Details"
+                                                | langReplace }} </h6>
+                                </div>
+                                <div class="card-body ">
+
+                                        <div class=" mb-3 storage-list-item">
+                                                <div
+                                                        class="d-flex justify-content-between align-items-center">
+                                                        <i
+                                                                class="bi bi-hdd text-primary"></i>
+                                                        <div>
+                                                                {{"Total Space Allocation"
+                                                                | langReplace }}
+
+                                                                <!-- <span class="d-block">{{noofdocumets }} {{"Documents" | langReplace }} </span> -->
+                                                        </div>
+
                                                 </div>
 
+                                                <span class="text-primary">{{sizeoffolders}}</span>
+                                        </div>
 
-                                                <div class=" mb-3 storage-list-item">
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                            <i class="bi bi-file-text text-primary"></i>
-                                                            <div>
-                                                                {{"Documents" | langReplace }}   
-                                                                    
-                                                                    <span class="d-block">{{noofdocumets }} {{"Documents" | langReplace }} </span>
-                                                            </div>
-                                                            
-                                                           
-                                                    </div>
-                                                        
-                                                        <span class="text-primary">{{sizeofdocumentsingb}}</span>
-                                                </div>
-                                         
-                                                <!-- <div class="mb-3 storage-list-item">
+                                        <!-- <div class="mb-3 storage-list-item">
                                                         <div class="d-flex justify-content-between align-items-center">
                                                                 <i class="bi bi-folder-fill text-warning"></i>
                                                                 <div>
@@ -289,49 +446,130 @@
                                                             
                                                             <span class="text-warning">5 GB</span>
                                                     </div> -->
-                                                    <div class="storage-list-item">
-                                                            <div class="d-flex justify-content-between align-items-center">
-                                                                    <i class="bi bi-hdd text-info"></i>
-                                                                    <div>
-                                                                            
-                                                                            {{"Free Space" | langReplace }}  
-                                                                    </div>
-                                                                    
-                                                                   
-                                                            </div>
-                                                                
-                                                                <span class="text-info">{{folderfreespace}}</span>
+                                        <div class="storage-list-item">
+                                                <div
+                                                        class="d-flex justify-content-between align-items-center">
+                                                        <i
+                                                                class="bi bi-hdd text-success"></i>
+                                                        <div>
+
+                                                                {{"Free Space" |
+                                                                langReplace }}
                                                         </div>
+
+                                                </div>
+
+                                                <span class="text-success">{{folderfreespace}}</span>
                                         </div>
-                                     </div>
-                            </div>
-                    </div>
+                                </div>
+                        </div>
 
+                        <div class="card">
+                                <div class="card-header">
 
-   
-         
+                                        <h6 class="card-title mb-0">{{"Upcoming Retention Documents"
+                                                | langReplace }}
+                                        </h6>
+                                        <!-- <a class="text-primary" (click)="viewAll(4)"><small>{{"View All" | langReplace
+                                                        }}</small></a> -->
+                                </div>
+                                <div class="card-body">
+                                        <div class="fix-height">
+                                                <a class="notification-items">
+                                                        Next 7 Days Retention Documents <span> {{retentionOneWeek ? retentionOneWeek : 0}}</span>
+                                                     </a>
+                                                     <a class="notification-items">
+                                                        Next 15 Days Retention Documents <span>{{retentionFifteenDays ? retentionFifteenDays : 0}} </span>
+                                                     </a>
+                                                     <a class="notification-items">
+                                                        Next 30 Days Retention Documents <span>{{retentionThirtyDays ? retentionThirtyDays : 0}} </span>
+                                                     </a>
+                                                <!-- <table
+                                                        class="table table-bordered"
+                                                        *ngIf="retentionList?.length > 0; else norecord">
+                                                        <thead>
+                                                                <tr>
+                                                                        <th>File</th>
+                                                                        <th>File
+                                                                                Name</th>
+
+                                                                        <th>Retention
+                                                                                Date</th>
+                                                                </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                                <tr
+                                                                        *ngFor="let flist of retentionList; let i = index">
+                                                                        <td> <i
+                                                                                        class="h6"
+                                                                                        [ngClass]="commonserveice.getfiletype(flist.fileType)"></i>
+                                                                        </td>
+                                                                        <td>
+                                                                                <a
+                                                                                        class="docs text-primary"
+                                                                                        (click)="loadpreview(flist.fileId,flist.fileName,flist.filePath,0,flist.lockStatus)">
+
+                                                                                        {{flist.fileName}}
+                                                                                        <i
+                                                                                                ngbTooltip="Locked File"
+                                                                                                style="font-size:1rem"
+                                                                                                class='position-relative  {{flist.lockStatus==1? "bi bi-lock-fill text-danger ml-1" :""}}'></i>
+                                                                                        <span
+                                                                                                class="d-block mt-1 text-dark">{{flist.CreatedOn
+                                                                                                }}</span>
+                                                                                </a>
+                                                                        </td>
+
+                                                                        <td>{{flist.archivedDate
+                                                                                }}</td>
+                                                                </tr>
+                                                        </tbody>
+                                                </table> -->
+
+                                                <!-- <ng-template #norecord>
+                                                        <h6 class="no-content">
+                                                                No Documents
+                                                                Found</h6>
+
+                                                </ng-template> -->
+                                                <div class="loader loader3"
+                                                        *ngIf="retentiondocLoader">
+                                                        <div class="loader-item"></div>
+                                                        <p>Loading...</p>
+                                                </div>
+                                        </div>
+
+                                </div>
+                        </div>
+
+                </div>
         </div>
 
-            <!-- <h3 class="no-content">No Data Found...</h3> -->
-             <!-- <button class="btn btn-primary"  (click)="onsubmit()">
+</div>
+
+<!-- <h3 class="no-content">No Data Found...</h3> -->
+<!-- <button class="btn btn-primary"  (click)="onsubmit()">
                  Submit
              </button>
          <button class="btn btn-danger"  (click)="onreset()">
                  Reset
              </button> -->
-          
 
-             <ng-template #previewModal id="previewModal" let-modal>
+<ng-template #previewModal id="previewModal" let-modal>
 
-                <div class="modal-header">
-                  <h5 class="modal-title mb-0" id="previewModalLabel"> {{"Document Preview" | langReplace }}   </h5>
-                  <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" style="max-height:90vh;min-height:300px;overflow-y: auto;position:relative">
-                     
-<app-preview-file [fileId]="previewfileid" [filetype]="filetype" [vfilepath]="filePath"  [lockstatus]="lockstatus" [logid]="logId"></app-preview-file>
-  
-            </div>
-              
-            
-            </ng-template>
+        <div class="modal-header">
+                <h5 class="modal-title mb-0" id="previewModalLabel"> {{"Document Preview"
+                        | langReplace }} </h5>
+                <button type="button" class="btn-close" (click)="closeModal()"
+                        aria-label="Close"></button>
+        </div>
+        <div class="modal-body"
+                style="max-height:90vh;min-height:300px;overflow-y: auto;position:relative">
+
+                <app-preview-file [fileId]="previewfileid" [filetype]="filetype"
+                        [vfilepath]="filePath"
+                        [lockstatus]="lockstatus" [logid]="logId"></app-preview-file>
+
+        </div>
+
+</ng-template>

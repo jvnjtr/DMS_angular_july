@@ -254,7 +254,7 @@ export class ConfigOCRComponent implements OnInit {
 
           if (responseResult.status == 200) {
             this.loading = false;
-            console.log(responseResult.result);
+           // console.log(responseResult.result);
             this.configId = responseResult.result.configId;
             this.ocrStatus = responseResult.result.ocrStatus.toString();
             this.ocrFrequency = responseResult.result.ocrFrequency;

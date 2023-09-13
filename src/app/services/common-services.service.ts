@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -7,7 +7,7 @@ import * as CryptoJS from 'crypto-js';
 import { environment } from '../../environments/environment';
 import {Buffer} from 'buffer';
 import Swal from 'sweetalert2';
-
+import { Subscription } from 'rxjs/internal/Subscription'; 
 
 @Injectable({
   providedIn: 'root'
@@ -593,6 +593,57 @@ public getStampConfiguration(formParams:any):Observable<any> {
    let loginResponse = this.http.post(serviceURL, reqData);
    return loginResponse;
 }
+public getStampConfigurationAll(formParams:any):Observable<any> {
+
+  let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+   let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+   let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+   let serviceURL = environment.serviceURL + 'config_module/getStampConfigurationAll';
+   let loginResponse = this.http.post(serviceURL, reqData);
+   return loginResponse;
+}
+public deleteStampingConfiguration(formParams:any):Observable<any> {
+
+  let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+   let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+   let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+   let serviceURL = environment.serviceURL + 'config_module/deleteStampingConfiguration';
+   let loginResponse = this.http.post(serviceURL, reqData);
+   return loginResponse;
+}
+public setSignatureConfiguration(formParams:any):Observable<any> {
+
+  let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+   let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+   let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+   let serviceURL = environment.serviceURL + 'config_module/setSignatureConfiguration';
+   let loginResponse = this.http.post(serviceURL, reqData);
+   return loginResponse;
+}
+public getSignatureConfiguration(formParams:any):Observable<any> {
+
+  let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+   let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+   let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+   let serviceURL = environment.serviceURL + 'config_module/getSignatureConfiguration';
+   let loginResponse = this.http.post(serviceURL, reqData);
+   return loginResponse;
+}
+
+
+public getPermissionLinks(formParams:any):Observable<any> {
+
+  let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+   let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+   let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+   let serviceURL = environment.serviceURL + 'manage_login/getMenuPermission';
+   let loginResponse = this.http.post(serviceURL, reqData);
+   return loginResponse;
+}
+
+
+
+
 public reloadpage(){
 
   window.history.back()
@@ -645,7 +696,20 @@ public reloadpage(){
   }
 
 /// Get file type ///
+getmenuicons(filename: any) {
 
+  let icon: any;
+  let iconsGroups: any = environment.menuiconsGroups;
+  for (let i = 0; i < iconsGroups.length; i++) {
+    let filetype: any = iconsGroups[i].groups.includes(filename);
+    if (filetype == true) {
+      icon = iconsGroups[i].name;
+    }
+
+  }
+  return icon;
+
+}
 /// File size conversion ///
 
   formatBytes(bytes: any, decimals: any) {
@@ -723,5 +787,12 @@ sortArr(colName:any, filterarray:any){
  
    //\\ ======================== // Data sorting // ======================== //\\
 
+   invokeFirstComponentFunction = new EventEmitter();    
+   subsVar: Subscription;    
+     
 
+     
+   onFirstComponentButtonClick() {    
+     this.invokeFirstComponentFunction.emit();    
+   } 
 }

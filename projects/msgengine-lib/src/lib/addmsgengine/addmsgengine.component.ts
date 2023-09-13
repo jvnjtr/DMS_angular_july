@@ -199,29 +199,31 @@ export class AddmsgengineComponent implements OnInit {
 
   getForms() {
     let params={}
-       this.commonserveice.getForms(params).subscribe((resp: any) => {
-         let respData = resp.RESPONSE_DATA;
-         let respToken = resp.RESPONSE_TOKEN;
-        let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-        if (respToken == verifyToken) {
-          let res: any = Buffer.from(respData, 'base64');
-          res = JSON.parse(res.toString());
-          //console.log('res');
-          if (res.status === 200) {
-            this.formNameslist = res.result;
-           
-          }
-          else {
-            console.log(res.messages)
-          }
-        } else {
-          Swal.fire({
-            icon: 'error',
-             text:this.commonserveice.langReplace(this.varlist.invalidResponse),
-          });
-        }
-
-       });
+    this.commonserveice.getForms(params).subscribe({
+        next: (response) => {
+            let respData = response.RESPONSE_DATA;
+            let respToken = response.RESPONSE_TOKEN;
+           let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+           if (respToken == verifyToken) {
+             let res: any = Buffer.from(respData, 'base64');
+             res = JSON.parse(res.toString());
+             //console.log('res');
+             if (res.status === 200) {
+               this.formNameslist = res.result;
+              
+             }
+             else {
+               console.log(res.messages)
+             }
+           } else {
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+           }
+        },
+        error: (msg) => {
+            this.commonserveice.directlogoutlib()
+       }
+   })
+       
   }
 
 
@@ -277,57 +279,47 @@ export class AddmsgengineComponent implements OnInit {
           } else {
               newFile.append('file', event.addedFiles[0])
               newFile.append('fileType', splititems[1])
-              console.log(filesize);
-              this.commonserveice.msguploadFile(newFile).subscribe((response: any) => {
+              this.commonserveice.msguploadFile(newFile).subscribe({
+                next: (response) => {
+                    let respData = response.RESPONSE_DATA;
+                    let respToken = response.RESPONSE_TOKEN;
 
+                    let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                    if (respToken == verifyToken) {
+                        let res: any = Buffer.from(respData, 'base64');
+                        let responseResult = JSON.parse(res)
 
-                      let respData = response.RESPONSE_DATA;
-                      let respToken = response.RESPONSE_TOKEN;
+                        if (responseResult.status == 200) {
 
-                      let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-                      if (respToken == verifyToken) {
-                          let res: any = Buffer.from(respData, 'base64');
-                          let responseResult = JSON.parse(res)
+                            //  this.files_dropped.push(event.addedFiles);
+                            let obj: any = {};
+                            obj['fileName'] = responseResult.result.fileName;
+                            obj['filePath'] = responseResult.result.filePath;
+                            obj['fileType'] = responseResult.result.fileType;
+                            this.fileeList.push(obj)
 
-                          if (responseResult.status == 200) {
+                            this.documentFile = responseResult.result.fileName;
+                           
 
-                              //  this.files_dropped.push(event.addedFiles);
-                              let obj: any = {};
-                              obj['fileName'] = responseResult.result.fileName;
-                              obj['filePath'] = responseResult.result.filePath;
-                              obj['fileType'] = responseResult.result.fileType;
-                              this.fileeList.push(obj)
+                        } else if (responseResult.status == 400) {
+                            this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+                        
+                        }  else {
 
-                              this.documentFile = responseResult.result.fileName;
-                             
+                          
+                          this.commonserveice.directlogoutlib()
+                        }
+                    } else {
+                        //   this.loading = false;
+                        this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+                    }
 
-                          } else if (responseResult.status == 400) {
-                              Swal.fire({
-                                  icon: 'error',
-                                  text: responseResult.message,
-
-                              });
-                          }  else {
-
-                            
-                            this.commonserveice.directlogoutlib()
-                          }
-                      } else {
-                          //   this.loading = false;
-                          Swal.fire({
-                              icon: 'error',
-                               text:this.commonserveice.langReplace(this.varlist.invalidResponse),
-
-                          });
-                      }
-
-
-
-
-                  },
-                  (error: any) => {
-                      this.commonserveice.directlogoutlib()
-                  })
+                },
+                error: (msg) => {
+                    this.commonserveice.directlogoutlib()
+               }
+           })
+             
           }
 
 
@@ -445,98 +437,87 @@ export class AddmsgengineComponent implements OnInit {
               "mailSmsTo": mailSmsApp
           }
 
-          
+          this.commonserveice.newMessage(formparams).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res: any = Buffer.from(respData, 'base64');
+                    let responseResult = JSON.parse(res)
+
+                    if (responseResult.status == 200) {
+
+                        Swal.fire({
+
+                            text: this.commonserveice.langReplace(this.messaageslist.successMsg),
+                            icon: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: this.commonserveice.langReplace('Ok')
+                        }).then((result) => {
 
 
-          this.commonserveice.newMessage(formparams).subscribe((response: any) => {
-                  let respData = response.RESPONSE_DATA;
-                  let respToken = response.RESPONSE_TOKEN;
-                  let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-                  if (respToken == verifyToken) {
-                      let res: any = Buffer.from(respData, 'base64');
-                      let responseResult = JSON.parse(res)
+                            if (messageTypeVal == 1) {
+                                this.route.navigate(['/admin/viewmessageengine'])
+                            } else {
 
-                      if (responseResult.status == 200) {
-
-                          Swal.fire({
-
-                              text: this.commonserveice.langReplace(this.messaageslist.successMsg),
-                              icon: 'success',
-                              confirmButtonColor: '#3085d6',
-                              confirmButtonText: this.commonserveice.langReplace('Ok')
-                          }).then((result) => {
+                                this.route.navigate(['/admin/viewmessagereminder'])
+                            }
+                            this.resetform();
 
 
-                              if (messageTypeVal == 1) {
-                                  this.route.navigate(['/admin/viewmessageengine'])
-                              } else {
+                        })
 
-                                  this.route.navigate(['/admin/viewmessagereminder'])
-                              }
-                              this.resetform();
+                    } else if (responseResult.status == 202) {
 
+                        // this.loading=false;
 
-                          })
+                        Swal.fire({
 
-                      } else if (responseResult.status == 202) {
-
-                          // this.loading=false;
-
-                          Swal.fire({
-
-                              text: this.commonserveice.langReplace(this.messaageslist.updatesuccessMsg),
-                              icon: 'success',
-                              confirmButtonColor: '#3085d6',
-                              confirmButtonText: this.commonserveice.langReplace('Ok')
-                          }).then((result) => {
+                            text: this.commonserveice.langReplace(this.messaageslist.updatesuccessMsg),
+                            icon: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: this.commonserveice.langReplace('Ok')
+                        }).then((result) => {
 
 
-                              if (messageTypeVal == 1) {
+                            if (messageTypeVal == 1) {
 
-                                  this.route.navigate(['../viewmessageengine'])
-                              } else {
+                                this.route.navigate(['../viewmessageengine'])
+                            } else {
 
-                                  this.route.navigate(['..viewmessagereminder'])
-                              }
-                              this.resetform();
-                          })
+                                this.route.navigate(['..viewmessagereminder'])
+                            }
+                            this.resetform();
+                        })
 
-                      } else if (responseResult.status == 501) {
+                    } else if (responseResult.status == 501) {
 
-                          this.commonserveice.directlogoutlib()
-                      } else if (responseResult.status == 400) {
-
-                          // this.loading=false;
-                          Swal.fire({
-                              icon: 'error',
-                              text: responseResult.message.metaName[0],
-
-                          });
+                        this.commonserveice.directlogoutlib()
+                    } else if (responseResult.status == 400) {
+                        this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message.metaName[0]))
+                        // this.loading=false;
+                  
 
 
-                      } else {
-                          //this.loading=false;
-                          Swal.fire({
-                              icon: 'error',
-                              text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                          });
-                      }
-                  } else {
+                    } else {
+                        //this.loading=false;
+                        this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.somethingWrong))
+                    
+                    }
+                } else {
 
-                      Swal.fire({
-                          icon: 'error',
-                          text: this.messaageslist.errorMsg,
+                    this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.messaageslist.errorMsg))
+                    
+                }
+            },
+            error: (msg) => {
+                       this.commonserveice.directlogoutlib()
+           }
+       })
 
-                      });
-                  }
-              },
-              (error: any) => {
-                  // this.loading=false;
-                  Swal.fire({
-                      icon: 'error',
-                      text:this.commonserveice.langReplace(this.varlist.errorApiResponse),
-                  });
-              })
+
+        
 
 
 
@@ -552,67 +533,67 @@ export class AddmsgengineComponent implements OnInit {
           "formId": "",
           "formName": ''
       };
-      this.commonserveice.viewMessage(messageParams).subscribe((resp: any) => {
-          let respData = resp.RESPONSE_DATA;
-          let respToken = resp.RESPONSE_TOKEN;
-          let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-          if (respToken == verifyToken) {
-              let res: any = Buffer.from(respData, 'base64');
-              res = JSON.parse(res.toString());
-              if (res.status == 200) {
-                  this.messageList = res.result;
-                  if (this.messageList.length > 0) {
-                    setTimeout(()=>{                          
-                        this.selformId = this.messageList[0].intProcessId;
-                    },1000);
-                  
-                     
-
-                      this.configtype = this.messageList[0].intMessageConfigType;
-                      this.formnames = this.messageList[0].intProcessId;
-                      this.messageType = this.messageList[0].intmessageType;
-                      this.eventType = this.messageList[0].intEventType;
-                      this.smsSubject = this.messageList[0].vchSubject;
-                      this.messageContent = this.encDec.decodeHtml(this.messageList[0].vchMessageContent);
-                      // this.messageContent = this.messageList[0].vchMessageContent;
-                      // console.log(this.encDec.decodeHtml(this.messageList[0].vchMessageContent));
-                      // console.log(this.messageList[0].vchMessageContent);
-                      this.smsTempId = this.messageList[0].vchSmsTemplateId;
-                      this.fileType = this.messageList[0].intDocumentType;
-                      this.documentUrl = this.messageList[0].vchDocument;
-                      this.intMailTemplate = this.messageList[0].intMailTemplate;
-                      this.vchLanguage = this.messageList[0].vchLanguage;
-                      this.emailId = this.messageList[0].vchEmailIdKey;
-                      this.mobileNo = this.messageList[0].vchMobileKey;
-                      let explodedAllMailValue = (this.messageList[0].vchMailSmsTo).split(',');
-                      this.gateWayconfigtype = this.messageList[0].intGateWayConfigId;
-                      this.getGateWayConfigDetails();
-                      if (explodedAllMailValue.includes('1')) {
-                          this.mailsmstoApplicant = '1';
-                      }
-                      if (explodedAllMailValue.includes('2')) {
-                          this.mailsmstoAuthority = '2';
-                      }
-                      // alert(this.messageList[0].vchLanguage);
-                  }
-              } else if (res.status == 417) {
-                  Swal.fire({
-                      icon: 'error',
-                      text:this.commonserveice.langReplace(this.varlist.errorApiResponse)
-                  });
-              } else {
-                  Swal.fire({
-                      icon: 'error',
-                      text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                  });
-              }
-          } else {
-              Swal.fire({
-                  icon: 'error',
-                  text:this.commonserveice.langReplace(this.varlist.errorApiResponse)
-              });
-          }
-      });
+      this.commonserveice.viewMessage(messageParams).subscribe({
+        next: (response) => {
+            let respData = response.RESPONSE_DATA;
+            let respToken = response.RESPONSE_TOKEN;
+            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+            if (respToken == verifyToken) {
+                let res: any = Buffer.from(respData, 'base64');
+                res = JSON.parse(res.toString());
+                if (res.status == 200) {
+                    this.messageList = res.result;
+                    if (this.messageList.length > 0) {
+                      setTimeout(()=>{                          
+                          this.selformId = this.messageList[0].intProcessId;
+                      },1000);
+                    
+                       
+  
+                        this.configtype = this.messageList[0].intMessageConfigType;
+                        this.formnames = this.messageList[0].intProcessId;
+                        this.messageType = this.messageList[0].intmessageType;
+                        this.eventType = this.messageList[0].intEventType;
+                        this.smsSubject = this.messageList[0].vchSubject;
+                        this.messageContent = this.encDec.decodeHtml(this.messageList[0].vchMessageContent);
+                        // this.messageContent = this.messageList[0].vchMessageContent;
+                        // console.log(this.encDec.decodeHtml(this.messageList[0].vchMessageContent));
+                        // console.log(this.messageList[0].vchMessageContent);
+                        this.smsTempId = this.messageList[0].vchSmsTemplateId;
+                        this.fileType = this.messageList[0].intDocumentType;
+                        this.documentUrl = this.messageList[0].vchDocument;
+                        this.intMailTemplate = this.messageList[0].intMailTemplate;
+                        this.vchLanguage = this.messageList[0].vchLanguage;
+                        this.emailId = this.messageList[0].vchEmailIdKey;
+                        this.mobileNo = this.messageList[0].vchMobileKey;
+                        let explodedAllMailValue = (this.messageList[0].vchMailSmsTo).split(',');
+                        this.gateWayconfigtype = this.messageList[0].intGateWayConfigId;
+                        this.getGateWayConfigDetails();
+                        if (explodedAllMailValue.includes('1')) {
+                            this.mailsmstoApplicant = '1';
+                        }
+                        if (explodedAllMailValue.includes('2')) {
+                            this.mailsmstoAuthority = '2';
+                        }
+                        // alert(this.messageList[0].vchLanguage);
+                    }
+                } else if (res.status == 417) {
+                    this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.errorApiResponse))
+                 
+                } else {
+                    this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.somethingWrong))
+                   
+                }
+            } else {
+                this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.errorApiResponse))
+               
+            }
+        },
+        error: (msg) => {
+                   this.commonserveice.directlogoutlib()
+       }
+   })
+     
   };
 
   resetform() {
@@ -635,33 +616,31 @@ export class AddmsgengineComponent implements OnInit {
       let keyParams = {
           "itemId": this.txtFormId
       };
-      this.commonserveice.getConfigurationKeys(keyParams).subscribe((response: any) => {
-        let respData = response.RESPONSE_DATA;
-        let respToken = response.RESPONSE_TOKEN;
-        let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-        if (respToken == verifyToken) {
-          let res: any = Buffer.from(respData, 'base64');
-          res = JSON.parse(res.toString());
-          if (res.status == 200) {
-            this.keysArray = res.result;
-          } else if (res.status == 417) {
-            Swal.fire({
-              icon: 'error',
-              text:this.commonserveice.langReplace(this.varlist.invalidResponse)
-            });
-          } else {
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-            });
-          }
-        } else {
-          Swal.fire({
-            icon: 'error',
-             text:this.commonserveice.langReplace(this.varlist.invalidResponse),
-          });
-        }
-      });
+      this.commonserveice.getConfigurationKeys(keyParams).subscribe({
+        next: (response) => {
+            let respData = response.RESPONSE_DATA;
+            let respToken = response.RESPONSE_TOKEN;
+            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+            if (respToken == verifyToken) {
+              let res: any = Buffer.from(respData, 'base64');
+              res = JSON.parse(res.toString());
+              if (res.status == 200) {
+                this.keysArray = res.result;
+              } else if (res.status == 417) {
+                this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+              } else {
+                this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.somethingWrong))
+              }
+            } else {
+                this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+             
+            }
+        },
+        error: (msg) => {
+                   this.commonserveice.directlogoutlib()
+       }
+   })
+    
   }
   //
 
@@ -671,34 +650,30 @@ export class AddmsgengineComponent implements OnInit {
       let keyParams = {
 
       };
-
-      this.commonserveice.getStaticConfigurationKeys(keyParams).subscribe((response: any) => {
-          let respData = response.RESPONSE_DATA;
-          let respToken = response.RESPONSE_TOKEN;
-          let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-          if (respToken == verifyToken) {
-              let res: any = Buffer.from(respData, 'base64');
-              res = JSON.parse(res.toString());
-              if (res.status == 200) {
-                  this.StatickeysArray = res.result;
-              } else if (res.status == 417) {
-                  Swal.fire({
-                      icon: 'error',
-                      text:this.commonserveice.langReplace(this.varlist.invalidResponse)
-                  });
-              } else {
-                  Swal.fire({
-                      icon: 'error',
-                      text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                  });
-              }
-          } else {
-              Swal.fire({
-                  icon: 'error',
-                  text:this.commonserveice.langReplace(this.varlist.invalidResponse)
-              });
-          }
-      });
+      this.commonserveice.getStaticConfigurationKeys(keyParams).subscribe({
+        next: (response) => {
+            let respData = response.RESPONSE_DATA;
+            let respToken = response.RESPONSE_TOKEN;
+            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+            if (respToken == verifyToken) {
+                let res: any = Buffer.from(respData, 'base64');
+                res = JSON.parse(res.toString());
+                if (res.status == 200) {
+                    this.StatickeysArray = res.result;
+                } else if (res.status == 417) {
+                    this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+                } else {
+                    this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.somethingWrong))
+                }
+            } else {
+                this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+            }
+        },
+        error: (msg) => {
+                   this.commonserveice.directlogoutlib()
+       }
+   })
+  
 
 
 
@@ -712,10 +687,10 @@ export class AddmsgengineComponent implements OnInit {
           "intId": '',
 
       };
-
-      this.commonserveice.getLanguage(params).subscribe((resp: any) => {
-          let respData = resp.RESPONSE_DATA;
-          let respToken = resp.RESPONSE_TOKEN;
+      this.commonserveice.getLanguage(params).subscribe({
+        next: (response) => {
+            let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
           let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
           if (respToken == verifyToken) {
               let res: any = Buffer.from(respData, 'base64');
@@ -727,13 +702,14 @@ export class AddmsgengineComponent implements OnInit {
                   console.log(res.messages)
               }
           } else {
-              Swal.fire({
-                  icon: 'error',
-                  text:this.commonserveice.langReplace(this.varlist.invalidResponse)
-              });
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
           }
-
-      });
+        },
+        error: (msg) => {
+                   this.commonserveice.directlogoutlib()
+       }
+   })
+     
   }
   // addChangeEventForLabel() {
   //   let sessionUserLangtoken: any = sessionStorage.getItem('USER_LANGPREF');
@@ -770,25 +746,31 @@ export class AddmsgengineComponent implements OnInit {
       let params = {
           "tinType": this.configtype,
       };
-      this.commonserveice.getFetchPublishRecord(params).subscribe((response: any) => {
-          let respToken = response.RESPONSE_TOKEN;
-          let respData = response.RESPONSE_DATA
-          let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-          if (respToken == verifyToken) {
-              let respData = response.RESPONSE_DATA;
-              let res: any = Buffer.from(respData, 'base64');
-              res = JSON.parse(res.toString());
-              if (res.status == 200) {
-                  this.gatewayconfigDetails = res.result;
-              } else if (res.status == 400) {
-                  Swal.fire({
-                      icon: 'error',
-                      text: "error",
-                  });
-              }
-
-          }
-      });
+      this.commonserveice.getFetchPublishRecord(params).subscribe({
+        next: (response) => {
+            let respToken = response.RESPONSE_TOKEN;
+            let respData = response.RESPONSE_DATA
+            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+            if (respToken == verifyToken) {
+                let respData = response.RESPONSE_DATA;
+                let res: any = Buffer.from(respData, 'base64');
+                res = JSON.parse(res.toString());
+                if (res.status == 200) {
+                    this.gatewayconfigDetails = res.result;
+                } else if (res.status == 400) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: "error",
+                    });
+                }
+  
+            }
+        },
+        error: (msg) => {
+                   this.commonserveice.directlogoutlib()
+       }
+   })
+     
   }
 
 }

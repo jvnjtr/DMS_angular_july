@@ -20,7 +20,10 @@
           "fromname":"Please Select Form Name",
           "metaname":"Please Enter Meta Name",
           "metadesc":"Please Enter Meta Description",
-           "metaType":"Meta Type"
+           "metaType":"Meta Type",
+           "templatelabel":"Enter Template Label",
+           "templatelabelType":"Template Label Type",
+            "addtemplate":"Add Meta Template"
          }
       }
     ]

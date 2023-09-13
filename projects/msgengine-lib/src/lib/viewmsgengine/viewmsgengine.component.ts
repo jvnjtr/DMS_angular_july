@@ -91,7 +91,10 @@ export class ViewmsgengineComponent implements OnInit {
   ngOnInit(): void {
     this.loadconfig();
     this.viewItems('','','','',1);
-    this.getForms();
+    if(this.formenable==true){
+      this.getForms();
+    }
+    
     //this.addChangeEventForLabel();
 
   }
@@ -110,29 +113,32 @@ export class ViewmsgengineComponent implements OnInit {
 
 
     let params={}
-    this.commonserveice.getForms(params).subscribe((resp: any) => {
-      let respData = resp.RESPONSE_DATA;
-      let respToken = resp.RESPONSE_TOKEN;
-     let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-     if (respToken == verifyToken) {
-       let res: any = Buffer.from(respData, 'base64');
-       res = JSON.parse(res.toString());
-       //console.log('res');
-       if (res.status === 200) {
-         this.formNames = res.result;
-        
+    this.commonserveice.getForms(params).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+       let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+       if (respToken == verifyToken) {
+         let res: any = Buffer.from(respData, 'base64');
+         res = JSON.parse(res.toString());
+         //console.log('res');
+         if (res.status === 200) {
+           this.formNames = res.result;
+          
+         }
+         else {
+           console.log(res.messages)
+         }
+       } else {
+        this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
        }
-       else {
-         console.log(res.messages)
-       }
-     } else {
-       Swal.fire({
-         icon: 'error',
-         text:this.commonserveice.langReplace(this.varlist.invalidResponse),
-       });
+      },
+      error: (msg) => {
+             this.commonserveice.directlogoutlib()
      }
+   })
+   
 
-    });
  
   }
   viewItems(MessageConfigId:any,intMessageConfigType:any,formId:any,formName:any,messageType:any) {
@@ -148,39 +154,36 @@ export class ViewmsgengineComponent implements OnInit {
     };
     this.loading = true;
     this.pubUnpStatus = [];
-    this.commonserveice.viewMessage(messageParams).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        res = JSON.parse(res.toString());
-        if (res.status == 200) {
-          this.messageList = res.result;
-         // console.log(this.messageList)
-          this.isFlag = true;
-          this.loading = false;
-        } else if (res.status == 417) {
-          this.isFlag = false;
-          Swal.fire({
-            icon: 'error',
-            text:this.commonserveice.langReplace(this.varlist.invalidResponse),
-          });
+    this.commonserveice.viewMessage(messageParams).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          res = JSON.parse(res.toString());
+          if (res.status == 200) {
+            this.messageList = res.result;
+           // console.log(this.messageList)
+            this.isFlag = true;
+            this.loading = false;
+          } else if (res.status == 417) {
+            this.isFlag = false;
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+          } else {
+            this.isFlag = false;
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+          }
         } else {
           this.isFlag = false;
-          Swal.fire({
-            icon: 'error',
-            text:this.commonserveice.langReplace(this.varlist.errorApiResponse)
-          });
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
         }
-      } else {
-        this.isFlag = false;
-        Swal.fire({
-          icon: 'error',
-          text:this.commonserveice.langReplace(this.varlist.invalidResponse),
-        });
-      }
-    });
+      },
+      error: (msg) => {
+             this.commonserveice.directlogoutlib()
+     }
+   })
+   
   }
   viewSearchList() {
     let Formid = this.selFormName;
@@ -274,25 +277,25 @@ export class ViewmsgengineComponent implements OnInit {
     }).then((result: any) => {
 
       if (result.isConfirmed) {
-        this.commonserveice.newMessage(messageParams).subscribe((res: any) => {
-          if (res.status == 200) {
-            Swal.fire(
-              'Deleted!',
-              "this.messaageslist.deleteMsg",
-              'success'
-            )
-            this.viewItems('','','','',1)
+        
+        this.commonserveice.newMessage(messageParams).subscribe({
+  next: (response) => {
+    if (response.status == 200) {
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.messaageslist.deleteMsg))
+  
+      this.viewItems('','','','',1)
 
-          }
-          else {
-
-            Swal.fire({
-              icon: 'error',
-              text: "this.messaageslist.errorMsg",
-
-            });
-          }
-        });
+    }
+    else {
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.messaageslist.errorMsg))
+   
+    }
+  },
+  error: (msg) => {
+         this.commonserveice.directlogoutlib()
+ }
+})
+   
       }
     })
   }

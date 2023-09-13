@@ -2,6 +2,7 @@ import * as i0 from '@angular/core';
 import { Injectable, Component, Pipe, Input, EventEmitter, Output, ViewChild, NgModule } from '@angular/core';
 import * as CryptoJS from 'crypto-js';
 import { Buffer } from 'buffer';
+import Swal from 'sweetalert2';
 import * as i1 from '@angular/router';
 import { RouterModule } from '@angular/router';
 import * as i2 from '@angular/common/http';
@@ -18,13 +19,12 @@ import * as i12 from 'ngx-pagination';
 import { NgxPaginationModule } from 'ngx-pagination';
 import * as i11 from 'ckeditor4-angular';
 import { CKEditorModule } from 'ckeditor4-angular';
-import Swal from 'sweetalert2';
 
 class VarlistService {
     constructor() {
         this.apiHashingKey = '22CSMTOOL2022';
         this.encryptIV = '26102021@qwI';
-        this.serviceURL = 'http://172.27.30.93:7001/DMS_PHP/admin/message_module';
+        this.serviceURL = 'http://172.27.30.93:7001/dms_php_admin/admin/message_module';
         this.serviceName = '/publishUnpublish';
         this.serviceModuleconfig = '/manageMessageConfig';
         this.formEnable = false;
@@ -272,6 +272,12 @@ class MsgengineLibService {
         else {
             return languageText;
         }
+    }
+    swalfire(type, message) {
+        return Swal.fire({
+            icon: type,
+            text: message
+        });
     }
 }
 MsgengineLibService.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.2.12", ngImport: i0, type: MsgengineLibService, deps: [{ token: i1.Router }, { token: i2.HttpClient }, { token: VarlistService }], target: i0.ɵɵFactoryTarget.Injectable });
@@ -1965,10 +1971,7 @@ ${printContents}</body>
     }
     deleteAll(ids, ftype) {
         if (ids.length == 0) {
-            Swal.fire({
-                icon: 'error',
-                text: this.commonserveice.langReplace('Please select the record you want to delete') + '.',
-            });
+            this.commonserveice.swalfire('error', this.commonserveice.langReplace('Please select the record you want to delete'));
         }
         else {
             var itemids = ids.toString();
@@ -1987,41 +1990,36 @@ ${printContents}</body>
                 confirmButtonText: this.commonserveice.langReplace('Yes') + ', ' + this.commonserveice.langReplace('delete it') + '!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    this.commonserveice.deleteAll(letterParams, ftype).subscribe((response) => {
-                        // console.log(response);
-                        let respData = response.RESPONSE_DATA;
-                        let respToken = response.RESPONSE_TOKEN;
-                        let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-                        // console.log(respToken);
-                        // console.log(verifyToken);
-                        if (respToken == verifyToken) {
-                            let res = Buffer.from(respData, 'base64');
-                            res = JSON.parse(res.toString());
-                            // console.log(res.status);
-                            if (res.status == 200) {
-                                Swal.fire(this.commonserveice.langReplace('Deleted') + ' !', this.commonserveice.langReplace('Record has been deleted'), 'success');
-                                // $('.checkAll').prop('checked', false);
-                                this.callfunction.emit();
-                                this.callfunction3.emit();
-                            }
-                            else if (res.status == 417) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-                                });
+                    this.commonserveice.deleteAll(letterParams, ftype).subscribe({
+                        next: (response) => {
+                            let respData = response.RESPONSE_DATA;
+                            let respToken = response.RESPONSE_TOKEN;
+                            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                            // console.log(respToken);
+                            // console.log(verifyToken);
+                            if (respToken == verifyToken) {
+                                let res = Buffer.from(respData, 'base64');
+                                res = JSON.parse(res.toString());
+                                // console.log(res.status);
+                                if (res.status == 200) {
+                                    Swal.fire(this.commonserveice.langReplace('Deleted') + ' !', this.commonserveice.langReplace('Record has been deleted'), 'success');
+                                    // $('.checkAll').prop('checked', false);
+                                    this.callfunction.emit();
+                                    this.callfunction3.emit();
+                                }
+                                else if (res.status == 417) {
+                                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                                }
+                                else {
+                                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
+                                }
                             }
                             else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    text: this.commonserveice.langReplace(this.varlist.somethingWrong),
-                                });
+                                this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.errorApiResponse));
                             }
-                        }
-                        else {
-                            Swal.fire({
-                                icon: 'error',
-                                text: this.commonserveice.langReplace(this.varlist.errorApiResponse),
-                            });
+                        },
+                        error: (msg) => {
+                            this.commonserveice.directlogoutlib();
                         }
                     });
                 }
@@ -2040,17 +2038,11 @@ ${printContents}</body>
             }
         }
         if (puberroStatus == 1) {
-            Swal.fire({
-                icon: 'error',
-                text: this.commonserveice.langReplace('Please select the unpublished record to publish') + '.',
-            });
+            this.commonserveice.swalfire('error', this.commonserveice.langReplace("Please select the unpublished record to publish"));
             return;
         }
         if (ids.length == 0) {
-            Swal.fire({
-                icon: 'error',
-                text: this.commonserveice.langReplace('Please select the record you want to publish') + '.',
-            });
+            this.commonserveice.swalfire('error', this.commonserveice.langReplace("Please select the record you want to publish"));
         }
         else {
             let itemids = ids.toString();
@@ -2068,37 +2060,33 @@ ${printContents}</body>
                 confirmButtonText: this.commonserveice.langReplace('Yes') + ', ' + this.commonserveice.langReplace('publish it') + '!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    this.commonserveice.publishAll(letterParams, ftype).subscribe((response) => {
-                        let respData = response.RESPONSE_DATA;
-                        let respToken = response.RESPONSE_TOKEN;
-                        let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-                        if (respToken == verifyToken) {
-                            let res = Buffer.from(respData, 'base64');
-                            let responseResult = JSON.parse(res);
-                            if (responseResult.status == 200) {
-                                Swal.fire(this.commonserveice.langReplace('Published') + ' !', this.commonserveice.langReplace('Publish Records Successfully'), 'success');
-                                // $('.checkAll').prop('checked', false);
-                                this.callfunction.emit();
-                                this.callfunction3.emit();
-                            }
-                            else if (responseResult.status == 417) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-                                });
+                    this.commonserveice.publishAll(letterParams, ftype).subscribe({
+                        next: (response) => {
+                            let respData = response.RESPONSE_DATA;
+                            let respToken = response.RESPONSE_TOKEN;
+                            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                            if (respToken == verifyToken) {
+                                let res = Buffer.from(respData, 'base64');
+                                let responseResult = JSON.parse(res);
+                                if (responseResult.status == 200) {
+                                    Swal.fire(this.commonserveice.langReplace('Published') + ' !', this.commonserveice.langReplace('Publish Records Successfully'), 'success');
+                                    // $('.checkAll').prop('checked', false);
+                                    this.callfunction.emit();
+                                    this.callfunction3.emit();
+                                }
+                                else if (responseResult.status == 417) {
+                                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                                }
+                                else {
+                                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
+                                }
                             }
                             else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    text: this.commonserveice.langReplace(this.varlist.somethingWrong),
-                                });
+                                this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.errorApiResponse));
                             }
-                        }
-                        else {
-                            Swal.fire({
-                                icon: 'error',
-                                text: " ",
-                            });
+                        },
+                        error: (msg) => {
+                            this.commonserveice.directlogoutlib();
                         }
                     });
                 }
@@ -2114,17 +2102,11 @@ ${printContents}</body>
             }
         }
         if (puberroStatus == 1) {
-            Swal.fire({
-                icon: 'error',
-                text: this.commonserveice.langReplace('Please select the published record to unpublish') + '.',
-            });
+            this.commonserveice.swalfire('error', this.commonserveice.langReplace('Please select the published record to unpublish'));
             return;
         }
         if (ids.length == 0) {
-            Swal.fire({
-                icon: 'error',
-                text: this.commonserveice.langReplace('Please select the record you want to unpublish') + '.',
-            });
+            this.commonserveice.swalfire('error', this.commonserveice.langReplace('Please select the record you want to unpublish'));
         }
         else {
             let itemids = ids.toString();
@@ -2142,39 +2124,35 @@ ${printContents}</body>
                 confirmButtonText: this.commonserveice.langReplace('Yes') + ', ' + this.commonserveice.langReplace('unpublish it')
             }).then((result) => {
                 if (result.isConfirmed) {
-                    this.commonserveice.unpublishAll(letterParams, ftype).subscribe((response) => {
-                        let respData = response.RESPONSE_DATA;
-                        let respToken = response.RESPONSE_TOKEN;
-                        let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-                        if (respToken == verifyToken) {
-                            let res = Buffer.from(respData, 'base64');
-                            let responseResult = JSON.parse(res);
-                            if (responseResult.status == 200) {
-                                Swal.fire(this.commonserveice.langReplace('Unpublished'), this.commonserveice.langReplace('Unpublish Records Successfully') + '.', 'success');
-                                // alert(0)
-                                itemids = '';
-                                //   $('.checkAll').prop('checked', false);
-                                this.callfunction.emit();
-                                this.callfunction3.emit();
-                            }
-                            else if (res.status == 417) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-                                });
+                    this.commonserveice.unpublishAll(letterParams, ftype).subscribe({
+                        next: (response) => {
+                            let respData = response.RESPONSE_DATA;
+                            let respToken = response.RESPONSE_TOKEN;
+                            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                            if (respToken == verifyToken) {
+                                let res = Buffer.from(respData, 'base64');
+                                let responseResult = JSON.parse(res);
+                                if (responseResult.status == 200) {
+                                    Swal.fire(this.commonserveice.langReplace('Unpublished'), this.commonserveice.langReplace('Unpublish Records Successfully') + '.', 'success');
+                                    // alert(0)
+                                    itemids = '';
+                                    //   $('.checkAll').prop('checked', false);
+                                    this.callfunction.emit();
+                                    this.callfunction3.emit();
+                                }
+                                else if (res.status == 417) {
+                                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                                }
+                                else {
+                                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
+                                }
                             }
                             else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    text: this.commonserveice.langReplace(this.varlist.somethingWrong),
-                                });
+                                this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.errorApiResponse));
                             }
-                        }
-                        else {
-                            Swal.fire({
-                                icon: 'error',
-                                text: this.commonserveice.langReplace(this.varlist.errorApiResponse),
-                            });
+                        },
+                        error: (msg) => {
+                            this.commonserveice.directlogoutlib();
                         }
                     });
                 }
@@ -2269,37 +2247,31 @@ class AddgetwayComponent {
     //\\ ======================== // Get getway types // ======================== //\\ 
     getGetwaytypes() {
         let getwayparm = {};
-        this.commonserveice.viewGatwayTypes(getwayparm).subscribe((resp) => {
-            let respData = resp.RESPONSE_DATA;
-            let respToken = resp.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                res = JSON.parse(res.toString());
-                if (res.status == "200") {
-                    this.getwaytypes = res.result;
-                }
-                else if (res.status == 501) {
-                    this.commonserveice.directlogoutlib();
+        this.commonserveice.viewGatwayTypes(getwayparm).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    res = JSON.parse(res.toString());
+                    if (res.status == "200") {
+                        this.getwaytypes = res.result;
+                    }
+                    else if (res.status == 501) {
+                        this.commonserveice.directlogoutlib();
+                    }
+                    else {
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(res.message));
+                    }
                 }
                 else {
-                    Swal.fire({
-                        icon: 'error',
-                        text: res.message,
-                    });
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
                 }
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
-            else {
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.invalidResponse)
-                });
-            }
-        }, (error) => {
-            Swal.fire({
-                icon: 'error',
-                text: this.commonserveice.langReplace(this.varlist.errorApiResponse)
-            });
         });
     }
     //\\ ======================== // Get getway types // ======================== //\\ 
@@ -2311,39 +2283,33 @@ class AddgetwayComponent {
         let formParams = {
             "Type": typeid
         };
-        this.commonserveice.getGetwayName(formParams).subscribe((response) => {
-            let respData = response.RESPONSE_DATA;
-            let respToken = response.RESPONSE_TOKEN;
-            let res = Buffer.from(respData, 'base64');
-            let responseResult = JSON.parse(res.toString());
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                if (responseResult.status == "200") {
-                    this.getwayNamelist = responseResult.result;
-                }
-                else if (responseResult.status == 400) {
-                }
-                else if (responseResult.status == 501) {
-                    this.commonserveice.directlogoutlib();
+        this.commonserveice.getGetwayName(formParams).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let res = Buffer.from(respData, 'base64');
+                let responseResult = JSON.parse(res.toString());
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    if (responseResult.status == "200") {
+                        this.getwayNamelist = responseResult.result;
+                    }
+                    else if (responseResult.status == 400) {
+                    }
+                    else if (responseResult.status == 501) {
+                        this.commonserveice.directlogoutlib();
+                    }
+                    else {
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
+                    }
                 }
                 else {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.somethingWrong),
-                    });
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
                 }
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
-            else {
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.invalidResponse)
-                });
-            }
-        }, (error) => {
-            Swal.fire({
-                icon: 'error',
-                text: this.commonserveice.langReplace(this.varlist.errorApiResponse)
-            });
         });
     }
     //\\ ======================== // Get getway Names // ======================== //\\ 
@@ -2404,38 +2370,40 @@ class AddgetwayComponent {
             confirmButtonText: this.commonserveice.langReplace('Yes') + ',' + this.commonserveice.langReplace('delete it') + "!"
         }).then((result) => {
             if (result.isConfirmed) {
-                this.commonserveice.deleteGetwayConfig(formParams).subscribe((response) => {
-                    let respData = response.RESPONSE_DATA;
-                    let respToken = response.RESPONSE_TOKEN;
-                    let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-                    if (respToken == verifyToken) {
-                        let res = Buffer.from(respData, 'base64');
-                        res = JSON.parse(res.toString());
-                        if (res.status == 200) {
-                            Swal.fire(this.commonserveice.langReplace('Deleted') + '!', this.commonserveice.langReplace(this.messaageslist.deleteMsg), 'success');
-                            this.dynamicListArray.splice(i, 1);
-                            this.viewOldGetways();
+                if (this.selgetwayId == "other") {
+                    //   alert("yes")
+                    this.dynamicListArray.splice(i, 1);
+                }
+                else {
+                    this.commonserveice.deleteGetwayConfig(formParams).subscribe({
+                        next: (response) => {
+                            let respData = response.RESPONSE_DATA;
+                            let respToken = response.RESPONSE_TOKEN;
+                            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                            if (respToken == verifyToken) {
+                                let res = Buffer.from(respData, 'base64');
+                                res = JSON.parse(res.toString());
+                                if (res.status == 200) {
+                                    Swal.fire(this.commonserveice.langReplace('Deleted') + '!', this.commonserveice.langReplace(this.messaageslist.deleteMsg), 'success');
+                                    this.dynamicListArray.splice(i, 1);
+                                    this.viewOldGetways();
+                                }
+                                else if (res.status == 417) {
+                                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                                }
+                                else {
+                                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.messaageslist.errorMsg));
+                                }
+                            }
+                            else {
+                                this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                            }
+                        },
+                        error: (msg) => {
+                            this.commonserveice.directlogoutlib();
                         }
-                        else if (res.status == 417) {
-                            Swal.fire({
-                                icon: 'error',
-                                text: "",
-                            });
-                        }
-                        else {
-                            Swal.fire({
-                                icon: 'error',
-                                text: this.messaageslist.errorMsg,
-                            });
-                        }
-                    }
-                    else {
-                        Swal.fire({
-                            icon: 'error',
-                            text: this.commonserveice.langReplace(this.varlist.invalidResponse)
-                        });
-                    }
-                });
+                    });
+                }
             }
         });
     }
@@ -2453,51 +2421,45 @@ class AddgetwayComponent {
                 "typeId": typeid,
                 "intId": intid
             };
-            this.commonserveice.getPrevDetails(formParams).subscribe((response) => {
-                let respData = response.RESPONSE_DATA;
-                let respToken = response.RESPONSE_TOKEN;
-                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-                if (respToken == verifyToken) {
-                    let res = Buffer.from(respData, 'base64');
-                    let responseResult = JSON.parse(res);
-                    if (responseResult.status == 200) {
-                        this.getDetailslist = responseResult.result;
-                        let getDtlsres = this.getDetailslist.result;
-                        console.log(this.getDetailslist);
-                        this.txtUrl = this.getDetailslist.data[0].url;
-                        this.selPostmenthod = this.getDetailslist.data[0].dataPostMethod;
-                        this.txtContactAddress = this.getDetailslist.data[0].contactaddress;
-                        this.selgetwayName = this.getDetailslist.data[0].vchName;
-                        for (let i = 0; i <= getDtlsres.length; i++) {
-                            let obj = {};
-                            obj["intId"] = getDtlsres[i].intId;
-                            obj["vchLabel"] = getDtlsres[i].vchLabel;
-                            obj["vchKey"] = getDtlsres[i].vchKey;
-                            obj["vchValue"] = getDtlsres[i].vchValue;
-                            this.dynamicListArray.push(obj);
+            this.commonserveice.getPrevDetails(formParams).subscribe({
+                next: (response) => {
+                    let respData = response.RESPONSE_DATA;
+                    let respToken = response.RESPONSE_TOKEN;
+                    let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                    if (respToken == verifyToken) {
+                        let res = Buffer.from(respData, 'base64');
+                        let responseResult = JSON.parse(res);
+                        if (responseResult.status == 200) {
+                            this.getDetailslist = responseResult.result;
+                            let getDtlsres = this.getDetailslist.result;
+                            console.log(this.getDetailslist);
+                            this.txtUrl = this.getDetailslist.data[0].url;
+                            this.selPostmenthod = this.getDetailslist.data[0].dataPostMethod;
+                            this.txtContactAddress = this.getDetailslist.data[0].contactaddress;
+                            this.selgetwayName = this.getDetailslist.data[0].vchName;
+                            for (let i = 0; i <= getDtlsres.length; i++) {
+                                let obj = {};
+                                obj["intId"] = getDtlsres[i].intId;
+                                obj["vchLabel"] = getDtlsres[i].vchLabel;
+                                obj["vchKey"] = getDtlsres[i].vchKey;
+                                obj["vchValue"] = getDtlsres[i].vchValue;
+                                this.dynamicListArray.push(obj);
+                            }
+                        }
+                        else if (responseResult.status == 501) {
+                            this.commonserveice.directlogoutlib();
+                        }
+                        else {
+                            this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
                         }
                     }
-                    else if (responseResult.status == 501) {
-                        this.commonserveice.directlogoutlib();
-                    }
                     else {
-                        Swal.fire({
-                            icon: 'error',
-                            text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                        });
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
                     }
+                },
+                error: (msg) => {
+                    this.commonserveice.directlogoutlib();
                 }
-                else {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                    });
-                }
-            }, (error) => {
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.errorApiResponse)
-                });
             });
         }
     }
@@ -2513,10 +2475,7 @@ class AddgetwayComponent {
         else if (!this.vldChkLst.selectDropdown(this.selPostmenthod, this.commonserveice.langReplace(this.messaageslist.methodtype), 'selPostMethod')) { }
         else if (!this.vldChkLst.blankCheck(this.txtContactAddress, this.commonserveice.langReplace(this.messaageslist.contactaddress), 'txtContactAddress')) { }
         else if (this.dynamicListArray.length == 0) {
-            Swal.fire({
-                icon: 'error',
-                text: this.commonserveice.langReplace("Add key values")
-            });
+            this.commonserveice.swalfire('error', this.commonserveice.langReplace("Add key values"));
         }
         else if ((this.dynamicListArray.length > 0) && (!this.vldChkLst.blankCheck(lastChild.vchLabel, this.commonserveice.langReplace(this.messaageslist.msgApilabel)))) { }
         else if ((this.dynamicListArray.length > 0) && (!this.vldChkLst.blankCheck(lastChild.vchKey, this.commonserveice.langReplace(this.messaageslist.msgApikey)))) { }
@@ -2542,66 +2501,56 @@ class AddgetwayComponent {
                 "itemStatus": "",
                 "allDocsdata": this.dynamicListArray
             };
-            this.commonserveice.newGetwayConfig(docParams).subscribe((response) => {
-                let respData = response.RESPONSE_DATA;
-                let respToken = response.RESPONSE_TOKEN;
-                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-                if (respToken == verifyToken) {
-                    let res = Buffer.from(respData, 'base64');
-                    let responseResult = JSON.parse(res);
-                    if (responseResult.status == 200) {
-                        Swal.fire({
-                            text: this.commonserveice.langReplace(this.messaageslist.successMsg),
-                            icon: 'success',
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: this.commonserveice.langReplace('Ok')
-                        }).then((result) => {
-                            this.resetform();
-                            this.route.navigate(['admin/viewgateway']);
-                        });
-                    }
-                    else if (responseResult.status == 202) {
-                        // this.loading=false;
-                        Swal.fire({
-                            text: this.commonserveice.langReplace(this.messaageslist.updatesuccessMsg),
-                            icon: 'success',
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: this.commonserveice.langReplace('Ok')
-                        }).then((result) => {
-                            this.resetform();
-                            this.route.navigate(['admin/viewgateway']);
-                        });
-                    }
-                    else if (responseResult.status == 501) {
-                        this.commonserveice.directlogoutlib();
-                    }
-                    else if (responseResult.status == 400) {
-                        // this.loading=false;
-                        Swal.fire({
-                            icon: 'error',
-                            text: responseResult.message.metaName[0],
-                        });
+            this.commonserveice.newGetwayConfig(docParams).subscribe({
+                next: (response) => {
+                    let respData = response.RESPONSE_DATA;
+                    let respToken = response.RESPONSE_TOKEN;
+                    let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                    if (respToken == verifyToken) {
+                        let res = Buffer.from(respData, 'base64');
+                        let responseResult = JSON.parse(res);
+                        if (responseResult.status == 200) {
+                            Swal.fire({
+                                text: this.commonserveice.langReplace(this.messaageslist.successMsg),
+                                icon: 'success',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: this.commonserveice.langReplace('Ok')
+                            }).then((result) => {
+                                this.resetform();
+                                this.route.navigate(['admin/viewgateway']);
+                            });
+                        }
+                        else if (responseResult.status == 202) {
+                            // this.loading=false;
+                            Swal.fire({
+                                text: this.commonserveice.langReplace(this.messaageslist.updatesuccessMsg),
+                                icon: 'success',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: this.commonserveice.langReplace('Ok')
+                            }).then((result) => {
+                                this.resetform();
+                                this.route.navigate(['admin/viewgateway']);
+                            });
+                        }
+                        else if (responseResult.status == 501) {
+                            this.commonserveice.directlogoutlib();
+                        }
+                        else if (responseResult.status == 400) {
+                            this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message.metaName[0]));
+                            // this.loading=false;
+                        }
+                        else {
+                            //this.loading=false;
+                            this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
+                        }
                     }
                     else {
-                        //this.loading=false;
-                        Swal.fire({
-                            icon: 'error',
-                            text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                        });
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
                     }
+                },
+                error: (msg) => {
+                    this.commonserveice.directlogoutlib();
                 }
-                else {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                    });
-                }
-            }, (error) => {
-                // this.loading=false;
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.errorApiResponse)
-                });
             });
         }
     }
@@ -2716,35 +2665,32 @@ class ViewgetwayComponent {
     //\\ ======================== // Get getway types // ======================== //\\ 
     getGetwaytypes() {
         let getwayparm = {};
-        this.commonserveice.viewGatwayTypes(getwayparm).subscribe((resp) => {
-            let respData = resp.RESPONSE_DATA;
-            let respToken = resp.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                res = JSON.parse(res.toString());
-                if (res.status == "200") {
-                    this.getwaytypes = res.result;
-                }
-                else if (res.status == 501) {
-                    this.commonserveice.directlogoutlib();
+        this.commonserveice.viewGatwayTypes(getwayparm).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    res = JSON.parse(res.toString());
+                    if (res.status == "200") {
+                        this.getwaytypes = res.result;
+                    }
+                    else if (res.status == 501) {
+                        this.commonserveice.directlogoutlib();
+                    }
+                    else {
+                        console.log(res.messages);
+                    }
                 }
                 else {
-                    console.log(res.messages);
+                    //this.loading=false;
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
                 }
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
-            else {
-                //this.loading=false;
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                });
-            }
-        }, (error) => {
-            Swal.fire({
-                icon: 'error',
-                text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-            });
         });
     }
     //\\ ======================== // Get getway types // ======================== //\\ 
@@ -2768,42 +2714,35 @@ class ViewgetwayComponent {
         };
         this.loading = true;
         this.pubUnpStatus = [];
-        this.commonserveice.viewGetwayConfig(formParams).subscribe((response) => {
-            let respData = response.RESPONSE_DATA;
-            let respToken = response.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                let responseResult = JSON.parse(res);
-                if (responseResult.status == 200) {
-                    this.loading = false;
-                    this.getwayList = responseResult.result;
-                    // console.log(this.getwayList)
-                }
-                else if (responseResult.status == 501) {
-                    this.commonserveice.directlogoutlib();
+        this.commonserveice.viewGetwayConfig(formParams).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    let responseResult = JSON.parse(res);
+                    if (responseResult.status == 200) {
+                        this.loading = false;
+                        this.getwayList = responseResult.result;
+                        // console.log(this.getwayList)
+                    }
+                    else if (responseResult.status == 501) {
+                        this.commonserveice.directlogoutlib();
+                    }
+                    else {
+                        this.loading = false;
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
+                    }
                 }
                 else {
-                    this.loading = false;
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                    });
+                    //this.loading=false;
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
                 }
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
-            else {
-                //this.loading=false;
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                });
-            }
-        }, (error) => {
-            this.loading = false;
-            Swal.fire({
-                icon: 'error',
-                text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-            });
         });
     }
     // //\\ ======================== // View All records // ======================== //\\ 
@@ -2864,41 +2803,34 @@ class ViewgetwayComponent {
             "intId": intId
         };
         this.typeName = typeName;
-        console.log(formParams);
-        this.commonserveice.getPrevDetails(formParams).subscribe((response) => {
-            let respData = response.RESPONSE_DATA;
-            let respToken = response.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                let responseResult = JSON.parse(res);
-                if (responseResult.status == 200) {
-                    this.getwayDetails = responseResult.result.data;
-                    // console.log(responseResult.result)
-                    this.getDetailslist = responseResult.result.result;
-                }
-                else if (responseResult.status == 501) {
-                    //this.commonserveice.directlogoutlib()
+        this.commonserveice.getPrevDetails(formParams).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    let responseResult = JSON.parse(res);
+                    if (responseResult.status == 200) {
+                        this.getwayDetails = responseResult.result.data;
+                        // console.log(responseResult.result)
+                        this.getDetailslist = responseResult.result.result;
+                    }
+                    else if (responseResult.status == 501) {
+                        //this.commonserveice.directlogoutlib()
+                    }
+                    else {
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
+                    }
                 }
                 else {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                    });
+                    //this.loading=false;
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
                 }
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
-            else {
-                //this.loading=false;
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                });
-            }
-        }, (error) => {
-            Swal.fire({
-                icon: 'error',
-                text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-            });
         });
     }
     //\\ ======================== // Get old getway details // ======================== //\\
@@ -3077,26 +3009,28 @@ class AddmsgengineComponent {
     ;
     getForms() {
         let params = {};
-        this.commonserveice.getForms(params).subscribe((resp) => {
-            let respData = resp.RESPONSE_DATA;
-            let respToken = resp.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                res = JSON.parse(res.toString());
-                //console.log('res');
-                if (res.status === 200) {
-                    this.formNameslist = res.result;
+        this.commonserveice.getForms(params).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    res = JSON.parse(res.toString());
+                    //console.log('res');
+                    if (res.status === 200) {
+                        this.formNameslist = res.result;
+                    }
+                    else {
+                        console.log(res.messages);
+                    }
                 }
                 else {
-                    console.log(res.messages);
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
                 }
-            }
-            else {
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-                });
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
         });
     }
@@ -3147,42 +3081,38 @@ class AddmsgengineComponent {
             else {
                 newFile.append('file', event.addedFiles[0]);
                 newFile.append('fileType', splititems[1]);
-                console.log(filesize);
-                this.commonserveice.msguploadFile(newFile).subscribe((response) => {
-                    let respData = response.RESPONSE_DATA;
-                    let respToken = response.RESPONSE_TOKEN;
-                    let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-                    if (respToken == verifyToken) {
-                        let res = Buffer.from(respData, 'base64');
-                        let responseResult = JSON.parse(res);
-                        if (responseResult.status == 200) {
-                            //  this.files_dropped.push(event.addedFiles);
-                            let obj = {};
-                            obj['fileName'] = responseResult.result.fileName;
-                            obj['filePath'] = responseResult.result.filePath;
-                            obj['fileType'] = responseResult.result.fileType;
-                            this.fileeList.push(obj);
-                            this.documentFile = responseResult.result.fileName;
-                        }
-                        else if (responseResult.status == 400) {
-                            Swal.fire({
-                                icon: 'error',
-                                text: responseResult.message,
-                            });
+                this.commonserveice.msguploadFile(newFile).subscribe({
+                    next: (response) => {
+                        let respData = response.RESPONSE_DATA;
+                        let respToken = response.RESPONSE_TOKEN;
+                        let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                        if (respToken == verifyToken) {
+                            let res = Buffer.from(respData, 'base64');
+                            let responseResult = JSON.parse(res);
+                            if (responseResult.status == 200) {
+                                //  this.files_dropped.push(event.addedFiles);
+                                let obj = {};
+                                obj['fileName'] = responseResult.result.fileName;
+                                obj['filePath'] = responseResult.result.filePath;
+                                obj['fileType'] = responseResult.result.fileType;
+                                this.fileeList.push(obj);
+                                this.documentFile = responseResult.result.fileName;
+                            }
+                            else if (responseResult.status == 400) {
+                                this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message));
+                            }
+                            else {
+                                this.commonserveice.directlogoutlib();
+                            }
                         }
                         else {
-                            this.commonserveice.directlogoutlib();
+                            //   this.loading = false;
+                            this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
                         }
+                    },
+                    error: (msg) => {
+                        this.commonserveice.directlogoutlib();
                     }
-                    else {
-                        //   this.loading = false;
-                        Swal.fire({
-                            icon: 'error',
-                            text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-                        });
-                    }
-                }, (error) => {
-                    this.commonserveice.directlogoutlib();
                 });
             }
         }
@@ -3295,76 +3225,66 @@ class AddmsgengineComponent {
                 "gateWayconfigId": this.gateWayconfigtype,
                 "mailSmsTo": mailSmsApp
             };
-            this.commonserveice.newMessage(formparams).subscribe((response) => {
-                let respData = response.RESPONSE_DATA;
-                let respToken = response.RESPONSE_TOKEN;
-                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-                if (respToken == verifyToken) {
-                    let res = Buffer.from(respData, 'base64');
-                    let responseResult = JSON.parse(res);
-                    if (responseResult.status == 200) {
-                        Swal.fire({
-                            text: this.commonserveice.langReplace(this.messaageslist.successMsg),
-                            icon: 'success',
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: this.commonserveice.langReplace('Ok')
-                        }).then((result) => {
-                            if (messageTypeVal == 1) {
-                                this.route.navigate(['/admin/viewmessageengine']);
-                            }
-                            else {
-                                this.route.navigate(['/admin/viewmessagereminder']);
-                            }
-                            this.resetform();
-                        });
-                    }
-                    else if (responseResult.status == 202) {
-                        // this.loading=false;
-                        Swal.fire({
-                            text: this.commonserveice.langReplace(this.messaageslist.updatesuccessMsg),
-                            icon: 'success',
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: this.commonserveice.langReplace('Ok')
-                        }).then((result) => {
-                            if (messageTypeVal == 1) {
-                                this.route.navigate(['../viewmessageengine']);
-                            }
-                            else {
-                                this.route.navigate(['..viewmessagereminder']);
-                            }
-                            this.resetform();
-                        });
-                    }
-                    else if (responseResult.status == 501) {
-                        this.commonserveice.directlogoutlib();
-                    }
-                    else if (responseResult.status == 400) {
-                        // this.loading=false;
-                        Swal.fire({
-                            icon: 'error',
-                            text: responseResult.message.metaName[0],
-                        });
+            this.commonserveice.newMessage(formparams).subscribe({
+                next: (response) => {
+                    let respData = response.RESPONSE_DATA;
+                    let respToken = response.RESPONSE_TOKEN;
+                    let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                    if (respToken == verifyToken) {
+                        let res = Buffer.from(respData, 'base64');
+                        let responseResult = JSON.parse(res);
+                        if (responseResult.status == 200) {
+                            Swal.fire({
+                                text: this.commonserveice.langReplace(this.messaageslist.successMsg),
+                                icon: 'success',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: this.commonserveice.langReplace('Ok')
+                            }).then((result) => {
+                                if (messageTypeVal == 1) {
+                                    this.route.navigate(['/admin/viewmessageengine']);
+                                }
+                                else {
+                                    this.route.navigate(['/admin/viewmessagereminder']);
+                                }
+                                this.resetform();
+                            });
+                        }
+                        else if (responseResult.status == 202) {
+                            // this.loading=false;
+                            Swal.fire({
+                                text: this.commonserveice.langReplace(this.messaageslist.updatesuccessMsg),
+                                icon: 'success',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: this.commonserveice.langReplace('Ok')
+                            }).then((result) => {
+                                if (messageTypeVal == 1) {
+                                    this.route.navigate(['../viewmessageengine']);
+                                }
+                                else {
+                                    this.route.navigate(['..viewmessagereminder']);
+                                }
+                                this.resetform();
+                            });
+                        }
+                        else if (responseResult.status == 501) {
+                            this.commonserveice.directlogoutlib();
+                        }
+                        else if (responseResult.status == 400) {
+                            this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message.metaName[0]));
+                            // this.loading=false;
+                        }
+                        else {
+                            //this.loading=false;
+                            this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
+                        }
                     }
                     else {
-                        //this.loading=false;
-                        Swal.fire({
-                            icon: 'error',
-                            text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                        });
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.messaageslist.errorMsg));
                     }
+                },
+                error: (msg) => {
+                    this.commonserveice.directlogoutlib();
                 }
-                else {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.messaageslist.errorMsg,
-                    });
-                }
-            }, (error) => {
-                // this.loading=false;
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.errorApiResponse),
-                });
             });
         }
     }
@@ -3375,65 +3295,61 @@ class AddmsgengineComponent {
             "formId": "",
             "formName": ''
         };
-        this.commonserveice.viewMessage(messageParams).subscribe((resp) => {
-            let respData = resp.RESPONSE_DATA;
-            let respToken = resp.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                res = JSON.parse(res.toString());
-                if (res.status == 200) {
-                    this.messageList = res.result;
-                    if (this.messageList.length > 0) {
-                        setTimeout(() => {
-                            this.selformId = this.messageList[0].intProcessId;
-                        }, 1000);
-                        this.configtype = this.messageList[0].intMessageConfigType;
-                        this.formnames = this.messageList[0].intProcessId;
-                        this.messageType = this.messageList[0].intmessageType;
-                        this.eventType = this.messageList[0].intEventType;
-                        this.smsSubject = this.messageList[0].vchSubject;
-                        this.messageContent = this.encDec.decodeHtml(this.messageList[0].vchMessageContent);
-                        // this.messageContent = this.messageList[0].vchMessageContent;
-                        // console.log(this.encDec.decodeHtml(this.messageList[0].vchMessageContent));
-                        // console.log(this.messageList[0].vchMessageContent);
-                        this.smsTempId = this.messageList[0].vchSmsTemplateId;
-                        this.fileType = this.messageList[0].intDocumentType;
-                        this.documentUrl = this.messageList[0].vchDocument;
-                        this.intMailTemplate = this.messageList[0].intMailTemplate;
-                        this.vchLanguage = this.messageList[0].vchLanguage;
-                        this.emailId = this.messageList[0].vchEmailIdKey;
-                        this.mobileNo = this.messageList[0].vchMobileKey;
-                        let explodedAllMailValue = (this.messageList[0].vchMailSmsTo).split(',');
-                        this.gateWayconfigtype = this.messageList[0].intGateWayConfigId;
-                        this.getGateWayConfigDetails();
-                        if (explodedAllMailValue.includes('1')) {
-                            this.mailsmstoApplicant = '1';
+        this.commonserveice.viewMessage(messageParams).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    res = JSON.parse(res.toString());
+                    if (res.status == 200) {
+                        this.messageList = res.result;
+                        if (this.messageList.length > 0) {
+                            setTimeout(() => {
+                                this.selformId = this.messageList[0].intProcessId;
+                            }, 1000);
+                            this.configtype = this.messageList[0].intMessageConfigType;
+                            this.formnames = this.messageList[0].intProcessId;
+                            this.messageType = this.messageList[0].intmessageType;
+                            this.eventType = this.messageList[0].intEventType;
+                            this.smsSubject = this.messageList[0].vchSubject;
+                            this.messageContent = this.encDec.decodeHtml(this.messageList[0].vchMessageContent);
+                            // this.messageContent = this.messageList[0].vchMessageContent;
+                            // console.log(this.encDec.decodeHtml(this.messageList[0].vchMessageContent));
+                            // console.log(this.messageList[0].vchMessageContent);
+                            this.smsTempId = this.messageList[0].vchSmsTemplateId;
+                            this.fileType = this.messageList[0].intDocumentType;
+                            this.documentUrl = this.messageList[0].vchDocument;
+                            this.intMailTemplate = this.messageList[0].intMailTemplate;
+                            this.vchLanguage = this.messageList[0].vchLanguage;
+                            this.emailId = this.messageList[0].vchEmailIdKey;
+                            this.mobileNo = this.messageList[0].vchMobileKey;
+                            let explodedAllMailValue = (this.messageList[0].vchMailSmsTo).split(',');
+                            this.gateWayconfigtype = this.messageList[0].intGateWayConfigId;
+                            this.getGateWayConfigDetails();
+                            if (explodedAllMailValue.includes('1')) {
+                                this.mailsmstoApplicant = '1';
+                            }
+                            if (explodedAllMailValue.includes('2')) {
+                                this.mailsmstoAuthority = '2';
+                            }
+                            // alert(this.messageList[0].vchLanguage);
                         }
-                        if (explodedAllMailValue.includes('2')) {
-                            this.mailsmstoAuthority = '2';
-                        }
-                        // alert(this.messageList[0].vchLanguage);
+                    }
+                    else if (res.status == 417) {
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.errorApiResponse));
+                    }
+                    else {
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
                     }
                 }
-                else if (res.status == 417) {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.errorApiResponse)
-                    });
-                }
                 else {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                    });
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.errorApiResponse));
                 }
-            }
-            else {
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.errorApiResponse)
-                });
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
         });
     }
@@ -3456,68 +3372,60 @@ class AddmsgengineComponent {
         let keyParams = {
             "itemId": this.txtFormId
         };
-        this.commonserveice.getConfigurationKeys(keyParams).subscribe((response) => {
-            let respData = response.RESPONSE_DATA;
-            let respToken = response.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                res = JSON.parse(res.toString());
-                if (res.status == 200) {
-                    this.keysArray = res.result;
-                }
-                else if (res.status == 417) {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.invalidResponse)
-                    });
+        this.commonserveice.getConfigurationKeys(keyParams).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    res = JSON.parse(res.toString());
+                    if (res.status == 200) {
+                        this.keysArray = res.result;
+                    }
+                    else if (res.status == 417) {
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                    }
+                    else {
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
+                    }
                 }
                 else {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                    });
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
                 }
-            }
-            else {
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-                });
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
         });
     }
     //
     getStaticFormKeys() {
         let keyParams = {};
-        this.commonserveice.getStaticConfigurationKeys(keyParams).subscribe((response) => {
-            let respData = response.RESPONSE_DATA;
-            let respToken = response.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                res = JSON.parse(res.toString());
-                if (res.status == 200) {
-                    this.StatickeysArray = res.result;
-                }
-                else if (res.status == 417) {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.invalidResponse)
-                    });
+        this.commonserveice.getStaticConfigurationKeys(keyParams).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    res = JSON.parse(res.toString());
+                    if (res.status == 200) {
+                        this.StatickeysArray = res.result;
+                    }
+                    else if (res.status == 417) {
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                    }
+                    else {
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
+                    }
                 }
                 else {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                    });
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
                 }
-            }
-            else {
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.invalidResponse)
-                });
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
         });
     }
@@ -3525,26 +3433,28 @@ class AddmsgengineComponent {
         let params = {
             "intId": '',
         };
-        this.commonserveice.getLanguage(params).subscribe((resp) => {
-            let respData = resp.RESPONSE_DATA;
-            let respToken = resp.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                res = JSON.parse(res.toString());
-                if (res.status == 200) {
-                    this.languageList = res.result;
-                    //   console.log(this.languageList)
+        this.commonserveice.getLanguage(params).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    res = JSON.parse(res.toString());
+                    if (res.status == 200) {
+                        this.languageList = res.result;
+                        //   console.log(this.languageList)
+                    }
+                    else {
+                        console.log(res.messages);
+                    }
                 }
                 else {
-                    console.log(res.messages);
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
                 }
-            }
-            else {
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.invalidResponse)
-                });
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
         });
     }
@@ -3582,23 +3492,28 @@ class AddmsgengineComponent {
         let params = {
             "tinType": this.configtype,
         };
-        this.commonserveice.getFetchPublishRecord(params).subscribe((response) => {
-            let respToken = response.RESPONSE_TOKEN;
-            let respData = response.RESPONSE_DATA;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
+        this.commonserveice.getFetchPublishRecord(params).subscribe({
+            next: (response) => {
+                let respToken = response.RESPONSE_TOKEN;
                 let respData = response.RESPONSE_DATA;
-                let res = Buffer.from(respData, 'base64');
-                res = JSON.parse(res.toString());
-                if (res.status == 200) {
-                    this.gatewayconfigDetails = res.result;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let respData = response.RESPONSE_DATA;
+                    let res = Buffer.from(respData, 'base64');
+                    res = JSON.parse(res.toString());
+                    if (res.status == 200) {
+                        this.gatewayconfigDetails = res.result;
+                    }
+                    else if (res.status == 400) {
+                        Swal.fire({
+                            icon: 'error',
+                            text: "error",
+                        });
+                    }
                 }
-                else if (res.status == 400) {
-                    Swal.fire({
-                        icon: 'error',
-                        text: "error",
-                    });
-                }
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
         });
     }
@@ -3668,7 +3583,9 @@ class ViewmsgengineComponent {
     ngOnInit() {
         this.loadconfig();
         this.viewItems('', '', '', '', 1);
-        this.getForms();
+        if (this.formenable == true) {
+            this.getForms();
+        }
         //this.addChangeEventForLabel();
     }
     loadconfig() {
@@ -3682,26 +3599,28 @@ class ViewmsgengineComponent {
     }
     getForms() {
         let params = {};
-        this.commonserveice.getForms(params).subscribe((resp) => {
-            let respData = resp.RESPONSE_DATA;
-            let respToken = resp.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                res = JSON.parse(res.toString());
-                //console.log('res');
-                if (res.status === 200) {
-                    this.formNames = res.result;
+        this.commonserveice.getForms(params).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    res = JSON.parse(res.toString());
+                    //console.log('res');
+                    if (res.status === 200) {
+                        this.formNames = res.result;
+                    }
+                    else {
+                        console.log(res.messages);
+                    }
                 }
                 else {
-                    console.log(res.messages);
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
                 }
-            }
-            else {
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-                });
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
         });
     }
@@ -3718,40 +3637,36 @@ class ViewmsgengineComponent {
         };
         this.loading = true;
         this.pubUnpStatus = [];
-        this.commonserveice.viewMessage(messageParams).subscribe((response) => {
-            let respData = response.RESPONSE_DATA;
-            let respToken = response.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                res = JSON.parse(res.toString());
-                if (res.status == 200) {
-                    this.messageList = res.result;
-                    // console.log(this.messageList)
-                    this.isFlag = true;
-                    this.loading = false;
-                }
-                else if (res.status == 417) {
-                    this.isFlag = false;
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-                    });
+        this.commonserveice.viewMessage(messageParams).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    res = JSON.parse(res.toString());
+                    if (res.status == 200) {
+                        this.messageList = res.result;
+                        // console.log(this.messageList)
+                        this.isFlag = true;
+                        this.loading = false;
+                    }
+                    else if (res.status == 417) {
+                        this.isFlag = false;
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                    }
+                    else {
+                        this.isFlag = false;
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                    }
                 }
                 else {
                     this.isFlag = false;
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.errorApiResponse)
-                    });
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
                 }
-            }
-            else {
-                this.isFlag = false;
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-                });
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
         });
     }
@@ -3837,16 +3752,18 @@ class ViewmsgengineComponent {
             confirmButtonText: 'Yes' + ', ' + 'delete it' + "!"
         }).then((result) => {
             if (result.isConfirmed) {
-                this.commonserveice.newMessage(messageParams).subscribe((res) => {
-                    if (res.status == 200) {
-                        Swal.fire('Deleted!', "this.messaageslist.deleteMsg", 'success');
-                        this.viewItems('', '', '', '', 1);
-                    }
-                    else {
-                        Swal.fire({
-                            icon: 'error',
-                            text: "this.messaageslist.errorMsg",
-                        });
+                this.commonserveice.newMessage(messageParams).subscribe({
+                    next: (response) => {
+                        if (response.status == 200) {
+                            this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.messaageslist.deleteMsg));
+                            this.viewItems('', '', '', '', 1);
+                        }
+                        else {
+                            this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.messaageslist.errorMsg));
+                        }
+                    },
+                    error: (msg) => {
+                        this.commonserveice.directlogoutlib();
                     }
                 });
             }
@@ -3925,9 +3842,11 @@ class ViewmsgreminderComponent {
     }
     ngOnInit() {
         this.loadconfig();
-        this.getForms();
         this.viewItemsReminder('', '', '', '', 2);
         //this.addChangeEventForLabel();
+        if (this.formenable == true) {
+            this.getForms();
+        }
         this.sessiontoken = sessionStorage.getItem('ADMIN_SESSION');
         let SeetionParsed;
         if (this.varlist.sessionEncrypted == true) {
@@ -3948,25 +3867,27 @@ class ViewmsgreminderComponent {
     }
     getForms() {
         let params = {};
-        this.commonserveice.getForms(params).subscribe((resp) => {
-            let respData = resp.RESPONSE_DATA;
-            let respToken = resp.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                res = JSON.parse(res.toString());
-                if (res.status === 200) {
-                    this.formNames = res.result;
+        this.commonserveice.getForms(params).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    res = JSON.parse(res.toString());
+                    if (res.status === 200) {
+                        this.formNames = res.result;
+                    }
+                    else {
+                        console.log(res.messages);
+                    }
                 }
                 else {
-                    console.log(res.messages);
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
                 }
-            }
-            else {
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.invalidResponse)
-                });
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
         });
     }
@@ -4001,40 +3922,36 @@ class ViewmsgreminderComponent {
         };
         this.loading = true;
         this.pubUnpStatus = [];
-        this.commonserveice.viewMessage(messageParams).subscribe((response) => {
-            let respData = response.RESPONSE_DATA;
-            let respToken = response.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                res = JSON.parse(res.toString());
-                if (res.status == 200) {
-                    this.messageList = res.result;
-                    // console.log(this.messageList)
-                    this.isFlag = true;
-                    this.loading = false;
-                }
-                else if (res.status == 417) {
-                    this.isFlag = false;
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.invalidResponse)
-                    });
+        this.commonserveice.viewMessage(messageParams).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    res = JSON.parse(res.toString());
+                    if (res.status == 200) {
+                        this.messageList = res.result;
+                        // console.log(this.messageList)
+                        this.isFlag = true;
+                        this.loading = false;
+                    }
+                    else if (res.status == 417) {
+                        this.isFlag = false;
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                    }
+                    else {
+                        this.isFlag = false;
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                    }
                 }
                 else {
                     this.isFlag = false;
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                    });
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
                 }
-            }
-            else {
-                this.isFlag = false;
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.invalidResponse)
-                });
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
         });
     }
@@ -4114,45 +4031,41 @@ class ViewmsgreminderComponent {
                 "SchedularStatus": this.schedularStatus
             };
             this.loading = true;
-            this.commonserveice.reminderSchedular(messageParams).subscribe((response) => {
-                let respData = response.RESPONSE_DATA;
-                let respToken = response.RESPONSE_TOKEN;
-                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-                if (respToken == verifyToken) {
-                    let res = Buffer.from(respData, 'base64');
-                    res = JSON.parse(res.toString());
-                    if (res.status == 200) {
-                        this.loading = false;
-                        this.isFlag = true;
-                        Swal.fire({
-                            text: this.commonserveice.langReplace("Your Schedular Created Successfully") + ' !',
-                            icon: 'success',
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: this.commonserveice.langReplace('Ok')
-                        }).then((result) => {
-                            this.modalService.dismissAll();
-                            this.viewItemsReminder('', '', '', '', 2);
-                            this.resetSchedular();
-                        });
-                    }
-                    else if (res.status == 417) {
-                        Swal.fire({
-                            icon: 'error',
-                            text: this.commonserveice.langReplace(this.varlist.somethingWrong),
-                        });
+            this.commonserveice.reminderSchedular(messageParams).subscribe({
+                next: (response) => {
+                    let respData = response.RESPONSE_DATA;
+                    let respToken = response.RESPONSE_TOKEN;
+                    let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                    if (respToken == verifyToken) {
+                        let res = Buffer.from(respData, 'base64');
+                        res = JSON.parse(res.toString());
+                        if (res.status == 200) {
+                            this.loading = false;
+                            this.isFlag = true;
+                            Swal.fire({
+                                text: this.commonserveice.langReplace("Your Schedular Created Successfully") + ' !',
+                                icon: 'success',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: this.commonserveice.langReplace('Ok')
+                            }).then((result) => {
+                                this.modalService.dismissAll();
+                                this.viewItemsReminder('', '', '', '', 2);
+                                this.resetSchedular();
+                            });
+                        }
+                        else if (res.status == 417) {
+                            this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
+                        }
+                        else {
+                            this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                        }
                     }
                     else {
-                        Swal.fire({
-                            icon: 'error',
-                            text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-                        });
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
                     }
-                }
-                else {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-                    });
+                },
+                error: (msg) => {
+                    this.commonserveice.directlogoutlib();
                 }
             });
         }
@@ -4164,40 +4077,36 @@ class ViewmsgreminderComponent {
             "MessageConfigId": intMessageConfigId,
             "processId": intProcessId,
         };
-        this.commonserveice.msgexecuteSchedular(messageParams).subscribe((response) => {
-            let respData = response.RESPONSE_DATA;
-            let respToken = response.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                res = JSON.parse(res.toString());
-                if (res.status == 200) {
-                    this.loading = false;
-                    this.isFlag = true;
-                    Swal.fire({
-                        icon: 'success',
-                        text: this.commonserveice.langReplace("Your Scheduler Execution Started") + ' !',
-                    });
-                    this.viewItemsReminder('', '', '', '', 2);
-                }
-                else if (res.status == 417) {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.somethingWrong),
-                    });
+        this.commonserveice.msgexecuteSchedular(messageParams).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    res = JSON.parse(res.toString());
+                    if (res.status == 200) {
+                        this.loading = false;
+                        this.isFlag = true;
+                        Swal.fire({
+                            icon: 'success',
+                            text: this.commonserveice.langReplace("Your Scheduler Execution Started") + ' !',
+                        });
+                        this.viewItemsReminder('', '', '', '', 2);
+                    }
+                    else if (res.status == 417) {
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
+                    }
+                    else {
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                    }
                 }
                 else {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-                    });
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
                 }
-            }
-            else {
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-                });
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
         });
     }
@@ -4208,40 +4117,36 @@ class ViewmsgreminderComponent {
             "MessageConfigId": intMessageConfigId,
             "processId": intProcessId,
         };
-        this.commonserveice.msgstopSchedular(messageParams).subscribe((response) => {
-            let respData = response.RESPONSE_DATA;
-            let respToken = response.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                res = JSON.parse(res.toString());
-                if (res.status == 200) {
-                    this.loading = false;
-                    this.isFlag = true;
-                    Swal.fire({
-                        icon: 'success',
-                        text: this.commonserveice.langReplace("Your Scheduler Is Stopped") + ' !',
-                    });
-                    this.viewItemsReminder('', '', '', '', 2);
-                }
-                else if (res.status == 417) {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.invalidResponse)
-                    });
+        this.commonserveice.msgstopSchedular(messageParams).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    res = JSON.parse(res.toString());
+                    if (res.status == 200) {
+                        this.loading = false;
+                        this.isFlag = true;
+                        Swal.fire({
+                            icon: 'success',
+                            text: this.commonserveice.langReplace("Your Scheduler Is Stopped") + ' !',
+                        });
+                        this.viewItemsReminder('', '', '', '', 2);
+                    }
+                    else if (res.status == 417) {
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                    }
+                    else {
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                    }
                 }
                 else {
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-                    });
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
                 }
-            }
-            else {
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.invalidResponse)
-                });
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
         });
     }
@@ -4264,40 +4169,36 @@ class ViewmsgreminderComponent {
         };
         // console.log(messageParams)
         this.loading = true;
-        this.commonserveice.viewMessage(messageParams).subscribe((response) => {
-            let respData = response.RESPONSE_DATA;
-            let respToken = response.RESPONSE_TOKEN;
-            let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-            if (respToken == verifyToken) {
-                let res = Buffer.from(respData, 'base64');
-                res = JSON.parse(res.toString());
-                if (res.status == 200) {
-                    this.excuteList = res.result;
-                    //console.log(this.excuteList)
-                    this.isFlag = true;
-                    this.loading = false;
-                }
-                else if (res.status == 417) {
-                    this.isFlag = false;
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.somethingWrong),
-                    });
+        this.commonserveice.viewMessage(messageParams).subscribe({
+            next: (response) => {
+                let respData = response.RESPONSE_DATA;
+                let respToken = response.RESPONSE_TOKEN;
+                let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+                if (respToken == verifyToken) {
+                    let res = Buffer.from(respData, 'base64');
+                    res = JSON.parse(res.toString());
+                    if (res.status == 200) {
+                        this.excuteList = res.result;
+                        //console.log(this.excuteList)
+                        this.isFlag = true;
+                        this.loading = false;
+                    }
+                    else if (res.status == 417) {
+                        this.isFlag = false;
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.somethingWrong));
+                    }
+                    else {
+                        this.isFlag = false;
+                        this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
+                    }
                 }
                 else {
                     this.isFlag = false;
-                    Swal.fire({
-                        icon: 'error',
-                        text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-                    });
+                    this.commonserveice.swalfire('error', this.commonserveice.langReplace(this.varlist.invalidResponse));
                 }
-            }
-            else {
-                this.isFlag = false;
-                Swal.fire({
-                    icon: 'error',
-                    text: this.commonserveice.langReplace(this.varlist.invalidResponse),
-                });
+            },
+            error: (msg) => {
+                this.commonserveice.directlogoutlib();
             }
         });
     }

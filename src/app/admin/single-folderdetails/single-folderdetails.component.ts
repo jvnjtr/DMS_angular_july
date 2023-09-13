@@ -12,6 +12,7 @@ import {Buffer} from 'buffer';
 import { DOCUMENT } from '@angular/common';
 import { LeftmenuComponent } from 'src/app/includes/leftmenu/leftmenu.component';
 
+
 @Component({
   selector: 'app-single-folderdetails',
   templateUrl: './single-folderdetails.component.html',
@@ -25,6 +26,7 @@ export class SingleFolderdetailsComponent implements OnInit {
     @Input() folderModify: any;
     @Input() roleId: any;
   @Output("callfunction") callfunction:EventEmitter<any> = new EventEmitter();
+  @ViewChild(LeftmenuComponent, { static: false }) childC: LeftmenuComponent;
 
   folderName:any='';
   folderlist:any;
@@ -192,12 +194,14 @@ delete(fid:any){
         
                    let reData:any= this.parentFolderId+':'+'-1'
                    let encSchemeStr = this.encDec.encText(reData.toString());
+
                    
+                 
                   this.route.navigate(['/admin/viewupload',encSchemeStr])
                   setTimeout(() => {
                     window.location.reload();
                   }, 100);
-                 // 
+                 
   
   
   
@@ -265,11 +269,11 @@ duplicateFolder(folderid:any){
             if (result.isConfirmed) {
 
             
-              window.location.reload();
+             
               let encSchemeStr = this.encDec.encText(folderid.toString());
               // this.route.navigate(['/admin/configuration/formPreview',encSchemeStr]);
-    
-              this.route.navigate(['/admin/viewupload', encSchemeStr])
+              this.commonserveice.onFirstComponentButtonClick();    
+             // this.route.navigate(['/admin/viewupload', encSchemeStr])
             }
           })
 

@@ -55,10 +55,10 @@ sortOrder: string = 'asc';
 sortColumn: string = 'ticker';
 
 tablecollist=[
-  {"name":"Meta Name","cname":"metaName","sortable":true },
+  {"name":"Template Name","cname":"templateName","sortable":true },
     {"name":"Description","cname":"description","sortable":true },
    
-  {"name":"Type","cname":"metaType","sortable":true },
+  // {"name":"Type","cname":"metaType","sortable":true },
   
   {"name":"Created By","cname":"createdBy","sortable":true },
   {"name":"Created On","cname":"createdOn","sortable":true },
@@ -131,6 +131,7 @@ viewMetaLit(){
             if (responseResult.status == 200) {
               this.loading=false;
             this.metalist = responseResult.result;
+           
             }
             else if(responseResult.status==501){
                 

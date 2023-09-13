@@ -10,7 +10,7 @@
 // // Style sheet                : dashboard.component.scss
 // ============================================================================= 
 .fix-height{
-height: 260px;
+height:324px;
 overflow: hidden;
 overflow-y: auto
 }
@@ -190,3 +190,21 @@ overflow-y: auto
          
       }
   }
+  .notification-items{
+    display: flex;
+    border:1px solid #ebebeb;
+    
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    justify-content: space-between;
+    border-radius: 3px;
+    color: #424242;
+    span{
+        font-weight: 700;
+        color:var(--base-color-700)
+    }
+    &:hover{
+        background: #ebebeb;
+        color: #000;
+    }
+}

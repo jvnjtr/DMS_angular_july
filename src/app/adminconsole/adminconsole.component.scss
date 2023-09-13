@@ -1,0 +1,204 @@
+%commom-card-style {
+    position: relative;
+      box-shadow: 0 4px 10px #e5ebef;
+    border-radius:4px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: var(--white);
+}
+
+%pseudo-css {
+    content: '';
+    position: absolute;
+}
+
+%base-shadow {
+        box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.12), 0 1px 5px 0 rgba(0,0,0,.2);
+}
+
+.page-container {
+    transition: all ease-in-out .5s;
+    position: relative;
+    margin-top: 0;
+    margin-right:0;
+    
+    &:before {
+        
+
+        @media screen and (min-width:992px) {
+         position: absolute;
+         z-index: -1;
+        }
+    }
+    .sidemenu {
+        position: fixed;
+        top: 0px;
+        bottom: 0;
+        left: -275px;
+        width: 255px;
+        display: block;
+        z-index: 99;
+        padding: 0 0 1rem 0;
+        font-weight: 200;
+       
+    
+       
+border-radius: 0;
+background: var(--base-color); 
+
+transition: all ease-in-out .5s;
+    
+        &.active{
+          left: 0;
+          z-index: 99999;
+         
+        }
+
+        @media screen and (min-width:992px) {
+        top:0 ;
+        left:0;
+        }
+    }
+    .mainpanel {
+     background: var(--body-color);
+        position: relative;
+        transition: all ease-in-out .5s;
+         max-width: 100%;
+       
+        background-size: 100%;
+        //@include transition (all, 0.5s, ease-in-out);
+           
+           padding-top: 3rem;
+        &.active {
+            // background: #f0f0f2;
+        }
+        @media screen and (min-width:992px) {
+        
+            
+            margin-left: 255px; 
+            overflow: hidden;
+            overflow-y: auto;
+                padding: 60px 1rem 0;
+           
+            height: 100vh;
+           
+        }
+        @media screen and (min-width:1200px) {
+        
+              padding: 60px 1.5rem 0;
+        }
+        @media screen and (min-width:1500px) {
+        padding:78px 2rem 0;
+       
+        }
+   
+    }
+    &.display-full {
+
+        .mainpanel{
+        margin-left:0;
+        }
+
+        .sidemenu {
+            left: -275px;
+            box-shadow: none;
+            z-index: -1;
+            @media screen and (min-width:992px) {
+            .mainpanel{
+              max-width:  100%;
+              
+                  margin-left: 0;
+            }
+            }
+        }
+        &:before {
+            z-index: 0;
+            bottom: auto;
+        }
+
+ @media screen and (min-width:992px) {
+ .fixed-topmenu{
+left:0;
+
+ }
+ }
+        
+    }
+
+    @media screen and (min-width:992px) {
+   
+       height: 100vh;
+       overflow:hidden;
+    }
+}
+
+@media screen and (min-width:992px) {
+
+
+/* width */
+ .mainpanel::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+ .mainpanel::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 0px;
+}
+ 
+/* Handle */
+ .mainpanel::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,.5); 
+  border-radius: 0px;
+}
+
+/* Handle on hover */
+ .mainpanel::-webkit-scrollbar-thumb:hover {
+  background: var(--white)-theme-color; 
+}
+
+}
+
+
+// === Control containt sec === //
+.page-controls-section {
+    padding: 0 1rem;
+    transition: all ease-in 1.2s;
+    &.active {
+        transition: all ease-out .1s;
+    }
+    @media screen and (min-width:768px) {
+        padding: 0 1rem;
+    }
+    @media screen and (min-width:992px) {
+        margin-top: 0;
+        padding:0;
+        padding-top: 0;
+        position: relative;
+    }
+    h3{
+    font-size:1.2rem;
+    margin-bottom:2rem;
+    }
+}
+
+
+
+.overlay {
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.50);
+    visibility: hidden;
+    z-index: 1031;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+}
+.page-container.display-full .overlay {
+    visibility: hidden;
+}
+.page-container .overlay {
+    visibility: visible;
+} 

@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class VarlistService {
  apiHashingKey:any= '22CSMTOOL2022';
   encryptIV:any= '26102021@qwI';
-  serviceURL:any= 'http://172.27.30.93:7001/DMS_PHP/admin/message_module';
+  serviceURL:any= 'http://172.27.30.93:7001/dms_php_admin/admin/message_module';
   serviceName:any='/publishUnpublish';
   serviceModuleconfig:any='/manageMessageConfig';
   formEnable:any=false;

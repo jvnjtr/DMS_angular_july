@@ -37,10 +37,23 @@
         </tr>
 
         <tr>
-          <th>{{"Meta Details" | langReplace}} </th>
+          <th>{{"Template Details" | langReplace}} </th>
           <td>
-            <span *ngFor="let metalist of metadetails">
-              {{ metalist.metaDetails }},
+            <table class="table table-bordered mb-0">
+              <tbody>
+                <tr *ngFor="let metalist of metadetails">
+               
+                  <th> {{ metalist.labelName }}</th>
+                  <td>{{ metalist.metaDetails }}</td>
+                
+              </tr>
+              </tbody>
+             
+            </table>
+
+            <span >
+              
+              
             </span>
           </td>
         </tr>

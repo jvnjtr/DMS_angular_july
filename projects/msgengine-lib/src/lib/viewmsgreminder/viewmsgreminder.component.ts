@@ -110,10 +110,12 @@ export class ViewmsgreminderComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadconfig();
-    this.getForms();
+   
     this.viewItemsReminder('','','','',2);
     //this.addChangeEventForLabel();
-
+    if(this.formenable==true){
+      this.getForms();
+    }
     this.sessiontoken = sessionStorage.getItem('ADMIN_SESSION');
     let SeetionParsed:any;
     if(this.varlist.sessionEncrypted == true){
@@ -139,26 +141,29 @@ export class ViewmsgreminderComponent implements OnInit {
   }
   getForms() {
     let params={}
-    this.commonserveice.getForms(params).subscribe((resp: any) => {
-      let respData = resp.RESPONSE_DATA;
-      let respToken = resp.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        res = JSON.parse(res.toString());
-        if (res.status === 200) {
-          this.formNames = res.result;
+    this.commonserveice.getForms(params).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          res = JSON.parse(res.toString());
+          if (res.status === 200) {
+            this.formNames = res.result;
+          }
+          else {
+            console.log(res.messages)
+          }
+        } else {
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
         }
-        else {
-          console.log(res.messages)
-        }
-      } else {
-        Swal.fire({
-          icon: 'error',
-          text:this.commonserveice.langReplace(this.varlist.invalidResponse)
-        });
-      }
-    });
+      },
+      error: (msg) => {
+             this.commonserveice.directlogoutlib()
+     }
+   })
+   
   }
   selectAll(e: any) {
     let checkBoxes:any = document.querySelectorAll('.rowCheck');
@@ -195,39 +200,37 @@ export class ViewmsgreminderComponent implements OnInit {
     };
     this.loading = true;
     this.pubUnpStatus = [];
-    this.commonserveice.viewMessage(messageParams).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        res = JSON.parse(res.toString());
-        if (res.status == 200) {
-          this.messageList = res.result;
-         // console.log(this.messageList)
-          this.isFlag = true;
-          this.loading = false;
-        } else if (res.status == 417) {
-          this.isFlag = false;
-          Swal.fire({
-            icon: 'error',
-            text:this.commonserveice.langReplace(this.varlist.invalidResponse)
-          });
+    this.commonserveice.viewMessage(messageParams).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          res = JSON.parse(res.toString());
+          if (res.status == 200) {
+            this.messageList = res.result;
+           // console.log(this.messageList)
+            this.isFlag = true;
+            this.loading = false;
+          } else if (res.status == 417) {
+            this.isFlag = false;
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+          } else {
+            this.isFlag = false;
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+          }
         } else {
           this.isFlag = false;
-          Swal.fire({
-            icon: 'error',
-            text:this.commonserveice.langReplace(this.varlist.somethingWrong)
-          });
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
         }
-      } else {
-        this.isFlag = false;
-        Swal.fire({
-          icon: 'error',
-          text:this.commonserveice.langReplace(this.varlist.invalidResponse)
-        });
-      }
-    });
+      },
+      error: (msg) => {
+             this.commonserveice.directlogoutlib()
+     }
+   })
+   
+  
   }
   viewSearchList() {
     let Formid = this.selFormName;
@@ -317,56 +320,54 @@ export class ViewmsgreminderComponent implements OnInit {
 
 
       this.loading = true;
-      this.commonserveice.reminderSchedular(messageParams).subscribe((response: any) => {
-        let respData = response.RESPONSE_DATA;
-        let respToken = response.RESPONSE_TOKEN;
-        let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-        if (respToken == verifyToken) {
-          let res: any = Buffer.from(respData, 'base64');
-          res = JSON.parse(res.toString());
-          if (res.status == 200) {
-            this.loading = false;
-            this.isFlag = true;
 
-            Swal.fire({
-
-              text: this.commonserveice.langReplace("Your Schedular Created Successfully")+' !',
-              icon: 'success',
-              confirmButtonColor: '#3085d6',
-              confirmButtonText: this.commonserveice.langReplace('Ok')
-          }).then((result) => {
-
-            this.modalService.dismissAll();
-            this.viewItemsReminder('','','','',2);
-            this.resetSchedular()
-
-
-          })
-
-          
-         
-           
-          }else if(res.status==417){
-            Swal.fire({
-              icon: 'error',
-              text: this.commonserveice.langReplace(this.varlist.somethingWrong),
-            });
-          }
-          else {
-            Swal.fire({
-              icon: 'error',
-              text:this.commonserveice.langReplace(this.varlist.invalidResponse),
+      this.commonserveice.reminderSchedular(messageParams).subscribe({
+        next: (response) => {
+          let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
+          let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+          if (respToken == verifyToken) {
+            let res: any = Buffer.from(respData, 'base64');
+            res = JSON.parse(res.toString());
+            if (res.status == 200) {
+              this.loading = false;
+              this.isFlag = true;
   
-            });
+              Swal.fire({
+  
+                text: this.commonserveice.langReplace("Your Schedular Created Successfully")+' !',
+                icon: 'success',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: this.commonserveice.langReplace('Ok')
+            }).then((result) => {
+  
+              this.modalService.dismissAll();
+              this.viewItemsReminder('','','','',2);
+              this.resetSchedular()
+  
+  
+            })
+  
+            
+           
+             
+            }else if(res.status==417){
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.somethingWrong))
+            }
+            else {
+              this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+            }
+          }else{
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
           }
-        }else{
-          Swal.fire({
-            icon: 'error',
-            text:this.commonserveice.langReplace(this.varlist.invalidResponse),
-          });
-        }
-        
-      });
+          
+        },
+        error: (msg) => {
+               this.commonserveice.directlogoutlib()
+       }
+     })
+
+   
     }
   }
    //\\ ======================== // Create Scheduler // ======================== //\\
@@ -378,44 +379,40 @@ export class ViewmsgreminderComponent implements OnInit {
       "MessageConfigId": intMessageConfigId,
       "processId": intProcessId,
     };
-    this.commonserveice.msgexecuteSchedular(messageParams).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        res = JSON.parse(res.toString());
-        if (res.status == 200) {
-          this.loading = false;
-          this.isFlag = true;
-          Swal.fire({
-            icon: 'success',
-            text:this.commonserveice.langReplace("Your Scheduler Execution Started")+' !',
-
-          });
-          this.viewItemsReminder('','','','',2);
-          
-        } else if (res.status == 417) {
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(this.varlist.somethingWrong),
-          });
-        }
-        else {
-          Swal.fire({
-            icon: 'error',
-            text:this.commonserveice.langReplace(this.varlist.invalidResponse),
-
-          });
-        }
-      } else {
+    
+    this.commonserveice.msgexecuteSchedular(messageParams).subscribe({
+  next: (response) => {
+    let respData = response.RESPONSE_DATA;
+    let respToken = response.RESPONSE_TOKEN;
+    let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+    if (respToken == verifyToken) {
+      let res: any = Buffer.from(respData, 'base64');
+      res = JSON.parse(res.toString());
+      if (res.status == 200) {
+        this.loading = false;
+        this.isFlag = true;
         Swal.fire({
-          icon: 'error',
-          text:this.commonserveice.langReplace(this.varlist.invalidResponse),
-        });
-      }
+          icon: 'success',
+          text:this.commonserveice.langReplace("Your Scheduler Execution Started")+' !',
 
-    });
+        });
+        this.viewItemsReminder('','','','',2);
+        
+      } else if (res.status == 417) {
+        this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.somethingWrong))
+      }
+      else {
+        this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+      }
+    } else {
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+    }
+  },
+  error: (msg) => {
+         this.commonserveice.directlogoutlib()
+ }
+})
+ 
   }
   //\\ ======================== // Executed Scheduler // ======================== //\\
   //\\ ======================== // Stop Scheduler // ======================== //\\
@@ -424,44 +421,39 @@ export class ViewmsgreminderComponent implements OnInit {
       "MessageConfigId": intMessageConfigId,
       "processId": intProcessId,
     };
-    this.commonserveice.msgstopSchedular(messageParams).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        res = JSON.parse(res.toString());
-        if (res.status == 200) {
-          this.loading = false;
-          this.isFlag = true;
-          Swal.fire({
-            icon: 'success',
-            text:this.commonserveice.langReplace("Your Scheduler Is Stopped")+' !',
-
-          });
-          this.viewItemsReminder('','','','',2);
-          
-        } else if (res.status == 417) {
-          Swal.fire({
-            icon: 'error',
-            text:this.commonserveice.langReplace(this.varlist.invalidResponse)
-          });
+    this.commonserveice.msgstopSchedular(messageParams).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          res = JSON.parse(res.toString());
+          if (res.status == 200) {
+            this.loading = false;
+            this.isFlag = true;
+            Swal.fire({
+              icon: 'success',
+              text:this.commonserveice.langReplace("Your Scheduler Is Stopped")+' !',
+  
+            });
+            this.viewItemsReminder('','','','',2);
+            
+          } else if (res.status == 417) {
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+          }
+          else {
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+          }
+        } else {
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
         }
-        else {
-          Swal.fire({
-            icon: 'error',
-            text:this.commonserveice.langReplace(this.varlist.invalidResponse),
-
-          });
-        }
-      } else {
-        Swal.fire({
-          icon: 'error',
-          text:this.commonserveice.langReplace(this.varlist.invalidResponse)
-        });
-      }
-
-    });
+      },
+      error: (msg) => {
+             this.commonserveice.directlogoutlib()
+     }
+   })
+   
   }
 
   //\\ ======================== // Stop Scheduler // ======================== //\\
@@ -485,42 +477,38 @@ export class ViewmsgreminderComponent implements OnInit {
     };
    // console.log(messageParams)
     this.loading = true;
-    this.commonserveice.viewMessage(messageParams).subscribe((response: any) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        res = JSON.parse(res.toString());
-        if (res.status == 200) {
-          this.excuteList = res.result;
-          //console.log(this.excuteList)
-          this.isFlag = true;
-          this.loading = false;
-        } else if (res.status == 417) {
+    this.commonserveice.viewMessage(messageParams).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, this.varlist.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          res = JSON.parse(res.toString());
+          if (res.status == 200) {
+            this.excuteList = res.result;
+            //console.log(this.excuteList)
+            this.isFlag = true;
+            this.loading = false;
+          } else if (res.status == 417) {
+            this.isFlag = false;
+           
+this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.somethingWrong))
+          }
+          else {
+            this.isFlag = false;
+            this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
+          }
+        } else {
           this.isFlag = false;
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(this.varlist.somethingWrong),
-          });
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(this.varlist.invalidResponse))
         }
-        else {
-          this.isFlag = false;
-          Swal.fire({
-            icon: 'error',
-            text: this.commonserveice.langReplace(this.varlist.somethingWrong)
-          });
-        }
-      } else {
-        this.isFlag = false;
-        Swal.fire({
-          icon: 'error',
-          text:this.commonserveice.langReplace(this.varlist.invalidResponse),
-        });
-      }
-
-
-    });
+      },
+      error: (msg) => {
+             this.commonserveice.directlogoutlib()
+     }
+   })
+ 
 
   }
    //\\ ======================== // Show Preview // ======================== //\\

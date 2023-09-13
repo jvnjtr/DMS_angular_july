@@ -1,0 +1,161 @@
+<!--===Page Title===-->
+
+<div class="page-title">
+
+
+
+
+    <h4>{{title}}</h4>
+
+</div>
+
+<!--===Page Title===-->
+
+<!--===controle section===-->
+
+<div class="page-controls-section" id="page-content">
+
+
+
+
+    <div class="card">
+
+        <div class="controls-section-header">
+
+            <ul class="nav nav-tabs nav-fill" role="tablist">
+
+
+
+
+            </ul>
+
+            <div class="indicatorslist">
+
+                <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils>
+
+            </div>
+
+
+
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="controls-section">
+
+                <div class="container">
+
+                    <div class="text-center" *ngIf="finalsubmitsttus == 0">
+
+                        <div class="form-group ">
+
+                            <div class="form-check form-check-inline">
+
+                                <input class="form-check-input gridradio" type="radio" name="gridtypeRadio"
+                                    id="inlineRadio1" [value]="1" [checked]="isSelected" (change)="gridClick(gridType)"
+                                    [(ngModel)]="gridType" />
+
+                                <label class="form-check-label" for="inlineRadio1">{{"SingleGrid"}}</label>
+
+                            </div>
+
+                            <div class="form-check form-check-inline">
+
+                                <input class="form-check-input gridradio" type="radio" name="gridtypeRadio"
+                                    id="inlineRadio2" [value]="2" [checked]="isSelected" (change)="gridClick(gridType)"
+                                    [(ngModel)]="gridType" />
+
+                                <label class="form-check-label" for="inlineRadio2">{{"TwoGrid"}}</label>
+
+                            </div>
+
+                            <div class="form-check form-check-inline">
+
+                                <input class="form-check-input gridradio" type="radio" name="gridtypeRadio"
+                                    id="inlineRadio3" [value]="3" [checked]="isSelected" (change)="gridClick(gridType)"
+                                    [(ngModel)]="gridType" />
+
+                                <label class="form-check-label" for="inlineRadio3">{{"ThreeGrid"}}</label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="separator separator-dashed" *ngIf="finalsubmitsttus == 0"></div>
+
+                    <!-- <span class="text-danger">{{"Note"}} : {{"click on checkbox button to filter in workflow"}}</span> -->
+
+                    <div class="separator separator-dashed" *ngIf="finalsubmitsttus == 0"></div>
+
+                    <h4 class="mb-3">{{txtFormName}}</h4>
+
+
+
+
+                    <div *ngIf="gridType ==1 ">
+
+                        <app-form-ctrl-details [formid]="txtFormId" [gridId]="gridType"
+                            [finalsubmitstatus]="finalsubmitsttus"
+                            (myOutput)="GetChildData($event)"></app-form-ctrl-details>
+
+                    </div>
+
+                    <div *ngIf="gridType ==2 ">
+
+                        <app-form-ctrl-details [formid]="txtFormId" [gridId]="gridType"
+                            [finalsubmitstatus]="finalsubmitsttus"
+                            (myOutput)="GetChildData($event)"></app-form-ctrl-details>
+
+                    </div>
+
+                    <div *ngIf="gridType ==3 ">
+
+                        <app-form-ctrl-details [formid]="txtFormId" [gridId]="gridType"
+                            [finalsubmitstatus]="finalsubmitsttus"
+                            (myOutput)="GetChildData($event)"></app-form-ctrl-details>
+
+                    </div>
+
+
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-footer text-center" *ngIf="finalsubmitsttus == 0">
+
+            <button class="btn btn-danger " (click)="backClicked()">{{"Back"}}</button>
+
+            <button class="btn btn-success ml-1" (click)="createNewForm()">{{"Submit"}}</button>
+
+
+
+
+        </div>
+
+
+
+
+    </div>
+
+
+
+
+</div>
+
+
+
+
+<div class="loader" *ngIf="loading">
+
+    <div class="loader-item"></div>
+
+    <p>{{"Loading"}}...</p>
+
+</div>

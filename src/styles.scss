@@ -567,12 +567,13 @@ font-size: .9rem;
     overflow-x: auto;
     
     @media screen and (min-width:992px) {
+ 
 float: none;
 margin-bottom: 0;
 border-bottom: 0;
 width: 100%;	
  padding: 0;
- 
+ margin-bottom: -1px;
 }
 @media screen and (min-width:1440px) {
 padding: 0;	
@@ -1805,3 +1806,92 @@ font-size: 1.2rem;
         
       }
  }
+
+ .generator .onegrid,.generator .twogrid,.generator .threegrid{
+  flex: 0 0 100%;
+  display:flex;
+  align-items: flex-start;
+  padding: 0 0rem;
+  margin: 0 -1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+ 
+}
+.generator{
+  .onegrid{
+    .form-group{
+      display:flex;
+      align-items: center;
+      width:100%;
+      max-width:100%;
+      padding:0 1rem;
+      flex-wrap: wrap;
+
+      label{
+        flex: 0 0 20%;
+        max-width: 20%;
+        &.form-check-label{
+          flex: 0 0 100%;
+          max-width: 100%;
+        }
+      }
+      .control-item{
+        flex: 0 0 40%;
+        max-width: 40%;
+      }
+    }
+    &.btn-div{
+      padding-left: 21%;
+    }
+  }
+
+  .twogrid{
+    .form-group{
+      display:flex;
+      align-items: center;
+      width:50%;
+      max-width:50%;
+      flex-wrap: wrap;
+      padding: 0 1rem;
+
+      label{
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+      .control-item{
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+    }
+    &.btn-div{
+      padding-left: 1rem;
+    }
+  }
+
+  .threegrid{
+    .form-group{
+      display:flex;
+      align-items: center;
+      width:33%;
+      max-width:33%;
+      flex-wrap: wrap;
+      padding: 0 1rem;
+
+      label{
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+      .control-item{
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+    }
+    &.btn-div{
+      padding-left: 1rem;
+    }
+  }
+} 
+
+
+
+

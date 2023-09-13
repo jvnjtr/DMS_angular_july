@@ -100,7 +100,8 @@ export class FilemodifyComponent implements OnInit {
     { label: 'Move to folder' }
 
 
-  ]
+  ];
+  getmetaTypeList:any=[];
   txtPassword: any;
   getfiletype: any;
   prevstatus: any;
@@ -275,101 +276,53 @@ export class FilemodifyComponent implements OnInit {
   //\\ ======================== // get Folders // ======================== //\\
 
 
-  //\\ ======================== // get meta list // ======================== //\\
-  viewMetaList() {
+   //\\ ======================== // get meta list // ======================== //\\
+   viewMetaList(){
 
 
-
+ 
     let dataParam = {
       "intMetaId": ''
-    };
-    this.commonserveice.viewMeta(dataParam).subscribe({
-      next: (response) => {
-        let respData = response.RESPONSE_DATA;
-        let respToken = response.RESPONSE_TOKEN;
-  
-        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        if (respToken == verifyToken) {
-          let res: any = Buffer.from(respData, 'base64');
-          let responseResult = JSON.parse(res)
-  
-          if (responseResult.status == 200) {
-  
-            this.metalist = responseResult.result;
-  
-  
-            // console.log(this.metalist)
-  
-          }
-          else if (responseResult.status == 501) {
-  
-            this.authService.directlogout();
-          }
-          else {
-  
-  
-          }
-        }
-        else {
-          this.loading = false;
-         this.authService.directlogout();
-        }
-      },
-      error: (msg) => {
-            this.authService.directlogout();
-     }
-   })
-  
+      };
+      this.commonserveice.viewMeta(dataParam).subscribe({
+        next: (response) => {    let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
+        
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if(respToken == verifyToken){
+            let res:any = Buffer.from(respData,'base64'); 
+            let responseResult = JSON.parse(res)
+           
+            if (responseResult.status == 200) {
+        
+              
+           this.metalist = responseResult.result;
 
-
-  }
-
-  getMetaType(metaId: any) {
-
-    this.metaDesable = true;
-
-    let dataParam = {
-      "intMetaId": metaId
-    };
-
-    this.commonserveice.viewMeta(dataParam).subscribe({
-      next: (response) => {
-        let respData = response.RESPONSE_DATA;
-        let respToken = response.RESPONSE_TOKEN;
-  
-        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        if (respToken == verifyToken) {
-          let res: any = Buffer.from(respData, 'base64');
-          let responseResult = JSON.parse(res)
-  
-          if (responseResult.status == 200) {
-  
-            let metalist = responseResult.result;
-            this.getmetaType = metalist[0].metaType;
-  
-  
-  
-          } else if (responseResult.status == 501) {
-  
-            this.authService.directlogout();
-          }
-          else {
-  
-          }
-        }
-        else {
-          this.loading = false;
-         this.authService.directlogout();
-        }
-      },
-      error: (msg) => {
-            this.authService.directlogout();
-     }
-   })
 
    
+      
+            }
+            else if(responseResult.status==501){
+              
+              this.authService.directlogout();
+            }
+          }
+          else{
+            this.loading = false;
+            this.authService.directlogout();
+          }},
+        error: (msg) => {
+          this.authService.directlogout();
+       }
+     })
 
+  
+  
   }
+  //\\ ======================== // Get Mata Type // ======================== //\\
+  
+  
+
 
   //\\ ======================== // get Meta list // ======================== //\\
 
@@ -377,22 +330,31 @@ export class FilemodifyComponent implements OnInit {
 
   }
 
-
+  metavalid(){
+    let metavalidstatus = true;
+    for(let i=0;i<this.getmetaTypeList.length;i++){
+     
+      if(!this.vldChkLst.blankCheck(this.getmetaTypeList[i].value,this.commonserveice.langReplace(this.getmetaTypeList[i].labelName + " Can not be blank"),this.getmetaTypeList[i].labelName)){
+        metavalidstatus =  false;
+        break;
+      }
+     
+    }
+    return metavalidstatus;
+  }
   finalfileupload() {
     let fileName = this.txtFileName;
     let folderName = this.selFolderName;
     let subject = this.txtSubject;
     let metaitems = this.metasellist;
     let tags = this.txtTags;
-
+    let templateid=this.selMeta;
 
     if (!this.vldChkLst.blankCheck(fileName, this.commonserveice.langReplace(this.messaageslist.filename),'txtFileName')) {}
    else if((this.rdoSetretention == 1) && (!this.vldChkLst.blankCheck(this.txtExpDate,this.commonserveice.langReplace("Please select the retention date"),'expiryDate'))){} 
    else if (!this.vldChkLst.blankCheck(subject, this.commonserveice.langReplace(this.messaageslist.subject),'txtSubject')) {}
-    else if (this.metaListDetails.length == 0) {
-      this.commonserveice.swalfire('error',this.messaageslist.addMeta)
-   
-    }
+   else if(!this.vldChkLst.selectDropdown(templateid,this.commonserveice.langReplace(this.messaageslist.template),'selMeta')) { } 
+   else if(!this.metavalid()) { } 
 
 
     else {
@@ -402,7 +364,8 @@ let uploadParams = {
         "folderId": this.folderid,
         "fileName": fileName,
         "subject": this.txtSubject,
-        "meta": this.metaListDetails,
+        "templateId":this.selMeta,
+        "meta":this.getmetaTypeList,
         "tags": this.txtTags,
         "indexing": 0,
         "expiryDate": this.txtExpDate,
@@ -506,32 +469,7 @@ let uploadParams = {
   //   else if (!this.vldChkLst.blankCheck(foldername,this.messaageslist.foldername)) {
   //  }
 
-  addMetaVals() {
-    if (!this.vldChkLst.selectDropdown(this.selMeta, this.commonserveice.langReplace(this.messaageslist.selMeta),'selMeta')) {
 
-
-    }
-    else if (!this.vldChkLst.blankCheck(this.metatype, this.commonserveice.langReplace(this.messaageslist.entermetadesc),'metatype')) {
-
-
-    }
-    else {
-      let elm: any = (<HTMLInputElement>document.getElementById("selMetaType"));
-      let elmValText = elm.options[elm.selectedIndex].text;
-
-      // metaListDetails
-      let obj: any = {};
-      obj['metaId'] = this.selMeta;
-      obj["metaName"] = elmValText;
-      obj['metaDetails'] = this.metatype;
-
-      this.metaListDetails.push(obj)
-
-      this.metatype = '';
-      this.selMeta = '0';
-      this.metaDesable = false;
-    }
-  }
   removeSectionval(i: any) {
     this.metaListDetails.splice(i, 1);
   }
@@ -566,7 +504,7 @@ this.commonserveice.getFileDetails(dataParam).subscribe({
         this.filedetails = responseResult.result.fileDetails;
         //this.files_dropped.push(this.filedetails);
 
-        // console.log(this.filedetails)
+         console.log(this.filedetails)
 
         this.txtFileName = this.filedetails.fileName;
         this.selFolderName = this.filedetails.folderId;
@@ -576,15 +514,36 @@ this.commonserveice.getFileDetails(dataParam).subscribe({
         this.txtSubject = this.filedetails.subject;
         this.fileVersion = this.filedetails.fileVersion;
 this.checkinoutstatus=this.filedetails.checkInCheckoutStatus;
+this.selMeta=this.filedetails.templateId;
 
-
-if(this.txtExpDate != ''){
+if(!(this.txtExpDate == '' || this.txtExpDate == null)){
 this.rdoSetretention='1';
 
 }
 else{
 this.rdoSetretention='2';
 
+}
+let metadetils:any=[];
+
+
+metadetils=this.filedetails.metaDetail;
+console.log(metadetils)
+setTimeout(() => {
+  this.txtTags = JSON.parse(this.filedetails.fileTags);
+
+  }, 2000)
+
+
+
+
+for(let i=0;i<metadetils.length;i++){
+  let obj:any={};
+  obj['metaId']=metadetils[i].metaId;
+  obj['labelName']=metadetils[i].labelName;
+  obj['metaType']=metadetils[i].metaType;
+  obj['value']=metadetils[i].metaDetails;
+  this.getmetaTypeList.push(obj);
 }
 
         setTimeout(() => {
@@ -620,21 +579,14 @@ this.rdoSetretention='2';
 
           }
 
-        }, 2000)
-
-
-
-        setTimeout(() => {
-          this.txtTags = JSON.parse(this.filedetails.fileTags);
-
-
-
+    
 
 
 
         }, 2000)
 
-        this.metaListDetails = this.filedetails["metaDetail"];
+    
+
         this.filepath = this.filedetails["filePath"];
 
         this.fileTypeitem = this.filedetails["fileType"];
@@ -1021,4 +973,73 @@ this.rdoSetretention='2';
 
     }
   }
+
+
+    //\\ ======================== // Get Mata Type // ======================== //\\
+    getMetaType(metaId:any){
+
+       this.getmetaTypeList=[];
+
+
+      let dataParam = {
+        "intMetaId": metaId
+        };
+        this.commonserveice.viewMeta(dataParam).subscribe({
+          next: (response) => {
+
+          
+
+            let respData = response.RESPONSE_DATA;
+            let respToken = response.RESPONSE_TOKEN;
+          
+            let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+            if(respToken == verifyToken){
+              let res:any = Buffer.from(respData,'base64'); 
+              let responseResult = JSON.parse(res)
+               
+                if (responseResult.status == 200) {
+                  this.getmetaTypeList=[];
+                 
+                  let metalist = responseResult.result;
+  
+  
+  
+                 
+                  let metaarrayList:any=[];
+                  metaarrayList=metalist[0].templateData;
+                 
+                 
+
+                  for(let i=0;i<metaarrayList.length;i++){
+                    let obj:any={};
+                    obj['metaId']=metaarrayList[i].metaId;
+                    obj['labelName']=metaarrayList[i].labelName;
+                    obj['metaType']=metaarrayList[i].metaType;
+                    obj['value']='';
+                    this.getmetaTypeList.push(obj);
+                  }
+                  console.log(this.getmetaTypeList)
+                
+          
+                }
+                else if(responseResult.status==501){
+                  
+                  this.authService.directlogout();
+                }
+            }
+            else{
+              this.loading = false;
+              this.authService.directlogout();
+            }
+          },
+          error: (msg) => {
+            this.authService.directlogout();
+         }
+       })
+       
+  
+    
+    
+    }
+  //\\ ======================== // Get Mata Type // ======================== //\\
 }

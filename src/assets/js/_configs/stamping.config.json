@@ -3,8 +3,9 @@
         "pagetitle":"Stamp Configuration",
         "tabList":[
         
-          {"tabName":"Add","tabUrl":"../stampingconfig","tabClass":"active add d-none"}
-         
+          {"tabName":"Add","tabUrl":"../stampingconfig","tabClass":"active add d-none"},
+          {"tabName":"Edit","tabUrl":"","tabClass":"active edit d-none"},
+          {"tabName":"View","tabUrl":"../viewstampingconfig","tabClass":"add d-none"}
                   
                   ],
         "utils":[
@@ -15,7 +16,7 @@
         "messages":{
           "successMsg":"Stamping Configuration Added Successfully",
           "updatesuccessMsg":"Stamping Configuration Updated Successfully",
-          "errorMsg":"Error in Meta creation",
+          "errorMsg":"Error in Stamping Configuration creation",
           "fromname":"Please Select Form Name",
           "metaname":"Please Enter Meta Name",
           "metadesc":"Please Enter Meta Description",

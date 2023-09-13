@@ -1,0 +1,19 @@
+[
+      {
+        "utils":[
+         
+        
+          {"utilName":"back"},
+         {"utilName":"download"}
+    
+         ],
+       "messages":[
+         {"successMsg":"Date saved successfully"},
+         {"errorMsg":"Error in database"},
+         {"warningtype":"print"}
+        
+       ]
+      }
+    ]
+
+

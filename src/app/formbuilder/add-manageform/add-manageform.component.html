@@ -1,0 +1,696 @@
+<!--===Page Title===-->
+<div class="page-title">
+
+    <h4>{{title}}</h4>
+</div>
+<!--===Page Title===-->
+<!--===controle section===-->
+<div class="page-controls-section" id="page-content">
+    <div class="card">
+        <div class="controls-section-header">
+            <ul class="nav nav-tabs nav-fill" role="tablist">
+                <app-tabs *ngFor="let tablist of tablist" [activeid]="formID" [tabMessage]="tablist"></app-tabs>
+
+            </ul>
+            <div class="indicatorslist">
+                <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils>
+            </div>
+
+        </div>
+        <div class="card-body">
+
+
+            <div class="controls-section">
+
+
+                <!--begin::Form-->
+
+                <div class="form-group row">
+                    <label class="col-md-4 col-lg-2">* Module Name</label>
+                    <div class="col-md-8 col-lg-4">
+
+
+                        <select class="form-select" [(ngModel)]="selModuleName">
+                            <option value="0" disabled selected>--Select--</option>
+                            <option *ngFor="let mNames of moduleNames" [value]="mNames.intModuleId">{{
+                                mNames.vchModuleName }}</option>
+                            <!-- <option value="other">Other</option> -->
+                        </select>
+                        <div class="mt-3" *ngIf="selModuleName=='other'">
+
+                            <input class="form-control" value="" placeholder="Module Name"
+                                (keypress)="vldChkLst.isCharKey($event)" autocomplete="off" [(ngModel)]="txtModuleName"
+                                type="text">
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="form-group row d-none">
+                    <label class="col-md-4 col-lg-2">* Form Type</label>
+                    <div class="col-md-8 col-lg-4">
+                        <select class="form-select" [(ngModel)]="selFormType" (change)="formtypechange($event)">
+                            <option value="0" disabled selected>--Select--</option>
+                            <option value="master">Master</option>
+                            <option value="main-form">Main Form</option>
+                            <option value="sub-form">Sub Form</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label class="col-md-4 col-lg-2">* Form Name</label>
+                    <div class="col-md-8 col-lg-4">
+                        <input class="form-control" value="" (keypress)="vldChkLst.isCharKey($event)" type="text"
+                            [(ngModel)]="txtFormName">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-4 col-lg-2">* Table Exists</label>
+                    <div class="col-md-8 col-lg-4">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" [value]="1" [(ngModel)]="tableExistStatus"
+                                name="tableExistStatus" type="radio" id="tableExistStatus1"
+                                [checked]="tableExistStatus==1" />
+                            <label class="form-check-label" for="tableExistStatus1">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" [value]="2" [(ngModel)]="tableExistStatus"
+                                name="tableExistStatus" type="radio" id="tableExistStatus2"
+                                [checked]="tableExistStatus==2" />
+                            <label class="form-check-label" for="tableExistStatus2">No</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-4 col-lg-2">* Table Name</label>
+                    <div class="col-md-8 col-lg-4">
+                        <input class="form-control" value="" minlength="0" maxlength="16" appUppercase type="text"
+                            [attr.readonly]="formID && (formConfigurationStatus!=0 || finalSubmitStatus!=0)? 'readonly' : null"
+                            [(ngModel)]="txtTableName">
+                        <small class="text-danger">( Ex. ABC, DEMO_ABC, Maximum 16 chars)</small>
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="form-group row d-none">
+                    <label class="col-md-4 col-lg-2">Add Section</label>
+                    <div class="col-md-8 col-lg-8">
+
+                        <table class="table table-bordered" *ngIf="txtAddsectionName.length > 0">
+                            <thead>
+                                <tr>
+                                    <th width="70px">Sl#</th>
+                                    <th>Section Name *</th>
+                                    <th>Table Name <small class="text-danger">( Ex. ABC, DEMO_ABC, Maximum 16
+                                            chars)</small> </th>
+                                    <th width="70px">Action</th>
+                                </tr>
+                            </thead>
+
+
+                            <tbody *ngIf="txtAddsectionName.length > 0">
+                                <tr *ngFor="let value of txtAddsectionName; let i = index">
+                                    <td> <input type="text" class="form-control txtsectionName" [(ngModel)]="value.slno"
+                                            #name="ngModel" name="sectionName{{i}}"></td>
+                                    <td> <input type="text" class="form-control txtsectionName"
+                                            (keypress)="vldChkLst.isCharKey($event)" [(ngModel)]="value.sectionName"
+                                            #name="ngModel" name="sectionName{{i}}"></td>
+                                    <td>
+                                        <input type="text" class="form-control txtsectionName" minlength="0"
+                                            maxlength="16" appUppercase [(ngModel)]="value.sectionTableName"
+                                            #name="ngModel" name="sectionTableName{{i}}">
+                                    </td>
+                                    <td> <button class="btn btn-danger px-2" (click)="removeSectionval(i)"><i
+                                                class="icon-trash-alt"></i></button></td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="row">
+
+                            <div class="col-12">
+                                <a class="btn btn-info px-2" (click)="addSectionval()"><i class="icon-plus-solid"></i>
+                                    Add Section Name</a>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group row d-none">
+                    <label class="col-md-4 col-lg-2">Form Icon</label>
+                    <div class="col-md-8 col-lg-4">
+                        <input class="form-control" type="file" accept="image/*" (change)="Uploadicon($event)"
+                            [(ngModel)]="fileFormicon">
+
+                        <small class="text-danger">(Upload .jpg, .jpeg, .png file only upto 1 MB)</small>
+
+                    </div>
+                    <div class="col-md-1 col-lg-1">
+                        <div *ngIf="iconurl">
+                            <img src="{{iconurl}}" class="border" width="100%">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row d-none">
+                    <label class="col-md-4 col-lg-2">Form Guideline</label>
+                    <div class="col-md-8 col-lg-4">
+                        <input class="form-control " type="file" accept="application/*"
+                            (change)="onSelectgideline($event)" [(ngModel)]="fileGuideline">
+
+                        <small class="text-danger">(pdf file only and Max file Size < 5 MB)</small>
+                    </div>
+                    <div class="col-md-1 col-lg-1">
+                        <!-- <div *ngIf="guidelineurl"> -->
+                        <a [href]="" id="guideLineUrl" target="_blank" class="text-danger h2 d-none"><i
+                                class="icon-file-pdf" [attr.data-fileName]=""></i></a>
+                        <!-- </div> -->
+                    </div>
+                </div>
+                <div class="form-group row d-none">
+                    <label class="col-md-4 col-lg-2">Service Mode</label>
+                    <div class="col-md-8 col-lg-4">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" [value]="0" [(ngModel)]="serviceMode" name="serviceMode"
+                                type="radio" id="ServiceMode1" [checked]="isSelected" />
+                            <label class="form-check-label" for="ServiceMode1">Internal</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" [value]="1" [(ngModel)]="serviceMode" name="serviceMode"
+                                type="radio" id="ServiceMode2" [checked]="!isSelected" />
+                            <label class="form-check-label" for="ServiceMode2">External</label>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="showDiv" *ngIf="serviceMode == 1">
+                    <div class="form-group row">
+                        <label class="col-md-4 col-lg-2">Based Type</label>
+                        <div class="col-md-8 col-lg-4">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="basedType" id="baseType1" [value]="0"
+                                    [(ngModel)]="basedType" [checked]="isSelected">
+                                <label class="form-check-label" for="baseType1">API Based</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="basedType" id="baseType2" [value]="1"
+                                    [(ngModel)]="basedType" [checked]="isSelected">
+                                <label class="form-check-label" for="baseType2">Redirect Base</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="showDiv" *ngIf="basedType == 0">
+                        <div class="clsAPIservice">
+                            <div class="p-3 border mb-3">
+                                <h5 class="form-heading pb-2 mb-3 border-bottom">Redirect URL</h5>
+                                <div class="form-group row">
+                                    <label class="col-sm-2  no-padding-right" for="intimationFormat">URL</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" id="vchAPIRedirectURL" name="vchAPIRedirectURL"
+                                            [(ngModel)]="apiUrl" class="form-control " maxlength="150" value=""
+                                            autocomplete="off">
+                                    </div>
+                                    <label class="col-sm-2 control-label no-padding-right"
+                                        for="intimationFormat">Type</label>
+                                    <div class="col-sm-2">
+                                        <select class="form-select" name="selChkStsType" [(ngModel)]="apiUrlMethod">
+                                            <option value="0" disabled selected>--Select--</option>
+                                            <option value="get">get</option>
+                                            <option value="post">post</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-sm-2  no-padding-right"
+                                        for="intimationFormat">Authorization</label>
+                                    <div class="col-sm-6">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox"
+                                                [(ngModel)]="chkAPIAuthorization" (change)="checkApiUrl($event)"
+                                                id="inlineCheckbox1" value="1">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="chkAPIAuthorization=='1'">
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 no-padding-right" for="intimationFormat">Authorization
+                                            Type</label>
+                                        <div class="col-sm-4">
+                                            <select class="form-select" name="selChkStsType"
+                                                [(ngModel)]="apiUrlAuthType">
+                                                <option value="0" disabled selected>--Select--</option>
+                                                <option value="1">Basic Auth</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="apiUrlAuthType == 1">
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 no-padding-right" for="intimationFormat">User
+                                                Name</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control" [(ngModel)]="basicauthUsername">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 no-padding-right"
+                                                for="intimationFormat">Password</label>
+                                            <div class="col-sm-4">
+                                                <input type="password" class="form-control" [(ngModel)]="basicauthPass">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th width="2%">Sl#</th>
+                                                <th>Label <span class="text-danger">*</span> </th>
+                                                <th>Key <span class="text-danger">*</span> </th>
+                                                <th>Type <span class="text-danger">*</span> </th>
+                                                <th>Value <span class="text-danger">*</span> </th>
+                                                <th width="60px">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="appendTr">
+                                            <tr *ngFor="let apiArray of dynamicAPIArray; let i = index;">
+                                                <td>{{i+1}}</td>
+                                                <td>
+                                                    <input class="form-control" name="{{apiArray.label}}"
+                                                        [(ngModel)]="apiArray.label" type="text" />
+                                                </td>
+                                                <td>
+                                                    <input class="form-control" name="{{apiArray.key}}"
+                                                        [(ngModel)]="apiArray.key" type="text" />
+                                                </td>
+                                                <td>
+                                                    <select name="{{apiArray.type}}" [(ngModel)]="apiArray.type"
+                                                        class="form-select">
+                                                        <option value="0" disabled selected>--Select--</option>
+                                                        <option value="1">Static</option>
+                                                        <option value="2">Dynamic</option>
+                                                    </select>
+
+                                                </td>
+                                                <td>
+                                                    <input class="form-control" name="{{apiArray.value}}"
+                                                        [(ngModel)]="apiArray.value" type="text" />
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-danger px-2" (click)="deleteApiRow(i)"><i
+                                                            class="icon-trash-alt"></i></button>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td colspan="6">
+                                                    <button class="btn btn-info " (click)="addAPIRow()"> Add
+                                                        Row</button>
+                                                </td>
+
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="p-3 border mb-3">
+                                <h5 class="form-heading pb-2 mb-3 border-bottom">Reference Number</h5>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 no-padding-right" for="intimationFormat">URL</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" id="vchAPIReferenceURL" [(ngModel)]="referenceUrl"
+                                            name="vchAPIReferenceURL" class="form-control " maxlength="150" value=""
+                                            autocomplete="off">
+                                    </div>
+                                    <label class="col-sm-2 control-label no-padding-right"
+                                        for="intimationFormat">Type</label>
+                                    <div class="col-sm-2">
+                                        <select class="form-select" name="selChkStsType"
+                                            [(ngModel)]="referenceUrlMethod">
+                                            <option value="0" disabled selected>--Select--</option>
+                                            <option value="get">get</option>
+                                            <option value="post">post</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2  no-padding-right"
+                                        for="intimationFormat">Authorization</label>
+                                    <div class="col-sm-6">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox"
+                                                [(ngModel)]="chkreferenceAuthorization"
+                                                (change)="checkRefereneUrl($event)" id="inlineCheckbox1" value="1">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="chkreferenceAuthorization=='1'">
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 no-padding-right" for="intimationFormat">Authorization
+                                            Type</label>
+                                        <div class="col-sm-4">
+                                            <select class="form-select" name="selChkStsType" [(ngModel)]="refAuthType">
+                                                <option value="0" disabled selected>--Select--</option>
+                                                <option value="1">Basic Auth</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="refAuthType == 1">
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 no-padding-right" for="intimationFormat">User
+                                                Name</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control" [(ngModel)]="refauthUsername">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 no-padding-right"
+                                                for="intimationFormat">Password</label>
+                                            <div class="col-sm-4">
+                                                <input type="password" class="form-control" [(ngModel)]="refauthPass">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-scroll-top">
+                                    <div class="div1"></div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th width="2%">Sl#</th>
+                                                <th>Label <span class="text-danger">*</span> </th>
+                                                <th>Key <span class="text-danger">*</span> </th>
+                                                <th>Type <span class="text-danger">*</span> </th>
+                                                <th>Value <span class="text-danger">*</span> </th>
+                                                <th width="60px">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="appendTrRefNo">
+
+                                            <tr *ngFor="let ReferenceArray of dynamicReferenceArray; let i = index;">
+                                                <td>{{i+1}}</td>
+                                                <td>
+                                                    <input class="form-control" name="{{ReferenceArray.label}}"
+                                                        [(ngModel)]="ReferenceArray.label" type="text" />
+                                                </td>
+                                                <td>
+                                                    <input class="form-control" name="{{ReferenceArray.key}}"
+                                                        [(ngModel)]="ReferenceArray.key" type="text" />
+                                                </td>
+                                                <td>
+                                                    <select name="{{ReferenceArray.type}}"
+                                                        [(ngModel)]="ReferenceArray.type" class="form-select">
+                                                        <option value="0" disabled selected>--Select--</option>
+                                                        <option value="1">Static</option>
+                                                        <option value="2">Dynamic</option>
+                                                    </select>
+
+                                                </td>
+                                                <td>
+                                                    <input class="form-control" name="{{ReferenceArray.value}}"
+                                                        [(ngModel)]="ReferenceArray.value" type="text" />
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-danger px-2"
+                                                        (click)="deleteReferenceRow(i)"><i
+                                                            class="icon-trash-alt"></i></button>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td colspan="6">
+                                                    <button class="btn btn-info " (click)="addReferenceRow()"> Add
+                                                        Row</button>
+                                                </td>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="p-3 border mb-3">
+                                <h5 class="form-heading pb-2 mb-3 border-bottom">Status Check</h5>
+
+                                <div class="form-group row">
+                                    <label class="col-sm-2  no-padding-right" for="intimationFormat">URL</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" id="vchAPIStatusURL" [(ngModel)]="statusUrl"
+                                            name="vchAPIStatusURL" class="form-control " maxlength="150" value=""
+                                            autocomplete="off">
+                                    </div>
+                                    <label class="col-sm-2 control-label no-padding-right"
+                                        for="intimationFormat">Type</label>
+                                    <div class="col-sm-2">
+                                        <select class="form-select" name="selChkStsType" [(ngModel)]="statusUrlMethod">
+                                            <option value="0" disabled selected>--Select--</option>
+                                            <option value="get">get</option>
+                                            <option value="post">post</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2  no-padding-right"
+                                        for="intimationFormat">Authorization</label>
+                                    <div class="col-sm-6">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox"
+                                                [(ngModel)]="chkStatusAuthorization" (change)="checkStatusUrl($event)"
+                                                id="inlineCheckbox1" value="1">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="chkStatusAuthorization=='1'">
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 no-padding-right" for="intimationFormat">Authorization
+                                            Type</label>
+                                        <div class="col-sm-4">
+                                            <select class="form-select" name="selChkStsType"
+                                                [(ngModel)]="statusAuthType">
+                                                <option value="0" disabled selected>--Select--</option>
+                                                <option value="1">Basic Auth</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="statusAuthType == 1">
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 no-padding-right" for="intimationFormat">User
+                                                Name</label>
+                                            <div class="col-sm-4">
+                                                <input type="text" class="form-control"
+                                                    [(ngModel)]="statusauthUsername">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 no-padding-right"
+                                                for="intimationFormat">Password</label>
+                                            <div class="col-sm-4">
+                                                <input type="password" class="form-control"
+                                                    [(ngModel)]="statusauthPass">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th width="2%">Sl#</th>
+                                                <th>Label <span class="text-danger">*</span> </th>
+                                                <th>Key <span class="text-danger">*</span> </th>
+                                                <th>Type <span class="text-danger">*</span> </th>
+                                                <th>Value <span class="text-danger">*</span> </th>
+                                                <th width="60px">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="appendTrStatus">
+
+                                            <tr *ngFor="let statusArray of dynamicstatusArray; let i = index;">
+                                                <td>{{i+1}}</td>
+                                                <td>
+                                                    <input class="form-control" name="{{statusArray.label}}"
+                                                        [(ngModel)]="statusArray.label" type="text" />
+                                                </td>
+                                                <td>
+                                                    <input class="form-control" name="{{statusArray.key}}"
+                                                        [(ngModel)]="statusArray.key" type="text" />
+                                                </td>
+                                                <td>
+                                                    <select name="{{statusArray.type}}" [(ngModel)]="statusArray.type"
+                                                        class="form-select">
+
+                                                        <option value="1">Static</option>
+                                                        <option value="2">Dynamic</option>
+                                                    </select>
+
+                                                </td>
+                                                <td>
+                                                    <input class="form-control" name="{{statusArray.value}}"
+                                                        [(ngModel)]="statusArray.value" type="text" />
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-danger px-2" (click)="deleteStatusRow(i)"><i
+                                                            class="icon-trash-alt"></i></button>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td colspan="6">
+                                                    <button class="btn btn-info " (click)="addStatusRow()"> Add
+                                                        Row</button>
+                                                </td>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="showDiv" *ngIf="basedType == 1">
+                        <div class="form-group row">
+                            <label class="col-md-4 col-lg-2">* Redirect URL</label>
+                            <div class="col-md-8 col-lg-4">
+                                <input class="form-control " [(ngModel)]="redirectURL" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-lg-2">* Window Type</label>
+                            <div class="col-md-8 col-lg-4">
+                                <select class="form-select" [(ngModel)]="selWndowType">
+                                    <option value="0" disabled selected>--Select--</option>
+                                    <option value="same">Same</option>
+                                    <option value="new">New</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+                <div class="form-group row">
+                    <label class="col-md-4 col-lg-2">* Description</label>
+                    <div class="col-md-8 col-lg-10">
+                        <!-- <app-ckeditornew [ckdesc]="formdescription"  [(ngModel)]="formdescription"></app-ckeditornew> -->
+
+                        <ckeditor [(ngModel)]="formdescription" id="messageContent" #myckeditor="ngModel"
+                            name="myckeditor" required [config]="ckeConfig" debounce="500">
+
+                        </ckeditor>
+                        <!-- <angular-editor [(ngModel)]="formdescription" [config]="config"></angular-editor> -->
+                        <!-- //  <ckeditor [editor]="editor"  (ready)="onReady($event)" [(ngModel)]="formdescription" ></ckeditor> -->
+                    </div>
+                </div>
+
+                <div class="form-group row configitems d-none">
+                    <label class="col-md-4 col-lg-2"> Applied Configurations</label>
+
+
+                    <div class="col-md-8 col-lg-8">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="chkforPayment"
+                                (change)="checkCpayment($event)" id="inlineCheckbox1" value="1">
+                            <label class="form-check-label" for="inlineCheckbox1">For Payment</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="chkforApproval"
+                                (change)="checkCapproval($event)" id="inlineCheckbox2" value="1">
+                            <label class="form-check-label" for="inlineCheckbox2">For Approval</label>
+                        </div>
+                        <!-- <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" [(ngModel)]="chkforDocument" (change)="checkCdocument($event)"  id="inlineCheckbox3" value="1">
+                                          <label class="form-check-label" for="inlineCheckbox3">For Document</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                          <input class="form-check-input" type="checkbox" [(ngModel)]="chkforCitizen" (change)="checkCcitizen($event)" id="inlineCheckbox4" value="1">
+                                          <label class="form-check-label" for="inlineCheckbox4">Enable to Citizen</label>
+                                        </div> -->
+
+
+
+
+                    </div>
+                </div>
+
+                <div class="form-group row configitems d-none">
+                    <label class="col-md-4 col-lg-2">Enable to</label>
+
+
+                    <div class="col-md-8 col-lg-8">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="chkforAdminApplication"
+                                (change)="checkAdminApp($event)" id="EnableinlineCheckbox1" value="1">
+                            <label class="form-check-label" for="EnableinlineCheckbox1">Admin Application</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="chkforWebsit"
+                                (change)="checkWebsite($event)" id="EnableinlineCheckbox2" value="1">
+                            <label class="form-check-label" for="EnableinlineCheckbox2">For Website</label>
+                        </div>
+
+
+
+
+
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <label class="col-md-4 col-lg-2"></label>
+                    <div class="col-md-8 col-lg-10">
+
+                        <ng-container *ngIf="formID == '' ; else update">
+
+                            <button class="btn btn-primary" (click)="createform()">Submit</button>
+                            <button class="btn btn-danger ml-1" (click)="resetform()">Reset</button>
+                        </ng-container>
+                        <ng-template #update>
+
+                            <button class="btn btn-primary" (click)="createform()">Update</button>
+                            <button class="btn btn-danger ml-1" (click)="updateCancel()">Cancel</button>
+
+                        </ng-template>
+
+
+                    </div>
+                </div>
+
+                <!--end::Form-->
+
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<div class="loader" *ngIf="loading">
+    <div class="loader-item"></div>
+    <p>Loading...</p>
+</div>

@@ -1,0 +1,175 @@
+
+<div class="page-title">
+  <h4>{{title}}</h4>
+</div>
+             <div class="card">
+                
+         
+               <div class="controls-section-header">
+               <ul class="nav nav-tabs">
+               <li class="nav-item">
+                 <a class="nav-link " aria-current="page" routerLink="../../adminconsole/set-role-permission" routerLinkActive="active" href="#">Add</a>
+               </li>
+               <li class="nav-item">
+                 <a class="nav-link " href="#"  routerLink="../../adminconsole/viewset-role-permission" routerLinkActive="active">View</a>
+               </li>
+             </ul>
+             </div>
+             
+             <div class="card-body">
+              
+             <div *ngIf="set_role_permissionlist?.length > 0; else norecord">          
+             <div class="table-responsive">
+               <table data-toggle="table" class="table table-bordered valign-middle">
+               <thead>
+                  <tr>
+                     <th scope="col" width="40px">Sl#</th>
+                     <th scope='col'>Type</th>
+<th scope='col'>Permission For</th>
+
+                     <th scope="col">Created On</th>
+                     <th scope="col" class="noPrint" width="100px">View</th>
+                     <th scope="col" class="noPrint" width="100px">Action</th>
+
+                  </tr>
+               </thead>
+               <tbody>
+               <tr *ngFor="let listItems of set_role_permissionlist | paginate
+               : {
+                   itemsPerPage: tableSize,
+                   currentPage: page,
+                   totalItems: count
+                 }; let i=index;">
+                
+                <td>{{tableSize *(page-1)+ i+1}} </td>
+                <td>{{listItems.intForPermissionVal}}</td>
+                <td *ngIf="listItems.intForPermission == '1'">
+                  {{listItems.vchRolename}}
+                </td>
+                <td *ngIf="listItems.intForPermission == '2'">
+                  {{listItems.vchfullName}}
+                </td>
+                <!-- <td >
+                  
+                  {{ listItems.intForPermission === '1' ? listItems.vchRolename : (listItems.intForPermission === '2' ? listItems.vchfullName : '') }}
+                </td> -->
+           
+                <td>{{listItems.dtmCreatedOn}}</td>
+                <td><a class="text-info " href="javascript:void(0)" data-bs-toggle="modal" (click)="previewDetails(listItems.intRole,listItems.vchRolename,listItems.intForPermissionVal,listItems.intSelUser,listItems.vchfullName)" [attr.data-bs-target]="'#previewModal'+i">Preview</a>
+                <div class="modal fade" id="previewModal{{i}}" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+                     <div class="modal-dialog modal-lg">
+                       <div class="modal-content">
+                         <div class="modal-header">
+                           <h5 class="modal-title mb-0" id="previewModalLabel">Preview Details</h5>
+                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                         </div>
+                         <div class="modal-body">
+                          
+                            <br>
+                            <div class="row">
+                              <div class="col-md-6">
+                                <span style="font-weight: bold;">Permission For:</span>
+                                <span *ngIf="listItems.intForPermission == '1'">{{ listItems.vchRolename }}</span>
+                                <span *ngIf="listItems.intForPermission == '2'">{{ listItems.vchfullName }}</span>
+                            </div>
+                            
+                              <div class="col-md-6">
+                                <span style="font-weight: bold;">Type:</span> {{this.permission}}
+                              </div>
+                            </div>
+                            <br>
+                           
+                        
+                          
+                          <div class="table-responsive">
+                            <table class="table table-bordered">
+                              <thead>
+                              <tr>
+                              <th>Section Name</th>
+                            <th>Add</th>
+                            <th>View</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                            <th>Publish</th>
+
+
+
+
+                          
+                          </tr>
+                          </thead>
+                        
+                              <tbody *ngFor="let prevItems of set_role_permissionlistPreview;">  
+                                <!-- {{prevItems|json}} -->
+                          <tr>
+                           
+                            <!-- <tr>
+                           <td style="font-weight: bold;"> 
+                                {{prevItems.vchLinkName}}
+                               
+                            </td>
+                            </tr> -->
+                            <!-- <td style="color: blue;">
+                              <table class="table table-bordered mb-0">
+                                <tr> -->
+                                  <!-- <th>Link Name</th>
+                                  <th>View Right</th>
+                                  <th>Manage right</th>
+                                </tr> -->
+                                <tr >
+                                  <td>{{prevItems.vchLinkName}}</td>
+                                  <td>{{(prevItems.intadd == 1) ? 'YES':
+                                    'NO'}}</td>
+                                  <td>{{(prevItems.intViewManageRight  == 1) ? 'YES':
+                                    'NO'}}</td>
+                                  <td>{{(prevItems.intEditRight  == 1) ? 'YES':
+                                      'NO'}}</td>
+                                  <td>{{(prevItems.intDelete  == 1) ? 'YES':
+                                        'NO'}}</td>
+                                  <td>{{(prevItems.publish  == 1) ? 'YES':
+                                          'NO'}}</td>
+                                <!-- </tr> -->
+                              <!-- </table>
+                            </td>
+                         -->
+                           
+                    
+                          </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          
+                           
+                           
+                         </div>
+                         
+                       </div>
+                     </div>
+                   </div>                
+                </td>
+                <td class="">
+                  <a class='text-primary mx-2 d-none' title='Edit' (click)='editData(listItems.intId)'><i class='bi bi-pencil-square'></i></a> 
+                   <a class='text-danger' title='Delete' (click)='deleteData(listItems.intForPermission,listItems.intRole,listItems.intSelUser)'><i class='bi bi-trash3'></i></a></td>
+               </tr>
+               
+            </tbody>
+            </table>
+            </div>
+            </div>
+            <ng-template #norecord>
+              <h6 class="no-content"> No Record Found</h6>
+            </ng-template>
+            <div class="d-flex justify-content-end">
+              <pagination-controls
+              previousLabel="Prev"
+              nextLabel="Next"
+              (pageChange)="onTableDataChange($event)">
+            </pagination-controls>
+           </div>
+            </div>
+    
+            </div>
+            <div class="loader" *ngIf="loading">
+              <div class="loader-item"></div>
+              <p>Loading...</p>
+            </div>

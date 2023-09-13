@@ -1,0 +1,91 @@
+<div class="page-title">
+      <h4>{{title}}</h4>
+    </div>
+<div class="card">   
+      <div class="controls-section-header"> 
+      <ul class="nav nav-tabs ">
+      <li class="nav-item">
+            <a class="nav-link " aria-current="page" 
+            routerLink="{{itemID > 0 ? '../../../adminconsole/manage-links':'../../adminconsole/manage-links'}}" 
+            routerLinkActive="active" 
+            href="#">{{itemID > 0 ? "Edit":"Add"}} </a>
+      </li>
+      <li class="nav-item">
+            <a class="nav-link " href="#"  
+            routerLink="{{itemID > 0 ? '../../../adminconsole/viewmanage-links':'../../adminconsole/viewmanage-links'}}" 
+            routerLinkActive="active">View</a>
+      </li>
+      </ul> 
+      </div>
+<div class="card-body">
+                        
+      <form [formGroup]="manage_links" (ngSubmit)="submitForm()">
+            <div class="generator">    
+      <div class="onegrid">
+      <input type="hidden" formControlName="intId" >
+
+      <div class="form-group" >
+        <label Class="w-full text-md " >Link Type <span class="text-danger">*</span> </label>
+            <div class="control-item"><select formControlName="selLinkType"  id="selLinkType" #selLinkType class="form-select">
+                <option value="0" selected >--Select--</option>
+                <option value=1>Global Link</option>
+                <option value=2>Configuration Link</option>
+                
+                </select>
+            </div>
+      </div>
+
+      <div class="form-group" *ngIf="!(selLinkType.value == '1' || selLinkType.value == '2'|| selLinkType.value == '0')">
+          <label Class="w-full text-md " >Parent Link</label>
+            <div class="control-item"><select formControlName="selParentLink"  id="selParentLink" #selParentLink class="form-select">
+                <option value="0" selected >--Select--</option>
+                <option *ngFor="let datalist of selParentLinklist" [value]="datalist.intId">
+                        {{datalist.vchLinkName}}
+                </option>
+                </select>
+            </div>
+      </div>
+      <div class="form-group" >
+          <label Class="w-full text-md " >Link Name <span class="text-danger">*</span></label>
+            <div class="control-item">
+                  <input type="text" formControlName="txtLinkName" minlength="" maxlength=""   formControlName="txtLinkName" placeholder="" class="form-control ">
+            </div>
+      </div>
+
+      <div class="form-group" >
+         <label Class="w-full text-md " >URL <span class="text-danger">*</span></label>
+            <div class="control-item">
+                  <input type="text" formControlName="txtURL" minlength="" maxlength=""   formControlName="txtURL" placeholder="" class="form-control ">
+            </div>
+      </div>
+
+      <div class="form-group" >
+         <label Class="w-full text-md " >CSS Class</label>
+            <div class="control-item">
+                  <input type="text" formControlName="txtCSSClass" minlength="" maxlength=""   formControlName="txtCSSClass" placeholder="" class="form-control ">
+            </div>
+      </div>
+
+      <div class="form-group" >
+          <label Class="w-full text-md " >Serial No</label>
+            <div class="control-item">
+               <input type="number" formControlName="txtSerialNo" minlength="" maxlength=""   formControlName="txtSerialNo" placeholder="" class="form-control ">
+            </div>
+      </div>
+      </div>  
+
+      <div class="mt-10 onegrid btn-div">
+            <button type="submit" class="btn btn-primary"> {{itemID >  0 ? 'Update':'Submit'}} </button>
+            <button type="reset"  (click)="itemID >  0 ? onCancel() : onReset()" class="btn btn-danger ml-1"> {{itemID >  0 ? 'Cancel':'Reset'}}  </button>
+           
+      </div>    
+      </div>
+      
+      </form>
+      </div>
+      </div>
+
+      <div class="loader" *ngIf="loading">
+            <div class="loader-item"></div>
+            <p>Loading...</p>
+          </div>

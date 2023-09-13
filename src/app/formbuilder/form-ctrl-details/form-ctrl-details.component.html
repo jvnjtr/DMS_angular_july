@@ -1,0 +1,558 @@
+<div class="card" *ngFor="let sctrls of sectionCtrlDtls">
+
+    <div class="controls-section-header" *ngIf="sctrls.sectionName">
+        <h5 class="mb-0">{{ sctrls.sectionName }}</h5>
+    </div>
+
+    <div class="card-body">
+        <div class="dynamic-ctrls">
+            <div [ngClass]="{'onegrid':gridId == 1, 'twogrid': gridId == 2, 'threegrid':gridId == 3,'fullwidthSection':formctrls.ctrlTypeId==10 || formctrls.ctrlTypeId==8 || formctrls.ctrlTypeId==12}"
+                *ngFor="let formctrls of sctrls.formDetails">
+                <div class="fulldtls"
+                    [ngClass]="{'fullgrid':formctrls.ctrlTypeId == 10 || formctrls.ctrlTypeId == 8 || formctrls.ctrlTypeId == 12 }">
+
+                    <label *ngIf="formctrls.ctrlTypeId!=8 && formctrls.ctrlTypeId!=12 && formctrls.ctrlTypeId!=10"
+                        class="mb-2">
+
+                        <input *ngIf="finalsubmitstatus==0 &&(formctrls.ctrlTypeId==6 || formctrls.ctrlTypeId==3) "
+                            class="form-check-input gridradio check_class" type="checkbox" name="{{formctrls.ctrlId}}" id="{{formctrls.ctrlId}}"
+                            [attr.data-secid]="sctrls.sectionId"
+                            [attr.data-formctrls]="setFormCtrls(formctrls,formctrls.ctrlId)"
+                            [attr.data-ctrlid]="formctrls.ctrlId" (click)="setWorkFlow($event)"
+                            [checked]="arrEditFormCtrls.elemId  == formctrls.ctrlId" />
+
+                            {{(langKey=='en')?formctrls.ctrlLabel:(formctrls.languageDetails[0][langKey] !='' ?formctrls.languageDetails[0][langKey]:formctrls.ctrlLabel)}} <span
+                            *ngIf="formctrls.ctrlMandatory == true" class="text-danger">*</span>
+                        <a href="javascript:void(0)" *ngIf="formctrls.ctrlhelptext"
+                            [attr.data-bs-toggle]="formctrls.ctrlhelptext" data-bs-placement="top"
+                            [title]="formctrls.ctrlhelptext">
+                            <i class="icon-info-circle-solid"></i>
+                        </a>
+
+                    </label>
+                    <div class="control-holder" [ngSwitch]="formctrls.ctrlTypeId">
+
+                        <div *ngSwitchCase=1>
+                            <div [id]="formctrls.ctrlId">
+                                {{(langKey=='en')?formctrls.cascadingCtrlDetails[0].ctrlCCLabelData:(formctrls.languageDetails[0][langKey] !='' ?formctrls.languageDetails[0][langKey]:formctrls.cascadingCtrlDetails[0].ctrlCCLabelData)}}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div *ngSwitchCase=2>
+                                <input [type]="formctrls.ctrlAttributeType == 0 ? 'text' : formctrls.ctrlAttributeType"
+                                    bind-class="formctrls.ctrlClass"
+                                    (keypress)="formctrls.validationDetails[0].ctrlChkAlphabet==true ? vldChkLst.isCharKey($event) : '' || formctrls.validationDetails[0].ctrlChkNumeric==true ? vldChkLst.isNumberKey($event) : ''"
+                                    class="form-control" [placeholder]="formctrls.ctrlPlaceholder"
+                                    [id]="formctrls.ctrlId">
+
+
+
+
+                            </div>
+                            <div *ngSwitchCase=3>
+                                <select class="form-select" bind-class="formctrls.ctrlClass" [id]="formctrls.ctrlId">
+                                    <option>Select</option>
+                                    <option class="form-check-label"
+                                        *ngFor="let cdStatic of formctrls.cascadingCtrlDetails[0].ctrlStaticOptions;let s = index"
+                                        value="cdStatic.ctrlCCStaticValue">{{cdStatic.ctrlCCStaticName}}</option>
+
+
+
+                                </select>
+                            </div>
+                            <div *ngSwitchCase=4>
+                                <textarea cols="3" rows="3" *ngIf="formctrls.ctrlClass != 'editor'"
+                                    bind-class="formctrls.ctrlClass" [id]="formctrls.ctrlId"
+                                    [placeholder]="formctrls.ctrlPlaceholder" class="form-control"></textarea>
+                                <!-- <ckeditor [editor]="editor" *ngIf="formctrls.ctrlClass == 'editor'"></ckeditor> -->
+
+
+
+                            </div>
+                            <div *ngSwitchCase=5>
+                                <div class="form-group">
+                                    <div *ngFor="let fcascading of formctrls.cascadingCtrlDetails;" class="w-100">
+                                        <div *ngIf="fcascading.ctrlCCbindDatatype=='static'" class="w-100">
+                                            <div class="form-check form-check-inline"
+                                                *ngFor="let cdStatic of fcascading.ctrlStaticOptions;let l = index">
+
+                                                <input class="form-check-input gridradio" type="checkbox"
+                                                    name="gridtypeRadio" id="inlineRadio{{l}}"
+                                                    value="cdStatic.ctrlCCStaticValue" />
+                                                <label class="form-check-label"
+                                                    for="inlineRadio{{l}}">{{cdStatic.ctrlCCStaticName}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div *ngSwitchCase=6>
+                                <div class="form-group">
+                                    <div *ngFor="let fcascading of formctrls.cascadingCtrlDetails;">
+                                        <div *ngIf="fcascading.ctrlCCbindDatatype=='static'">
+                                            <div class="form-check form-check-inline"
+                                                *ngFor="let cdStatic of fcascading.ctrlStaticOptions;let r = index">
+
+                                                <input class="form-check-input gridradio" type="radio"
+                                                    name="gridtypeRadio" id="inlineRadio{{r}}"
+                                                    value="cdStatic.ctrlCCStaticValue" />
+                                                <label class="form-check-label"
+                                                    for="inlineRadio{{r}}">{{cdStatic.ctrlCCStaticName}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div *ngSwitchCase=7>
+                                <input type="file" class="form-control" bind-class="formctrls.ctrlClass"
+                                    [id]="formctrls.ctrlTypeId">
+
+                            </div>
+                            <div *ngSwitchCase=8>
+                                <h1 [class]="formctrls.ctrlHeadingType">
+                                    {{(langKey=='en')?formctrls.ctrlLabel:(formctrls.languageDetails[0][langKey] !='' ?formctrls.languageDetails[0][langKey]:formctrls.ctrlLabel)}}
+                                </h1>
+                            </div>
+                            <div *ngSwitchCase=9><label class="mandatory-label ctrlLabel">Button</label></div>
+                            <div *ngSwitchCase=10>
+
+                                <div
+                                    *ngIf="(formctrls.addmoreDetails?.length > 0) && (formctrls.radioAddmoreviewtype == 'row')">
+                                    <div class="border p-3 rounded-1">
+                                        <label class="mb-3">
+                                            {{(langKey=='en')?formctrls.ctrlLabel:(formctrls.languageDetails[0][langKey] !='' ?formctrls.languageDetails[0][langKey]:formctrls.ctrlLabel)}} </label>
+                                        <div class="fulldtlsTwo">
+                                            <div class="fulldtls fulldtlsinner mb-3"
+                                                *ngFor="let adctrls of formctrls.addmoreDetails">
+                                                <label>
+                                                    <!-- {{adctrls.ctrlLabel}}  -->
+                                                    {{(langKey=='en')?adctrls.ctrlLabel:(adctrls.addmorelanguageDetails[0][langKey] !='' ?adctrls.addmorelanguageDetails[0][langKey]:adctrls.ctrlLabel)}}
+                                                    <span *ngIf="adctrls.ctrlMandatory == true"
+                                                        class="text-danger">*</span>
+                                                    <a href="javascript:void(0)" *ngIf="adctrls.ctrlhelptext"
+                                                        [attr.data-bs-toggle]="adctrls.ctrlhelptext"
+                                                        data-bs-placement="top" [title]="adctrls.ctrlhelptext">
+                                                        <i class="icon-info-circle-solid"></i>
+                                                    </a>
+                                                </label>
+                                                <div class="control-holder ">
+                                                    <div class="form-group">
+                                                        <div [ngSwitch]="adctrls.ctrlTypeId">
+
+                                                            <div *ngSwitchCase=1>
+                                                                <div [id]="adctrls.ctrlId">{{adctrls.ctrlLabelData}}
+                                                                </div>
+                                                                <span>{{adctrls.addmorecascadingCtrlDetails[0].ctrlCCLabelData}}</span>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <div *ngSwitchCase=2>
+                                                                    <input
+                                                                        [type]="adctrls.ctrlAttributeType == 0 ? 'text' : adctrls.ctrlAttributeType"
+                                                                        bind-class="adctrls.ctrlClass"
+                                                                        (keypress)="adctrls.validationDetails[0].ctrlChkAlphabet==true ? vldChkLst.isCharKey($event) : '' || adctrls.validationDetails[0].ctrlChkNumeric==true ? vldChkLst.isNumberKey($event) : ''"
+                                                                        class="form-control"
+                                                                        [placeholder]="adctrls.ctrlPlaceholder"
+                                                                        [id]="adctrls.ctrlId">
+                                                                </div>
+                                                                <div *ngSwitchCase=3>
+                                                                    <select class="form-select"
+                                                                        bind-class="adctrls.ctrlClass"
+                                                                        [id]="adctrls.ctrlId">
+                                                                        <option>Select</option>
+                                                                        <option class="form-check-label"
+                                                                            *ngFor="let cdStatic of adctrls.addmorecascadingCtrlDetails[0].addmorectrlStaticOptions;let s = index"
+                                                                            value="cdStatic.ctrlCCStaticValue">
+                                                                            {{cdStatic.ctrlCCStaticName}}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div *ngSwitchCase=4>
+                                                                    <textarea cols="3" rows="3"
+                                                                        *ngIf="adctrls.ctrlClass != 'editor'"
+                                                                        bind-class="adctrls.ctrlClass"
+                                                                        [id]="adctrls.ctrlId"
+                                                                        [placeholder]="adctrls.ctrlPlaceholder"
+                                                                        class="form-control"></textarea>
+                                                                    <!-- <ckeditor [editor]="editor"
+                                                                        *ngIf="adctrls.ctrlClass == 'editor'">
+                                                                    </ckeditor> -->
+                                                                </div>
+                                                                <div *ngSwitchCase=5>
+                                                                    <div class="form-group">
+                                                                        <div *ngFor="let adfcascading of adctrls.addmorecascadingCtrlDetails;"
+                                                                            class="w-100">
+                                                                            <div *ngIf="adfcascading.ctrlCCbindDatatype=='static'"
+                                                                                class="w-100">
+                                                                                <div class="form-check form-check-inline"
+                                                                                    *ngFor="let adcdStatic of adfcascading.addmorectrlStaticOptions;let l = index">
+
+                                                                                    <input
+                                                                                        class="form-check-input gridradio"
+                                                                                        type="checkbox"
+                                                                                        name="gridtypeRadio"
+                                                                                        id="inlineRadio{{l}}"
+                                                                                        value="ascdStatic.ctrlCCStaticValue" />
+                                                                                    <label class="form-check-label"
+                                                                                        for="inlineRadio{{l}}">{{adcdStatic.ctrlCCStaticName}}</label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+
+                                                                <div *ngSwitchCase=6>
+                                                                    <div class="form-group">
+                                                                        <div
+                                                                            *ngFor="let adfcascading of adctrls.addmorecascadingCtrlDetails;">
+                                                                            <div
+                                                                                *ngIf="adfcascading.ctrlCCbindDatatype=='static'">
+                                                                                <div class="form-check form-check-inline"
+                                                                                    *ngFor="let adcdStatic of adfcascading.addmorectrlStaticOptions;let r = index">
+
+                                                                                    <input
+                                                                                        class="form-check-input gridradio"
+                                                                                        type="radio"
+                                                                                        name="gridtypeRadio"
+                                                                                        id="inlineRadio{{r}}"
+                                                                                        value="adcdStatic.ctrlCCStaticValue" />
+                                                                                    <label class="form-check-label"
+                                                                                        for="inlineRadio{{r}}">{{adcdStatic.ctrlCCStaticName}}</label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+
+                                                                </div>
+
+                                                                <div *ngSwitchCase=7>
+                                                                    <input type="file" class="form-control"
+                                                                        bind-class="adctrls.ctrlClass"
+                                                                        [id]="adctrls.ctrlTypeId">
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div
+                                    *ngIf="(formctrls.addmoreDetails?.length > 0) && (formctrls.radioAddmoreviewtype == 'row')">
+                                    <h6 class="mb-2">
+                                        {{formctrls.ctrlLabel}}
+                                       
+                                    </h6>
+
+                                    <div class="table-responsive">
+
+                                        <table class="table table-bordered valign-middle mb-0 ">
+                                            <thead>
+                                                <tr>
+
+                                                    <th valign="middle"
+                                                        *ngFor="let adctrls of formctrls.addmoreDetails">
+                                                        {{adctrls.ctrlLabel}} <span
+                                                            *ngIf="adctrls.ctrlMandatory == true"
+                                                            class="text-danger">*</span>
+                                                        <a href="javascript:void(0)" *ngIf="adctrls.ctrlhelptext"
+                                                            [attr.data-bs-toggle]="adctrls.ctrlhelptext"
+                                                            data-bs-placement="top" [title]="adctrls.ctrlhelptext">
+                                                            <i class="icon-info-circle-solid"></i>
+                                                        </a>
+
+
+
+                                                    </th>
+                                                    <th style="width:80px" class="text-center">{{'Action'}}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td *ngFor="let adctrls of formctrls.addmoreDetails">
+                                                        <div [ngSwitch]="adctrls.ctrlTypeId">
+
+                                                            <div *ngSwitchCase=1>
+                                                                <label class="control-label"
+                                                                    [id]="adctrls.ctrlId"></label>
+                                                            </div>
+                                                            <div class="">
+                                                                <div *ngSwitchCase=2>
+                                                                    <input
+                                                                        [type]="adctrls.ctrlAttributeType == 0 ? 'text' : adctrls.ctrlAttributeType"
+                                                                        bind-class="adctrls.ctrlClass"
+                                                                        (keypress)="adctrls.validationDetails[0].ctrlChkAlphabet==true ? vldChkLst.isCharKey($event) : '' || adctrls.validationDetails[0].ctrlChkNumeric==true ? vldChkLst.isNumberKey($event) : ''"
+                                                                        class="form-control"
+                                                                        [placeholder]="adctrls.ctrlPlaceholder"
+                                                                        [id]="adctrls.ctrlId">
+                                                                </div>
+                                                                <div *ngSwitchCase=3>
+                                                                    <select class="form-select"
+                                                                        bind-class="adctrls.ctrlClass"
+                                                                        [id]="adctrls.ctrlId">
+                                                                        <option>Select</option>
+                                                                        <option class="form-check-label"
+                                                                            *ngFor="let cdStatic of adctrls.addmorecascadingCtrlDetails[0].addmorectrlStaticOptions;let s = index"
+                                                                            value="cdStatic.ctrlCCStaticValue">
+                                                                            {{cdStatic.ctrlCCStaticName}}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div *ngSwitchCase=4>
+                                                                    <textarea cols="3" rows="3"
+                                                                        *ngIf="adctrls.ctrlClass != 'editor'"
+                                                                        bind-class="adctrls.ctrlClass"
+                                                                        [id]="adctrls.ctrlId"
+                                                                        [placeholder]="adctrls.ctrlPlaceholder"
+                                                                        class="form-control"></textarea>
+                                                                    <!-- <ckeditor [editor]="editor"
+                                                                        *ngIf="adctrls.ctrlClass == 'editor'">
+                                                                    </ckeditor> -->
+                                                                </div>
+                                                                <div *ngSwitchCase=5>
+                                                                    <div class="form-group">
+                                                                        <div *ngFor="let adfcascading of adctrls.addmorecascadingCtrlDetails;"
+                                                                            class="w-100">
+                                                                            <div *ngIf="adfcascading.ctrlCCbindDatatype=='static'"
+                                                                                class="w-100">
+                                                                                <div class="form-check form-check-inline"
+                                                                                    *ngFor="let adcdStatic of adfcascading.addmorectrlStaticOptions;let l = index">
+
+                                                                                    <input
+                                                                                        class="form-check-input gridradio"
+                                                                                        type="checkbox"
+                                                                                        name="gridtypeRadio"
+                                                                                        id="inlineRadio{{l}}"
+                                                                                        value="ascdStatic.ctrlCCStaticValue" />
+                                                                                    <label class="form-check-label"
+                                                                                        for="inlineRadio{{l}}">{{adcdStatic.ctrlCCStaticName}}</label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+
+                                                                <div *ngSwitchCase=6>
+                                                                    <div class="form-group">
+                                                                        <div
+                                                                            *ngFor="let adfcascading of adctrls.addmorecascadingCtrlDetails;">
+                                                                            <div
+                                                                                *ngIf="adfcascading.ctrlCCbindDatatype=='static'">
+                                                                                <div class="form-check form-check-inline"
+                                                                                    *ngFor="let adcdStatic of adfcascading.addmorectrlStaticOptions;let r = index">
+
+                                                                                    <input
+                                                                                        class="form-check-input gridradio"
+                                                                                        type="radio"
+                                                                                        name="gridtypeRadio"
+                                                                                        id="inlineRadio{{r}}"
+                                                                                        value="adcdStatic.ctrlCCStaticValue" />
+                                                                                    <label class="form-check-label"
+                                                                                        for="inlineRadio{{r}}">{{adcdStatic.ctrlCCStaticName}}</label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+
+                                                                </div>
+
+                                                                <div *ngSwitchCase=7>
+                                                                    <input type="file" class="form-control"
+                                                                        bind-class="adctrls.ctrlClass"
+                                                                        [id]="adctrls.ctrlTypeId">
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center"><a href="javascript:void(0)"
+                                                            class="btn btn-primary p-1 text-light"><i
+                                                                class="icon-plus-solid"></i></a></td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+
+                                </div>
+                                <div
+                                    *ngIf="(formctrls.addmoreDetails?.length > 0) && (formctrls.radioAddmoreviewtype == 'table')">
+                                    <h6 class="mb-2">
+                                        {{(langKey=='en')?formctrls.ctrlLabel:(formctrls.languageDetails[0][langKey] !='' ?formctrls.languageDetails[0][langKey]:formctrls.ctrlLabel)}}
+                                     </h6>
+
+                                    <div class="table-responsive">
+
+                                        <table class="table table-bordered valign-middle mb-0 ">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col" style="width:140px"></th>
+                                                    <th valign="middle"
+                                                        *ngFor="let adctrls of formctrls.addmoreDetails">
+                                                       
+                                                        {{(langKey=='en')?adctrls.ctrlLabel:(adctrls.addmorelanguageDetails[0][langKey] !='' ?adctrls.addmorelanguageDetails[0][langKey]:adctrls.ctrlLabel)}}
+                                                        <span
+                                                            *ngIf="adctrls.ctrlMandatory == true"
+                                                            class="text-danger">*</span>
+                                                        <a href="javascript:void(0)" *ngIf="adctrls.ctrlhelptext"
+                                                            [attr.data-bs-toggle]="adctrls.ctrlhelptext"
+                                                            data-bs-placement="top" [title]="adctrls.ctrlhelptext">
+                                                            <i class="icon-info-circle-solid"></i>
+                                                        </a>
+
+
+
+                                                    </th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let adrowctrls of formctrls.addmorerowdata" valign="middle">
+                                                    <td>{{adrowctrls.ctrlRowdataName}}</td>
+                                                    <td *ngFor="let adctrls of formctrls.addmoreDetails">
+                                                        <div [ngSwitch]="adctrls.ctrlTypeId">
+
+                                                            <div *ngSwitchCase=1>
+                                                                <label class="control-label"
+                                                                    [id]="adctrls.ctrlId"></label>
+                                                            </div>
+                                                            <div class="">
+                                                                <div *ngSwitchCase=2>
+                                                                    <input
+                                                                        [type]="adctrls.ctrlAttributeType == 0 ? 'text' : adctrls.ctrlAttributeType"
+                                                                        bind-class="adctrls.ctrlClass"
+                                                                        (keypress)="adctrls.validationDetails[0].ctrlChkAlphabet==true ? vldChkLst.isCharKey($event) : '' || adctrls.validationDetails[0].ctrlChkNumeric==true ? vldChkLst.isNumberKey($event) : ''"
+                                                                        class="form-control"
+                                                                        [placeholder]="adctrls.ctrlPlaceholder"
+                                                                        [id]="adctrls.ctrlId">
+                                                                </div>
+                                                                <div *ngSwitchCase=3>
+                                                                    <select class="form-select"
+                                                                        bind-class="adctrls.ctrlClass"
+                                                                        [id]="adctrls.ctrlId">
+                                                                        <option>Select</option>
+                                                                        <option class="form-check-label"
+                                                                            *ngFor="let cdStatic of adctrls.addmorecascadingCtrlDetails[0].addmorectrlStaticOptions;let s = index"
+                                                                            value="cdStatic.ctrlCCStaticValue">
+                                                                            {{cdStatic.ctrlCCStaticName}}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div *ngSwitchCase=4>
+                                                                    <textarea cols="3" rows="3"
+                                                                        *ngIf="adctrls.ctrlClass != 'editor'"
+                                                                        bind-class="adctrls.ctrlClass"
+                                                                        [id]="adctrls.ctrlId"
+                                                                        [placeholder]="adctrls.ctrlPlaceholder"
+                                                                        class="form-control"></textarea>
+                                                                    <!-- <ckeditor [editor]="editor"
+                                                                        *ngIf="adctrls.ctrlClass == 'editor'">
+                                                                    </ckeditor> -->
+                                                                </div>
+                                                                <div *ngSwitchCase=5>
+                                                                    <div class="form-group">
+                                                                        <div *ngFor="let adfcascading of adctrls.addmorecascadingCtrlDetails;"
+                                                                            class="w-100">
+                                                                            <div *ngIf="adfcascading.ctrlCCbindDatatype=='static'"
+                                                                                class="w-100">
+                                                                                <div class="form-check form-check-inline"
+                                                                                    *ngFor="let adcdStatic of adfcascading.addmorectrlStaticOptions;let l = index">
+
+                                                                                    <input
+                                                                                        class="form-check-input gridradio"
+                                                                                        type="checkbox"
+                                                                                        name="gridtypeRadio"
+                                                                                        id="inlineRadio{{l}}"
+                                                                                        value="ascdStatic.ctrlCCStaticValue" />
+                                                                                    <label class="form-check-label"
+                                                                                        for="inlineRadio{{l}}">{{adcdStatic.ctrlCCStaticName}}</label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+
+                                                                <div *ngSwitchCase=6>
+                                                                    <div class="form-group">
+                                                                        <div
+                                                                            *ngFor="let adfcascading of adctrls.addmorecascadingCtrlDetails;">
+                                                                            <div
+                                                                                *ngIf="adfcascading.ctrlCCbindDatatype=='static'">
+                                                                                <div class="form-check form-check-inline"
+                                                                                    *ngFor="let adcdStatic of adfcascading.addmorectrlStaticOptions;let r = index">
+
+                                                                                    <input
+                                                                                        class="form-check-input gridradio"
+                                                                                        type="radio"
+                                                                                        name="gridtypeRadio"
+                                                                                        id="inlineRadio{{r}}"
+                                                                                        value="adcdStatic.ctrlCCStaticValue" />
+                                                                                    <label class="form-check-label"
+                                                                                        for="inlineRadio{{r}}">{{adcdStatic.ctrlCCStaticName}}</label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+
+
+                                                                </div>
+
+                                                                <div *ngSwitchCase=7>
+                                                                    <input type="file" class="form-control"
+                                                                        bind-class="adctrls.ctrlClass"
+                                                                        [id]="adctrls.ctrlTypeId">
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+
+
+
+
+
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<div class="loader" *ngIf="loading">
+    <div class="loader-item"></div>
+    <p>{{'Loading'}}...</p>
+</div>

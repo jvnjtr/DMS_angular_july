@@ -25,14 +25,15 @@
                     <label for="" class="col-md-4 col-lg-3 form-label">* {{"Event Name"| langReplace}} </label>
                     <div class="col-md-6 col-lg-4">
                         <div class="form-group">
-                            <div class="form-group">
-                                <angular2-multiselect [data]="nameList" id="selectedItems" [(ngModel)]="selectedItems"
-                                [settings]="dropdownSettings" (onSelect)="onItemSelect($event)"
-                                (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)"
-                                (onDeSelectAll)="onDeSelectAll($event)">
-                            </angular2-multiselect>
+                           
+                            <select id="selectedItems" class="form-select" [(ngModel)]="selectedEvent" (change)="getStampingConfig(configId,selectedEvent)">
+                                <option value="0">Select</option>
+                                <option *ngFor="let item of nameList" [value]="item.id">{{item.itemName}}</option>
+                               
+                            </select>
                             </div>
                         </div>
+                     
                     </div>
                 </div>
 
@@ -59,6 +60,9 @@
                         <div class="form-group">
                             <input class="form-control" type="file" id="txtStampingImage" (change)="onSelect($event)">
                         </div>
+                    </div>
+                    <div class="col-md-2 col-lg-1">
+                        <img id="showEventImage" class="w-100" [src]="showEventImage">
                     </div>
                 </div>
                 <div class="row" *ngIf="rdoType==1">

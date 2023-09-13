@@ -119,7 +119,20 @@ export class DashboardService {
 
   }
 
-  
-  
+   //=============================================================================
+    // For Recent Activities
+    // Created by Bikash Kumar Panda on 16-Aug-2023
+  //============================================================================= 
+  public getRetentionDetails(formParams:any):Observable<any> {
+   
+    let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'dashboard_module/getArchivedList';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    return loginResponse;
+
+  } 
+
 
 }

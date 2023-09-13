@@ -1,0 +1,241 @@
+
+<div class="page-title">
+  <h4>{{title}}</h4>
+</div><div class="card">
+ 
+ <div class="controls-section-header">
+ <ul class="nav nav-tabs">
+ <li class="nav-item">
+   <a class="nav-link " aria-current="page" routerLink="../../adminconsole/manage-users" routerLinkActive="active" href="#">Add</a>
+ </li>
+ <li class="nav-item">
+   <a class="nav-link " href="#"  routerLink="../../adminconsole/viewmanage-users" routerLinkActive="active">View</a>
+ </li>
+</ul>
+<div class="indicatorslist">
+<app-cutils *ngFor="let utillist of utillist" [childMessage]="utillist" [sendIds]="letterIdArray"
+  [activeDeactiveStatus]="activeDeactiveStatus" [funType]="funcName" (callfunction)="viewAllData()"
+  (callfunction3)="nullidsArray()" (callfunction2)='selectAll($event)'></app-cutils>
+</div>
+</div>
+
+<div class="card-body">
+
+ <!-- Search Panel -->
+<!-- <div class="search-container active">
+
+<div class="search-sec">
+
+<div class="row">
+
+<div class="col-12 col-md-3 col-lg-3">
+  <div class="form-group">
+    <select class="form-select" [(ngModel)]="selModuleName">
+      <option value="0" disabled selected>Select Module</option>
+      <option *ngFor="let mNames of moduleNames" [value]="mNames.intModuleId">{{ mNames.vchModuleName }}
+      </option>
+
+    </select>
+  </div>
+</div>
+
+<div class="col-12 col-md-3 col-lg-3">
+  <div class="form-group">
+    <input type="text" class="form-control" [(ngModel)]="txtFormName" name="FormName"
+      placeholder="Type Form Name">
+  </div>
+</div>
+
+
+<div class="col-12 col-md-3 col-lg-3">
+  <div class="form-group">
+    <button class="btn btn-primary" >Show </button>
+    <button class="btn btn-danger ml-1" (click)="viewAllData()">Reset </button>
+  </div>
+</div>
+</div>
+
+
+</div>
+
+
+</div> -->
+<!-- Search Panel -->
+
+
+
+
+
+
+
+
+<div *ngIf="manage_userslist?.length > 0; else norecord">    
+<div>
+  <ul class="legends">
+    <li><span class="bg-success"></span>{{"Active"}} </li>
+    <li><span class="bg-danger"></span>{{"InActive"}} </li>
+  </ul>
+</div><br>
+
+<div class="table-responsive">
+ <table data-toggle="table" class="table table-bordered valign-middle">
+ <thead>
+    <tr>
+      <th class="p-none" scope="col" style="width:25px">
+        <div class="form-check">
+          <input class="form-check-input checkAll" type="checkbox" (click)='selectAll($event)' id="checkall"
+            name="checkall" value="checkall">
+
+        </div>
+      </th>
+       <th scope="col" width="40px">Sl#</th>
+       <th scope='col'>Full Name</th>
+       <th scope='col'>Designation</th>
+       <th scope='col'>Role </th>
+       <th scope='col'>User Id</th>
+       <th scope="col">Created On</th>
+       <th scope="col" class="noPrint" width="100px">View</th>
+       <th scope="col" class="noPrint" width="100px">Action</th>
+    </tr>
+ </thead>
+ <tbody>
+ <tr *ngFor="let listItems of manage_userslist | paginate
+ : {
+     itemsPerPage: tableSize,
+     currentPage: page,
+     totalItems: count
+   }; let i=index;">
+
+   <td class="border-left-2 p-none"
+   [ngClass]="{'border-left-danger': listItems.tinActiveStatus === 0 , 'border-left-success': listItems.tinActiveStatus === 1 }">
+
+   <div>
+     <input class="form-check-input rowCheck" type="checkbox"
+       (change)="onChange(listItems.intId, $event,listItems.tinActiveStatus)"
+       [attr.activeDeactiveStatus]="listItems.tinActiveStatus" name="{{listItems.intId }}" [id]="listItems.intId"
+       [value]="listItems.intId">
+   </div>
+ </td>
+
+
+  <td>{{tableSize *(page-1)+ i+1}} </td>
+  <td>{{listItems.vchFullName}}</td>
+
+  <td>{{listItems.intDesignantionVal}}</td>
+  <td>{{listItems.intRoleIdVal}}</td>
+  <td>{{listItems.vchUserId}}</td>
+  <td>{{listItems.dtmCreatedOn}}</td>
+  <td><a class="text-info " href="javascript:void(0)" data-bs-toggle="modal" (click)="previewDetails(listItems.intId)" [attr.data-bs-target]="'#previewModal'+i">Preview</a>
+  <div class="modal fade" id="previewModal{{i}}" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+       <div class="modal-dialog modal-lg">
+         <div class="modal-content">
+           <div class="modal-header">
+             <h5 class="modal-title mb-0" id="previewModalLabel">Preview Details</h5>
+             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+           </div>
+           <div class="modal-body">
+
+             <div class="table-responsive">
+                <table class="table table-bordered">
+                   <tbody *ngFor="let prevItems of manage_userslistPreview;">
+                     
+                         
+            <tr><th width=30%>Full Name</th>
+            <td width=70%>{{prevItems.vchFullName}}</td>
+          <td rowspan="4">
+
+
+            <img *ngIf="!prevItems.vchPhoto" height="80px" [src]="siteUrl+'assets/img/male-profile.jpg'" alt="user Profile">
+            <img *ngIf="prevItems.vchPhoto" height="80px" [id]="'fileDownloadDiv_filePhoto'" [src]="fileURL+'temp/'+prevItems.vchPhoto" alt="user Profile">
+
+         
+          </td>
+          
+          </tr>
+
+            <tr><th width=30%>Gender</th>
+            <td width=70% >{{prevItems.intgenderVal == 0 ? '--': prevItems.intgenderVal}}</td><tr>
+
+      
+
+            <tr><th width=30%>Mobile No</th>
+            <td width=70% >{{prevItems.vchMobileNo == '' ? '--': prevItems.vchMobileNo}}</td></tr>
+
+            <tr><th width=30%>Email Id</th>
+            <td width=70% colspan="2">{{prevItems.vchEmailId == '' ? '--': prevItems.vchEmailId}}</td></tr>
+
+            <tr><th width=30%>Alternate Mobile Number</th>
+            <td width=70% colspan="2"> {{prevItems.vchAltrMobileNo == '' ? '--': prevItems.vchAltrMobileNo}}</td></tr>
+
+            <tr><th width=30%>Date Of Joining</th>
+            <td width=70% colspan="2">{{(prevItems.vchDtOfJoining == '')||(prevItems.vchDtOfJoining == null) ? '--': prevItems.vchDtOfJoining}}</td></tr>
+
+            <tr><th width=30%>Address</th>
+            <td width=70% colspan="2">{{prevItems.vchAddress  == '' ? '--': prevItems.vchAddress}}</td></tr>
+
+            <tr><th width=30%>Designation</th>
+              <td width=70% colspan="2">{{prevItems.intDesignantionVal == 0 ? '--': prevItems.intDesignantionVal}}</td><tr>
+            <tr><th width=30%>Role</th>
+            <td width=70% colspan="2">{{prevItems.intRoleIdVal == 0 ? '--': prevItems.intRoleIdVal}}</td><tr>
+
+              <tr><th width=30%>Department</th>
+                <td width=70% colspan="2">{{prevItems.intDepartmentVal == 0 ? '--': prevItems.intDepartmentVal}}</td><tr>
+
+            <tr><th width=30%>Employee Type</th>
+            <td width=70% colspan="2">{{prevItems.intEmployeeTypeVal == 0 ? '--': prevItems.intEmployeeTypeVal}}</td><tr>
+
+           
+
+            <tr><th width=30%>Group</th>
+            <td width=70% colspan="2">{{prevItems.intGroupVal == 0 ? '--': prevItems.intGroupVal}}</td><tr>
+
+            <!-- <tr><th width=30%>Hierarchy</th>
+            <td width=70% colspan="2">{{prevItems.intHierarchyVal == 0 ? '--': prevItems.intHierarchyVal}}</td><tr> -->
+
+            <tr><th width=30%>User Id</th>
+            <td width=70% colspan="2">{{prevItems.vchUserId}}</td></tr>
+
+            
+
+            <tr><th width=30%>Previlege</th>
+            <td width=70% colspan="2">{{(prevItems.vchPrevilege == 1) || (prevItems.vchPrevilege == 2) ? 'Admin': 'User'}}</td></tr>
+
+                         
+                        
+                     
+                   </tbody>
+                </table>
+             </div>
+           </div>
+           
+         </div>
+       </div>
+     </div>
+  
+  
+  </td>
+  <td><a class='text-primary mx-2 ' title='Edit' (click)='editData(listItems.intId)'><i class="icon-edit-solid"></i></a>  
+    <a class='text-danger' title='Delete' (click)='deleteData(listItems.intId)'><i class="icon-trash-solid"></i></a>
+  </td>
+ </tr>
+ 
+</tbody>
+</table>
+</div>
+</div>
+<ng-template #norecord>
+<h6 class="no-content"> No Record Found</h6>
+</ng-template>
+<div class="d-flex justify-content-end">
+<pagination-controls
+previousLabel="Prev"
+nextLabel="Next"
+(pageChange)="onTableDataChange($event)">
+</pagination-controls>
+</div>
+</div>
+</div>
+<div class="loader" *ngIf="loading">
+  <div class="loader-item"></div>
+  <p>Loading...</p>
+</div>

@@ -36,6 +36,12 @@ export class HeaderComponent implements OnInit {
   roleId: any;
   totalNotificationCount: any;
   notificationList: any = [];
+          
+  fileRetention:any=0;
+  fileShared:any=0;
+  otherNotification:any=[]
+  takeAction:any=0;
+  menulistarr:any=[]
   config:any=false;
   //\\ ======================== // Variables // ======================== //\\
 
@@ -67,7 +73,7 @@ export class HeaderComponent implements OnInit {
 
     this.getUserNotification()
 
-
+this.getPermissionLinks()
     let sessionUserLangtoken: any = sessionStorage.getItem('USER_LANGPREF');
     if (sessionUserLangtoken) {
       // alert(1)
@@ -363,9 +369,24 @@ export class HeaderComponent implements OnInit {
 
       if (responseResult.status == 200) {
 
-        this.totalNotificationCount = responseResult.result.length;
+        this.totalNotificationCount = responseResult.result.totalNotification;
         this.notificationList = responseResult.result;
 
+        this.fileRetention= responseResult.result.fileRetention;
+        this.fileShared= responseResult.result.fileShared;
+        this.otherNotification= responseResult.result.otherNotification;
+        this.takeAction= responseResult.result.takeAction;
+
+   
+      
+        
+
+
+
+
+console.log(this.notificationList)
+        console.log(this.notificationList);
+        this.totalNotificationCount=responseResult.result.totalNotification;
 
 
       }
@@ -425,6 +446,51 @@ export class HeaderComponent implements OnInit {
         
       
   }
-
+  getPermissionLinks(){
+    let dataParam = {
+      linkId:"2"
+    };
+    this.commonserveice.getPermissionLinks(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+            let responseResult= JSON.parse(res)
+  
+  
+        if (responseResult.status == '200') {
+  
+          this.menulistarr=responseResult.result;
+  
+         
+  
+        
+   
+        }
+        else if(responseResult.status=='501'){
+         
+          this.authService.directlogout();
+        }
+        else if((responseResult.status==500)){
+          this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+        
+        }
+        else {
+         
+        }
+        }
+        else{
+         
+          this.authService.directlogout();
+        }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+  }
+  
 
 }

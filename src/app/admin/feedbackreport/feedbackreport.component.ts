@@ -10,12 +10,13 @@ import { UploadfilesService } from '../../services/uploadfiles.service';
 import { EncrypyDecrpyService } from '../../services/encrypy-decrpy.service';
 import * as CryptoJS from 'crypto-js';
 import {Buffer} from 'buffer';
-import {FormArray,FormBuilder, FormControlName,FormGroup,FormControl} from '@angular/forms';
+import {FormArray,FormBuilder, FormControlName,FormGroup,FormControl,Validators, AbstractControl} from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { ValidatorchecklistService } from 'src/app/services/validatorchecklist.service';
 import { ReportsService } from 'src/app/services/reports.service';
 import { Observable, Subscription, fromEvent } from 'rxjs'
+
 
 @Component({
   selector: 'app-feedbackreport',
@@ -40,6 +41,9 @@ DemoDoc:any;
 
 
 myForm : FormGroup;
+
+form : FormGroup;
+
 serviceURL = environment.serviceURL;
   itemID:any;
   sessiontoken:any;
@@ -84,7 +88,8 @@ dpCustomButtons : string = `<div class="d-flex justify-content-between py-1">
 minDate:Date;
 maxDate:Date;
 
-
+submitted = false;
+adsubmit=false;
 
   constructor(private modalService: NgbModal,
      private httpClient: HttpClient,
@@ -111,6 +116,13 @@ this.loadusers(0)
   });
 
 
+  this.form = this.fb.group(
+    {
+      fullname: ['', [Validators.required]],
+      addMorestudentdetails:this.fb.array([this.newstudent_details()])
+    },
+
+  );
 
 
 
@@ -126,7 +138,7 @@ this.loadusers(0)
   ngOnInit(): void {
     this.myDateValue = new Date();
     this.mycontent2['test'] = 'testval';
-    
+  
     // this.ckeConfig = {
     //   allowedContent: false,
     //   extraPlugins: 'divarea',
@@ -178,8 +190,15 @@ open(content: any) {
 }
 //\\ ======================== // Modal Open // ======================== //\\ 
 
-  
-          
+get f(): { [key: string]: AbstractControl } {
+  return this.form.controls;
+}
+
+
+
+
+
+
 /*
 |------------------------------------------------------------------------------
 |This function is used for submit data /Insert data in to database
@@ -308,10 +327,81 @@ for(let i=0;i<userlist.length;i++){
 
 
 
+ onSubmit(){
+  this.submitted = true;
+  this.adsubmit=true;
+  if (this.student_details.invalid) {
+    return;
+  }
+  if (this.form.invalid) {
+    return;
+  }
 
+  console.log(JSON.stringify(this.form.value, null, 2));
+ }
 
+ onReset(){
 
+  this.submitted = false;
+  this.form.reset();
 
+ }
+       get student_details(){
+              return this.form.get('addMorestudentdetails') as FormArray
+         }
+         
+        amtxtStdName(index: number) {
+          return this.student_details.at(index).get('amtxtStdName');
+        }
+        amtxtAge(index: number) {
+          return this.student_details.at(index).get('amtxtAge');
+        }   
+/*
+|------------------------------------------------------------------------------
+|This function is used for submit addmore Fields
+|------------------------------------------------------------------------------
+*/        
+         newstudent_details() : FormGroup{
+                 return this.fb.group({
+                  amtxtStdName :['', [Validators.required,Validators.minLength(6),Validators.maxLength(20),Validators.pattern(environment.alphabets)]],
+                  amtxtAge :['', [Validators.required]],
 
+          })
+         }
+           
+/*
+|------------------------------------------------------------------------------
+|This function is used for add addmore Fields
+|------------------------------------------------------------------------------
+*/        
+         addstudent_details(e:any) {
+              e.preventDefault()
+              this.adsubmit=true;
+             
+              if (this.student_details.invalid) {
+                return;
+              }
 
+              
+              this.student_details.push(this.newstudent_details());
+              
+            
+        }
+         
+         
+/*
+|------------------------------------------------------------------------------
+|This function is used for Remove addmore Fields
+|------------------------------------------------------------------------------
+*/
+         removestudent_details(addIndex:number,e:any) {
+          e.preventDefault()
+          if(this.student_details.length > 1){
+              this.student_details.removeAt(addIndex);
+          }
+        }
+
+   
+
+        
 }

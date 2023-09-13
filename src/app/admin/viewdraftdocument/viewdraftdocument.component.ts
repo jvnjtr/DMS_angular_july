@@ -138,7 +138,7 @@ tablecollist=[
             }
             else{
               this.loading=false;
-              this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
+              // this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
             }
         }
         else{

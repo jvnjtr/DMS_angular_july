@@ -1,0 +1,24 @@
+[
+    {
+      "pagetitle":"View Manage User",
+     
+      "utils":[
+        {"utilName":"search"},
+        {"utilName":"print"},
+        {"utilName":"active"},
+        {"utilName":"inActive"}
+        
+        ],
+      "messages":
+        {
+          "successMsg":"Date saved successfully",
+        "errorMsg":"Error in database",
+        "warningtype":"You want to delete this record",
+        "deleteMsg":"Record has been deleted"
+        }
+       
+      
+    }
+  ]
+
+

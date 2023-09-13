@@ -69,6 +69,11 @@ import { ConfigGeneralComponent } from './config-general/config-general.componen
 import { ConfigOCRComponent } from './config-ocr/config-ocr.component';
 import { ConfigStampingComponent } from './config-stamping/config-stamping.component';
 import { ViewdraftdocumentComponent } from './viewdraftdocument/viewdraftdocument.component';
+import { ConfigSignatureComponent } from './config-signature/config-signature.component';
+import { ViewSignatureComponent } from './view-signature/view-signature.component';
+import { FormbuilderModule } from '../formbuilder/formbuilder.module';
+import { DynFormToPdfComponent } from './dyn-form-to-pdf/dyn-form-to-pdf.component';
+import { ViewStampingComponent } from './view-stamping/view-stamping.component';
 
 
 
@@ -125,6 +130,10 @@ import { ViewdraftdocumentComponent } from './viewdraftdocument/viewdraftdocumen
                  ConfigOCRComponent,
                  ConfigStampingComponent,
                  ViewdraftdocumentComponent,
+                 ConfigSignatureComponent,
+                 ViewSignatureComponent,
+                 DynFormToPdfComponent,
+                 ViewStampingComponent,
          
   ],
   imports: [
@@ -147,6 +156,7 @@ import { ViewdraftdocumentComponent } from './viewdraftdocument/viewdraftdocumen
     CKEditorModule,
     MsgengineLibModule,
   CommonPipeModule,
+  FormbuilderModule,
         BsDatepickerModule.forRoot(),
     
     

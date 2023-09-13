@@ -1,0 +1,120 @@
+
+<div class="page-title">
+  <h4>{{title}}</h4>
+</div>
+<div class="card">
+                
+
+ <div class="controls-section-header">
+ <ul class="nav nav-tabs">
+ <li class="nav-item">
+   <a class="nav-link " aria-current="page" routerLink="../../adminconsole/manage-links" routerLinkActive="active" href="#">Add</a>
+ </li>
+ <li class="nav-item">
+   <a class="nav-link " href="#"  routerLink="../../adminconsole/viewmanage-links" routerLinkActive="active">View</a>
+ </li>
+</ul>
+</div>
+
+<div class="card-body">
+
+<div *ngIf="manage_linkslist?.length > 0; else norecord">          
+<div class="table-responsive">
+ <table data-toggle="table" class="table table-bordered valign-middle">
+ <thead>
+    <tr>
+       <th scope="col" width="40px">Sl#</th>
+      
+       <th scope='col'>Link Type</th>
+        <th scope='col'>Link Name</th>
+        <th scope='col'>URL</th>
+       <th scope="col">Created On</th>
+       <th scope="col" class="noPrint" width="100px">View</th>
+       <th scope="col" class="noPrint" width="100px">Action</th>
+    </tr>
+ </thead>
+ <tbody>
+ <tr *ngFor="let listItems of manage_linkslist | paginate
+ : {
+     itemsPerPage: tableSize,
+     currentPage: page,
+     totalItems: count
+   }; let i=index;">
+  <td>{{tableSize *(page-1)+ i+1}} </td>
+  <td>{{listItems.intLinkTypeVal}}</td>
+  <td>{{listItems.vchLinkName}}</td>
+  <td>{{listItems.vchUrl}}</td>
+  <td>{{listItems.dtmCreatedOn}}</td>
+  <td><a class="text-info " href="javascript:void(0)" data-bs-toggle="modal" (click)="previewDetails(listItems.intId)" [attr.data-bs-target]="'#previewModal'+i">Preview</a>
+  <div class="modal fade" id="previewModal{{i}}" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+       <div class="modal-dialog modal-lg">
+         <div class="modal-content">
+           <div class="modal-header">
+             <h5 class="modal-title mb-0" id="previewModalLabel">Preview Details</h5>
+             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+           </div>
+           <div class="modal-body">
+
+             <div class="table-responsive">
+                <table class="table table-bordered">
+                   <tbody *ngFor="let prevItems of manage_linkslistPreview;">
+                     
+                         
+            <tr><th width=30%>Link Type</th>
+            <td width=70%>{{prevItems.intLinkTypeVal}}</td><tr>
+
+            <tr><th width=30%>Parent Link</th>
+            <td width=70%>{{prevItems.intParentLinksVal}}</td><tr>
+
+            <tr><th width=30%>Link Name</th>
+            <td width=70%>{{prevItems.vchLinkName}}</td></tr>
+
+            <tr><th width=30%>URL</th>
+            <td width=70%>{{prevItems.vchUrl}}</td></tr>
+
+            <tr><th width=30%>CSS Class</th>
+            <td width=70%>{{prevItems.vchCssClass}}</td></tr>
+
+            <tr><th width=30%>Serial No</th>
+            <td width=70%>{{prevItems.intslNo}}</td></tr>
+
+                         
+                        
+                     
+                   </tbody>
+                </table>
+             </div>
+           </div>
+           
+         </div>
+       </div>
+     </div>
+  
+  
+  
+  
+  </td>
+  <td><a class='text-primary mx-2' title='Edit' (click)='editData(listItems.intId)'><i class="icon-edit-solid"></i></a>  <a class='text-danger' title='Delete' (click)='deleteData(listItems.intId)'><i class="icon-trash-solid"></i></a></td>
+ </tr>
+ 
+</tbody>
+</table>
+</div>
+</div>
+<ng-template #norecord>
+<h6 class="no-content"> No Record Found</h6>
+</ng-template>
+<div class="d-flex justify-content-end">
+<pagination-controls
+previousLabel="Prev"
+nextLabel="Next"
+(pageChange)="onTableDataChange($event)">
+</pagination-controls>
+</div>
+</div>
+</div>
+
+<div class="loader" *ngIf="loading">
+  <div class="loader-item"></div>
+  <p>Loading...</p>
+</div>
