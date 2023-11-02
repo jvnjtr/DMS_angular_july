@@ -45,11 +45,11 @@
       </div>
       <div class="py-3" *ngIf="documentCreateFrom==1">
         <div class="row">
-          <label for="" class="col-md-4 col-lg-3 form-label">* {{"Select Template"| langReplace}} </label>
+          <label for="" class="col-md-4 col-lg-3 form-label">* {{"Select Form"| langReplace}} </label>
           <div class="col-md-6 col-lg-4">
               <div class="form-group">
                  
-                  <select id="selectedItems" class="form-select" [(ngModel)]="selectedEvent" (change)="showFormApply(selectedEvent)">
+                  <select id="selectedItems" class="form-select" [(ngModel)]="selectedEvent" (change)="getFormTemplateList(selectedEvent)">
                       <option value="0">Select</option>
                       <option *ngFor="let item of nameList" [value]="item.intProcessId">{{item.vchProcessName}}</option>
                      
@@ -58,10 +58,29 @@
               </div>
            
           </div>
+          <div class="row" *ngIf="showFormTemplate>0">
+            <label for="" class="col-md-4 col-lg-3 form-label">* {{"Select Template"| langReplace}} </label>
+            <div class="col-md-6 col-lg-4">
+                <div class="form-group">
+                   
+                    <select id="selectedItems" class="form-select" [(ngModel)]="formTemplateId" (change)="showFormApply(formTemplateId)">
+                        <option value="0">Select</option>
+                        <option *ngFor="let mNames of templateList" [value]="mNames.intLetterConfigId">{{
+                          mNames.vchLetterName }}</option>
+                        <option class="text-primary" value="new">Create New Template</option>
+                    </select>
+                    </div>
+                </div>
+                <div class="col-md-2 col-lg-2">
+  
+                <a class="btn btn-primary" *ngIf="!(formTemplateId== '0')" title="View Template Preview" (click)="receiptsDetails()"><i class="bi bi-eye"></i></a>
+                </div>
+                
+            </div>
       </div>
       <div class="row" *ngIf="loadDynamicForm>0">
         <div class="col-md-12">
-          <app-form-apply [fromadmin]="foradmin" [processId]="selectedEvent" ></app-form-apply>
+          <app-form-apply [fromadmin]="foradmin" [processId]="selectedEvent" [formTemplateId]="formTemplateId"></app-form-apply>
         </div>
       </div>
       <div class="py-3" *ngIf="documentCreateFrom>1">
@@ -102,6 +121,62 @@
     </div>
   </div>
 </div>
+<ng-template #sendfileModal id="sendfileModal" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mb-0" id="sendfileModalLabel">
+      {{ "Create template" |  langReplace }}
+    </h5>
+    
+     
+      <button type="button" class="btn-close " (click)="closeModal()" aria-label="Close"></button>
+    
+   
+  </div>
+  <div class="modal-body">
+    <app-template-config [templateProcessId]="selectedEvent" (closeGenerateLetterModal)="closeGenerateLetterModal($event)" (getFormTemplateList)="getFormTemplateList(selectedEvent)" [letterIdSend]="letterIdSend"></app-template-config>
+
+  </div>
+</ng-template>
+<ng-template #sendfileModalEdit id="sendfileModalEdit" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mb-0" id="sendfileModalEditLabel">
+      {{ "Edit template" |  langReplace }}
+    </h5>
+    
+     
+      <button type="button" class="btn-close " (click)="closeModal()" aria-label="Close"></button>
+    
+   
+  </div>
+  <div class="modal-body">
+    <app-template-config [templateProcessId]="selectedEvent" [letterIdSend]="formTemplateId" (closeGenerateLetterModal)="closeGenerateLetterModal($event)" (getFormTemplateList)="getFormTemplateList(selectedEvent)" (closeModalafterDelete)="closeModalafterDelete($event)"></app-template-config>
+
+  </div>
+</ng-template>
+<ng-template #receiptModal id="receiptModal" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mb-0" id="receiptModalLabel">
+      {{ "Preview" |  langReplace }}
+    </h5>
+    
+    <div class="d-flex align-items-center">
+      <a class="btn btn-primary btn-sm mx-2" (click)="editThisLetter(selectedEvent,formTemplateId)">Edit</a>
+      <a class="btn btn-danger btn-sm mx-2" (click)="deleteLetter(formTemplateId)">Delete</a>
+      <button type="button" class="btn-close " (click)="closeModal()" aria-label="Close"></button>
+    </div>
+     
+    
+   
+  </div>
+  <div class="modal-body">
+
+     <div class="border p-3">
+          <div id="templateData" [innerHtml]="letterPreview"></div>
+     </div>
+     
+  </div>
+</ng-template>
+
 <div class="loader" *ngIf="loading">
   <div class="loader-item"></div>
   <p>Loading...</p>

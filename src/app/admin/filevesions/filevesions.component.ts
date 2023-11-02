@@ -35,7 +35,7 @@ previewfileid:any;
  sortColumn: string = 'ticker';
  
  tablecollist=[
-   {"name":"Document No","cname":"fileRefNo","sortable":false },
+   {"name":"Document No.","cname":"fileRefNo","sortable":false },
      {"name":"Name","cname":"fileName","sortable":true },
     
    {"name":"Type","cname":"fileType","sortable":false },

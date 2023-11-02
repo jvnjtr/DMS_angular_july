@@ -28,7 +28,7 @@
                                     </label>
                                     <div class="control-item">
                                           <!--  -->
-                                          <select class="form-select" formControlName="deptId">
+                                          <select class="form-select" formControlName="deptId" id="deptId">
                                                 <option value="0">Select</option>
                                                 <option *ngFor="let dlist of departmentsList" [value]="dlist.deptId">{{dlist.departmentName}}</option>
                                           </select>
@@ -39,9 +39,9 @@
                                     <label Class="w-full text-md ">Role Name <span class="text-danger">*</span> </label>
                                     <div class="control-item">
                                           <!--  -->
-                                          <input type="text" formControlName="txtRoleName"
+                                          <input type="text" id="txtRoleName" formControlName="txtRoleName"
                                                 (keyup)="vldChkLst.blockSpecialCharacterAllPostion($event,false)"
-                                                minlength="2" maxlength="100"  class="form-control ">
+                                                minlength="3" maxlength="20"  class="form-control ">
                                     </div>
                               </div>
                               <!-- <div class="form-group" >

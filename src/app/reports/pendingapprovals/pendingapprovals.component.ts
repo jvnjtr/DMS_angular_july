@@ -61,7 +61,7 @@ export class PendingapprovalsComponent implements OnInit {
   userList: any;
   userFullName: any;
   tablecollist = [
-    { "name": "Document No", "cname": "fileRefNo", "sortable": true },
+    { "name": "Document No.", "cname": "fileRefNo", "sortable": true },
     { "name": "Folder Name", "cname": "folderName", "sortable": true },
     { "name": "Name", "cname": "fileName", "sortable": true },
     { "name": "Size", "cname": "fileSize", "sortable": true },

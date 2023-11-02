@@ -45,7 +45,8 @@
           "msgredirectwindowtype":"Select window type",
           "msgAuthname":"Authontication name can not be blank",
           "msgAuthpass":"Authontication password can not be blank",
-          "msgBlankspace":"Space not allowed in table name"
+          "msgBlankspace":"Space not allowed in table name",
+          "metaTemplate":"Select Meta Template"
         }
       }
     ]

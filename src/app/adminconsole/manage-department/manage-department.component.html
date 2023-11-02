@@ -5,6 +5,7 @@
 <div class="card">
       <div class="controls-section-header">
             <ul class="nav nav-tabs">
+                  
                   <li class="nav-item">
                         <a class="nav-link " aria-current="page"
                               routerLink="{{itemID > 0 ? '../../../adminconsole/manage-department':'../../adminconsole/manage-department'}}"
@@ -30,7 +31,7 @@
                                     <div class="control-item">
 
                                           <input type="text" class="form-control" id="txtDepartmentName" formControlName="txtDepartmentName" minlength="2"
-                                                maxlength="100" 
+                                                maxlength="20" 
                                                 (keyup)="vldChkLst.blockSpecialCharacterAllPostion($event,false)">
                                     </div>
                               </div>
@@ -38,7 +39,7 @@
                                     <label Class="w-full text-md ">{{"Alias Name" | langReplace}}</label>
                                     <div class="control-item">
 
-                                          <input type="text" class="form-control" formControlName="txtAliasName" minlength="2" maxlength="10"
+                                          <input type="text" class="form-control" id="txtAliasName" formControlName="txtAliasName" minlength="2" maxlength="20"
                                                 (keyup)="vldChkLst.blockSpecialCharacterAllPostion($event,false)">
                                     </div>
                               </div>

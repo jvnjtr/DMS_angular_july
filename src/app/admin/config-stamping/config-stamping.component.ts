@@ -304,7 +304,7 @@ export class ConfigStampingComponent implements OnInit {
 
             if (responseResult.status == 200) {
               this.loading = false;
-              console.log(responseResult.result);
+              //console.log(responseResult.result);
               if(responseResult.result){
                 this.configId=responseResult.result.configId;
                 this.selectedEvent=responseResult.result.stampEventId.toString();
@@ -507,9 +507,14 @@ export class ConfigStampingComponent implements OnInit {
           this.stampingImage = responseResult.result.fileName;
           this.showEventImage=responseResult.result.fileUrl;
           this.stampImageUploadStatus=1;
-        }
+        }else if(responseResult.status == '400'){
+          event.target.value = '';
+          Swal.fire({
 
-        else if ((responseResult.status == 500)) {
+            text: this.commonserveice.langReplace(responseResult.message),
+            icon: 'error',
+          })
+        } else if ((responseResult.status == 500)) {
           this.stampImageUploadStatus=0;
           this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message))
 

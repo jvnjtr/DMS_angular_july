@@ -5,12 +5,19 @@ import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './admin/auth.guard';
 import { WindowPrevComponent } from './window-prev/window-prev.component';
 import { CreateDocInputsComponent } from './create-doc-inputs/create-doc-inputs.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ForgotPasswordOtpComponent } from './forgot-password-otp/forgot-password-otp.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 // import { DynamicFormToPdfComponent } from './dynamic-form-to-pdf/dynamic-form-to-pdf.component';
 
 
 const routes: Routes = [
 {path: '', pathMatch: 'full', redirectTo: '/login'},
 {path:'login',component: LoginComponent},
+{path:'forgotPassword',component: ForgotPasswordComponent},
+{path:'forgotPasswordOtp',component: ForgotPasswordOtpComponent},
+{path:'forgotPasswordOtp/:id',component: ForgotPasswordOtpComponent},
+{path:'resetPassword/:id',component: ResetPasswordComponent},
 // {path:'configuraion',component: ConfigurationComponent},
 {path:'windowPrev/:id',component: WindowPrevComponent},
 {path:'createdocument/:id',component: CreateDocInputsComponent},

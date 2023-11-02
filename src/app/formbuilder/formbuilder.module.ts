@@ -26,6 +26,8 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
 import { FormApplyComponent } from './form-apply/form-apply.component';
 import { PreviewFormApplyComponent } from './preview-form-apply/preview-form-apply.component';
 import { DynamicformspreviewComponent } from './dynamicformspreview/dynamicformspreview.component';
+import { TemplateConfigComponent } from './template-config/template-config.component';
+import { ViewTemplateConfigComponent } from './view-template-config/view-template-config.component';
 // import { CkeditornewComponent } from './ckeditornew/ckeditornew.component';
 
 @NgModule({
@@ -42,7 +44,9 @@ import { DynamicformspreviewComponent } from './dynamicformspreview/dynamicforms
     CkeditornewComponent,
     FormApplyComponent,
     PreviewFormApplyComponent,
-    DynamicformspreviewComponent
+    DynamicformspreviewComponent,
+    TemplateConfigComponent,
+    ViewTemplateConfigComponent
   ],
   imports: [
     CommonModule,
@@ -61,6 +65,7 @@ import { DynamicformspreviewComponent } from './dynamicformspreview/dynamicforms
   ],
   exports: [
     FormApplyComponent,
+    TemplateConfigComponent
     // PreviewFormApplyComponent
   ],
 

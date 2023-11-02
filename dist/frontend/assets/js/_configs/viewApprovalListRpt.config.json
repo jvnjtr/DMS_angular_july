@@ -4,7 +4,7 @@
         "tabList":[
         
          
-          {"tabName":"View","tabUrl":"../searchreport","tabClass":"active add d-none"}
+          {"tabName":"View","tabUrl":"../pendingapprovals","tabClass":"active add d-none"}
                   
                   ],
         "utils":[

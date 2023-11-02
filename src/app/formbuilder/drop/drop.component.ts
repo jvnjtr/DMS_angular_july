@@ -5,6 +5,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CommonServicesService } from 'src/app/services/common-services.service';
+import { CommonconfigService } from 'src/app/services/commonconfig.service';
 import { DropService } from 'src/app/services/drop.service';
 import { environment } from 'src/environments/environment';
 import { ManageformconfigService } from 'src/app/services/manageformconfig.service';
@@ -55,7 +56,8 @@ export class DropComponent implements OnInit {
   getLanguageList: any = [];
   addMoreArrHeadingDetails: any = [];
   //For textbox
-  showInputs: any;;
+  showInputs: any;
+  allowMetaAdd: any=false;
 
   addmoreCtrlId: any;
   status: any = false;
@@ -63,6 +65,7 @@ export class DropComponent implements OnInit {
 
   arrColumnMergeDetails: any = [];
   langKey: any = 'en';
+  metaData: any = [];
   @Input() dynamicForm: FormGroup;
   @Input() dyformData: FormGroup;
   @Input() txtFormId: any;
@@ -70,6 +73,7 @@ export class DropComponent implements OnInit {
   @Input() nextbtnval: any;
   @Input() arrsecColumnDetails: any = [];
   @Input() tableExistsCheck: any;
+  @Input() metaTemplateId: any;
 
   defaultLan: any = 'en';
   origin = [
@@ -92,6 +96,7 @@ export class DropComponent implements OnInit {
 
     private router: ActivatedRoute,
     private commonService: CommonServicesService,
+    private CommonconfigService: CommonconfigService,
     private ManageformconfigService: ManageformconfigService,
     public vldChkLst: ValidatorchecklistService,
     private encDec: EncrypyDecrpyService,
@@ -102,7 +107,8 @@ export class DropComponent implements OnInit {
 
   ngOnInit(): void {
 
-
+    //console.log(this.metaTemplateId);
+    this.getMetaTemplateFieldDetail(this.metaTemplateId);
     this.sectionChange(this.getsectionId)
     this.getLanguagesitems();
     // this.addChangeEventForLabel();
@@ -310,6 +316,8 @@ export class DropComponent implements OnInit {
       ctrlMandatory: false,
       ctrlforViePage: false,
       ctrlforSearch: false,
+      ctrlformeta: false,
+      metaTemplateFieldId: '0',
       ctrlId: 'ctrl_' + this.datepipe.transform((new Date), 'MMddyyyyhhmmss'),
       ctrlName: 'ctrl_' + this.datepipe.transform((new Date), 'MMddyyyyhhmmss'),
       ctrlLabel: '',
@@ -851,37 +859,37 @@ export class DropComponent implements OnInit {
           "columnName": getcols,
           "condition": ctrlCCDConditions
         };
-        // this.commonService.tableColumnFetch(formParams).subscribe((resp: any) => {
-        //   let respData = resp.RESPONSE_DATA;
-        //   let respToken = resp.RESPONSE_TOKEN;
-        //   let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        //   if (respToken == verifyToken) {
-        //     let res: any = Buffer.from(respData, 'base64');
-        //     res = JSON.parse(res.toString());
-        //     if (res.status == 200) {
-        //       this.getdynamicTbldataList = res.result;
-        //       for (let j = 0; j < this.getdynamicTbldataList.length; j++) {
-        //         let ctrlCCStaticValue = this.getdynamicTbldataList[j][ctrlCCDValueColumnName];
-        //         let ctrlCCStaticName = this.getdynamicTbldataList[j][ctrlCCDTextColumnName];
-        //         optionsarry.push({ 'ctrlCCStaticValue': ctrlCCStaticValue, 'ctrlCCStaticName': ctrlCCStaticName })
-        //       }
-        //     }else if(res.status ==417){
-        //       Swal.fire({
-        //         icon: 'error',
-        //         text: this.commonService.langReplace(environment.invalidResponse),
-        //       });
-        //     }
-        //   } else {
-        //     Swal.fire({
-        //       icon: 'error',
-        //       text: this.commonService.langReplace(environment.invalidResponse),
-        //     });
-        //   }
+        this.CommonconfigService.tableColumnFetch(formParams).subscribe((resp: any) => {
+          let respData = resp.RESPONSE_DATA;
+          let respToken = resp.RESPONSE_TOKEN;
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if (respToken == verifyToken) {
+            let res: any = Buffer.from(respData, 'base64');
+            res = JSON.parse(res.toString());
+            if (res.status == 200) {
+              this.getdynamicTbldataList = res.result;
+              for (let j = 0; j < this.getdynamicTbldataList.length; j++) {
+                let ctrlCCStaticValue = this.getdynamicTbldataList[j][ctrlCCDValueColumnName];
+                let ctrlCCStaticName = this.getdynamicTbldataList[j][ctrlCCDTextColumnName];
+                optionsarry.push({ 'ctrlCCStaticValue': ctrlCCStaticValue, 'ctrlCCStaticName': ctrlCCStaticName })
+              }
+            } else if (res.status == 417) {
+              Swal.fire({
+                icon: 'error',
+                text: this.commonService.langReplace(environment.invalidResponse),
+              });
+            }
+          } else {
+            Swal.fire({
+              icon: 'error',
+              text: this.commonService.langReplace(environment.invalidResponse),
+            });
+          }
 
-        //   // else{
-        //   ////  //console.log(res.messages)
-        //   //  }
-        // });
+          // else{
+          ////  //console.log(res.messages)
+          //  }
+        });
 
 
       }
@@ -983,37 +991,37 @@ export class DropComponent implements OnInit {
 
 
 
-            // this.commonService.tableColumnFetch(formParams).subscribe((resp: any) => {
-            //   let respData = resp.RESPONSE_DATA;
-            //   let respToken = resp.RESPONSE_TOKEN;
-            //   let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-            //   if (respToken == verifyToken) {
-            //     let res: any = Buffer.from(respData, 'base64');
-            //     res = JSON.parse(res.toString());
-            //     if (res.status == 200) {
-            //       this.adgetdynamicTbldataList = res.result;
-            //       for (let j = 0; j < this.adgetdynamicTbldataList.length; j++) {
-            //         let ctrlCCStaticValue = this.adgetdynamicTbldataList[j][ctrlCCDValueColumnName];
-            //         let ctrlCCStaticName = this.adgetdynamicTbldataList[j][ctrlCCDTextColumnName];
-            //         addmoreoptionsarry.push({ 'ctrlCCStaticValue': ctrlCCStaticValue, 'ctrlCCStaticName': ctrlCCStaticName })
-            //       }
-            //     }else if(res.status == 417){
-            //       Swal.fire({
-            //         icon: 'error',
-            //         text: this.commonService.langReplace(environment.invalidResponse),
-            //       });
-            //     }
-            //     else {
-            //       //  //console.log(res.messages)
-            //     }
-            //   } else {
-            //     Swal.fire({
-            //       icon: 'error',
-            //       text: this.commonService.langReplace(environment.invalidResponse),
-            //     });
-            //   }
+            this.CommonconfigService.tableColumnFetch(formParams).subscribe((resp: any) => {
+              let respData = resp.RESPONSE_DATA;
+              let respToken = resp.RESPONSE_TOKEN;
+              let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+              if (respToken == verifyToken) {
+                let res: any = Buffer.from(respData, 'base64');
+                res = JSON.parse(res.toString());
+                if (res.status == 200) {
+                  this.adgetdynamicTbldataList = res.result;
+                  for (let j = 0; j < this.adgetdynamicTbldataList.length; j++) {
+                    let ctrlCCStaticValue = this.adgetdynamicTbldataList[j][ctrlCCDValueColumnName];
+                    let ctrlCCStaticName = this.adgetdynamicTbldataList[j][ctrlCCDTextColumnName];
+                    addmoreoptionsarry.push({ 'ctrlCCStaticValue': ctrlCCStaticValue, 'ctrlCCStaticName': ctrlCCStaticName })
+                  }
+                } else if (res.status == 417) {
+                  Swal.fire({
+                    icon: 'error',
+                    text: this.commonService.langReplace(environment.invalidResponse),
+                  });
+                }
+                else {
+                  //  //console.log(res.messages)
+                }
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  text: this.commonService.langReplace(environment.invalidResponse),
+                });
+              }
 
-            // });
+            });
 
 
 
@@ -1082,37 +1090,37 @@ export class DropComponent implements OnInit {
           };
 
 
-          // this.commonService.tableColumnFetch(formParams).subscribe((resp: any) => {
-          //   let respData = resp.RESPONSE_DATA;
-          //   let respToken = resp.RESPONSE_TOKEN;
-          //   let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-          //   if (respToken == verifyToken) {
-          //     let res: any = Buffer.from(respData, 'base64');
-          //     res = JSON.parse(res.toString());
-          //     if (res.status == 200) {
-          //       this.getdynamicTbldataList = res.result;
-          //       for (let j of this.getdynamicTbldataList) {
-          //         let ctrlCCStaticValue = j[ctrlCCDValueColumnName];
-          //         let ctrlCCStaticName = j[ctrlCCDTextColumnName];
-          //         optionsarry.push("<option value=" + ctrlCCStaticValue + ">" + ctrlCCStaticName + "</option>")
-          //       }
-          //     }else if(res.status == 417){
-          //       Swal.fire({
-          //         icon: 'error',
-          //         text: this.commonService.langReplace(environment.invalidResponse),
-          //       });
-          //     }
-          //     // else{
-          //     ////  //console.log(res.messages)
-          //     //  }
-          //   } else {
-          //     Swal.fire({
-          //       icon: 'error',
-          //       text: this.commonService.langReplace(environment.invalidResponse),
-          //     });
-          //   }
+          this.CommonconfigService.tableColumnFetch(formParams).subscribe((resp: any) => {
+            let respData = resp.RESPONSE_DATA;
+            let respToken = resp.RESPONSE_TOKEN;
+            let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+            if (respToken == verifyToken) {
+              let res: any = Buffer.from(respData, 'base64');
+              res = JSON.parse(res.toString());
+              if (res.status == 200) {
+                this.getdynamicTbldataList = res.result;
+                for (let j of this.getdynamicTbldataList) {
+                  let ctrlCCStaticValue = j[ctrlCCDValueColumnName];
+                  let ctrlCCStaticName = j[ctrlCCDTextColumnName];
+                  optionsarry.push("<option value=" + ctrlCCStaticValue + ">" + ctrlCCStaticName + "</option>")
+                }
+              } else if (res.status == 417) {
+                Swal.fire({
+                  icon: 'error',
+                  text: this.commonService.langReplace(environment.invalidResponse),
+                });
+              }
+              // else{
+              ////  //console.log(res.messages)
+              //  }
+            } else {
+              Swal.fire({
+                icon: 'error',
+                text: this.commonService.langReplace(environment.invalidResponse),
+              });
+            }
 
-          // });
+          });
           setTimeout(() => {
             $("#" + selectid).parents('.question-box').find('.depend-fld-value').append(optionsarry);
           }, 2000);
@@ -1540,19 +1548,20 @@ export class DropComponent implements OnInit {
           let amiid = 0;
           //console.log(formCtrlDetails);
           if (formCtrlDetails.length > 0) {
-
-
             $('.dropzone').addClass('active')
 
 
             formCtrlDetails[0].formDetails.forEach((t: any) => {
               iid++;
+
               var fdtls: FormGroup = this.fb.group({
                 ctrlSlNo: t.ctrlSlNo || '',
                 ctrlTypeId: t.ctrlTypeId || '',
                 ctrlMandatory: t.ctrlMandatory || false,
                 ctrlforViePage: t.ctrlforViePage || false,
                 ctrlforSearch: t.ctrlforSearch || false,
+                ctrlformeta: t.ctrlformeta || false,
+                metaTemplateFieldId: t.metaTemplateFieldId || '0',
                 ctrlId: t.ctrlId || '',
                 ctrlName: t.ctrlName || '',
                 ctrlPlaceholder: t.ctrlPlaceholder || '',
@@ -1589,13 +1598,20 @@ export class DropComponent implements OnInit {
                 //  this.addmoreColumnMergeCtlDetils(this.itemindex-1).push(this.newaddmoreColumnMerge());
               });
               //console.log(t.tablecolDetails);
-              let z="attributeType_"+(iid - 1);
+              let z = "attributeType_" + (iid - 1);
               setTimeout(() => {
-                let selectIfElement:any =document.getElementById(z);
-                if(selectIfElement != null || selectIfElement != undefined){
+                let selectIfElement: any = document.getElementById(z);
+                if (selectIfElement != null || selectIfElement != undefined) {
                   selectIfElement.dispatchEvent(new Event("change"));
-             }
-             },400)
+                }
+              }, 400)
+              let m = "metaField_" + (iid - 1);
+              //console.log(m);
+              setTimeout(() => {
+                if (t.ctrlformeta == true) {
+                  document.getElementById(m)?.closest('.question-box')?.querySelector('.metaField')?.classList.remove('d-none');
+                }
+              }, 400)
 
               if (t.tablecolDetails != undefined) {
                 t.tablecolDetails.forEach((td: any) => {
@@ -2064,15 +2080,15 @@ export class DropComponent implements OnInit {
                       addmorecalculationDetails: this.fb.array([]),
                       addmorelanguageDetails: this.fb.array([])
                     });
-                    let amattributeType="amattributeType_"+(iid - 1)+"_"+(amiid-1);
+                    let amattributeType = "amattributeType_" + (iid - 1) + "_" + (amiid - 1);
                     setTimeout(() => {
-                   let selectIfElement:any =document.getElementById(amattributeType);
-                     if(selectIfElement != null || selectIfElement != undefined){
-                     selectIfElement.dispatchEvent(
-                       new Event("change")
-                     );
-                    }
-                  },1000);
+                      let selectIfElement: any = document.getElementById(amattributeType);
+                      if (selectIfElement != null || selectIfElement != undefined) {
+                        selectIfElement.dispatchEvent(
+                          new Event("change")
+                        );
+                      }
+                    }, 1000);
                     (fdtls.get("addmoreDetails") as FormArray).push(addmoredtls);
                     this.storeAddMoreCtrlDetails(amctrls.ctrlTypeId, t.ctrlId, amctrls.ctrlLabel, amctrls.ctrlId);
                     if (amctrls.addmoretablecolDetails != undefined) {
@@ -2463,6 +2479,15 @@ export class DropComponent implements OnInit {
     }
 
   }
+  showMetaField(evt: any) {
+    if (evt.target.checked) {
+      document.getElementById(evt.target.id)?.closest('.question-box')?.querySelector('.metaField')?.classList.remove('d-none');
+    }
+    else {
+      document.getElementById(evt.target.id)?.closest('.question-box')?.querySelector('.metaField')?.classList.add('d-none');
+    }
+
+  }
 
 
   getvalidationlist(attrval: any) {
@@ -2567,5 +2592,44 @@ export class DropComponent implements OnInit {
       delete this.arrColumnMergeDetails[ctrlIndex];
     }
 
+  }
+  getMetaTemplateFieldDetail(metaTemplateId: any) {
+    let formParams =
+    {
+      "metaTemplateId": metaTemplateId
+    };
+
+    this.CommonconfigService.getMetaTemplateFieldDetail(formParams).subscribe((resp: any) => {
+      let respData = resp.RESPONSE_DATA;
+      let respToken = resp.RESPONSE_TOKEN;
+      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+      if (respToken == verifyToken) {
+        let res: any = Buffer.from(respData, 'base64');
+        res = JSON.parse(res.toString());
+        // console.log(res);
+        if (res.status == 200) {
+          this.metaData = res.result;
+          //console.log(res.result.length)
+          if(res.result.length > 0){
+            this.allowMetaAdd=true;
+          }
+        } else if (res.status == 417) {
+          Swal.fire({
+            icon: 'error',
+            text: this.commonService.langReplace(environment.invalidResponse),
+          });
+        }
+        else {
+          console.log(res.messages)
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          text: this.commonService.langReplace(environment.invalidResponse),
+        });
+      }
+
+
+    });
   }
 }

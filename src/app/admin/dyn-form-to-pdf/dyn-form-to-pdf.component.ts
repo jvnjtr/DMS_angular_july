@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { HttpClient } from '@angular/common/http';
@@ -12,8 +12,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import * as CryptoJS from 'crypto-js';
 import { Buffer } from 'buffer';
-
+import { map } from 'rxjs/operators';
 import Swal from 'sweetalert2';
+import { CommonconfigService } from 'src/app/services/commonconfig.service';
+import { FormApplyComponent } from 'src/app/formbuilder/form-apply/form-apply.component';
 @Component({
   selector: 'app-dyn-form-to-pdf',
   templateUrl: './dyn-form-to-pdf.component.html',
@@ -23,6 +25,7 @@ export class DynFormToPdfComponent implements OnInit {
 
   folderid: any = '0';
   @Output("callfunction") callfunction: EventEmitter<any> = new EventEmitter();
+  @ViewChild(FormApplyComponent, { static: false }) formapplyItems: FormApplyComponent;
   txtDocuemntName: any = ''
   rdoDocuemntType: any = "1";
   pdfweriterURL: any;
@@ -105,13 +108,21 @@ export class DynFormToPdfComponent implements OnInit {
   authorityRoleId: any = 0;
   logedinRoleId: any;
   roleArr: any = [];
-
-
-
+  processId:any;
+  metaTemplateId:any;
+  mappedMeta:any=[];
+  fileUploadStatus: any = 0;
+  formlist: any = [];
+  loadDynamicForm: any;
+  foradmin: any = 'admin';
+  onlineServiceId: any;
+  fileUploadData:any=[];
+  createDoc:any;
   constructor(private route: Router,
     private httpClient: HttpClient,
     private uploadfiles: UploadfilesService,
     public commonserveice: CommonServicesService,
+    public commonConfig:CommonconfigService,
     public authService: AuthenticationService,
     public encDec: EncrypyDecrpyService,
     private router: ActivatedRoute,
@@ -142,19 +153,37 @@ export class DynFormToPdfComponent implements OnInit {
     this.viewMetaList()
     this.getFolders();
     let encSchemeId = this.router.snapshot.paramMap.get('id');
-    console.log(encSchemeId);
+    // console.log(encSchemeId);
     if (encSchemeId != "") {
       let schemeStr = this.encDec.decText(encSchemeId);
-      let schemeArr: any = schemeStr.split(':');
-      console.log(schemeArr);
+      let schemeArr: any = schemeStr.split('*');
+      //console.log(schemeArr);
       // let urldetails: any = schemeArr[0];
       // console.log(urldetails);
       this.txtFileName = schemeArr[0];
         this.filetype = schemeArr[2];
-
+        this.processId = schemeArr[3];
+        this.onlineServiceId = schemeArr[4];
+        this.mappedMeta = schemeArr[4];
+        //console.log(this.mappedMeta);
         let filepath: any = environment.tempurl + this.txtFileName;
 
-        this.loadDocPreview(this.filetype, filepath)
+        this.loadDocPreview(this.filetype, filepath);
+        // this.getFormWiseMetaTemplateName(this.processId);
+        this.viewDynFormList();
+        this.loadDynamicForm=1
+        this.fileUploadStatus = this.processId;
+        this.createDoc=this.processId;
+              let dynSchmCtrlParms = {
+                'intProcessId'       : this.processId,
+                'intOnlineServiceId' :this.onlineServiceId,
+                'sectionId'          :0,
+                'intProfileId'       :''
+              }
+              setTimeout(() => {
+               this.formapplyItems.loadDynamicCtrls(dynSchmCtrlParms);
+  
+              }, 5000)
     }
     //this.getFolderbased(this.folderid);
     //console.log(window.location.href)
@@ -265,6 +294,52 @@ export class DynFormToPdfComponent implements OnInit {
 
 
   }
+  getFormWiseMetaTemplateName(processId:any) {
+    let dataParam = {
+      "processId": processId,
+    };
+    this.commonConfig.getFormTemplateName(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+
+
+          if (responseResult.status == '200') {
+            //console.log(responseResult.result[0].metaTemplateId)
+            this.metaTemplateId = responseResult.result[0].metaTemplateId;
+            if(this.metaTemplateId>0){
+              this.selMeta=this.metaTemplateId;
+              this.getMetaType(this.selMeta);
+            }
+          }
+          else if (responseResult.status == 501) {
+
+            this.authService.directlogout();
+          }
+          else {
+            this.commonserveice.swalfire('error', this.commonserveice.langReplace(environment.somethingWrong))
+
+          }
+        }
+        else {
+
+          this.authService.directlogout();
+        }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+      }
+    })
+
+
+
+
+  }
   //\\ ======================== // get Folders // ======================== //\\
 
 
@@ -343,13 +418,8 @@ export class DynFormToPdfComponent implements OnInit {
           let responseResult = JSON.parse(res)
 
           if (responseResult.status == 200) {
-
-
             this.metalist = responseResult.result;
-
-
-
-
+            //console.log(this.metalist);
           }
           else if (responseResult.status == 501) {
 
@@ -374,7 +444,7 @@ export class DynFormToPdfComponent implements OnInit {
 
   //\\ ======================== // Get Mata Type // ======================== //\\
   getMetaType(metaId: any) {
-
+    
     this.metaDesable = true;
     this.getmetaTypeList = []
     let dataParam = {
@@ -396,17 +466,48 @@ export class DynFormToPdfComponent implements OnInit {
 
             let metaarrayList: any = [];
             metaarrayList = metalist[0].templateData;
-
+            let mappedMeta=JSON.parse(this.mappedMeta);
             for (let i = 0; i < metaarrayList.length; i++) {
               let obj: any = {};
               obj['metaId'] = metaarrayList[i].metaId;
               obj['labelName'] = metaarrayList[i].labelName;
               obj['metaType'] = metaarrayList[i].metaType;
-              obj['value'] = '';
+              if(mappedMeta.length>0){
+                for(let j=0;j<mappedMeta.length;j++){
+                  if(metaarrayList[i].metaId==mappedMeta[j].metaId){
+                    obj['value'] = mappedMeta[j].value; 
+                  }
+                }
+              }else{
+                obj['value'] = '';
+              }
+              
               this.getmetaTypeList.push(obj);
             }
-
-
+            console.log(this.getmetaTypeList);
+            
+            // let mappedMeta=this.mappedMeta;
+            // let getMeta=this.getmetaTypeList;
+            // let res=mappedMeta.map((item:any) => {
+            //   let temp=getMeta.find( (element:any)=> element.metaId === item.metaId)
+            //   if(temp.value){
+            //     item.value = temp.value;
+            //   }
+            //   return item;
+            // })
+            // console.log(res);
+            // let op = mappedMeta.map((e:any,i:any)=>{
+            //   let temp = getMeta.find((element:any)=> element.metaId === e.metaId)
+            //   if(temp.value) {
+            //     e.value = temp.value;
+            //   }
+            //   return e;
+            // })
+            // console.log(op);
+            // console.log(this.metaTemplateId);
+            // this.selMeta=this.metaTemplateId;
+            // let arr3 = this.mappedMeta.map((item:any, i:any) => Object.assign({}, item, this.getmetaTypeList[i]));
+            // console.log(arr3);
 
           }
           else if (responseResult.status == 501) {
@@ -473,7 +574,7 @@ export class DynFormToPdfComponent implements OnInit {
 
     else if ((this.rdoSetretention == 1) && (!this.vldChkLst.blankCheck(this.txtExpDate, this.commonserveice.langReplace("Please select the retention date"), 'expiryDate'))) { }
     else if (!this.vldChkLst.blankCheck(subject, this.commonserveice.langReplace(this.messaageslist.subject), 'txtSubject')) { }
-    else if (!this.vldChkLst.selectDropdown(templateid, this.commonserveice.langReplace(this.messaageslist.template), 'selMeta')) { }
+    // else if (!this.vldChkLst.selectDropdown(templateid, this.commonserveice.langReplace(this.messaageslist.template), 'selMeta')) { }
     else if (!this.metavalid()) { }
 
 
@@ -495,76 +596,79 @@ export class DynFormToPdfComponent implements OnInit {
         "indexing": fileindexing,
         "expiryDate": this.txtExpDate,
         "ocrLanguage": this.selOcrLang,
-        "filePermission": this.permissionlist
+        "filePermission": this.permissionlist,
+        "processId":this.processId,
+        "intOnlineServiceId": this.onlineServiceId,
 
       }
 
 
+      this.fileUploadData.push(uploadParams);
+      this.formapplyItems.doSchemeApply();
+      //this.loading = true;
+      
+      // this.uploadfiles.finaluploadFile(uploadParams).subscribe({
+      //   next: (response) => {
+      //     let respData = response.RESPONSE_DATA;
+      //     let respToken = response.RESPONSE_TOKEN;
+      //     //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
 
-      this.loading = true;
+      //     let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+      //     if (respToken == verifyToken) {
+      //       let res: any = Buffer.from(respData, 'base64');
+      //       let responseResult = JSON.parse(res)
 
-      this.uploadfiles.finaluploadFile(uploadParams).subscribe({
-        next: (response) => {
-          let respData = response.RESPONSE_DATA;
-          let respToken = response.RESPONSE_TOKEN;
-          //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
-
-          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-          if (respToken == verifyToken) {
-            let res: any = Buffer.from(respData, 'base64');
-            let responseResult = JSON.parse(res)
-
-            if (responseResult.status == 200) {
-
-
-
-              this.loading = false;
-              Swal.fire({
-
-                text: this.commonserveice.langReplace(this.messaageslist.successMsg),
-                icon: 'success',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: this.commonserveice.langReplace('Ok')
-              }).then((result) => {
-
-
-                this.resetform();
-                this.commonserveice.reloadpage()
-
-              })
+      //       if (responseResult.status == 200) {
 
 
 
+      //         this.loading = false;
+      //         Swal.fire({
 
-            }
-            else if (responseResult.status == 400) {
-              this.loading = false;
-              this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message))
+      //           text: this.commonserveice.langReplace(this.messaageslist.successMsg),
+      //           icon: 'success',
+      //           confirmButtonColor: '#3085d6',
+      //           confirmButtonText: this.commonserveice.langReplace('Ok')
+      //         }).then((result) => {
 
-            }
-            else if (responseResult.status == 500) {
-              this.loading = false;
-              this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message))
 
-            }
-            else if (responseResult.status == 501) {
+      //           this.resetform();
+      //           this.commonserveice.reloadpage()
 
-              this.authService.directlogout();
-            }
-            else {
-              this.loading = false;
-              //  this.authService.directlogout();
-            }
-          }
-          else {
-            this.loading = false;
-            this.authService.directlogout();
-          }
-        },
-        error: (msg) => {
-          this.authService.directlogout();
-        }
-      })
+      //         })
+
+
+
+
+      //       }
+      //       else if (responseResult.status == 400) {
+      //         this.loading = false;
+      //         this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message))
+
+      //       }
+      //       else if (responseResult.status == 500) {
+      //         this.loading = false;
+      //         this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message))
+
+      //       }
+      //       else if (responseResult.status == 501) {
+
+      //         this.authService.directlogout();
+      //       }
+      //       else {
+      //         this.loading = false;
+      //         //  this.authService.directlogout();
+      //       }
+      //     }
+      //     else {
+      //       this.loading = false;
+      //       this.authService.directlogout();
+      //     }
+      //   },
+      //   error: (msg) => {
+      //     this.authService.directlogout();
+      //   }
+      // })
 
 
 
@@ -786,5 +890,80 @@ export class DynFormToPdfComponent implements OnInit {
   getFOrwardAuthority(e: any) {
     this.authorityRoleId = e.target.value;
   }
+  showDynamicForm(processId: any) {
+    if (processId > 1) {
+      this.fileUploadStatus = 1;
+      this.loadDynamicForm = 1;
 
+    } else {
+      this.fileUploadStatus = 0;
+      this.loadDynamicForm = 0;
+
+    }
+
+  }
+  //\\ ======================== // get Dyn FOrm Name // ======================== //\\
+  viewDynFormList() {
+
+
+    let dataParam = {
+      "processId": this.processId,
+    };
+    this.commonserveice.viewDynFormList(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+
+          if (responseResult.status == 200) {
+
+
+            this.formlist = responseResult.result;
+
+
+
+
+          }
+          else if (responseResult.status == 501) {
+
+            this.authService.directlogout();
+          }
+        }
+        else {
+          this.loading = false;
+          this.authService.directlogout();
+        }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+      }
+    })
+
+
+
+  }
+  //\\ ======================== // Get Dyn FOrm Name // ======================== //\\
+  fileUploadSuccess(event:any){
+    if(event==200){
+      Swal.fire({
+                
+        text: this.commonserveice.langReplace('File Uploaded Successfully'),
+        icon: 'success',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: this.commonserveice.langReplace('Ok')
+      }).then((result) => {
+        
+       
+        this.resetform();
+        this.commonserveice.reloadpage()
+      })
+    }else{
+      
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace('Error in File Upload'))
+    }
+  }
 }

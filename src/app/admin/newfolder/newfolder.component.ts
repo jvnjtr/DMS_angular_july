@@ -767,8 +767,10 @@ crateFolder() {
 
    
     //  return specialChars.test(str);
-
-
+    if(/^\s/.test(foldername)){
+      foldername=foldername.trimStart();
+      //console.log(foldername);
+    }
     if (!this.vldChkLst.selectDropdown(parentfolder,this.commonserveice.langReplace(this.messaageslist.parentfolder),'parentFId')) {
      // document.getElementById('parentFId')?.focus();
     }
@@ -1005,7 +1007,8 @@ crateFolder() {
               // this.selDepartmentName= folderDetails[0].departmentId;
                this.txtDepartmentName=folderDetails[0].departmentName;
                this.selDepartmentName=folderDetails[0].departmentId ? folderDetails[0].departmentId : '0';
-      
+              // console.log(folderDetails[0]);
+              // this.selDepartmentName=2;
               let permissions = folderDetails[0].folderPermission;
               let permissiondata = permissions[0];
              
@@ -1230,14 +1233,17 @@ crateFolder() {
           
             if(responseResult.status == '200'){
               this.permissionlist=responseResult.result;
-          //  console.log(this.permissionlist)
+           console.log(this.permissionlist)
               if(this.permissionlist.length > 0){
                 this.folderSizeType=this.permissionlist[0].folderSizeType;
                 this.parentSizeinKb =this.permissionlist[0].parentSizeinKb;
                  this.childSizeInKb=this.permissionlist[0].childSizeInKb ;
         
         this.txtDepartmentName=this.permissionlist[0].departmentName;
-        this.selDepartmentName=this.permissionlist[0].departmentId ? this.permissionlist[0].departmentId : 'Select';
+        if(folderid>1){
+          this.selDepartmentName=this.permissionlist[0].departmentId ? this.permissionlist[0].departmentId : 'Select';
+        }
+        
                 let foldrpermissions:any=JSON.parse(this.permissionlist[0].folderPermission)
                 let rolewisepermissions=foldrpermissions[0].rolebased;
                 let userwisepermissions=foldrpermissions[0].userbased;

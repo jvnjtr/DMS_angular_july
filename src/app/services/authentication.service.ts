@@ -36,6 +36,38 @@ export class AuthenticationService {
     let loginResponse = this.http.post(serviceURL, reqData);
     return loginResponse;
   }
+  checkUserId(params:any): Observable<any> {
+    let requestParam = Buffer.from(JSON.stringify(params), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'manage_login/checkUserId';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    return loginResponse;
+  }
+  sendOtpToUserMail(params:any): Observable<any> {
+    let requestParam = Buffer.from(JSON.stringify(params), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'manage_login/sendOtpToUserMail';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    return loginResponse;
+  }
+  validateUserOtp(params:any): Observable<any> {
+    let requestParam = Buffer.from(JSON.stringify(params), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'manage_login/validateUserOtp';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    return loginResponse;
+  }
+  InvalidThisToken(params:any): Observable<any> {
+    let requestParam = Buffer.from(JSON.stringify(params), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'manage_login/InvalidThisToken';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    return loginResponse;
+  }
 
   public isLoggedIn() {
         return sessionStorage.getItem('ADMIN_SESSION') !== null;

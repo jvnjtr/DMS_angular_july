@@ -32,6 +32,19 @@ export class WebcommonservicesService {
 
   schemeApply(formParams:any):Observable<any>{
     let serviceURL = environment.serviceURL +'schemeApply';
+    // let serviceURL = environment.serviceURL +'fileUploadWithMeta';
+    let moduleResponse = this.http.post(serviceURL, formParams);
+    return moduleResponse;
+  }
+  schemeApplyFileInsert(formParams:any):Observable<any>{
+    // let serviceURL = environment.serviceURL +'schemeApply';
+    let serviceURL = environment.serviceURL +'fileUploadWithMeta';
+    let moduleResponse = this.http.post(serviceURL, formParams);
+    return moduleResponse;
+  }
+  schemeApplyEdit(formParams:any):Observable<any>{
+    // let serviceURL = environment.serviceURL +'schemeApply';
+    let serviceURL = environment.serviceURL +'fileUploadWithMetaEdit';
     let moduleResponse = this.http.post(serviceURL, formParams);
     return moduleResponse;
   }
@@ -72,6 +85,39 @@ export class WebcommonservicesService {
     let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
     let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
     let serviceURL = environment.serviceURL + 'formToPdfgeneration';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    return loginResponse;
+  }
+  getFormWiseTemplateList(formParams:any):Observable<any>{
+    // let serviceURL = environment.serviceURL +'applyForProcess';
+    // let moduleResponse = this.http.post(serviceURL, formParams);
+    // return moduleResponse;
+    let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'getFormWiseTemplateList';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    return loginResponse;
+  }
+  getTemplateDetail(formParams:any):Observable<any>{
+    // let serviceURL = environment.serviceURL +'applyForProcess';
+    // let moduleResponse = this.http.post(serviceURL, formParams);
+    // return moduleResponse;
+    let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'getTemplateDetail';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    return loginResponse;
+  }
+  getLetterData(formParams:any):Observable<any>{
+    // let serviceURL = environment.serviceURL +'applyForProcess';
+    // let moduleResponse = this.http.post(serviceURL, formParams);
+    // return moduleResponse;
+    let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'getLetterData';
     let loginResponse = this.http.post(serviceURL, reqData);
     return loginResponse;
   }

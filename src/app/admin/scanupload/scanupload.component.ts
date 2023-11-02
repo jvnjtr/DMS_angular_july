@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { UploadfilesService } from '../../services/uploadfiles.service';
@@ -11,6 +11,7 @@ import { EncrypyDecrpyService } from '../../services/encrypy-decrpy.service';
 import { ValidatorchecklistService } from '../../services/validatorchecklist.service';
 import {Buffer} from 'buffer';
 import { DomSanitizer } from '@angular/platform-browser';
+import { FormApplyComponent } from 'src/app/formbuilder/form-apply/form-apply.component';
 
 @Component({
   selector: 'app-scanupload',
@@ -24,6 +25,7 @@ export class ScanuploadComponent implements OnInit {
 scanfileeList:any=[];
   
  @Output("callfunction") callfunction:EventEmitter<any> = new EventEmitter();
+ @ViewChild(FormApplyComponent, { static: false }) formapplyItems: FormApplyComponent;
  title:any;
  tablist:any;
  utillist:any;
@@ -92,7 +94,12 @@ previewFile:any=false;
 
 scannerfolderid: any;
 loaduploadfile:any;
-
+processId:any='0';
+formlist:any=[];
+loadDynamicForm:any;
+foradmin:any='admin';
+fileUploadStatus:any=0;
+fileUploadData:any=[];
  //\\ ======================== // Variables // ======================== //\\
  constructor(
    private route: Router,
@@ -118,8 +125,8 @@ loaduploadfile:any;
    };
 
    this.loadconfig();
-
-   this.viewMetaList()
+   this.viewDynFormList()
+  //  this.viewMetaList()
    this.getFolderbased(this.folderid);
 
 
@@ -359,11 +366,24 @@ metavalid(){
    let tags=this.txtTags;
    let fileindexing=true;
    let templateid=this.selMeta;
+   let processId=this.processId;
    if((this.rdoSetretention == 1) && (!this.vldChkLst.blankCheck(this.txtExpDate,this.commonserveice.langReplace("Please select the retention date"),'expiryDate'))){} 
   
    else if(!this.vldChkLst.blankCheck(subject,this.commonserveice.langReplace(this.messaageslist.subject),'txtSubject')) { } 
-   else if(!this.vldChkLst.selectDropdown(templateid,this.commonserveice.langReplace(this.messaageslist.template),'selMeta')) { } 
-   else if(!this.metavalid()) { } 
+  //  else if(!this.vldChkLst.selectDropdown(templateid,this.commonserveice.langReplace(this.messaageslist.template),'selMeta')) { } 
+  else if (this.processId < 1) {
+    Swal.fire({
+
+      text: this.commonserveice.langReplace("Please Select Meta"),
+      icon: 'error',
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: this.commonserveice.langReplace('Ok')
+    }).then((result) => {
+      window.setTimeout(function () { 
+        $('#selDynForm').focus(); 
+    }, 200); 
+    })
+  }
   
    
    else{
@@ -371,12 +391,12 @@ metavalid(){
      let filelistlength:any=this.scanfileeList.length;
      let counter:any=0;
    
-for(let i=0;i<this.scanfileeList.length;i++){
+// for(let i=0;i<this.scanfileeList.length;i++){
 
 
     let uploadParams={
        "folderId":this.folderid,
-       "fileName":this.scanfileeList[i].fileName,
+       "fileName":this.scanfileeList[0].fileName,
        "subject":this.txtSubject,
        "templateId":this.selMeta,
        "meta":this.getmetaTypeList,
@@ -384,84 +404,85 @@ for(let i=0;i<this.scanfileeList.length;i++){
        "indexing":fileindexing,
        "expiryDate":this.txtExpDate,
        "ocrLanguage":this.selOcrLang,
-       "filePermission":this.permissionlist
-      
+       "filePermission":this.permissionlist,
+       "processId":processId,
      }
 
-   
-    this.loading=true;
+     this.fileUploadData.push(uploadParams);
+     this.formapplyItems.doSchemeApply();
+    // this.loading=true;
     
    // console.log(uploadParams)
-   this.uploadfiles.finaluploadFile(uploadParams).subscribe({
-    next: (response) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
+//    this.uploadfiles.finaluploadFile(uploadParams).subscribe({
+//     next: (response) => {
+//       let respData = response.RESPONSE_DATA;
+//       let respToken = response.RESPONSE_TOKEN;
+//       //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
 
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
+//       let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+//       if(respToken == verifyToken){
        
-      let res:any = Buffer.from(respData,'base64'); 
-      let responseResult = JSON.parse(res)
+//       let res:any = Buffer.from(respData,'base64'); 
+//       let responseResult = JSON.parse(res)
     
-      if (responseResult.status == 200) {
-        counter++
+//       if (responseResult.status == 200) {
+//         counter++
 
-        if(filelistlength == counter){
-   this.loading=false;
-        Swal.fire({
+//         if(filelistlength == counter){
+//    this.loading=false;
+//         Swal.fire({
             
-          text: this.commonserveice.langReplace(this.messaageslist.successMsg),
-          icon: 'success',
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: this.commonserveice.langReplace('Ok')
-        }).then((result) => {
+//           text: this.commonserveice.langReplace(this.messaageslist.successMsg),
+//           icon: 'success',
+//           confirmButtonColor: '#3085d6',
+//           confirmButtonText: this.commonserveice.langReplace('Ok')
+//         }).then((result) => {
           
          
-         let reData:any= this.folderid+':'+'0'
-          let encSchemeStr = this.encDec.encText(reData.toString());
-          this.route.navigate(['/admin/viewupload',encSchemeStr])
+//          let reData:any= this.folderid+':'+'0'
+//           let encSchemeStr = this.encDec.encText(reData.toString());
+//           this.route.navigate(['/admin/viewupload',encSchemeStr])
 
     
-        })
-        }
+//         })
+//         }
    
 
 
-       }
-       else if(responseResult.status==400){
+//        }
+//        else if(responseResult.status==400){
 
-        this.loading=false;
-        this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+//         this.loading=false;
+//         this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
       
-      }
-       else if(responseResult.status==500){
-        this.loading=false;
-        this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+//       }
+//        else if(responseResult.status==500){
+//         this.loading=false;
+//         this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
       
-      }
-      else if(responseResult.status==501){
+//       }
+//       else if(responseResult.status==501){
       
-        this.authService.directlogout();
-      }
-       else{
-        this.loading=false;
-        this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+//         this.authService.directlogout();
+//       }
+//        else{
+//         this.loading=false;
+//         this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
        
-       }
-      }
-      else{
-        this.loading = false;
-        this.authService.directlogout();
-      }
+//        }
+//       }
+//       else{
+//         this.loading = false;
+//         this.authService.directlogout();
+//       }
 
-    },
-    error: (msg) => {
-        this.authService.directlogout();
-   }
- })
+//     },
+//     error: (msg) => {
+//         this.authService.directlogout();
+//    }
+//  })
 
-}
+// }
 
  
    //   // txtFileNumber:any='';
@@ -799,6 +820,86 @@ clearScandata() {
   })
 
 }
+fileUploadSuccess(event:any){
+  if(event>0){
+    Swal.fire({
+              
+      text: this.commonserveice.langReplace(this.messaageslist.successMsg),
+      icon: 'success',
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: this.commonserveice.langReplace('Ok')
+    }).then((result) => {
+      
+     
+     let reData:any= this.folderid+':'+'0'
+      
+      let encSchemeStr = this.encDec.encText(reData.toString());
+     // this.route.navigate(['/admin/configuration/formPreview',encSchemeStr]);
+  
+      this.route.navigate(['/admin/viewupload',encSchemeStr])
+
+  
+    this.resetform();
+    })
+  }else{
+    
+    this.commonserveice.swalfire('error',this.commonserveice.langReplace('Error in File Upload'))
+  }
+}
+showDynamicForm(processId:any){
+  if(processId>1){
+    this.fileUploadStatus=1;
+    this.loadDynamicForm=1;
+   
+  }else{
+    this.fileUploadStatus=0;
+    this.loadDynamicForm=0;
+    
+  }
+  
+}
+metaSubmit(){
+  this.formapplyItems.doSchemeApply();
+}
+viewDynFormList(){
+
+ 
+  let dataParam = {
+    "processId": ''
+    };
+    this.commonserveice.viewDynFormList(dataParam).subscribe({
+      next: (response) => {    let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+      
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if(respToken == verifyToken){
+          let res:any = Buffer.from(respData,'base64'); 
+          let responseResult = JSON.parse(res)
+         
+          if (responseResult.status == 200) {
+      
+            
+         this.formlist = responseResult.result;
 
 
+ 
+    
+          }
+          else if(responseResult.status==501){
+            
+            this.authService.directlogout();
+          }
+        }
+        else{
+          this.loading = false;
+          this.authService.directlogout();
+        }},
+      error: (msg) => {
+        this.authService.directlogout();
+     }
+   })
+
+
+
+}
 }

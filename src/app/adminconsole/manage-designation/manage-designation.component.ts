@@ -96,23 +96,23 @@ export class ManageDesignationComponent {
     let txtAliasName = this.manage_designation.value.txtAliasName;
 
 
-    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtDesignationName, `Designation Name Cannot be Blank!`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtDesignationName, `Designation Name Cannot be Blank!`,'txtDesignationName'))) {
       errFlag = 1;
     }
 
-    if ((errFlag == 0) && (!this.vldChkLst.minLength(txtDesignationName, 2, `Designation Name`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.minLength(txtDesignationName, 2, `Designation Name`,'txtDesignationName'))) {
       errFlag = 1;
     }
 
-    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtDesignationName, 100, `Designation Name`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtDesignationName, 100, `Designation Name`,'txtDesignationName'))) {
       errFlag = 1;
     }
 
-    if ((errFlag == 0) && (!this.vldChkLst.minLength(txtAliasName, 2, `Alias Name`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.minLength(txtAliasName, 2, `Alias Name`,'txtAliasName'))) {
       errFlag = 1;
     }
 
-    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtAliasName, 10, `Alias Name`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtAliasName, 10, `Alias Name`,'txtAliasName'))) {
       errFlag = 1;
     }
 

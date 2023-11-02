@@ -14,7 +14,7 @@
             "errorMsg":"Error in database",
             "warningtype":"print",
             "chooseAction":"Choose action events for selected authority",
-            "eventConfirm":"Event configured successfully Click submit button for final submission",
+            "eventConfirm":"Event configured successfully, Click submit button for final submission",
             "timeValid":"Enter timeline in days"
           }
          

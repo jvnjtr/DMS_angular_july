@@ -100,15 +100,15 @@ export class ManageGroupsComponent {
     let txtAliasName = this.manage_groups.value.txtAliasName;
 
 
-    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtGroupName, `Group Name Cannot be Blank!`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtGroupName, `Group Name Cannot be Blank!`,'txtGroupName'))) {
       errFlag = 1;
     }
 
-    if ((errFlag == 0) && (!this.vldChkLst.minLength(txtGroupName, 2, `Group Name`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.minLength(txtGroupName, 2, `Group Name`,'txtGroupName'))) {
       errFlag = 1;
     }
 
-    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtGroupName, 100, `Group Name`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtGroupName, 100, `Group Name`,'txtGroupName'))) {
       errFlag = 1;
     }
 

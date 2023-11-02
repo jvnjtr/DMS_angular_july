@@ -20,28 +20,17 @@
         <div class="card-body">
             <div class="controls-section">
                 <div class="row">
-                    <label class="col-md-4 col-lg-3">* {{"Template Name"| langReplace}} </label>
+                    <label class="col-md-4 col-lg-3">* {{"Meta Paired Name"| langReplace}} </label>
                     <div class="col-md-6 col-lg-4">
                         <div class="form-group">
-                            <input type="text" class="form-control" id="txtFieldName" [(ngModel)]="txtFieldName">
+                            <input type="text" class="form-control" id="txtFieldName" [(ngModel)]="txtFieldName"  (keypress)="vldChkLst.blockSpecialCharacterAllPostion($event)" maxlength="30">
 
                         </div>
                     </div>
                 </div>
+                
                 <div class="row">
-                    <label class="col-md-4 col-lg-3">* {{"Description"| langReplace}} </label>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="form-group">
-                            <textarea class="form-control" id="txtFieldDesc" rows="3" cols="3"
-                                [(ngModel)]="txtFieldDesc">
-
-                                                    </textarea>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <label class="col-md-4 col-lg-3">* {{"Meta Details"| langReplace}} </label>
+                    <label class="col-md-4 col-lg-3">* {{"Meta Configuration"| langReplace}} </label>
                     <div class="col-md-6 col-lg-6">
                         <div class="form-group">
 
@@ -49,29 +38,59 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>Label *</th>
-                                            <th>Type *</th>
+                                            <th>Form *</th>
+                                            <th>Field *</th>
                                             <th width="80px">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <ng-container>
+                                        <ng-container *ngIf="metaid==''">
                                             <tr *ngFor="let templetList of templateArray;let i=index">
                                                 <td>{{templetList.templatelabel}}</td>
                                                 <td>
-                                                    <span *ngIf="templetList.labeltype==1">String</span>
+                                                    {{templetList.labeltype}}
+                                                    <!-- <span *ngIf="templetList.labeltype==1">String</span>
                                                     <span *ngIf="templetList.labeltype==2">Date</span>
-                                                    <span *ngIf="templetList.labeltype==3">Integer</span>
+                                                    <span *ngIf="templetList.labeltype==3">Integer</span> -->
                                                 </td>
                                                 <td><a class="text-danger px-2" (click)="removeSectionval(i)"><i
                                                             class="bi bi-trash"></i></a></td>
                                             </tr>
                                         </ng-container>
-
-                                        <tr>
+                                        <ng-container *ngIf="metaid>0">
+                                            <tr *ngFor="let templetList of templateArray;let i=index">
+                                                <td>{{templetList.templatelabelDisplay}}</td>
+                                                <td>
+                                                    {{templetList.labeltypeDisplay}}
+                                                    <!-- <span *ngIf="templetList.labeltype==1">String</span>
+                                                    <span *ngIf="templetList.labeltype==2">Date</span>
+                                                    <span *ngIf="templetList.labeltype==3">Integer</span> -->
+                                                </td>
+                                                <td><a class="text-danger px-2" (click)="removeSectionval(i)"><i
+                                                            class="bi bi-trash"></i></a></td>
+                                            </tr>
+                                        </ng-container>
+                                        <tr id="addMoreTr">
+                                            <td>
+                                                <select id="selectedItems" class="form-select" [(ngModel)]="formId" (change)="getFormFieldList(formId)">
+                                                    <option value="0">Select</option>
+                                                    <option *ngFor="let item of nameList" [id]="item.vchProcessName" [value]="item.intProcessId">{{item.vchProcessName}}</option>
+                                                   
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class="form-select" id="selMetaType" [(ngModel)]="fieldId">
+                                                    <option value="0"> {{"Select"| langReplace}} </option>
+                                                    <option *ngFor="let item of fieldList" [id]="item.ctrlLabel" [value]="item.ctrlId">{{item.ctrlLabel}}</option>
+                                                </select>
+                                            </td>
+                                            <td> <a class="btn btn-info px-2" href="javascript:void(0)"
+                                                    (click)="addMetaVals()"><i class="icon-plus-solid"></i></a></td>
+                                        </tr>
+                                        <!-- <tr>
                                             <td>
                                                 <input type="text" id="txtTypeLabel" [(ngModel)]="txtTypeLabel"
-                                                    class="form-control">
+                                                    class="form-control" (keypress)="vldChkLst.isAlphaNumeric($event)" maxlength="30">
                                             </td>
                                             <td>
                                                 <select class="form-select" id="selMetaType" [(ngModel)]="selMetaType">
@@ -83,7 +102,7 @@
                                             </td>
                                             <td> <a class="btn btn-info px-2" href="javascript:void(0)"
                                                     (click)="addMetaVals()"><i class="icon-plus-solid"></i></a></td>
-                                        </tr>
+                                        </tr> -->
                                     </tbody>
                                 </table>
                             </div>
@@ -91,6 +110,33 @@
 
 
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-4 col-lg-3">* {{"Select Department"| langReplace}} </label>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <select id="selectedDepartment" class="form-select" [(ngModel)]="departmentId" (change)="getRole(departmentId)">
+                                <option value="0">Select</option>
+                                <option *ngFor="let item of departmentsList" [value]="item.deptId">{{item.departmentName}}</option>
+                               
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="departmentId>0">
+                    <label class="col-md-4 col-lg-3">* {{"Select Role"| langReplace}} </label>
+                    <div class="col-md-6 col-lg-4">
+                        
+                            <div class="form-check" *ngFor="let roles of rolelist;let i=index;" id="rolerow_{{i}}">
+                                <input class="form-check-input chkrole" [checked]="roles.checked"
+                                    (change)="rolechange($event,i,roles.roleId)"
+                                    type="checkbox" id="chkPerRole_{{roles.roleId}}">
+                                <label class="form-check-label chkrole" for="chkPerRole_{{roles.roleId}}">
+                                    {{roles.roleName}}
+                                </label>
+                            </div>
                     </div>
                 </div>
                 <div class="row form-group">
@@ -104,7 +150,12 @@
 
 
                     </div>
+                    <!-- <pre>
+                        {{formDetail | json}}
+                      </pre>  -->
                 </div>
+                
+
                 <!-- <ngx-dropzone-preview *ngFor="let f of files_dropped" [removable]="true" (removed)="onRemove(f)">
                                   <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
                                 </ngx-dropzone-preview> -->

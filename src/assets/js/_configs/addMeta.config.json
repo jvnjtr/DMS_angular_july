@@ -19,6 +19,7 @@
           "errorMsg":"Error in Meta creation",
           "fromname":"Please Select Form Name",
           "metaname":"Please Enter Meta Name",
+          "department":"Please Select Department",
           "metadesc":"Please Enter Meta Description",
            "metaType":"Meta Type",
            "templatelabel":"Enter Template Label",

@@ -58,7 +58,7 @@
         </div>
         <div class="d-flex align-items-center flex-wrap">
           <div class="d-flex align-items-center me-2 ">
-            {{"Display"| langReplace}}  &nbsp;
+            {{"Per Page"| langReplace}}  &nbsp;
             <select class="form-select width-90" (change)="onTableSizeChange($event)">
               <option *ngFor="let size of pageSizes" [ngValue]="size">
                 {{ size }}
@@ -111,7 +111,7 @@
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th width="50px">{{"Sl No"| langReplace}} </th>
+                  <th width="50px">{{"Sl No."| langReplace}} </th>
                   <th *ngFor="let flist of tablecollist">
                     <i *ngIf="flist.sortable" (click)="commonserveice.onSortClick(flist.cname, $event,ffdetailsArr)"
                       class="my-icon bi bi-arrow-up"></i>
@@ -512,7 +512,7 @@
         </a>
       </li>
 
-      <li *ngIf="checkinCheckoutAllow">
+      <li *ngIf="checkinCheckoutAllow && filemocetofolder">
         <a class="nav-item nav-link tab-link" href="javascript:void(0)" (click)="
             moveFile(
               selectedfileid,

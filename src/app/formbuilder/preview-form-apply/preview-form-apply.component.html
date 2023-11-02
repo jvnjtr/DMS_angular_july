@@ -1,7 +1,18 @@
 <div class="bg-white previewSection">
   <div #previewFormDetailForPdf id="mydynamicform">
+    <div class="form-group row d-none">
+      <label class="col-md-4 col-lg-2">* Form Template</label>
+      <div class="col-md-8 col-lg-4">
+          <select class="form-select" [(ngModel)]="formTemplateId" (change)="getTemplateDetail(formTemplateId)">
+              <option value="0" disabled selected>--Select--</option>
+              <option *ngFor="let mNames of templateList" [value]="mNames.intLetterConfigId">{{
+                mNames.vchLetterName }}</option>
+          </select>
+      </div>
+  </div>
+  <div *ngIf="showTemplateDataDiv" class="border rounded p-3" id="templateData" [innerHtml]="generatedLetter"></div>
   <!-- <h4 class="p-3 mb-2 webheading" [ngClass]="{'d-none':fromadmin == 'admin'}" >Preview of {{formName}}</h4> -->
-  <div *ngIf="sectionwise" class="accordion" id="accordionExample"> <!-- section Wise -->
+  <div *ngIf="sectionwise" class="accordion d-none" id="accordionExample"> <!-- section Wise -->
 
 
     <div class="accordion-item" *ngFor="let dynPrvKeys of dynamicCtrlPreviewKeys; let i = index">
@@ -157,7 +168,7 @@
     </div>
   </div>
 
-  <div *ngIf="!sectionwise"> <!-- without section -->
+  <div *ngIf="!sectionwise" class="d-none"> <!-- without section -->
     <div class="dynamic-ctrls" *ngFor="let dynPrvKeys of dynamicCtrlPreviewKeys; let i = index">
       <div class="dynGridCls"
         [ngClass]="{'onegrid':gridtype == 1, 'twogrid': gridtype == 2, 'threeGrid':gridtype == 3 , 'fullwidthSection':dynPrvForm.ctrlTypeId==10 || dynPrvForm.ctrlTypeId==8 || dynPrvForm.ctrlTypeId==12}"

@@ -20,6 +20,11 @@ import { CommonPipeModule } from './common-pipe/common-pipe.module';
 import { CreateDocInputsComponent } from './create-doc-inputs/create-doc-inputs.component';
 import { NgxTagsInputModule } from 'ngx-tags-input';
 import { DynamicFormToPdfComponent } from './dynamic-form-to-pdf/dynamic-form-to-pdf.component';
+import { AutoFocus } from './auto-focus';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ForgotPasswordOtpComponent } from './forgot-password-otp/forgot-password-otp.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { FormbuilderModule } from './formbuilder/formbuilder.module';
 
 
 
@@ -38,7 +43,11 @@ import { DynamicFormToPdfComponent } from './dynamic-form-to-pdf/dynamic-form-to
     SortableHeaderDirective,
     WindowPrevComponent,
     CreateDocInputsComponent,
-    DynamicFormToPdfComponent
+    DynamicFormToPdfComponent,
+    AutoFocus,
+    ForgotPasswordComponent,
+    ForgotPasswordOtpComponent,
+    ResetPasswordComponent
    
   ],
   imports: [
@@ -51,7 +60,8 @@ import { DynamicFormToPdfComponent } from './dynamic-form-to-pdf/dynamic-form-to
     NgbModule,
     NgxDatatableModule, 
     NgxTagsInputModule,
-    CommonPipeModule
+    CommonPipeModule,
+    FormbuilderModule
 
   ],
   providers: [LangReplacePipe,{

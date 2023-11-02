@@ -37,6 +37,11 @@ export class CommonconfigService {
     let moduleResponse = this.http.post(serviceURL, null);
     return moduleResponse;
   }
+  public getMetaTemplateList(): Observable<any> {
+    let serviceURL = environment.serviceURL + "getMetaTemplateList";
+    let moduleResponse = this.http.post(serviceURL, null);
+    return moduleResponse;
+  }
 
   public getModules() {
     let serviceURL = environment.serviceURL + "getmodules";
@@ -44,10 +49,49 @@ export class CommonconfigService {
     return moduleResponse;
   }
 
-  public getForms(): Observable<any>  {
-    let serviceURL = environment.serviceURL + "getForms";
-    let moduleResponse = this.http.post(serviceURL, null);
-    return moduleResponse;
+  public getForms(formData : any): Observable<any>  {
+    // let serviceURL = environment.serviceURL + "getForms";
+    // let moduleResponse = this.http.post(serviceURL, null);
+    // return moduleResponse;
+    let requestParam =Buffer.from(JSON.stringify(formData), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'getForms';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    return loginResponse;
+  }
+  public getFormFieldList(formData : any): Observable<any>  {
+    // let serviceURL = environment.serviceURL + "getForms";
+    // let moduleResponse = this.http.post(serviceURL, null);
+    // return moduleResponse;
+    let requestParam =Buffer.from(JSON.stringify(formData), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'getFormFieldList';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    return loginResponse;
+  }
+  public getFormTemplateName(formData : any): Observable<any>  {
+    // let serviceURL = environment.serviceURL + "getForms";
+    // let moduleResponse = this.http.post(serviceURL, null);
+    // return moduleResponse;
+    let requestParam =Buffer.from(JSON.stringify(formData), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'getFormTemplateName';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    return loginResponse;
+  }
+  public getMetaTemplateFieldDetail(formData : any): Observable<any>  {
+    // let serviceURL = environment.serviceURL + "getForms";
+    // let moduleResponse = this.http.post(serviceURL, null);
+    // return moduleResponse;
+    let requestParam =Buffer.from(JSON.stringify(formData), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'getMetaTemplateFieldDetail';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    return loginResponse;
   }
   
   public getallFormName(formData : any): Observable<any> {

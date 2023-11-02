@@ -266,7 +266,7 @@ export class ValidatorchecklistService {
       }
       return true;
   }
-
+  
   minLength(elmVal:any,fldLngth:any, msg:any,elmId:any="")
   {
    
@@ -1512,8 +1512,29 @@ export class ValidatorchecklistService {
     return true;
 
   }
+  isAlphaNumericNotSpace(event:any){
+    //console.log(event);
+    const charCode2 = (event.which) ? event.which : event.keyCode
+    if(charCode2==32){
+      return false;
+    }
+    if (charCode2 > 32 && (charCode2 < 65 || charCode2 > 90) && (charCode2 < 97 || charCode2 > 122) && (charCode2 > 31 && (charCode2 < 48 || charCode2 > 57) )) {
+        return false;
+    }
 
+    return true;
 
+  }
+
+   ischardot(event:any){
+    let val=event.target.value;
+    const regex=/[a-zA-Z\.\,\s]+/;
+    if(regex.test(val)){
+      return true;
+    }else{
+      return false;
+    }
+   }
   isAlphaNumericDynamic(event:any,blockSpecialChars:any){
       let isshift:any=event.shiftKey;
       const charCode2 = (event.which) ? event.which : event.keyCode

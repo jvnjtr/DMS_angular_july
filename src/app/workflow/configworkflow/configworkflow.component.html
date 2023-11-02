@@ -85,7 +85,7 @@
                   <a
                     class="btn btn-danger"  *ngIf="roleId == 1"
                     (click)="resetform()"
-                    > {{"Reset"| langReplace}}</a
+                    > {{"Cancel"| langReplace}}</a
                   >
                 </div>
               </div>
@@ -192,9 +192,10 @@
                               type="text"
                               name="txtTimeLine"
                               (keypress)="vldChkLst.isNumberKey($event)"
+                              (keyup)="vldChkLst.blockSpecialCharacterAllPostion($event,false)"
                               id="txtTimeLine"
                               class="form-control"
-                              autocomplete="off"
+                              autocomplete="off" maxlength="2"
                             />
                             <div class="input-group-text"> {{"Days"| langReplace}} </div>
                           </div>

@@ -11,7 +11,7 @@ import * as CryptoJS from 'crypto-js';
 import Drawflow from 'drawflow';
 import { CommonServicesService } from '../../services/common-services.service';
 import { AuthenticationService } from '../../services/authentication.service';
-import {Buffer} from 'buffer';
+import { Buffer } from 'buffer';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -21,10 +21,10 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class ConfigworkflowComponent implements OnInit {
 
-/// ------------Variables------------- ///
-@ViewChild('sendMsgModal') sendMsgModal: ElementRef;
-  @Input() folderid:any;
-  folderName:any;
+  /// ------------Variables------------- ///
+  @ViewChild('sendMsgModal') sendMsgModal: ElementRef;
+  @Input() folderid: any;
+  folderName: any;
   public loading = false;
   title: any;
   tablist: any;
@@ -67,26 +67,26 @@ export class ConfigworkflowComponent implements OnInit {
 
 
   dropdownSettings: any = {};
-  arrAllFormDetails:any={};
-  arrAllLabelParms:any=[];
-  showConditionStatus:any=2;
-  allConditions:any;
+  arrAllFormDetails: any = {};
+  arrAllLabelParms: any = [];
+  showConditionStatus: any = 2;
+  allConditions: any;
 
- desgId:any;
-roleId:any;
+  desgId: any;
+  roleId: any;
 
 
-msgclickedEvent: any = '';
-checkedMailSms: any = '';
-mailConigDetails: any = '';
+  msgclickedEvent: any = '';
+  checkedMailSms: any = '';
+  mailConigDetails: any = '';
   smsConfigDetails: any = '';
   whatsappConfigDetails: any = '';
   messageDataToBind: any;
-/// ------------Variables------------- ///
+  /// ------------Variables------------- ///
 
 
 
-  constructor( private route: Router,
+  constructor(private route: Router,
     private httpClient: HttpClient,
     private workFlowServices: WorkflowService,
     private router: ActivatedRoute,
@@ -95,11 +95,11 @@ mailConigDetails: any = '';
     private encDec: EncrypyDecrpyService,
     public authService: AuthenticationService,
     public vldChkLst: ValidatorchecklistService,
-  public modalService:NgbModal
-  
-  ) { 
+    public modalService: NgbModal
 
- 
+  ) {
+
+
     this.sessiontoken = sessionStorage.getItem('ADMIN_SESSION');
     let SeetionParsed = JSON.parse(CryptoJS.AES.decrypt(this.sessiontoken, environment.apiHashingKey).toString(CryptoJS.enc.Utf8));
     this.userId = SeetionParsed.USER_ID;
@@ -128,12 +128,14 @@ mailConigDetails: any = '';
     this.editor.curvature = 0;
     this.editor.line_path = 2;
     this.editor.start();
-  
-    const workFlowParms={  'intProcessId': this.txtFormId,
-    'intOnlineServiceId' :0,
-    'sectionId'          :0,
-    'intProfileId'        :0}; 
-    
+
+    const workFlowParms = {
+      'intProcessId': this.txtFormId,
+      'intOnlineServiceId': 0,
+      'sectionId': 0,
+      'intProfileId': 0
+    };
+
     const elements = document.getElementsByClassName('drag-drawflow');
     for (let i = 0; i < elements.length; i++) {
       elements[i].addEventListener('touchend', this.drop, false);
@@ -141,14 +143,14 @@ mailConigDetails: any = '';
       elements[i].addEventListener('touchstart', this.drag, false);
     }
 
-    this.sessiontoken = sessionStorage.getItem('ADMIN_SESSION'); 
+    this.sessiontoken = sessionStorage.getItem('ADMIN_SESSION');
 
     // let SeetionParsed =JSON.parse(this.sessiontoken).toString(); 
-    let SeetionParsed =JSON.parse(CryptoJS.AES.decrypt(this.sessiontoken, environment.apiHashingKey).toString(CryptoJS.enc.Utf8)); 
-   
-     this.desgId=SeetionParsed.USER_ID;
-     this.roleId=SeetionParsed.ROLE_ID;
-    
+    let SeetionParsed = JSON.parse(CryptoJS.AES.decrypt(this.sessiontoken, environment.apiHashingKey).toString(CryptoJS.enc.Utf8));
+
+    this.desgId = SeetionParsed.USER_ID;
+    this.roleId = SeetionParsed.ROLE_ID;
+
 
 
 
@@ -157,8 +159,8 @@ mailConigDetails: any = '';
     this.fillCanvasWorkflow(this.folderid);
     this.loadMessageEngine();
     /************************* */
-   
-  
+
+
     this.dropdownSettings = {
       singleSelection: false,
       idField: 'item_id',
@@ -187,8 +189,8 @@ mailConigDetails: any = '';
 
 
 
-  
-/// ------------Load configuration------------- ///
+
+  /// ------------Load configuration------------- ///
   loadconfig() {
     this.httpClient.get<any>(this.jsonurl).subscribe((data: any) => {
       this.tablist = data[0].tabList;
@@ -198,7 +200,7 @@ mailConigDetails: any = '';
       this.allConditions = data[0].condtions
     });
   }
- /// ------------Load configuration------------- ///
+  /// ------------Load configuration------------- ///
   multilingual(test: any) {
     return test;
   }
@@ -222,41 +224,41 @@ mailConigDetails: any = '';
   }
 
   drop(ev: any) {
-   
-     if (ev.type === 'touchend') {
-      // let parentdrawflow:any = document.elementFromPoint(this.mobile_last_move.touches[0].clientX,this.mobile_last_move.touches[0].clientY).closest('#drawflow');
-    
-      //  this.mobile_item_selec = '';
-     } else {
-     ev.preventDefault();
-       let data = ev.dataTransfer.getData('node');
-       //alert(data)
-       this.addNodeToDrawFlow(data, ev.clientX, ev.clientY);
-     }
-  }
- /// ------------Drag and drop Elements------------- ///
 
-/// ------------Add Node to draw flow -------------------- ///
+    if (ev.type === 'touchend') {
+      // let parentdrawflow:any = document.elementFromPoint(this.mobile_last_move.touches[0].clientX,this.mobile_last_move.touches[0].clientY).closest('#drawflow');
+
+      //  this.mobile_item_selec = '';
+    } else {
+      ev.preventDefault();
+      let data = ev.dataTransfer.getData('node');
+      //alert(data)
+      this.addNodeToDrawFlow(data, ev.clientX, ev.clientY);
+    }
+  }
+  /// ------------Drag and drop Elements------------- ///
+
+  /// ------------Add Node to draw flow -------------------- ///
   addNodeToDrawFlow(name: any, pos_x: any, pos_y: any) {
     if (this.editor.editor_mode === 'fixed') {
       return false;
     }
     pos_x =
       pos_x *
-        (this.editor.precanvas.clientWidth /
-          (this.editor.precanvas.clientWidth * this.editor.zoom)) -
+      (this.editor.precanvas.clientWidth /
+        (this.editor.precanvas.clientWidth * this.editor.zoom)) -
       this.editor.precanvas.getBoundingClientRect().x *
-        (this.editor.precanvas.clientWidth /
-          (this.editor.precanvas.clientWidth * this.editor.zoom));
+      (this.editor.precanvas.clientWidth /
+        (this.editor.precanvas.clientWidth * this.editor.zoom));
     pos_y =
       pos_y *
-        (this.editor.precanvas.clientHeight /
-          (this.editor.precanvas.clientHeight * this.editor.zoom)) -
+      (this.editor.precanvas.clientHeight /
+        (this.editor.precanvas.clientHeight * this.editor.zoom)) -
       this.editor.precanvas.getBoundingClientRect().y *
-        (this.editor.precanvas.clientHeight /
-          (this.editor.precanvas.clientHeight * this.editor.zoom));
-         
-         
+      (this.editor.precanvas.clientHeight /
+        (this.editor.precanvas.clientHeight * this.editor.zoom));
+
+
     for (let roles of this.roleArr) {
       if (roles.roleId == name) {
         let authority =
@@ -287,7 +289,7 @@ mailConigDetails: any = '';
     }
 
     switch (name) {
-    
+
       case 'applicant':
         let applicant = `
             <div>
@@ -314,12 +316,12 @@ mailConigDetails: any = '';
     }
     return true;
   }
-/// ------------Add Node to draw flow -------------------- ///
+  /// ------------Add Node to draw flow -------------------- ///
 
   getRoleId(roleArray: any) {
     return roleArray.roleId;
   }
-/// ------------Register Events -------------------- ///
+  /// ------------Register Events -------------------- ///
   registerEvents(editor: any): void {
     editor.on('nodeCreated', (id: any) => {
       //console.log('Node created ' + id);
@@ -373,62 +375,62 @@ mailConigDetails: any = '';
     });
 
     editor.on('zoom', (zoom: any) => {
-     // console.log('Zoom level ' + zoom);
+      // console.log('Zoom level ' + zoom);
     });
 
     editor.on('translate', (position: any) => {
-    //  console.log('Translate x:' + position.x + ' y:' + position.y);
+      //  console.log('Translate x:' + position.x + ' y:' + position.y);
     });
 
     editor.on('addReroute', (id: any) => {
-     // console.log('Reroute added ' + id);
+      // console.log('Reroute added ' + id);
     });
 
     editor.on('removeReroute', (id: any) => {
-    //  console.log('Reroute removed ' + id);
+      //  console.log('Reroute removed ' + id);
     });
   }
-/// ------------Register Events -------------------- ///
+  /// ------------Register Events -------------------- ///
   drawflow(): any {
     return {
       drawflow: {},
     };
   }
 
-//\\ ======================== // Eventes List // ======================== //\\ 
+  //\\ ======================== // Eventes List // ======================== //\\ 
   loadEvents() {
     let params: any = [];
     this.workFlowServices.getEvents(params).subscribe({
       next: (response) => {
         let respData = response.RESPONSE_DATA;
         let respToken = response.RESPONSE_TOKEN;
-        let res:any = Buffer.from(respData,'base64'); 
-        let responseResult= JSON.parse(res)
-      
-  if (responseResult.status == '200') {
-  
-       
-    this.approvalActions = responseResult.result;
-  
+        let res: any = Buffer.from(respData, 'base64');
+        let responseResult = JSON.parse(res)
+
+        if (responseResult.status == '200') {
+
+
+          this.approvalActions = responseResult.result;
+
         }
-     
-        else if((responseResult.status==500)){
-          this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
-      
+
+        else if ((responseResult.status == 500)) {
+          this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message))
+
         }
       },
       error: (msg) => {
         this.authService.directlogout();
-     }
-   })
+      }
+    })
 
 
 
   }
-//\\ ======================== // Eventes List // ======================== //\\ 
-//\\ ======================== // Authorities // ======================== //\\ 
-  getRoles(folderid:any) {
-     let dataParam = {
+  //\\ ======================== // Eventes List // ======================== //\\ 
+  //\\ ======================== // Authorities // ======================== //\\ 
+  getRoles(folderid: any) {
+    let dataParam = {
       "folderId": folderid
     };
     this.workFlowServices.getAdminRoles(dataParam).subscribe({
@@ -436,49 +438,49 @@ mailConigDetails: any = '';
         let respData = response.RESPONSE_DATA;
         let respToken = response.RESPONSE_TOKEN;
         let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        if(respToken == verifyToken){
-          let res:any = Buffer.from(respData,'base64'); 
-          let responseResult= JSON.parse(res)
-    if (responseResult.status == '200') {
-    let authorities:any=responseResult.result;
-    this.folderName=authorities.folderName;
-    
-    let result:any=[];
-     result = authorities.data;
-     for (let i = 0; i < result.length; i++) {
-       let obj: any = {};
-       obj['fileOrFolderId'] = result[i].fileOrFolderId;
-       obj['intId'] = result[i].intId;
-       obj['type'] = result[i].type;
-       obj['roleName'] = result[i].roleName;
-       obj['roleId'] = result[i].roleId;
-       let permissions:any=JSON.parse(result[i].permission);
-        for(let j = 0; j < permissions.length; j++){
-            if(permissions[j].label == 'WorkFlow' && permissions[j].selected == true){
-                obj['permission'] = permissions[j].label
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+          if (responseResult.status == '200') {
+            let authorities: any = responseResult.result;
+            this.folderName = authorities.folderName;
+
+            let result: any = [];
+            result = authorities.data;
+            for (let i = 0; i < result.length; i++) {
+              let obj: any = {};
+              obj['fileOrFolderId'] = result[i].fileOrFolderId;
+              obj['intId'] = result[i].intId;
+              obj['type'] = result[i].type;
+              obj['roleName'] = result[i].roleName;
+              obj['roleId'] = result[i].roleId;
+              let permissions: any = JSON.parse(result[i].permission);
+              for (let j = 0; j < permissions.length; j++) {
+                if (permissions[j].label == 'WorkFlow' && permissions[j].selected == true) {
+                  obj['permission'] = permissions[j].label
+                }
+              }
+
+              this.roleArr.push(obj);
+
             }
-        }
-      
-       this.roleArr.push(obj);
-    
-     }
-    
+
           }
-         
-          else if((responseResult.status==500)){
-            this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
+
+          else if ((responseResult.status == 500)) {
+            this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message))
           }
         }
-        else{
+        else {
           this.loading = false;
-      this.authService.directlogout();
+          this.authService.directlogout();
         }
       },
       error: (msg) => {
         this.authService.directlogout();
-     }
-   })
- 
+      }
+    })
+
 
 
 
@@ -488,7 +490,7 @@ mailConigDetails: any = '';
   validator() {
     let editorData = this.editor.drawflow.drawflow.Home.data;
     let editorKeys = Object.keys(editorData);
-   
+
     let parallelNodes: any = [];
     let stageNo = 0;
     let stageArr: any = [];
@@ -538,7 +540,7 @@ mailConigDetails: any = '';
       }
       if (nodeData.userType == 2) {
         let stageNo = nodeData['lavel'] > 0 ? nodeData['lavel'] : 0;
-       // console.log(nodeData);
+        // console.log(nodeData);
         let desgId = nodeData['desgId'] > 0 ? nodeData['desgId'] : 0;
         let roleId = nodeData['roleId'] > 0 ? nodeData['roleId'] : 0;
         let events = nodeData['events'];
@@ -605,7 +607,7 @@ mailConigDetails: any = '';
           calcDetails: calcDetails,
           vchParentNodes: arrParentNodes.join(),
           tinCurrentNode: nodeKey,
-          authMailSmsDetails: (mailSmsAuth!=''&& mailSmsAuth!=undefined) ? JSON.stringify(mailSmsAuth) : ''
+          authMailSmsDetails: (mailSmsAuth != '' && mailSmsAuth != undefined) ? JSON.stringify(mailSmsAuth) : ''
         };
         stageArr.push(stageData);
       }
@@ -614,18 +616,17 @@ mailConigDetails: any = '';
     if (!valid) {
       return false;
     }
-   if(stageArr.length ==0)
-      {
-        this.commonserveice.swalfire('error',this.commonserveice.langReplace("Please configure the workflow"))
-       
-        return false;
-      }
-      else if(this.roleArr > 0){
-        
-      }
+    if (stageArr.length == 0) {
+      this.commonserveice.swalfire('error', this.commonserveice.langReplace("Please configure the workflow"))
+
+      return false;
+    }
+    else if (this.roleArr > 0) {
+
+    }
     let flowCanvas = curObj.editor.drawflow;
     flowCanvas = JSON.stringify(flowCanvas);
-    
+
     let canvasArr = {
       folderId: this.folderid,
       serviceId: curObj.txtFormId,
@@ -637,73 +638,73 @@ mailConigDetails: any = '';
       controlName: '',
       sectionName: '',
       projectCategory: 0,
-      applicantMailSmsDetails: (arrApplicantMessageDetails!='' && arrApplicantMessageDetails!=undefined) ? JSON.stringify(arrApplicantMessageDetails) : ''
+      applicantMailSmsDetails: (arrApplicantMessageDetails != '' && arrApplicantMessageDetails != undefined) ? JSON.stringify(arrApplicantMessageDetails) : ''
     };
 
-   
-   //console.log(canvasArr)
-   this.workFlowServices.saveCanvasData(canvasArr).subscribe({
-    next: (response) => {
-      let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
 
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if(respToken == verifyToken){
-        let res:any = Buffer.from(respData,'base64'); 
-let responseResult= JSON.parse(res)
-  
-      if (responseResult.status == '200') {
-        Swal.fire({
-          icon: 'success',
-          text: responseResult.message,
-        }).then((result) => {
+    //console.log(canvasArr)
+    this.workFlowServices.saveCanvasData(canvasArr).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+
+          if (responseResult.status == '200') {
+            Swal.fire({
+              icon: 'success',
+              text: responseResult.message,
+            }).then((result) => {
 
 
-          if (result.isConfirmed) {
-            let reData:any= this.folderid+':'+'0'
-            let encSchemeStr = this.encDec.encText(reData.toString());
-           this.route.navigate(['/admin/viewupload',encSchemeStr])
-             }
-        //  this.fillCanvasWorkflow(this.folderid);
-         
-        });
-      } 
-     else if (responseResult.status == '405') {
-      Swal.fire({
-        icon: 'error',
-        text: responseResult.message,
-      });
-     }
-     else if(responseResult.status==501){
-        
-      this.authService.directlogout();
-    }
-      else {
-        this.commonserveice.swalfire('error',this.commonserveice.langReplace(curObj.messaageslist.errorMsg))
-     
+              if (result.isConfirmed) {
+                let reData: any = this.folderid + ':' + '0'
+                let encSchemeStr = this.encDec.encText(reData.toString());
+                this.route.navigate(['/admin/viewupload', encSchemeStr])
+              }
+              //  this.fillCanvasWorkflow(this.folderid);
+
+            });
+          }
+          else if (responseResult.status == '405') {
+            Swal.fire({
+              icon: 'error',
+              text: responseResult.message,
+            });
+          }
+          else if (responseResult.status == 501) {
+
+            this.authService.directlogout();
+          }
+          else {
+            this.commonserveice.swalfire('error', this.commonserveice.langReplace(curObj.messaageslist.errorMsg))
+
+          }
+        }
+        else {
+          this.loading = false;
+          this.authService.directlogout();
+        }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
       }
-      }
-      else{
-        this.loading = false;
-    this.authService.directlogout();
-      }
-    },
-    error: (msg) => {
-      this.authService.directlogout();
-   }
- })
+    })
 
     return true;
-  //  saveCanvasData(canvasArr);
+    //  saveCanvasData(canvasArr);
   }
 
 
 
   updateEvents(editor: any, nodeId: any) {
     this.checkedMailSms = '';
-   
+
     this.selAppDocuments = null;
- 
+
     $('#btnSaveEvent').off('click');
     $('#btnAlertOk').off('click');
     $('#btnSaveEvent').show();
@@ -741,14 +742,14 @@ let responseResult= JSON.parse(res)
         var nodeEvents = nodeData.data.events;
         var nodeTimeline = nodeData.data.timeline;
         var nodeApproval = nodeData.data.approvalDocs;
-      //  this.checkedLtrDocs = (nodeData.data.approvalLetters != undefined) ? nodeData.data.approvalLetters : '';
+        //  this.checkedLtrDocs = (nodeData.data.approvalLetters != undefined) ? nodeData.data.approvalLetters : '';
         var nodeDemandStatus = nodeData.data.demandPaymentStaus;
         var nodeapprovalDocuments = nodeData.data.approvalDocuments;
         if (nodeapprovalDocuments) {
           this.selAppDocuments = nodeapprovalDocuments;
           this.approvalDocRow = nodeapprovalDocuments;
         }
-      
+
         var actionsDiv = [];
         let calcDetails = nodeData.data.calcDetails;
         let calcStatus = nodeData.data.calcStatus;
@@ -782,7 +783,7 @@ let responseResult= JSON.parse(res)
         if (nodeApproval != '' && typeof nodeApproval != 'undefined') {
           $('#lnkAuthType').show();
         }
-       
+
         if (
           nodeapprovalDocuments != '' &&
           typeof nodeapprovalDocuments != 'undefined'
@@ -798,7 +799,7 @@ let responseResult= JSON.parse(res)
           $('.dem21').hide();
         }
         $('#hdnApprovalDocs').val(nodeApproval);
-     
+
         $('#hdnAllApprovalDocuments').val(nodeapprovalDocuments);
       } else {
         $('#btnSaveEvent').hide();
@@ -808,12 +809,12 @@ let responseResult= JSON.parse(res)
     let curObj = this;
 
 
-// ==== // Save events // ==== //
+    // ==== // Save events // ==== //
 
 
     $('#btnSaveEvent').on('click', function () {
-  //  alert(0)
-  let appliedUserType = editor.getNodeFromId(nodeId).data.userType;
+      //  alert(0)
+      let appliedUserType = editor.getNodeFromId(nodeId).data.userType;
       var actions: any = [];
       var docChecked = 0;
       var letterChecked = 0;
@@ -856,10 +857,10 @@ let responseResult= JSON.parse(res)
 
 
       // For Calculation
-      
- 
+
+
       let calcfield: any = $('#selFieldName').find(':selected').val();
-      let calcfieldTabl:any = $('#selFieldName').find(':selected').attr('data-val');
+      let calcfieldTabl: any = $('#selFieldName').find(':selected').attr('data-val');
       let selCalc = $('#selCalc').find(':selected').val();
       let txtValue: any = $('#txtValue').val();
       let calcStatus = $('input[name="calStatus"]:checked').val();
@@ -877,93 +878,92 @@ let responseResult= JSON.parse(res)
           'calcfield': calcfield,
           'selCalc': selCalc,
           'txtValue': (txtValue).trim(),
-          'dynTableName':calcfieldTabl.trim(),
+          'dynTableName': calcfieldTabl.trim(),
           'dyncolName': curObj.arrAllFormDetails[calcfield][0]['tablecolDetails'][0]['ctrlTblColName']
         });
       }
-      
-    nodeDataArr['events'] = actions;
-    nodeDataArr['timeline'] = timeLine.trim();
-
-    nodeDataArr['demandPaymentStaus'] = demandPaymentStaus;
-    nodeDataArr['approvalDocuments'] = curObj.approvalDocuments;
-    nodeDataArr['verifyDocs'] = curObj.allAssignedVerifyDocs;
-    nodeDataArr['calcStatus'] = calcStatus;
-    nodeDataArr['calcDetails'] = calcDetails;
-    nodeDataArr['allMailSms'] = curObj.checkedMailSms;
-
-    if (calcValidStatus) {
-      $('#hdnAllDocs').val(allDocs);
-      $('#hdnAllLetters').val(allLetters);
-      $('#hdnAllApprovalDocuments').val(curObj.approvalDocuments);
-      $('#hdnCalcDetails').val(calcDetails);
-      $('#hdnAllSmsMail').val(curObj.checkedMailSms);
-      if (appliedUserType == 2) {
-        if (actions.length <= 0) {
-          Swal.fire({
-            icon: 'error',
-            text: curObj.commonserveice.langReplace(curObj.messaageslist.chooseAction),
-          });
-          return false;
-        }
-        if (timeLine == '' || timeLine <= 0) {
-          Swal.fire({
-            icon: 'error',
-            text: curObj.commonserveice.langReplace(curObj.messaageslist.timeValid),
-          });
-          return false;
-        }
-      }
-
 
       nodeDataArr['events'] = actions;
-      nodeDataArr['timeline'] = timeLine;
-      nodeDataArr['approvalLetters'] = approvalletrs;
+      nodeDataArr['timeline'] = timeLine.trim();
+
       nodeDataArr['demandPaymentStaus'] = demandPaymentStaus;
       nodeDataArr['approvalDocuments'] = curObj.approvalDocuments;
       nodeDataArr['verifyDocs'] = curObj.allAssignedVerifyDocs;
       nodeDataArr['calcStatus'] = calcStatus;
       nodeDataArr['calcDetails'] = calcDetails;
+      nodeDataArr['allMailSms'] = curObj.checkedMailSms;
 
-      editor.updateNodeDataFromId(nodeId, nodeDataArr);
-      Swal.fire({
-        icon: 'warning',
-        text: curObj.commonserveice.langReplace(curObj.messaageslist.eventConfirm),
-      }).then((result) => {
-        if (result.isConfirmed) {
-          $('.eventSection').find('.chk_actions').prop('checked', false);
-          $('.eventSection').find('#txtTimeLine').val('');
-          $('#lnkAuthType').hide();
-          $('#lnkLetterType').hide();
-          $('#approveDocType').hide();
-          $('#hdnApprovalDocs').val('');
-          $('#hdnApprovalLetters').val('');
-          $('#hdnAllApprovalDocuments').val('');
-          $('#hdnAllSmsMail').val('');
-          $('.dem21').hide();
-          document.getElementById("showYesDiv")?.setAttribute("style", "display: none;")
-          document.getElementById("showYesDiv")?.classList.add("d-none");
-          $('.calcStatus').prop('checked', false);
-          $('#calcStatus2').prop('checked', true);
-          curObj.checkedMailSms = '';
-          curObj.approvalDocuments = '';
-          curObj.approvalDocRow = [1];
-         
+      if (calcValidStatus) {
+        $('#hdnAllDocs').val(allDocs);
+        $('#hdnAllLetters').val(allLetters);
+        $('#hdnAllApprovalDocuments').val(curObj.approvalDocuments);
+        $('#hdnCalcDetails').val(calcDetails);
+        $('#hdnAllSmsMail').val(curObj.checkedMailSms);
+        if (appliedUserType == 2) {
+          if (actions.length <= 0) {
+            Swal.fire({
+              icon: 'error',
+              text: curObj.commonserveice.langReplace(curObj.messaageslist.chooseAction),
+            });
+            return false;
+          }
+          if (timeLine == '' || timeLine <= 0) {
+            Swal.fire({
+              icon: 'error',
+              text: curObj.commonserveice.langReplace(curObj.messaageslist.timeValid),
+            });
+            return false;
+          }
+        }
 
-          let allMailSms: any = document.getElementsByClassName('mailSmsChkBx');
-          for (let allMailDts of allMailSms) {
-            allMailDts.checked = false;
+
+        nodeDataArr['events'] = actions;
+        nodeDataArr['timeline'] = timeLine;
+        nodeDataArr['approvalLetters'] = approvalletrs;
+        nodeDataArr['demandPaymentStaus'] = demandPaymentStaus;
+        nodeDataArr['approvalDocuments'] = curObj.approvalDocuments;
+        nodeDataArr['verifyDocs'] = curObj.allAssignedVerifyDocs;
+        nodeDataArr['calcStatus'] = calcStatus;
+        nodeDataArr['calcDetails'] = calcDetails;
+
+        editor.updateNodeDataFromId(nodeId, nodeDataArr);
+        Swal.fire({
+          icon: 'success',
+          text: curObj.commonserveice.langReplace(curObj.messaageslist.eventConfirm),
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $('.eventSection').find('.chk_actions').prop('checked', false);
+            $('.eventSection').find('#txtTimeLine').val('');
+            $('#lnkAuthType').hide();
+            $('#lnkLetterType').hide();
+            $('#approveDocType').hide();
+            $('#hdnApprovalDocs').val('');
+            $('#hdnApprovalLetters').val('');
+            $('#hdnAllApprovalDocuments').val('');
+            $('#hdnAllSmsMail').val('');
+            $('.dem21').hide();
+            document.getElementById("showYesDiv")?.setAttribute("style", "display: none;")
+            document.getElementById("showYesDiv")?.classList.add("d-none");
+            $('.calcStatus').prop('checked', false);
+            $('#calcStatus2').prop('checked', true);
+            curObj.checkedMailSms = '';
+            curObj.approvalDocuments = '';
+            curObj.approvalDocRow = [1];
+
+
+            let allMailSms: any = document.getElementsByClassName('mailSmsChkBx');
+            for (let allMailDts of allMailSms) {
+              allMailDts.checked = false;
+
+            }
 
           }
-
-        }
-      });
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+        });
+        return true;
+      }
+      else {
+        return false;
+      }
     });
   }
 
@@ -982,10 +982,10 @@ let responseResult= JSON.parse(res)
     return ctr;
   }
 
-  fillCanvasWorkflow(folderid:any) {
+  fillCanvasWorkflow(folderid: any) {
     this.editor.clearModuleSelected();
     let arrParam = {
-      folderId:folderid
+      folderId: folderid
     };
     let curObj = this;
     this.workFlowServices.fillWorkflowData(arrParam).subscribe({
@@ -993,18 +993,18 @@ let responseResult= JSON.parse(res)
         let respData = response.RESPONSE_DATA;
         let respToken = response.RESPONSE_TOKEN;
         let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        if(respToken == verifyToken){
-          let res:any = Buffer.from(respData,'base64'); 
-          let responseResult= JSON.parse(res)
-    
-    
-          if (responseResult.status==200) {
-            
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+
+
+          if (responseResult.status == 200) {
+
             var drawFlow = responseResult.result.workflowDetail.canvasData;
-           
-             drawFlow = this.encDec.decodeHtml(drawFlow);
-    
-           //  console.log(drawFlow)
+
+            drawFlow = this.encDec.decodeHtml(drawFlow);
+
+            //  console.log(drawFlow)
             drawFlow = JSON.parse(drawFlow);
             this.editor.import(drawFlow);
             var drawData = drawFlow.drawflow.Home.data;
@@ -1015,50 +1015,50 @@ let responseResult= JSON.parse(res)
               var drawKeyData = drawData[parseInt(drawKeyCtr)];
               var approvalDocs = drawKeyData.data.approvalDocs;
               //curObj.approvalDocuments = drawKeyData.data.approvalDocuments;
-    
-             // console.log(drawKeyData.data);
+
+              // console.log(drawKeyData.data);
               if (typeof approvalDocs != 'undefined' && approvalDocs != '') {
                 appDocs = appDocs + approvalDocs + ',';
               }
             });
             appDocs = appDocs.slice(0, -1);
-    
+
             $('#hdnAllDocs').val(appDocs);
-          }  
-          else if((responseResult.status==400)){
-            this.commonserveice.swalfire('error',this.commonserveice.langReplace(responseResult.message))
-       
           }
-          else if((responseResult.status==402)){
-          //here no workflow for specific folder
+          else if ((responseResult.status == 400)) {
+            this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message))
+
           }
-          else if(responseResult.status==501){
-            
+          else if ((responseResult.status == 402)) {
+            //here no workflow for specific folder
+          }
+          else if (responseResult.status == 501) {
+
             this.authService.directlogout();
           }
           else {
-            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong))
-         
+            this.commonserveice.swalfire('error', this.commonserveice.langReplace(environment.somethingWrong))
+
           }
         }
-        else{
+        else {
           this.loading = false;
-      this.authService.directlogout();
+          this.authService.directlogout();
         }
-  
+
       },
       error: (msg) => {
         this.authService.directlogout();
-     }
-   })
-   
- 
+      }
+    })
+
+
   }
 
   chooseAction(elementId: any, id: any) {
 
-    
- 
+
+
 
     if (this.nodeSelected == null) {
 
@@ -1068,30 +1068,30 @@ let responseResult= JSON.parse(res)
         icon: 'error',
         text: this.commonserveice.langReplace('Select the authority to set the document'),
       });
-     
-    } 
+
+    }
     let nodeData = this.editor.getNodeFromId(this.nodeSelected);
     let nodeInputCon = nodeData.inputs.input_1.connections;
- let nodelavel = nodeData.data.lavel;
+    let nodelavel = nodeData.data.lavel;
 
 
     let nodeOutputCon = nodeData.outputs.output_1.connections;
 
- if((this.nodeSelected != null) && (nodelavel == '1') && (elementId == 2)){
+    if ((this.nodeSelected != null) && (nodelavel == '1') && (elementId == 2)) {
 
-  (<HTMLInputElement>document.getElementById('chk_' + elementId)).checked = false;
-  this.commonserveice.swalfire('error',this.commonserveice.langReplace('It is not possible to choose to markdown a single authority or not connect with others '))
+      (<HTMLInputElement>document.getElementById('chk_' + elementId)).checked = false;
+      this.commonserveice.swalfire('error', this.commonserveice.langReplace('It is not possible to choose to markdown a single authority or not connect with others '))
 
-}
-else if((this.nodeSelected != null) && (nodeOutputCon.length == 0) && (elementId == 1)){
-  
-  (<HTMLInputElement>document.getElementById('chk_' + elementId)).checked = false;
-  this.commonserveice.swalfire('error',this.commonserveice.langReplace('The last authority cannot choose the mark up'))
+    }
+    else if ((this.nodeSelected != null) && (nodeOutputCon.length == 0) && (elementId == 1)) {
 
-}
+      (<HTMLInputElement>document.getElementById('chk_' + elementId)).checked = false;
+      this.commonserveice.swalfire('error', this.commonserveice.langReplace('The last authority cannot choose the mark up'))
+
+    }
 
     else {
-      
+
       this.approvalDocEvents = [];
       if (
         id == 15 &&
@@ -1157,8 +1157,8 @@ else if((this.nodeSelected != null) && (nodeOutputCon.length == 0) && (elementId
       let respData = res.RESPONSE_DATA;
       let allRes: any = Buffer.from(respData, 'base64');
       res = JSON.parse(allRes.toString());
-      console.log("res "+res);
-      
+      console.log("res " + res);
+
       this.messageDataToBind = res.result;
       console.log(this.messageDataToBind)
       for (let messageDataLoop of this.messageDataToBind) {
@@ -1199,7 +1199,7 @@ else if((this.nodeSelected != null) && (nodeOutputCon.length == 0) && (elementId
 
 
 
- 
+
   setApplicantAction(event: any) {
     let aClick: any = event.target;
     this.msgclickedEvent = aClick.getAttribute('data-actionid');
@@ -1217,31 +1217,31 @@ else if((this.nodeSelected != null) && (nodeOutputCon.length == 0) && (elementId
     }
 
     if (this.checkedMailSms.length > 0) {
-  
+
       //console.log(this.checkedMailSms);
       for (let allMailDts of this.checkedMailSms) {
-      
-        if (this.msgclickedEvent == allMailDts.events) {
-        
-          let kchkMailSms: any = allMailDts.allChedkMailMsgs.split(',');
-          setTimeout(function(){
-          let allMailSms:any = document.getElementsByClassName('mailSmsChkBx');
 
-             for (let allMailDts of allMailSms) {
-         
-            if (kchkMailSms.includes(allMailDts.value)) {
-             
-              allMailDts.checked = true;
+        if (this.msgclickedEvent == allMailDts.events) {
+
+          let kchkMailSms: any = allMailDts.allChedkMailMsgs.split(',');
+          setTimeout(function () {
+            let allMailSms: any = document.getElementsByClassName('mailSmsChkBx');
+
+            for (let allMailDts of allMailSms) {
+
+              if (kchkMailSms.includes(allMailDts.value)) {
+
+                allMailDts.checked = true;
+              }
+              else {
+                allMailDts.checked = false;
+              }
             }
-            else {
-              allMailDts.checked = false;
-            }
-          }
-         },500);
-      
-     
-    
-         break;
+          }, 500);
+
+
+
+          break;
         }
         else {
           let allMailSms: any = document.getElementsByClassName('mailSmsChkBx');
@@ -1259,7 +1259,7 @@ else if((this.nodeSelected != null) && (nodeOutputCon.length == 0) && (elementId
       }
     }
     if (evtSelectedStatus) {
-     
+
       this.open(this.sendMsgModal);
 
       //(<HTMLInputElement>document.getElementById('message')).click();
@@ -1268,8 +1268,8 @@ else if((this.nodeSelected != null) && (nodeOutputCon.length == 0) && (elementId
 
 
   }
-  closeSMActions(){
-   this.closeModal()
+  closeSMActions() {
+    this.closeModal()
   }
   saveAllMailSmsActions() {
     let allMailSms: any = document.getElementsByClassName('mailSmsChkBx');
@@ -1284,7 +1284,7 @@ else if((this.nodeSelected != null) && (nodeOutputCon.length == 0) && (elementId
         }
       }
     }
-    
+
     if (this.checkedMailSms.length > 0) {
       if (this.msgclickedEvent != 'Registration') {
         let arraPushElements: any = '';
@@ -1305,18 +1305,17 @@ else if((this.nodeSelected != null) && (nodeOutputCon.length == 0) && (elementId
         this.checkedMailSms.push({ 'allChedkMailMsgs': allChedkMailMsgs, 'events': this.msgclickedEvent });
       }
 
-      else
-      {
+      else {
         this.checkedMailSms = ([{ 'allChedkMailMsgs': allChedkMailMsgs, 'events': this.msgclickedEvent }]);
       }
-      
+
     }
     else {
       this.checkedMailSms = ([{ 'allChedkMailMsgs': allChedkMailMsgs, 'events': this.msgclickedEvent }]);
     }
 
     this.msgclickedEvent = '';
-  this.closeModal()
+    this.closeModal()
   }
   //\\ ======================== // Modal Open // ======================== //\\ 
   open(content: any) {
@@ -1328,9 +1327,9 @@ else if((this.nodeSelected != null) && (nodeOutputCon.length == 0) && (elementId
     this.modalService.dismissAll();
   }
   //\\ ======================== // Modal Close // ======================== //\\
-  resetform(){
-    let reData:any= this.folderid+':'+'0'
+  resetform() {
+    let reData: any = this.folderid + ':' + '0'
     let encSchemeStr = this.encDec.encText(reData.toString());
-    this.route.navigate(['/admin/viewupload',encSchemeStr])
+    this.route.navigate(['/admin/viewupload', encSchemeStr])
   }
 }

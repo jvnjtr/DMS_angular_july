@@ -48,14 +48,14 @@
       <div class="form-group" >
           <label Class="w-full text-md " >Link Name <span class="text-danger">*</span></label>
             <div class="control-item">
-                  <input type="text" formControlName="txtLinkName" minlength="" maxlength=""   formControlName="txtLinkName" placeholder="" class="form-control ">
+                  <input type="text" formControlName="txtLinkName" minlength="3" maxlength="30"   formControlName="txtLinkName" placeholder="" class="form-control" (keypress)="vldChkLst.isAlphaNumeric($event)">
             </div>
       </div>
 
       <div class="form-group" >
          <label Class="w-full text-md " >URL <span class="text-danger">*</span></label>
             <div class="control-item">
-                  <input type="text" formControlName="txtURL" minlength="" maxlength=""   formControlName="txtURL" placeholder="" class="form-control ">
+                  <input type="text" formControlName="txtURL" minlength="" maxlength="200"   formControlName="txtURL" placeholder="" class="form-control ">
             </div>
       </div>
 

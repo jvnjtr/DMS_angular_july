@@ -66,7 +66,7 @@ export class ManageLanguageComponent implements OnInit {
     private fb: FormBuilder,
      private manageLanguage: LanguageService, 
      public encDec: EncrypyDecrpyService,
-  private validationService: ValidatorchecklistService,
+  public validationService: ValidatorchecklistService,
   private authService:AuthenticationService,
   public commonserveice:CommonServicesService
   ) {

@@ -86,6 +86,7 @@ export class AddformComponent implements OnInit {
 
   loadComponent: boolean = true;
   validationStatus: boolean = false;
+  metaTemplateId:any;
   
   constructor(
     private route: Router,
@@ -106,6 +107,8 @@ export class AddformComponent implements OnInit {
       this.txtModuleId = schemeArr[0];
       this.txtFormId = schemeArr[1];
       this.getsectionId = schemeArr[2];
+      this.metaTemplateId = schemeArr[3];
+      //console.log(this.metaTemplateId);
 
     }
     this.sessiontoken = sessionStorage.getItem('ADMIN_SESSION');
@@ -202,6 +205,8 @@ export class AddformComponent implements OnInit {
   
             this.txtModuleName = this.formNames[0].vchModuleName;
             this.txtFormName = this.formNames[0].vchProcessName;
+            // this.metaTemplateId = this.formNames[0].metaTemplateId;
+            // console.log(this.metaTemplateId);
           }
         }else if(res.status==417){
           Swal.fire({
@@ -1596,7 +1601,7 @@ export class AddformComponent implements OnInit {
       res = JSON.parse(res.toString());
       if (res.status == 200) {
         this.tableExistsCheck = res.result.tblExists;
-        console.log( res.result.columnDetails);
+        //console.log( res.result.columnDetails);
         if (this.tableExistsCheck == 1) {
           let secColumnDetails: any = res.result.columnDetails;
           for (let secTblrLoop of secColumnDetails) {

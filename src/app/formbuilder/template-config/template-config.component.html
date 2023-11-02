@@ -1,0 +1,185 @@
+<!--===Page Title===-->
+<div class="page-title">
+
+    <h4>{{title|langReplace}}</h4>
+ </div>
+ <!--===Page Title===-->
+ <!--===controle section===-->
+ <div class="page-controls-section" id="page-content">
+    <div class="card">
+       <div class="controls-section-header">
+          <!-- <ul class="nav nav-tabs nav-fill" role="tablist">
+             <app-tabs *ngFor="let tablist of tablist; let i = index" [intaddRight]="intaddRight"
+             [intViewManageRight]="intViewManageRight" [activeid]="letterID"
+                [tabMessage]="tablist"></app-tabs>
+          </ul> -->
+          <ul class="nav nav-tabs nav-fill" role="tablist">
+            <app-tabs *ngFor="let tablist of tablist" [activeid]="letterID" [tabMessage]="tablist"></app-tabs>
+
+        </ul>
+          <div class="indicatorslist">
+             <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils>
+          </div>
+       </div>
+ 
+       <div class="card-body">
+          <div class="controls-section">
+             <div class="row">
+                <div class="col-md-6">
+                   <div class="form-group">
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">* {{"Form Name"|langReplace}}</label>
+                         <div class="col-md-6 col-lg-6">
+                            <input type="text" readonly class="form-control" [(ngModel)]="selFormName">
+                            <input type="hidden" class="form-control" [(ngModel)]="txtFormId">
+                         </div>
+                      </div>
+                   </div>
+ 
+                   <div class="form-group">
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">*{{"Template Name"|langReplace}} </label>
+                         <div class="col-md-6 col-lg-6">
+                            <input type="text" id="LetterName" [(ngModel)]="txtLetterName" (keypress)="vldChkLst.isCharKey($event)"
+                               class="form-control" name="">
+                         </div>
+                      </div>
+                   </div>
+                   <div class="form-group d-none">
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">*{{"Effective From"|langReplace}} </label>
+                         <div class="col-md-6 col-lg-6">
+                            <div class="input-group ">
+                               <input type="text" readonly placeholder="DD-MM-YYYY" class="form-control"
+                                  [minDate]="txtEfminDate" [(ngModel)]="txtEffeciveFrom" bsDatepicker
+                                  [bsConfig]="{showWeekNumbers: false, isAnimated: true,dateInputFormat: 'DD-MM-YYYY',customTodayClass:'custom-today-class' }">
+                               <span class="input-group-text" id="basic-addon2"><i class="icon-calendar-alt"></i></span>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+ 
+                   <div class="form-group d-none">
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">*{{"Effective To"|langReplace}} </label>
+                         <div class="col-md-6 col-lg-6">
+                            <div class="input-group ">
+                               <input type="text" readonly [(ngModel)]="txtEffeciveTo" placeholder="DD-MM-YYYY"
+                                  class="form-control" [minDate]="txtEtminDate" bsDatepicker
+                                  [bsConfig]="{showWeekNumbers: false, isAnimated: true,dateInputFormat:'DD-MM-YYYY',customTodayClass:'custom-today-class' }"
+                                  class="form-control dateFields" name="">
+                               <span class="input-group-text" id="basic-addon2"><i class="icon-calendar-alt"></i></span>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                   <div class="form-group d-none">
+                      <div class="row">
+                         <label class="col-md-6 col-lg-4">*{{"Digital Sign Applicable"|langReplace}} </label>
+                         <div class="col-md-6 col-lg-6">
+                            <div class="form-check form-check-inline">
+                               <input class="form-check-input" [value]="1" [(ngModel)]="signStatus" name="signStatus"
+                                  type="radio" id="signStatus1" [checked]="!isSelected" />
+                               <label class="form-check-label" for="signStatus1">{{"Yes"|langReplace}}</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                               <input class="form-check-input" [value]="0" [(ngModel)]="signStatus" name="signStatus"
+                                  type="radio" id="signStatus2" [checked]="isSelected" />
+                               <label class="form-check-label" for="signStatus2">{{"No"|langReplace}}</label>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                   <div class="showDiv" *ngIf="signStatus == 1">
+                      <div class="form-group">
+                         <div class="row">
+                            <label class="col-md-6 col-lg-4">*{{"Digital Sign Type"|langReplace}} </label>
+                            <div class="col-md-6 col-lg-6">
+                               <select class="form-select" [(ngModel)]="selSignType">
+                                  <option value="0" disabled selected>--Select--</option>
+                                  <option *ngFor="let gettype of getwaytypes; let i index" [value]="gettype.typeId">
+                                     {{gettype.typeName}}</option>
+                               </select>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+                <div class="col-md-6">
+                   <div class="">
+                      <h6>{{"Dynamic keys for value"|langReplace}} <small><i
+                               class="fa fa-question-circle pos-abs  hlpICNKey" data-phlp="tooltip"
+                               style="top:10px;right:-15px;cursor: pointer;"></i></small></h6>
+                      <div class="p-2 overflow-auto" style="height:240px;">
+ 
+                         <table class="table table-bordered">
+                            <thead>
+                               <tr>
+ 
+                                  <th scope="col">{{"Key"|langReplace}}</th>
+                                  <th scope="col">{{"Label Name"|langReplace}}</th>
+ 
+                               </tr>
+                            </thead>
+                            <tbody>
+                               <tr *ngFor="let keys of keysArray let i = index">
+ 
+                                  <td>{{'{'+ keys.ctrlId+'}'}}</td>
+                               
+                                  <td>{{keys.ctrlLabel}}</td>
+ 
+                               </tr>
+ 
+                            </tbody>
+                         </table>
+                      </div>
+ 
+                   </div>
+                </div>
+             </div>
+ 
+             <div class="form-group">
+                <div class="row">
+                   <label class="col-md-4 col-lg-2">*{{"Letter Content"|langReplace}} </label>
+                   <div class="col-md-8 col-lg-10">
+                      <!-- <app-ckeditornew [ckdesc]="txtLetterContent" id="LetterContent " [(ngModel)]="txtLetterContent"></app-ckeditornew> -->
+                      <ckeditor [(ngModel)]="txtLetterContent" id="LetterContent" #myckeditor="ngModel"
+                            name="myckeditor" required [config]="ckeConfig" debounce="500"></ckeditor>
+                   </div>
+                </div>
+             </div>
+ 
+ 
+ 
+             <!--end::Form-->
+ 
+ 
+          </div>
+ 
+ 
+          <div class="form-group">
+             <div class="row">
+                <label class="col-md-4 col-lg-2"></label>
+                <div class="col-md-8 col-lg-10">
+                   <ng-container *ngIf="letterIdSend == 0 ; else update">
+ 
+                      <button class="btn btn-primary"
+                         (click)="generateLetter()">{{"Submit"|langReplace}}</button>
+                      <button class="btn btn-danger ml-1" (click)="resetform()">{{"Cancel"|langReplace}}</button>
+                   </ng-container>
+                   <ng-template #update>
+ 
+                      <button class="btn btn-primary"
+                         (click)="generateLetter()">{{"Update"|langReplace}}</button>
+                      <button class="btn btn-danger ml-1"
+                         (click)="updateCancel()">{{"Cancel"|langReplace}}</button>
+ 
+                   </ng-template>
+ 
+ 
+                </div>
+             </div>
+ 
+          </div>
+       </div>
+    </div>

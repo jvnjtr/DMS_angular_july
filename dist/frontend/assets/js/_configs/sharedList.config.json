@@ -2,7 +2,7 @@
       {
         "pagetitle":"Shared Files",
         "tabList":[
-          {"tabName":"View","tabUrl":"../sharedFiles","tabClass":"active"}
+          {"tabName":"View","tabUrl":"../sharedfiles","tabClass":"active"}
         ],
         "utils":[
           {"utilName":"back"},

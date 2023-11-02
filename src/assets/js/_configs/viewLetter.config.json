@@ -1,8 +1,12 @@
 [
       {
-        "pagetitle":"View Letter Config",
+        "pagetitle":"View Template",
         "tabList":[
-          {"tabName":"View Letters","tabUrl":"../viewLetterConfig","tabClass":"active"}],
+          {"tabName":"Add","tabUrl":"../templateConfig"},
+          {"tabName":"View","tabUrl":"../viewTemplateConfig","tabClass":"active add d-none"}
+          
+        ],
+          
         "utils":[
          
           {"utilName":"search"},

@@ -2,7 +2,7 @@
       {
         "pagetitle":"Archive Files",
         "tabList":[
-          {"tabName":"View","tabUrl":"../archiveFiles","tabClass":"active"}
+          {"tabName":"View","tabUrl":"../archivefiles","tabClass":"active"}
         ],
         "utils":[
           {"utilName":"back"},

@@ -1,10 +1,9 @@
 [
       {
-        "pagetitle":"Add Letter Config",
+        "pagetitle":"",
         "tabList":[
-          {"tabName":"Add New","tabUrl":"../addLetterConfig","tabClass":"active add d-none"},
-                    {"tabName":"Edit","tabUrl":"","tabClass":"active edit d-none"},
-          {"tabName":"View","tabUrl":"../viewLetterConfig"}
+          
+          
          
                   
                   ],

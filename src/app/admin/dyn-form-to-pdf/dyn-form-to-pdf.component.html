@@ -1,11 +1,10 @@
-    
- <div class="bg-white p-3">
+<div class="bg-white p-3">
 
-  
+
     <div class="row">
-      <div class="col-md-6">
-  
-        <!-- <div class="mb-3">
+        <div class="col-md-6">
+
+            <!-- <div class="mb-3">
         <div class="files-list" href="javascript:void(0)" *ngFor="let f of fileeList" (click)="loadDocPreview(f.fileType,f.filePath)">
             <div>
              <i class="h6 mr-1" [ngClass]="getfiletypeicon(f.fileType)" ></i>
@@ -14,238 +13,280 @@
             <a (click)="onRemove(f)" class="text-danger" ngbTooltip="Back to upload" title=""  data-original-title="Cancel"><i class="bi bi-trash"></i></a>
         </div>
     </div> -->
-        <div class="row">
-            <div class="col-md-6 ">
-                <div class="form-group">
-                    <label>*  {{"File Name"| langReplace}}</label>
-                    <input type="text"  class="form-control" readonly [(ngModel)]="txtFileName">
-                 
-                    <!-- <input type="hidden" class="form-control" readonly [(ngModel)]="folderid"> -->
+            <div class="row">
+                <div class="col-md-6 ">
+                    <div class="form-group">
+                        <label>* {{"File Name"| langReplace}}</label>
+                        <input type="text" class="form-control" readonly [(ngModel)]="txtFileName">
+
+                        <!-- <input type="hidden" class="form-control" readonly [(ngModel)]="folderid"> -->
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6 ">
-              <div class="form-group">
-                  <label>*  {{"Select Folder"| langReplace}}</label>
-                  <!-- (change)="getPermissions($event)" -->
-                    <select class="form-select" [(ngModel)]="folderid" id="selfolder" (change)="getFolderbased(folderid)">
-                                                             <option value="0">Select</option>
-                                                             <ng-container *ngFor="let flist of folderlists">
-                                                              <option *ngIf="!(flist.folderId==1)" [value]="flist.folderId">{{flist.folderName}}</option>
-                                                          </ng-container>
-                                                         </select> 
-                  <!-- <input type="hidden" class="form-control" readonly [(ngModel)]="folderid"> -->
-              </div>
-          </div>
-  
-            
-            
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label> {{"OCR Language"| langReplace}}</label>
-                    <select class="form-select" [(ngModel)]="selOcrLang">
+                <div class="col-md-6 ">
+                    <div class="form-group">
+                        <label>* {{"Select Folder"| langReplace}}</label>
+                        <!-- (change)="getPermissions($event)" -->
+                        <select class="form-select" [(ngModel)]="folderid" id="selfolder"
+                            (change)="getFolderbased(folderid)">
+                            <option value="0">Select</option>
+                            <ng-container *ngFor="let flist of folderlists">
+                                <option *ngIf="!(flist.folderId==1)" [value]="flist.folderId">{{flist.folderName}}
+                                </option>
+                            </ng-container>
+                        </select>
+                        <!-- <input type="hidden" class="form-control" readonly [(ngModel)]="folderid"> -->
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label> {{"OCR Language"| langReplace}}</label>
+                        <select class="form-select" [(ngModel)]="selOcrLang">
                             <option value="0"> {{"Select"| langReplace}}</option>
                             <option value="1">English</option>
                             <option value="2">Hindi</option>
                             <option value="3">Odia</option>
                         </select>
-                 </div>
-            </div>
-  <div class="col-md-6">
-                <div class="form-group">
-                    <label> {{"Set retention period of a file"| langReplace}}</label>
-                    <div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="rdoSetretention" (click)="rtrdoClick($event)" [(ngModel)]="rdoSetretention" id="rdoSetretention1" value="1">
-                            <label class="form-check-label" for="rdoSetretention1">{{"Yes"| langReplace}}</label>
-                          </div>
-                          <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="rdoSetretention" (click)="rtrdoClick($event)"  [(ngModel)]="rdoSetretention" id="rdoSetretention2" value="2" checked>
-                            <label class="form-check-label" for="rdoSetretention2">{{"No"| langReplace}}</label>
-                          </div>
                     </div>
-  
-  
-                 
-                 </div>
-            </div>
-  
-            
-            <div class="col-md-6" *ngIf="rdoSetretention == 1">
-                <div class="form-group">
-                       <label>*  {{"Retention Date"| langReplace}}</label>
-                       <input type="date"  placeholder="DD-MM-YYYY" id="expiryDate" min="{{currenttime | date:'yyyy-MM-dd'}}" class="form-control" [(ngModel)]="txtExpDate" >
-                     <!-- {{currenttime | date:'yyyy-MM-dd'}} -->
-                     
-                     
-                       <!-- <div class="input-group ">
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label> {{"Set retention period of a file"| langReplace}}</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="rdoSetretention"
+                                    (click)="rtrdoClick($event)" [(ngModel)]="rdoSetretention" id="rdoSetretention1"
+                                    value="1">
+                                <label class="form-check-label" for="rdoSetretention1">{{"Yes"| langReplace}}</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="rdoSetretention"
+                                    (click)="rtrdoClick($event)" [(ngModel)]="rdoSetretention" id="rdoSetretention2"
+                                    value="2" checked>
+                                <label class="form-check-label" for="rdoSetretention2">{{"No"| langReplace}}</label>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+
+                <div class="col-md-6" *ngIf="rdoSetretention == 1">
+                    <div class="form-group">
+                        <label>* {{"Retention Date"| langReplace}}</label>
+                        <input type="date" placeholder="DD-MM-YYYY" id="expiryDate"
+                            min="{{currenttime | date:'yyyy-MM-dd'}}" class="form-control" [(ngModel)]="txtExpDate">
+                        <!-- {{currenttime | date:'yyyy-MM-dd'}} -->
+
+
+                        <!-- <div class="input-group ">
                                <input type="text" readonly placeholder="DD-MM-YYYY" class="form-control" [(ngModel)]="txtExpDate" [minDate]="txtEfminDate" 
                                #dp="bsDatepicker"
                                   bsDatepicker [bsConfig]="{showWeekNumbers: false, isAnimated: true,dateInputFormat: 'DD-MM-YYYY',customTodayClass:'custom-today-class' }">
                                   <span (click)="dp.toggle()" class="input-group-text" id="basic-addon2"><i class="icon-calendar-alt"></i></span>
                                </div>  -->
-  
-  <!-- {{txtExpDate}} -->
-  
+
+                        <!-- {{txtExpDate}} -->
+
                     </div>
-                   </div>
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label>*  {{"Subject"| langReplace}}</label>
-                    <textarea class="form-control" id="txtSubject" [(ngModel)]="txtSubject" cols="3" rows="3">
-  
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>* {{"Subject"| langReplace}}</label>
+                        <textarea class="form-control" id="txtSubject" [(ngModel)]="txtSubject" cols="3" rows="3">
+
                     </textarea>
-                   
-         </div>
-            </div>
-  
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label>   {{"Tags"| langReplace}}</label>
-                    <!-- <tag-input [(ngModel)]="txtTags" class="form-control" (onRemove)="onLikeRemove($event)">
+
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label> {{"Tags"| langReplace}}</label>
+                        <!-- <tag-input [(ngModel)]="txtTags" class="form-control" (onRemove)="onLikeRemove($event)">
                         </tag-input> -->
                         <!-- [separatorKeyCodes]="[32,9]" -->
-                        <ngx-tags-input class="form-control input-lg"  [(ngModel)]="txtTags" ></ngx-tags-input>
+                        <ngx-tags-input class="form-control input-lg" [(ngModel)]="txtTags"></ngx-tags-input>
                         <small class="text-danger">{{"Please press enter to set the tag"| langReplace}} </small>
-                   <!-- //<input type="text" class="form-control" [(ngModel)]="txtTags"> -->
-  
-                   <!-- (onTagsChange)="onTagsChanged($event)" -->
-                  
-  
-  </div>
+                        <!-- //<input type="text" class="form-control" [(ngModel)]="txtTags"> -->
+
+                        <!-- (onTagsChange)="onTagsChanged($event)" -->
+
+
+                    </div>
+                </div>
+
+
+                <div class="col-md-12">
+                    <div class="form-group d-none">
+
+
+                        <div class="row">
+                            <div class="col-6">
+                                <label>* {{"Select Template"| langReplace}}</label>
+                                <select class="form-select" [(ngModel)]="selMeta" id="selMeta"
+                                    (change)="getMetaType(selMeta)">
+                                    <option value="0"> {{"Select"| langReplace}} </option>
+                                    <option *ngFor="let flist of metalist" [value]="flist.templateId">
+                                        {{flist.templateName}}</option>
+                                </select>
+
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="p-3 bg-light mb-3 d-none" *ngIf="getmetaTypeList?.length > 0">
+                        <div class="row">
+                            <div class="col-md-6" *ngFor="let gtype of getmetaTypeList;let x=index">
+                                <div class="form-group">
+                                    <label>* {{gtype.labelName}}</label>
+                                    <div *ngIf="gtype.metaType==1">
+                                        <input type="text" class="form-control" id="{{gtype.labelName}}"
+                                            [(ngModel)]="gtype.value">
+                                    </div>
+                                    <div *ngIf="gtype.metaType==2">
+                                        <input type="date" class="form-control" id="{{gtype.labelName}}"
+                                            max="2100-12-31" [(ngModel)]="gtype.value">
+                                    </div>
+                                    <div *ngIf="gtype.metaType==3">
+                                        <input type="number" class="form-control" id="{{gtype.labelName}}"
+                                            [(ngModel)]="gtype.value">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                   <!--dynamic form load-->
+                   <div class="col-md-12">
+                    <div class="form-group">
+
+
+                        <div class="row">
+                            <div class="col-6">
+                                <label>* {{"Select Meta"| langReplace}}</label>
+                                <select class="form-select" [(ngModel)]="processId" id="selDynForm"
+                                    (change)="showDynamicForm(processId)">
+                                    <option value="0"> {{"Select"| langReplace}} </option>
+                                    <option *ngFor="let flist of formlist" [value]="flist.processId">
+                                        {{flist.formName}}</option>
+                                </select>
+
+
+
+                            </div>
+
+                        </div>
+                        
+                    </div>
+                    <div class="row" *ngIf="loadDynamicForm>0">
+                        <div class="col-md-12">
+                          <app-form-apply [fileeList]="fileeList" [fromadmin]="foradmin" [processId]="processId" [fileUpload]="fileUploadStatus" [createDoc]="createDoc" [fileUploadData]="fileUploadData" [intOnlineServiceIdFileEdit]="onlineServiceId" (fileUploadSuccess)="fileUploadSuccess($event)"></app-form-apply>
+                        </div>
+                      </div> 
+                </div>
+                <!--dynamic form load-->
+
+                </div>
+
+                <div class="col-md-12 d-none">
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" [(ngModel)]="chkIndexing"
+                                id="flexCheckChecked" checked>
+                            <label class="form-check-label" for="flexCheckChecked">
+                                Set Indexing
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label> {{"Set Workflow of the file"| langReplace}}</label>
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="workflowMode"
+                                        (click)="workflowModedoClick($event)" [(ngModel)]="workflowMode"
+                                        id="workflowMode1" value="1">
+                                    <label class="form-check-label" for="workflowMode1">{{"Automatic"|
+                                        langReplace}}</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="workflowMode"
+                                        (click)="workflowModedoClick($event)" [(ngModel)]="workflowMode"
+                                        id="workflowMode2" value="2" checked>
+                                    <label class="form-check-label" for="workflowMode2">{{"Manual"|
+                                        langReplace}}</label>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group" *ngIf="showForwardAuthority">
+                            <label>* {{"Select Authority"| langReplace }} </label>
+                            <select class="form-select" id="parentAuthorityId" [(ngModel)]="authorityRoleId"
+                                (change)="getFOrwardAuthority($event)">
+                                <option value="0">{{"Select"| langReplace }} </option>
+                                <option *ngFor="let flist of roleArr" [value]="flist.roleId">{{flist.userFullName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
-  
-           
-            <div class="col-md-12">
-              <div class="form-group">
-                                                             
-  
-                  <div class="row">
-                      <div class="col-6">
-                              <label>*  {{"Select Template"| langReplace}}</label>
-                          <select class="form-select" [(ngModel)]="selMeta" id="selMeta" (change)="getMetaType(selMeta)">
-                              <option value="0"> {{"Select"| langReplace}} </option>
-                              <option *ngFor="let flist of metalist" [value]="flist.templateId">{{flist.templateName}}</option>
-                            </select>   
-                            
-                           
-  
-                      </div>
-                   
-                  </div>  
-              </div>
-                 <div class="p-3 bg-light mb-3" *ngIf="getmetaTypeList?.length > 0">
-                  <div class="row">
-                          <div class="col-md-6" *ngFor="let gtype of getmetaTypeList;let x=index">
-                              <div class="form-group">
-                                   <label>*  {{gtype.labelName}}</label>
-                                   <div *ngIf="gtype.metaType==1">
-                                     <input type="text" class="form-control" id="{{gtype.labelName}}" [(ngModel)]="gtype.value">
-                                  </div>
-                                  <div *ngIf="gtype.metaType==2">
-                                     <input type="date" class="form-control" id="{{gtype.labelName}}" max="2100-12-31" [(ngModel)]="gtype.value">
-                                  </div>
-                                  <div *ngIf="gtype.metaType==3">
-                                      <input type="number" class="form-control" id="{{gtype.labelName}}" [(ngModel)]="gtype.value">
-                                   </div>
-                              </div>
-                             
-                          </div>
-                  </div>
-             
-               
-               
-  </div>
-  
-  
-            </div>
-            
-  <div class="col-md-12 d-none">
-  <div class="form-group">
-  <div class="form-check">
-  <input class="form-check-input" type="checkbox" value="" [(ngModel)]="chkIndexing"  id="flexCheckChecked" checked>
-  <label class="form-check-label" for="flexCheckChecked">
-  Set Indexing
-  </label>
-  </div>
-  </div>
-  </div>
-  <div class="row">
-      <div class="col-md-6">
-          <div class="form-group">
-              <label> {{"Set Workflow of the file"| langReplace}}</label>
-              <div>
-                  <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="workflowMode"
-                          (click)="workflowModedoClick($event)" [(ngModel)]="workflowMode" id="workflowMode1"
-                          value="1">
-                      <label class="form-check-label" for="workflowMode1">{{"Automatic"|
-                          langReplace}}</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="workflowMode"
-                          (click)="workflowModedoClick($event)" [(ngModel)]="workflowMode" id="workflowMode2"
-                          value="2" checked>
-                      <label class="form-check-label" for="workflowMode2">{{"Manual"| langReplace}}</label>
-                  </div>
-              </div>
-  
-  
-  
-          </div>
-      </div>
-      
-      <div class="col-md-6">
-          <div class="form-group" *ngIf="showForwardAuthority">
-              <label>* {{"Select Authority"| langReplace }} </label>
-              <select class="form-select" id="parentAuthorityId" [(ngModel)]="authorityRoleId" (change)="getFOrwardAuthority($event)">
-                  <option value="0">{{"Select"| langReplace }} </option>
-                  <option *ngFor="let flist of roleArr" [value]="flist.roleId">{{flist.userFullName}}
-                  </option>
-              </select>
-          </div>
-      </div>
-  </div>
-  
-  
-        </div>
-  
-      
-    
-       
-     
-  
-  
-      
-      
-        <div class="">
-                <button  class="btn btn-success" (click)="finalfileupload()" > {{"Submit"| langReplace}}</button>&nbsp; 
-                 <button  type="button" class="btn btn-danger" (click)="resetform()"> {{"Reset"| langReplace}}</button>  
-  
+
+
+
+
+
+
+
+
+
+            <div class="">
+                <button class="btn btn-success" (click)="finalfileupload()"> {{"Submit"| langReplace}}</button>&nbsp;
+                <button type="button" class="btn btn-danger" (click)="resetform()"> {{"Reset"| langReplace}}</button>
+
             </div>
         </div>
         <div class="col-md-6" *ngIf="previewFile">
             <div class="d-flex justify-content-between align-items-center">
-          <h5> {{"Preview File"| langReplace}}</h5>
-        
-        </div>
-          
-             
-            
-  
-  
-              <div class="previewdiv"   id="previewdiv">
-                    <iframe [src]="publicurl"></iframe>
-  
-  
-                   
+                <h5> {{"Preview File"| langReplace}}</h5>
+
+            </div>
+
+
+
+
+
+            <div class="previewdiv" id="previewdiv">
+                <iframe [src]="publicurl"></iframe>
+
+
+
                 <div class="loader loader2" *ngIf="fileLoading">
                     <div class="loader-item"></div>
                     <p>Loading...</p>
-                  </div>
-              </div>
-             
-                
+                </div>
             </div>
-      </div>
-  </div> 
-  
+
+
+        </div>
+    </div>
+</div>

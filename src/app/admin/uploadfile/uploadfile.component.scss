@@ -29,7 +29,11 @@
       
        font-size: 1.6rem;
         color: var(--bs-gray-400);
-      }    
+      } 
+      p{
+        font-size: 1rem;
+        color: var(--bs-gray-400);
+      }   
       &:hover{
         label {
             background-color:var(--base-color-700);

@@ -20,6 +20,7 @@ export class DynamicformspreviewComponent implements OnInit {
   foradmin:any='admin';
   jsonurl="assets/js/_configs/dynamicformPreview.config.json";
   formName:any;
+  formTemplateId:any;
   constructor(
     private router : ActivatedRoute,
     public vldChkLst : ValidatorchecklistService ,
@@ -43,9 +44,8 @@ export class DynamicformspreviewComponent implements OnInit {
      this.processId         = schemeArr[0];
      this.onlineServiceId   = schemeArr[1];
      this.currSecId         = schemeArr[2];
-
-
-
+     this.formTemplateId    = schemeArr[3];
+     console.log(this.formTemplateId);
   }
       //this.processId =this.childprocessId;
 

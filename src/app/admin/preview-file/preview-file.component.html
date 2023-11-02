@@ -46,9 +46,10 @@
                 <div class="form-group">
                                    
                         <div class="input-group ">
-                                        <input type="password" placeholder="Enter File Password" class="form-control" id="txtPassword" [(ngModel)]="txtPassword">
-                                        
-                                      
+                                        <input [type]="password" placeholder="Enter File Password" class="form-control password" id="txtPassword" [(ngModel)]="txtPassword">
+                                        <a class="passwordshowbtn"  (click)="toggleFieldTextType()">
+                                        <i class="bi bi-eye" aria-hidden="true" *ngIf="!show"></i>
+                                        <i class="bi bi-eye-slash" aria-hidden="true" *ngIf="show"></i></a>
                                       
                                        
                                       </div>

@@ -85,23 +85,23 @@ export class ManageDepartmentComponent {
     let txtAliasName = this.manage_department.value.txtAliasName;
 
 
-    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtDepartmentName, `Department Name Cannot be Blank!`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtDepartmentName, `Department Name Cannot be Blank!`,'txtDepartmentName'))) {
       errFlag = 1;
     }
 
-    if ((errFlag == 0) && (!this.vldChkLst.minLength(txtDepartmentName, 2, `Department Name`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.minLength(txtDepartmentName, 2, `Department Name`,'txtDepartmentName'))) {
       errFlag = 1;
     }
 
-    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtDepartmentName, 100, `Department Name`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtDepartmentName, 100, `Department Name`,'txtDepartmentName'))) {
       errFlag = 1;
     }
 
-    if ((errFlag == 0) && (!this.vldChkLst.minLength(txtAliasName, 2, `Alias Name`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.minLength(txtAliasName, 2, `Alias Name`,'txtAliasName'))) {
       errFlag = 1;
     }
 
-    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtAliasName, 10, `Alias Name`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtAliasName, 10, `Alias Name`,'txtAliasName'))) {
       errFlag = 1;
     }
 

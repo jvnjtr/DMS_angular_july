@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication.service';
 import { HttpClient } from '@angular/common/http';
@@ -14,6 +14,7 @@ import * as CryptoJS from 'crypto-js';
 import { Buffer } from 'buffer';
 
 import Swal from 'sweetalert2';
+import { FormApplyComponent } from '../formbuilder/form-apply/form-apply.component';
 
 @Component({
   selector: 'app-create-doc-inputs',
@@ -24,6 +25,7 @@ export class CreateDocInputsComponent implements OnInit {
 
   folderid: any = '0';
   @Output("callfunction") callfunction: EventEmitter<any> = new EventEmitter();
+  @ViewChild(FormApplyComponent, { static: false }) formapplyItems: FormApplyComponent;
   txtDocuemntName: any = ''
   rdoDocuemntType: any = "1";
   pdfweriterURL: any;
@@ -106,9 +108,13 @@ export class CreateDocInputsComponent implements OnInit {
   authorityRoleId: any = 0;
   logedinRoleId: any;
   roleArr: any = [];
-
-
-
+  processId: any = '0';
+  formlist: any = [];
+  loadDynamicForm: any;
+  foradmin: any = 'admin';
+  fileUploadStatus: any = 0;
+  fileUploadData: any = [];
+  createdDocumentVal:any=0;
   constructor(private route: Router,
     private httpClient: HttpClient,
     private uploadfiles: UploadfilesService,
@@ -140,7 +146,7 @@ export class CreateDocInputsComponent implements OnInit {
     // console.log(this.folderid)
     //this.getFolderbased(this.folderid);
     // this.getPermissions(this.folderid)
-    this.viewMetaList()
+    this.viewDynFormList()
     this.getFolders();
     //this.getFolderbased(this.folderid);
     //console.log(window.location.href)
@@ -459,8 +465,19 @@ export class CreateDocInputsComponent implements OnInit {
 
     else if ((this.rdoSetretention == 1) && (!this.vldChkLst.blankCheck(this.txtExpDate, this.commonserveice.langReplace("Please select the retention date"), 'expiryDate'))) { }
     else if (!this.vldChkLst.blankCheck(subject, this.commonserveice.langReplace(this.messaageslist.subject), 'txtSubject')) { }
-    else if (!this.vldChkLst.selectDropdown(templateid, this.commonserveice.langReplace(this.messaageslist.template), 'selMeta')) { }
-    else if (!this.metavalid()) { }
+    else if (this.processId < 1) {
+      Swal.fire({
+  
+        text: this.commonserveice.langReplace("Please Select Meta"),
+        icon: 'error',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: this.commonserveice.langReplace('Ok')
+      }).then((result) => {
+        window.setTimeout(function () { 
+          $('#selDynForm').focus(); 
+      }, 200); 
+      })
+    }
 
 
     else {
@@ -481,76 +498,76 @@ export class CreateDocInputsComponent implements OnInit {
         "indexing": fileindexing,
         "expiryDate": this.txtExpDate,
         "ocrLanguage": this.selOcrLang,
-        "filePermission": this.permissionlist
-
+        "filePermission": this.permissionlist,
+        "processId": this.processId,
       }
 
+      this.fileUploadData.push(uploadParams);
+      this.formapplyItems.doSchemeApply();
 
+      // this.loading = true;
+      // this.uploadfiles.finaluploadFile(uploadParams).subscribe({
+      //   next: (response) => {
+      //     let respData = response.RESPONSE_DATA;
+      //     let respToken = response.RESPONSE_TOKEN;
+      //     //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
 
-      this.loading = true;
+      //     let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+      //     if (respToken == verifyToken) {
+      //       let res: any = Buffer.from(respData, 'base64');
+      //       let responseResult = JSON.parse(res)
 
-      this.uploadfiles.finaluploadFile(uploadParams).subscribe({
-        next: (response) => {
-          let respData = response.RESPONSE_DATA;
-          let respToken = response.RESPONSE_TOKEN;
-          //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
-
-          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-          if (respToken == verifyToken) {
-            let res: any = Buffer.from(respData, 'base64');
-            let responseResult = JSON.parse(res)
-
-            if (responseResult.status == 200) {
-
-
-
-              this.loading = false;
-              Swal.fire({
-
-                text: this.commonserveice.langReplace(this.messaageslist.successMsg),
-                icon: 'success',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: this.commonserveice.langReplace('Ok')
-              }).then((result) => {
-
-
-                this.resetform();
-                this.commonserveice.reloadpage()
-
-              })
+      //       if (responseResult.status == 200) {
 
 
 
+      //         this.loading = false;
+      //         Swal.fire({
 
-            }
-            else if (responseResult.status == 400) {
-              this.loading = false;
-              this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message))
+      //           text: this.commonserveice.langReplace(this.messaageslist.successMsg),
+      //           icon: 'success',
+      //           confirmButtonColor: '#3085d6',
+      //           confirmButtonText: this.commonserveice.langReplace('Ok')
+      //         }).then((result) => {
 
-            }
-            else if (responseResult.status == 500) {
-              this.loading = false;
-              this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message))
 
-            }
-            else if (responseResult.status == 501) {
+      //           this.resetform();
+      //           this.commonserveice.reloadpage()
 
-              this.authService.directlogout();
-            }
-            else {
-              this.loading = false;
-              //  this.authService.directlogout();
-            }
-          }
-          else {
-            this.loading = false;
-            this.authService.directlogout();
-          }
-        },
-        error: (msg) => {
-          this.authService.directlogout();
-        }
-      })
+      //         })
+
+
+
+
+      //       }
+      //       else if (responseResult.status == 400) {
+      //         this.loading = false;
+      //         this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message))
+
+      //       }
+      //       else if (responseResult.status == 500) {
+      //         this.loading = false;
+      //         this.commonserveice.swalfire('error', this.commonserveice.langReplace(responseResult.message))
+
+      //       }
+      //       else if (responseResult.status == 501) {
+
+      //         this.authService.directlogout();
+      //       }
+      //       else {
+      //         this.loading = false;
+      //         //  this.authService.directlogout();
+      //       }
+      //     }
+      //     else {
+      //       this.loading = false;
+      //       this.authService.directlogout();
+      //     }
+      //   },
+      //   error: (msg) => {
+      //     this.authService.directlogout();
+      //   }
+      // })
 
 
 
@@ -772,6 +789,89 @@ export class CreateDocInputsComponent implements OnInit {
   getFOrwardAuthority(e: any) {
     this.authorityRoleId = e.target.value;
   }
-
+  metaSubmit(){
+    this.formapplyItems.doSchemeApply();
+  }
+  viewDynFormList(){
+  
+   
+    let dataParam = {
+      "processId": ''
+      };
+      this.commonserveice.viewDynFormList(dataParam).subscribe({
+        next: (response) => {    let respData = response.RESPONSE_DATA;
+          let respToken = response.RESPONSE_TOKEN;
+        
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if(respToken == verifyToken){
+            let res:any = Buffer.from(respData,'base64'); 
+            let responseResult = JSON.parse(res)
+           
+            if (responseResult.status == 200) {
+        
+              
+           this.formlist = responseResult.result;
+  
+  
+   
+      
+            }
+            else if(responseResult.status==501){
+              
+              this.authService.directlogout();
+            }
+          }
+          else{
+            this.loading = false;
+            this.authService.directlogout();
+          }},
+        error: (msg) => {
+          this.authService.directlogout();
+       }
+     })
+  
+  
+  
+  }
+  showDynamicForm(processId:any){
+    if(processId>1){
+      this.createdDocumentVal=processId;
+      this.fileeList.push('documentCreation');
+      this.fileUploadStatus=1;
+      this.loadDynamicForm=1;
+     
+    }else{
+      this.fileUploadStatus=0;
+      this.loadDynamicForm=0;
+      
+    }
+    
+  }
+  fileUploadSuccess(event:any){
+    if(event>0){
+      Swal.fire({
+                
+        text: this.commonserveice.langReplace(this.messaageslist.successMsg),
+        icon: 'success',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: this.commonserveice.langReplace('Ok')
+      }).then((result) => {
+        
+       
+       let reData:any= this.folderid+':'+'0'
+        
+        let encSchemeStr = this.encDec.encText(reData.toString());
+       // this.route.navigate(['/admin/configuration/formPreview',encSchemeStr]);
+    
+        this.route.navigate(['/admin/viewupload',encSchemeStr])
+  
+    
+      this.resetform();
+      })
+    }else{
+      
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace('Error in File Upload'))
+    }
+  }
 
 }

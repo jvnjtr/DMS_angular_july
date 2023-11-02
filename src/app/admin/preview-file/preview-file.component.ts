@@ -58,6 +58,8 @@ siteURL=environment.siteURL;
   fileext:any;
   getfiletype:any;
   prevstatus:any;
+  show = false;
+  password: any = 'password';
   constructor(private route: Router,private httpClient: HttpClient,
 private router:ActivatedRoute,
 public encDec: EncrypyDecrpyService,
@@ -357,6 +359,16 @@ else{
   }
 
 
+
+}
+toggleFieldTextType() {
+  if (this.password == 'password') {
+    this.password = 'text';
+    this.show = true;
+  } else {
+    this.password = 'password';
+    this.show = false;
+  }
 
 }
 

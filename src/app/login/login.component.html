@@ -10,15 +10,14 @@
             <div class="login-controls-section">
                 <div class="form-group">
                     <label>Enter User ID</label>
-                    <input type="text" placeholder="Enter User ID "  class="form-control"  value="" autocomplete="off" [(ngModel)]="UserId" appBlockCopyPaste
-                    >
+                    <input autofocus type="text" placeholder="Enter User ID "  class="form-control"  value="" autocomplete="off" [(ngModel)]="UserId" appBlockCopyPaste id="UserId" (keypress)="validation.isAlphaNumericNotSpace($event)">
                     
                        
                        
                 </div>
                 <div class="form-group">
                         <label>Enter Password</label>
-                        <input [type]="password" placeholder="Enter Password"  class="form-control password" autocomplete="off" value="" [(ngModel)]="Password" appBlockCopyPaste>
+                        <input  [type]="password" placeholder="Enter Password"  class="form-control password" autocomplete="off" value="" [(ngModel)]="Password" appBlockCopyPaste id="Password">
                       
                         <a class="passwordshowbtn"  (click)="toggleFieldTextType()">
                                 <i class="bi bi-eye" aria-hidden="true" *ngIf="!show"></i>
@@ -29,7 +28,7 @@
                     </div> 
 
 
-                  
+                    <p class="align-right"><small><a class="forgot-password-link" routerLink="/forgotPassword">Forgot Password</a></small></p>
                         
 
                     <input type="submit"  (click)="doLogin();" class="login-btn " value="Log In">

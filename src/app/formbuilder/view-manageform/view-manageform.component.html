@@ -1,150 +1,167 @@
 <!--===Page Title===-->
 <div class="page-title">
-   
-    <h4>{{title}}</h4>
-    </div>
-    <!--===Page Title===-->
-    <!--===controle section===-->
-    <div class="page-controls-section" id="page-content">
-      
-      <div class="card">
+
+  <h4>{{title}}</h4>
+</div>
+<!--===Page Title===-->
+<!--===controle section===-->
+<div class="page-controls-section" id="page-content">
+
+  <div class="card">
     <div class="controls-section-header">
-        <ul class="nav nav-tabs nav-fill" role="tablist" >
-            <app-tabs *ngFor="let tablist of tablist" [tabMessage]="tablist"></app-tabs>
-       </ul>
-     <div class="indicatorslist">
-     <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist" [sendIds]="letterIdArray" [pubUnpubStatus]="pubUnpStatus" [funType]="sevName" (callfunction)="viewItems()" (callfunction3)="nullidsArray()"  (callfunction2)='selectAll($event)'></app-utils>
-  </div>
+      <ul class="nav nav-tabs nav-fill" role="tablist">
+        <app-tabs *ngFor="let tablist of tablist" [tabMessage]="tablist"></app-tabs>
+      </ul>
+      <div class="indicatorslist">
+        <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist" [sendIds]="letterIdArray"
+          [pubUnpubStatus]="pubUnpStatus" [funType]="sevName" (callfunction)="viewItems()"
+          (callfunction3)="nullidsArray()" (callfunction2)='selectAll($event)'></app-utils>
+      </div>
+
+    </div>
+    <div class="card-body">
+
+
+      <div class="controls-section">
+        <!-- Search Panel -->
+        <div class="search-container active">
+
+          <div class="search-sec">
+
+            <div class="row">
+
+              <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                  <select class="form-select" [(ngModel)]="selModuleName">
+                    <option value="0" disabled selected>Select Module</option>
+                    <option *ngFor="let mNames of moduleNames" [value]="mNames.intModuleId">{{ mNames.vchModuleName }}
+                    </option>
+
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                  <input type="text" class="form-control" [(ngModel)]="txtFormName" name="FormName"
+                    placeholder="Type Form Name">
+                </div>
+              </div>
+
+
+              <div class="col-12 col-md-3 col-lg-3">
+                <div class="form-group">
+                  <button class="btn btn-primary" (click)="viewSearchList()"> Show</button>
+                  <button class="btn btn-danger ml-1" (click)="viewItems()"> Reset</button>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+
+
+        </div>
+        <!-- Search Panel -->
+        <div *ngIf="formsList?.length > 0; else norecord">
+          <div class="d-flex justify-content-between mb-3">
+            <div>
+              <ul class="legends">
+                <li><span class="bg-success"></span> Publish</li>
+                <li><span class="bg-danger"></span> Unpublish</li>
+              </ul>
+            </div>
+            <div>
+
+              Per Page:
+              <select (change)="onTableSizeChange($event)">
+                <option *ngFor="let size of pageSizes" [ngValue]="size">
+                  {{ size }}
+                </option>
+              </select>
+            </div>
+
+
+          </div>
+
+          <div class="table-responsive  print-section">
+            <table data-toggle="table" class="table  table-bordered valign-middle">
+              <thead>
+                <tr class="align-middle">
+                  <th class="p-none" scope="col" width="25px" valign="top">
+                    <div class="form-check">
+                      <input class="form-check-input checkAll" type="checkbox" (click)='selectAll($event)' id="checkall"
+                        name="checkall" value="checkall">
 
                     </div>
-    <div class="card-body">
-              
-             
-                  <div class="controls-section">
-                         <!-- Search Panel -->
-                        <div class="search-container active">
-                          
-                           <div class="search-sec">
-                              
-                                 <div class="row">
-                                   
-                                    <div class="col-12 col-md-3 col-lg-3">
-                                       <div class="form-group">
-                                       <select class="form-select" [(ngModel)]="selModuleName">
-                                          <option value="0" disabled selected >Select Module</option>
-                                          <option  *ngFor="let mNames of moduleNames"  [value]="mNames.intModuleId">{{ mNames.vchModuleName }}</option>
-                                          
-                                       </select>
-                                    </div>
-                                    </div>
-                                    
-                                    <div class="col-12 col-md-3 col-lg-3">
-                                       <div class="form-group">
-                                       <input type="text" class="form-control" [(ngModel)]="txtFormName" name="FormName" placeholder="Type Form Name" >
-                                    </div>
-                                    </div>
-                                    
-                                     
-                                    <div class="col-12 col-md-3 col-lg-3">
-                                       <div class="form-group">
-                                       <button class="btn btn-primary" (click)="viewSearchList()"> Show</button>
-                                       <button class="btn btn-danger ml-1" (click)="viewItems()"> Reset</button>
-                                    </div>
-                                    </div>
-                                 </div>
-                              
-                              
-                              </div>
-                           
-                         
-                        </div>
-                        <!-- Search Panel -->
-                        <div *ngIf="formsList?.length > 0; else norecord">
-             <div class="d-flex justify-content-between mb-3">
-                <div>
-                    <ul class="legends">
-                        <li><span class="bg-success"></span> Publish</li>
-                         <li><span class="bg-danger"></span> Unpublish</li>
-                    </ul>
-                </div>
-                <div >
-                                                         
-                    Per Page:
-                    <select (change)="onTableSizeChange($event)">
-                      <option *ngFor="let size of pageSizes" [ngValue]="size">
-                        {{ size }}
-                      </option>
-                    </select>
-                  </div>
-                            
+                  </th>
+                  <th scope="col" width="40px">Sl#</th>
+                  <th scope="col">Form Name</th>
+                  <th scope="col">Module Name</th>
+                  <th scope="col">Table Name</th>
+                  <!-- <th scope="col" >Enable to</th> -->
+                  <th scope="col" width="140px">Created On</th>
+                  <th scope="col" width="100px" class="p-none">Preview</th>
+                  <th class="p-none" scope="col" width="70px">Action</th>
+                  <th scope="col" class="p-none" width="70px">Manage</th>
+                </tr>
+              </thead>
+              <tbody>
 
-                          </div>
-
-                           <div class="table-responsive  print-section" >
-                              <table data-toggle="table" class="table  table-bordered valign-middle">
-                                 <thead>
-                                    <tr  class="align-middle">
-                                       <th class="p-none" scope="col" width="25px" valign="top">
-                                         <div class="form-check">
-                                            <input class="form-check-input checkAll" type="checkbox"  (click)='selectAll($event)' id="checkall" name="checkall"  value="checkall" >
-  
-                                    </div>
-                                       </th>
-                                       <th scope="col" width="40px">Sl#</th>
-                                       <th scope="col">Form Name</th>
-                                       <th scope="col" >Module Name</th>
-                                       <th scope="col" >Table Name</th>
-                                       <!-- <th scope="col" >Enable to</th> -->
-                                       <th scope="col" width="140px">Created On</th>
-                                        <th scope="col" width="100px" class="p-none">Preview</th> 
-                                       <th class="p-none" scope="col"  width="70px">Action</th>
-                                       <th scope="col" class="p-none" width="70px" >Manage</th>
-                                    </tr>
-                                 </thead>
-                                 <tbody>
-                                   
-                                    <tr  class="align-middle" *ngFor="let form of formsList | paginate
+                <tr class="align-middle" *ngFor="let form of formsList | paginate
                                     : {
                                         itemsPerPage: tableSize,
                                         currentPage: page,
                                         totalItems: count
                                       }; let i = index">
-                                       <td  class="border-left-2 p-none" [ngClass]="{'border-left-danger': form.tinPublishStatus === 0 , 'border-left-success': form.tinPublishStatus === 1 }"> 
-                                       
-<div>
-    <input class="form-check-input rowCheck" type="checkbox"  (change)="onChange(form.intProcessId, $event,form.tinPublishStatus)" [attr.pubstatus]="form.tinPublishStatus"  name="{{form.intProcessId }}"    [id]="form.intProcessId" [value]="form.intProcessId" >
-  </div>
-                                       </td>
-                                       <td>{{i+1}}</td>
-                                       <td><a type="button"  class="text-primary" data-bs-toggle="modal" [attr.data-bs-target]="'#previewModal'+i">
+                  <td class="border-left-2 p-none"
+                    [ngClass]="{'border-left-danger': form.tinPublishStatus === 0 , 'border-left-success': form.tinPublishStatus === 1 }">
+
+                    <div>
+                      <input class="form-check-input rowCheck" type="checkbox"
+                        (change)="onChange(form.intProcessId, $event,form.tinPublishStatus)"
+                        [attr.pubstatus]="form.tinPublishStatus" name="{{form.intProcessId }}" [id]="form.intProcessId"
+                        [value]="form.intProcessId">
+                    </div>
+                  </td>
+                  <td>{{i+1}}</td>
+                  <td><a type="button" class="text-primary" data-bs-toggle="modal"
+                      [attr.data-bs-target]="'#previewModal'+i">
 
 
-                                        {{form.vchProcessName}}
-                                        </a>
+                      {{form.vchProcessName}}
+                    </a>
 
-                                          
-<!-- Modal -->
-<div class="modal fade p-none" id="previewModal{{i}}" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title mb-0" id="previewModalLabel">Form Details</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
- 
-        <table class="table table-bordered">
-           <tbody>
-           <tr>
-            <td class="w-25 fw-bold">Module Name</td>
-            <td colspan="2" >{{form.vchModuleName}}</td>
-            <td class="w-25" rowspan="3" align="center"><img src="{{form.vchSchemePosterUrl
+
+                    <!-- Modal -->
+                    <div class="modal fade p-none" id="previewModal{{i}}" tabindex="-1"
+                      aria-labelledby="previewModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title mb-0" id="previewModalLabel">Form Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+
+                            <table class="table table-bordered">
+                              <tbody>
+                                <tr>
+                                  <td class="w-25 fw-bold">Module Name</td>
+                                  <td colspan="2">{{form.vchModuleName}}</td>
+                                  <td class="w-25" rowspan="3" align="center"><img src="{{form.vchSchemePosterUrl
            }}" style="max-width:100%" height="70px"></td>
-          </tr>
-           <!-- <tr><td class="fw-bold">Form Type</td><td colspan="2">{{form.vchFormType}}</td></tr> -->
-           <tr><td class="fw-bold">Form Name</td><td colspan="2">{{form.vchProcessName}}</td></tr>
-           <tr><td class="fw-bold">Table Name</td><td colspan="3">{{form.vchTableName}}</td></tr>
-           <!-- <tr><td class="fw-bold">Add Section</td><td colspan="3">
+                                </tr>
+                                <!-- <tr><td class="fw-bold">Form Type</td><td colspan="2">{{form.vchFormType}}</td></tr> -->
+                                <tr>
+                                  <td class="fw-bold">Form Name</td>
+                                  <td colspan="2">{{form.vchProcessName}}</td>
+                                </tr>
+                                <tr>
+                                  <td class="fw-bold">Table Name</td>
+                                  <td colspan="3">{{form.vchTableName}}</td>
+                                </tr>
+                                <!-- <tr><td class="fw-bold">Add Section</td><td colspan="3">
               <div *ngIf="form.vchSection?.length > 0">
                   <table class="table table-bordered mb-0">
                       <thead>
@@ -168,17 +185,17 @@
              
      
           </td></tr> -->
-           <!-- <tr><td class="fw-bold">Form Guideline</td>
+                                <!-- <tr><td class="fw-bold">Form Guideline</td>
              <td class="w-25" colspan="3"><a href="{{form.vchSchemeGuidelineUrl}}" class="text-danger" target="_blank"><i class="icon-file-pdf-solid"></i></a></td>
             </tr> -->
- 
-             <tr> 
-                 <td class="fw-bold">Descriptin</td>
-                   <td colspan="3" innerHtml={{form.txtSchemeDescription}}>
-               
-               </td>
-   </tr>
-<!--   
+
+                                <tr>
+                                  <td class="fw-bold">Descriptin</td>
+                                  <td colspan="3" innerHtml={{form.txtSchemeDescription}}>
+
+                                  </td>
+                                </tr>
+                                <!--   
  <tr> 
      <td class="fw-bold">Applied Configurations</td>
        <td colspan="3" >
@@ -188,7 +205,7 @@
            {{form.intDocument == 1 ? 'For Document ,': ''}}
    </td>
 </tr> -->
-<!-- <tr> 
+                                <!-- <tr> 
  <td class="fw-bold">Enable to</td>
    <td colspan="3" >
        {{form.intAdminApplication == 1 ? 'For Admin Application ,' : ''}}
@@ -196,242 +213,267 @@
        
 </td>
 </tr> -->
-</tbody>
-</table>  
+                              </tbody>
+                            </table>
 
-<table class="table table-bordered d-none">
- <tbody>
-     <tr>
-         <td class="w-25 fw-bold">Service Mode</td><td class="w-25">{{form.intServiceMode == 1 ? 'External' : 'Internal'}}</td>
-         <td class="fw-bold">Based Type </td>
-         <td >{{form.intBaseType == 1 ? 'Redirect Base' : (form.intBaseType!='null') ?  'API Based' : '--' }}</td>
-         
-     </tr>
-     <tr *ngIf="form.intBaseType==1;">
-        
-         <td class="w-25 fw-bold">Redirect URL </td>
-         <td class="w-25">{{form.vchRedirectURL }}</td>
-         <td class="w-25 fw-bold">Open window type</td>
-         <td class="w-25">{{form.vchredirectWindowType == '0' ? 'same' : 'new window' }}</td>
-       </tr>
- </tbody>
-</table>
- <div class="d-none" *ngIf="form.intBaseType==0;">
-   <h6>Redirect URL</h6>
-   <table class="table table-bordered">
-      <thead>
-       <tr>
-           <td class="w-25 fw-bold">API URL</td>
-           <td class="w-25">{{form.vchAPIURLDtls[0].url}}</td>
-           <td class="w-25 fw-bold">Type</td>
-           <td class="w-25">{{form.vchAPIURLDtls[0].method}}</td>
-         </tr> 
+                            <table class="table table-bordered d-none">
+                              <tbody>
+                                <tr>
+                                  <td class="w-25 fw-bold">Service Mode</td>
+                                  <td class="w-25">{{form.intServiceMode == 1 ? 'External' : 'Internal'}}</td>
+                                  <td class="fw-bold">Based Type </td>
+                                  <td>{{form.intBaseType == 1 ? 'Redirect Base' : (form.intBaseType!='null') ? 'API
+                                    Based' : '--' }}</td>
 
-         <tr *ngFor="let apiauthdtls of form.vchAPIURLDtls[0].authDetails" >
-            <td class="w-25 fw-bold">Authontication</td>
-            <td class="w-25" colspan="3"><strong>Type :</strong> {{apiauthdtls.authType == 1 ? 'Basic Auth' :'-'}}
-             
-                  <div class="mt-2" *ngFor="let apiauthparams of apiauthdtls.params" >
-                    <div class="mb-1">
-                    <strong>UserName :</strong> {{apiauthparams.userName}}
-                  </div>
-                  <div>
-                    <strong>Password :</strong> {{apiauthparams.password}}
-                  </div>
-              
-                  </div>
-           
-            </td>
-            
-         </tr>
-        
-  
-   
-      <tr><th >Label</th><th>Key</th><th>Type</th><th>Value</th></tr>
-   </thead>
-     
-     <tbody>
-       
-     <tr *ngFor="let apidtls of form.vchAPIURLDtls[0].details" >
-       <td>{{apidtls.label}}</td>
-       <td>{{apidtls.key}}</td>
-         <td>{{apidtls.type == 1 ? 'Static' : 'Dynamic'}}</td>
-         <td>{{apidtls.value}}</td>
+                                </tr>
+                                <tr *ngIf="form.intBaseType==1;">
 
-     </tr>
-     
-     </tbody>
-   </table>
-   <h6>REFERENCE NUMBER</h6>
-   <table class="table table-bordered">
-       <thead>
-         <tr>
-             <td class="w-25">Reference URL</td>
-             <td class="w-25">{{form.vchAPIReferenceURLDtls[0].url}}</td>
-             <td class="w-25 fw-bold">Type</td>
-           <td class="w-25">{{form.vchAPIReferenceURLDtls[0].method}}</td>
-           </tr> 
-           <tr *ngFor="let apiauthdtls of form.vchAPIReferenceURLDtls[0].authDetails" >
-              <td class="w-25 fw-bold">Authontication</td>
-              <td class="w-25" colspan="3"><strong>Type :</strong> {{apiauthdtls.authType == 1 ? 'Basic Auth' :'-'}}
-               
-                    <div class="mt-2" *ngFor="let apiauthparams of apiauthdtls.params" >
-                      <div class="mb-1">
-                      <strong>UserName :</strong> {{apiauthparams.userName}}
-                    </div>
-                    <div>
-                      <strong>Password :</strong> {{apiauthparams.password}}
-                    </div>
-                
-                    </div>
-             
-              </td>
-              
-           </tr>
-       <tr><th>Label</th><th>Key</th><th>Type</th><th>Value</th></tr>
-     </thead>
-       <tbody>
-        
-       <tr *ngFor="let apiRefdtls of form.vchAPIReferenceURLDtls[0].details" >
-         <td>{{apiRefdtls.label}}</td>
-         <td>{{apiRefdtls.key}}</td>
-           <td>{{apiRefdtls.type == 1 ? 'Static' : 'Dynamic'}}</td>
-           <td>{{apiRefdtls.value}}</td>
+                                  <td class="w-25 fw-bold">Redirect URL </td>
+                                  <td class="w-25">{{form.vchRedirectURL }}</td>
+                                  <td class="w-25 fw-bold">Open window type</td>
+                                  <td class="w-25">{{form.vchredirectWindowType == '0' ? 'same' : 'new window' }}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <div class="d-none" *ngIf="form.intBaseType==0;">
+                              <h6>Redirect URL</h6>
+                              <table class="table table-bordered">
+                                <thead>
+                                  <tr>
+                                    <td class="w-25 fw-bold">API URL</td>
+                                    <td class="w-25">{{form.vchAPIURLDtls[0].url}}</td>
+                                    <td class="w-25 fw-bold">Type</td>
+                                    <td class="w-25">{{form.vchAPIURLDtls[0].method}}</td>
+                                  </tr>
 
-       </tr>
-       </tbody>
-     </table>
-    <h6>STATUS CHECK</h6>
-     <table class="table table-bordered">
-         <thead>
-           <tr>
-               <td class="w-25">Status URL</td>
-               <td class="w-25">{{form.vchAPIStatusURLDtls[0].url}}</td>
-               <td class="w-25 fw-bold">Type</td>
-               <td class="w-25">{{form.vchAPIStatusURLDtls[0].method}}</td>
-             </tr> 
-             <tr *ngFor="let apiauthdtls of form.vchAPIStatusURLDtls[0].authDetails" >
-                <td class="w-25 fw-bold">Authontication</td>
-                <td class="w-25" colspan="3"><strong>Type :</strong> {{apiauthdtls.authType == 1 ? 'Basic Auth' :'-'}}
-                 
-                      <div class="mt-2" *ngFor="let apiauthparams of apiauthdtls.params" >
-                        <div class="mb-1">
-                        <strong>UserName :</strong> {{apiauthparams.userName}}
+                                  <tr *ngFor="let apiauthdtls of form.vchAPIURLDtls[0].authDetails">
+                                    <td class="w-25 fw-bold">Authontication</td>
+                                    <td class="w-25" colspan="3"><strong>Type :</strong> {{apiauthdtls.authType == 1 ?
+                                      'Basic Auth' :'-'}}
+
+                                      <div class="mt-2" *ngFor="let apiauthparams of apiauthdtls.params">
+                                        <div class="mb-1">
+                                          <strong>UserName :</strong> {{apiauthparams.userName}}
+                                        </div>
+                                        <div>
+                                          <strong>Password :</strong> {{apiauthparams.password}}
+                                        </div>
+
+                                      </div>
+
+                                    </td>
+
+                                  </tr>
+
+
+
+                                  <tr>
+                                    <th>Label</th>
+                                    <th>Key</th>
+                                    <th>Type</th>
+                                    <th>Value</th>
+                                  </tr>
+                                </thead>
+
+                                <tbody>
+
+                                  <tr *ngFor="let apidtls of form.vchAPIURLDtls[0].details">
+                                    <td>{{apidtls.label}}</td>
+                                    <td>{{apidtls.key}}</td>
+                                    <td>{{apidtls.type == 1 ? 'Static' : 'Dynamic'}}</td>
+                                    <td>{{apidtls.value}}</td>
+
+                                  </tr>
+
+                                </tbody>
+                              </table>
+                              <h6>REFERENCE NUMBER</h6>
+                              <table class="table table-bordered">
+                                <thead>
+                                  <tr>
+                                    <td class="w-25">Reference URL</td>
+                                    <td class="w-25">{{form.vchAPIReferenceURLDtls[0].url}}</td>
+                                    <td class="w-25 fw-bold">Type</td>
+                                    <td class="w-25">{{form.vchAPIReferenceURLDtls[0].method}}</td>
+                                  </tr>
+                                  <tr *ngFor="let apiauthdtls of form.vchAPIReferenceURLDtls[0].authDetails">
+                                    <td class="w-25 fw-bold">Authontication</td>
+                                    <td class="w-25" colspan="3"><strong>Type :</strong> {{apiauthdtls.authType == 1 ?
+                                      'Basic Auth' :'-'}}
+
+                                      <div class="mt-2" *ngFor="let apiauthparams of apiauthdtls.params">
+                                        <div class="mb-1">
+                                          <strong>UserName :</strong> {{apiauthparams.userName}}
+                                        </div>
+                                        <div>
+                                          <strong>Password :</strong> {{apiauthparams.password}}
+                                        </div>
+
+                                      </div>
+
+                                    </td>
+
+                                  </tr>
+                                  <tr>
+                                    <th>Label</th>
+                                    <th>Key</th>
+                                    <th>Type</th>
+                                    <th>Value</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+
+                                  <tr *ngFor="let apiRefdtls of form.vchAPIReferenceURLDtls[0].details">
+                                    <td>{{apiRefdtls.label}}</td>
+                                    <td>{{apiRefdtls.key}}</td>
+                                    <td>{{apiRefdtls.type == 1 ? 'Static' : 'Dynamic'}}</td>
+                                    <td>{{apiRefdtls.value}}</td>
+
+                                  </tr>
+                                </tbody>
+                              </table>
+                              <h6>STATUS CHECK</h6>
+                              <table class="table table-bordered">
+                                <thead>
+                                  <tr>
+                                    <td class="w-25">Status URL</td>
+                                    <td class="w-25">{{form.vchAPIStatusURLDtls[0].url}}</td>
+                                    <td class="w-25 fw-bold">Type</td>
+                                    <td class="w-25">{{form.vchAPIStatusURLDtls[0].method}}</td>
+                                  </tr>
+                                  <tr *ngFor="let apiauthdtls of form.vchAPIStatusURLDtls[0].authDetails">
+                                    <td class="w-25 fw-bold">Authontication</td>
+                                    <td class="w-25" colspan="3"><strong>Type :</strong> {{apiauthdtls.authType == 1 ?
+                                      'Basic Auth' :'-'}}
+
+                                      <div class="mt-2" *ngFor="let apiauthparams of apiauthdtls.params">
+                                        <div class="mb-1">
+                                          <strong>UserName :</strong> {{apiauthparams.userName}}
+                                        </div>
+                                        <div>
+                                          <strong>Password :</strong> {{apiauthparams.password}}
+                                        </div>
+
+                                      </div>
+
+                                    </td>
+
+                                  </tr>
+                                  <tr>
+                                    <th>Label</th>
+                                    <th>Key</th>
+                                    <th>Type</th>
+                                    <th>Value</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+
+                                  <tr *ngFor="let apistatusdtls of form.vchAPIStatusURLDtls[0].details">
+                                    <td>{{apistatusdtls.label}}</td>
+                                    <td>{{apistatusdtls.key}}</td>
+                                    <td>{{apistatusdtls.type == 1 ? 'Static' : 'Dynamic'}}</td>
+                                    <td>{{apistatusdtls.value}}</td>
+
+                                  </tr>
+                                </tbody>
+                              </table>
+
+                            </div>
+
+                          </div>
+
+                        </div>
                       </div>
-                      <div>
-                        <strong>Password :</strong> {{apiauthparams.password}}
-                      </div>
-                  
-                      </div>
-               
-                </td>
-                
-             </tr>
-         <tr><th>Label</th><th>Key</th><th>Type</th><th>Value</th></tr>
-       </thead>
-         <tbody>
-          
-         <tr *ngFor="let apistatusdtls of form.vchAPIStatusURLDtls[0].details" >
-           <td>{{apistatusdtls.label}}</td>
-           <td>{{apistatusdtls.key}}</td>
-             <td>{{apistatusdtls.type == 1 ? 'Static' : 'Dynamic'}}</td>
-             <td>{{apistatusdtls.value}}</td>
-
-         </tr>
-         </tbody>
-       </table>
-
-</div>  
-          
-      </div>
-    
-  </div>
-</div>
-</div>
-
-                                     
+                    </div>
 
 
 
 
-                                       </td>
-                                       <td>{{form.vchModuleName != '' ? form.vchModuleName:'-'}}</td>
-                                      <td>{{form.vchTableName}}</td>
-                                       <!-- <td >
+
+
+                  </td>
+                  <td>{{form.vchModuleName != '' ? form.vchModuleName:'-'}}</td>
+                  <td>{{form.vchTableName}}</td>
+                  <!-- <td >
                                         {{form.intAdminApplication == 1 ? 'For Admin Application ,' : ''}}
                                         {{form.intWebsiteApplication == 1 ? 'For Website ': ''}}
                                         
                                 </td> -->
-                                       <td>{{form.dtmCreatedOn}}</td>
-                                        
-                                       <td class="p-none">
-                                       
-                                       <div *ngIf="form.tinFinalSubmitStatus == 1;else nodt ">
-                                         <a href="javascriprt:void(0)" class="text-info" (click)="showPreview(form.intProcessId+':'+form.tinFinalSubmitStatus
+                  <td>{{form.dtmCreatedOn}}</td>
+
+                  <td class="p-none">
+
+                    <div *ngIf="form.tinFinalSubmitStatus == 1;else nodt ">
+                      <a href="javascriprt:void(0)" class="text-info" (click)="showPreview(form.intProcessId+':'+form.tinFinalSubmitStatus
                                          +':'+form.tinGridType)">Preview</a>
-                                        </div>
-                                        <ng-template #nodt>-</ng-template>
-                                       </td> 
-                                   
-                                        <td  class="p-none text-center p-none"><a class="text-primary" data-toggle="tooltip" title="" (click)="editForm(form.intProcessId)" data-original-title="Edit"><i class="icon-edit-solid"></i></a>
-                                         
-                                       </td>
-                                       <td class="text-center p-none" >
+                    </div>
+                    <ng-template #nodt>-</ng-template>
+                  </td>
 
-                                          <div class="btn-group dropstart">
-                                              <a type="button" class="text-info" data-bs-toggle="dropdown" aria-expanded="false">
-                                               <i class="icon-ellipsis-v-solid"></i>
-                                              </a>
-                                              <ul class="dropdown-menu">
-                                                <a href="javascript:void(0)" *ngIf="form.vchSection?.length > 0" (click)="gotoFormConfig(form.intModuleId+':'+form.intProcessId+':'+ form.vchSection[0].sectionid)" class="btn btn-primary btn-sm mb-1 w-100 text-center">
-                                                  
-                                                  {{form.tinFinalSubmitStatus == 1 ? 'Edit Form Contorls': 'Config Form Contorls'}}
-                                                  
-                                               
-                                                
-                                                </a>
-                                                <a href="javascript:void(0)" *ngIf="form.vchSection?.length == 0" (click)="gotoFormConfig(form.intModuleId+':'+form.intProcessId+':'+ 0)" class="btn btn-warning btn-sm mb-1 w-100 text-center">
-                                                  
-                                                  
-                                                  {{form.tinFinalSubmitStatus == 1 ? 'Edit Form Contorls': 'Config Form Contorls'}}
-                                                </a>
-                                                <!-- <a href="javascript:void(0)" (click)="gotoRuleEngine(form.intModuleId+':'+form.intProcessId)"  class="btn btn-primary btn-sm mb-1 w-100 text-center">Configure Rule Engine</a> -->
-                                                <!-- <a href="javascript:void(0)" (click)="gotoDocConfig(form.intModuleId+':'+form.intProcessId)"  class="btn btn-primary btn-sm mb-1 w-100 text-center">Manage Documents</a> -->
-                                                <a href="javascript:void(0)" (click)="gotoWorkflowConfig(form.intModuleId+':'+form.intProcessId)" *ngIf="form.intApproval==1" class="btn btn-primary btn-sm mb-1 w-100 text-center">Set Workflow</a>
-                                                <!-- <a href="javascript:void(0)" (click)="gotoLetterConfig(0+':'+form.intProcessId+':'+form.vchProcessName)"  class="btn btn-primary btn-sm mb-1 w-100 text-center">Generate Letter</a> -->
-                                                <!-- <a href="javascript:void(0)" (click)="gotoMessageConfig(0+':'+form.intProcessId+':'+form.vchProcessName)"  class="btn btn-primary btn-sm w-100 text-center">Message Engine</a> -->
-                                              </ul>
-                                            </div>
-                                          </td>
+                  <td class="p-none text-center p-none"><a class="text-primary" data-toggle="tooltip" title=""
+                      (click)="editForm(form.intProcessId)" data-original-title="Edit"><i
+                        class="icon-edit-solid"></i></a>
+
+                  </td>
+                  <td class="text-center p-none">
+
+                    <div class="btn-group dropstart">
+                      <a type="button" class="text-info" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="icon-ellipsis-v-solid"></i>
+                      </a>
+                      <ul class="dropdown-menu">
+                        <a href="javascript:void(0)" *ngIf="form.vchSection?.length > 0"
+                          (click)="gotoFormConfig(form.intModuleId+':'+form.intProcessId+':'+ form.vchSection[0].sectionid+':'+form.metaTemplateId)"
+                          class="btn btn-primary btn-sm mb-1 w-100 text-center">
+
+                          {{form.tinFinalSubmitStatus == 1 ? 'Edit Form Contorls': 'Config Form Contorls'}}
 
 
-                                    </tr>
-                                   
-                                   
-                                    
-                                   
-                                   
-                                 </tbody>
-                              </table>
-                         </div>
-                         <div class="d-flex justify-content-end">
-                            <pagination-controls
-                            previousLabel="Prev"
-                            nextLabel="Next"
-                            (pageChange)="onTableDataChange($event)"
-                          >
-                          </pagination-controls>
-                         </div>
-                          
-                          </div>
-                           <ng-template #norecord>
-                              <h6 class="no-content"> No Record Found</h6>
-                          
-                          </ng-template>
-                  </div>
-               
+
+                        </a>
+                        <a href="javascript:void(0)" *ngIf="form.vchSection?.length == 0"
+                          (click)="gotoFormConfig(form.intModuleId+':'+form.intProcessId+':'+ 0 +':'+form.metaTemplateId)"
+                          class="btn btn-warning btn-sm mb-1 w-100 text-center">
+
+
+                          {{form.tinFinalSubmitStatus == 1 ? 'Edit Form Contorls': 'Config Form Contorls'}}
+                        </a>
+                        <!-- <a href="javascript:void(0)" (click)="gotoRuleEngine(form.intModuleId+':'+form.intProcessId)"  class="btn btn-primary btn-sm mb-1 w-100 text-center">Configure Rule Engine</a> -->
+                        <!-- <a href="javascript:void(0)" (click)="gotoDocConfig(form.intModuleId+':'+form.intProcessId)"  class="btn btn-primary btn-sm mb-1 w-100 text-center">Manage Documents</a> -->
+                        <a href="javascript:void(0)"
+                          (click)="gotoWorkflowConfig(form.intModuleId+':'+form.intProcessId)"
+                          *ngIf="form.intApproval==1" class="btn btn-primary btn-sm mb-1 w-100 text-center">Set
+                          Workflow</a>
+                          <!-- <a href="javascript:void(0)" (click)="gotoLetterConfig(0+':'+form.intProcessId+':'+form.vchProcessName)"  class="btn btn-primary btn-sm mb-1 w-100 text-center">Generate Template</a>-->
+                        <!-- <a href="javascript:void(0)" (click)="gotoMessageConfig(0+':'+form.intProcessId+':'+form.vchProcessName)"  class="btn btn-primary btn-sm w-100 text-center">Message Engine</a> -->
+                      </ul>
+                    </div>
+                  </td>
+
+
+                </tr>
+
+
+
+
+
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex justify-content-end">
+            <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+            </pagination-controls>
+          </div>
+
+        </div>
+        <ng-template #norecord>
+          <h6 class="no-content"> No Record Found</h6>
+
+        </ng-template>
+      </div>
+
+    </div>
   </div>
-</div>
 </div>
 <div class="loader" *ngIf="loading">
   <div class="loader-item"></div>

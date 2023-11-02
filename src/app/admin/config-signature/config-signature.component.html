@@ -30,9 +30,9 @@
                         <div class="form-group">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">x-axis</span>
-                                <input type="text" class="form-control" id="txtXaxis" [(ngModel)]="txtXaxis">
+                                <input type="text" class="form-control" id="txtXaxis" [(ngModel)]="txtXaxis" maxlength="3" (keypress)="vldChkLst.isNumberKey($event)">
                                 <span class="input-group-text">y-axis</span>
-                                <input type="text" class="form-control" id="txtYaxis" [(ngModel)]="txtYaxis">
+                                <input type="text" class="form-control" id="txtYaxis" [(ngModel)]="txtYaxis" maxlength="3" (keypress)="vldChkLst.isNumberKey($event)">
                             </div>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
                     <label for="" class="col-md-4 col-lg-3 form-label"> {{"Opacity"| langReplace}} </label>
                     <div class="col-md-6 col-lg-4">
                         <div class="form-group">
-                            <input type="text" class="form-control" id="txtOpacity" [(ngModel)]="txtOpacity">
+                            <input type="text" class="form-control" id="txtOpacity" [(ngModel)]="txtOpacity" maxlength="3" (keypress)="vldChkLst.isDecimal($event)">
                         </div>
                     </div>
                 </div>

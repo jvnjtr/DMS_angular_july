@@ -37,6 +37,7 @@ import { ConfigSignatureComponent } from './config-signature/config-signature.co
 import { ViewSignatureComponent } from './view-signature/view-signature.component';
 import { DynFormToPdfComponent } from './dyn-form-to-pdf/dyn-form-to-pdf.component';
 import { ViewStampingComponent } from './view-stamping/view-stamping.component';
+import { CreateFormTemplateComponent } from './create-form-template/create-form-template.component';
 
 // import { AddgetwayconfigComponent } from 'projects/msgengine-lib/src/lib/addgetwayconfig/addgetwayconfig.component';
 // import { ViewgetwayconfigComponent } from 'projects/msgengine-lib/src/lib/viewgetwayconfig/viewgetwayconfig.component';
@@ -97,6 +98,7 @@ const routes: Routes = [
       { path: 'viewSignature', component: ViewSignatureComponent, canActivate: [AuthGuard] },
       { path: 'viewdraftdocument', component: ViewdraftdocumentComponent, canActivate: [AuthGuard] },
       { path: 'dynamicformToPdf/:id', component: DynFormToPdfComponent, canActivate: [AuthGuard] },
+      { path: 'createFormTemplate', component: CreateFormTemplateComponent, canActivate: [AuthGuard] },
 
 
     ]

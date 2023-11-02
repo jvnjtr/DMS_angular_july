@@ -629,9 +629,10 @@
             </div>
         </div>
       </div>
-      <div class="separator separator-dashed"></div>
-      <div class="text-center p-3 pt-0" id="buttons" style="display: none;">                                               
+      <div class="separator separator-dashed" *ngIf="fileUpload==0"></div>
+      <div  class="text-center p-3 pt-0" id="buttons" style="display: none;" >                                               
             <!-- <a class="btn btn-secondary me-2" (click)="goToPrevious()"><i class="icon-arrow14"></i> Prev</a> -->
+            <div *ngIf="fileUpload==0">
             <button class="btn btn-success me-2" (click)="doSchemeApply()" [disabled]="btnSaveNextDisableStatus">Save & Next</button> 
             <button class="btn btn-danger me-2 " (click)="reset()">Reset</button> 
     </div>

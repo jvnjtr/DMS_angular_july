@@ -39,6 +39,7 @@ export class AddManageformComponent implements OnInit {
 
   isSelected: boolean = true;
   moduleNames: any;
+  metaTemplateListNames: any;
 
   txtModuleName: any = null;
   txtFormName: any = null;
@@ -105,7 +106,7 @@ export class AddManageformComponent implements OnInit {
   formConfigurationStatus: any = 0;
   finalSubmitStatus: any = 0;
   iconChangeStatus: any = 0;
-
+  selMetaTemplateId:any='0';
   
   constructor(private route: Router,
     private router: ActivatedRoute,
@@ -125,7 +126,8 @@ export class AddManageformComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadconfig();
-    this.getModuleNames()
+    this.getModuleNames();
+    // this.getMetaTemplateList();
     this.sessiontoken = sessionStorage.getItem('ADMIN_SESSION');
     let SeetionParsed = JSON.parse(CryptoJS.AES.decrypt(this.sessiontoken, environment.apiHashingKey).toString(CryptoJS.enc.Utf8));
 
@@ -143,7 +145,7 @@ export class AddManageformComponent implements OnInit {
         this.getForminfo()
       }
     }
-
+    //this.getMetaTemplateList();
     //  this.ckconfig = {
     //   // include any other configuration you want
     //   extraPlugins: [ this.customAdapterPlugin ]
@@ -531,6 +533,34 @@ export class AddManageformComponent implements OnInit {
       }
     });
   }
+  getMetaTemplateList() {
+    this.commonService.getMetaTemplateList().subscribe((response: any) => {
+      let respData = response.RESPONSE_DATA;
+      let respToken = response.RESPONSE_TOKEN;
+      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+      if (respToken == verifyToken) {
+        let res: any = Buffer.from(respData, 'base64');
+        res = JSON.parse(res.toString());
+        console.log(res);
+        if (res.status == 200) {
+          // console.log('ji');
+          this.metaTemplateListNames = res.result;
+        }
+        else {
+          Swal.fire({
+            icon: 'error',
+            text: 'Something Went wrong',
+
+          });
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          text: 'Unauthorized Response!!',
+        });
+      }
+    });
+  }
   // getModuleNames(){
   //   this.commonService.insertData(this.manage_department.value, 'adminconsole/ManageDepartment/addEdit').subscribe({
   //     next: (response) => {
@@ -769,6 +799,7 @@ export class AddManageformComponent implements OnInit {
     let statusAuthType = this.statusAuthType;
     let statusauthUsername = this.statusauthUsername;
     let statusauthPass = this.statusauthPass;
+    let metaTemplateId=this.selMetaTemplateId;
 
     if (modalId == "0") {
 
@@ -793,6 +824,13 @@ export class AddManageformComponent implements OnInit {
 
       });
     }
+    // else if(metaTemplateId==''|| metaTemplateId==null){
+    //   Swal.fire({
+    //     icon: 'error',
+    //     text: this.messaageslist.metaTemplate,
+
+    //   });
+    // }
     // else if (formtype == "0" || typeof (formtype) == undefined || formtype == null) {
 
     //   Swal.fire({
@@ -1047,7 +1085,7 @@ export class AddManageformComponent implements OnInit {
         "basedType": basedType,
         "redirectURL": redirectURL,
         "redirectWindowType": redirectWindowType,
-        "formdescription": formdescription,
+        "formdescription": this.encDec.escapeHtml(formdescription),
         "configurationForpayment": chkforPayment,
         "configurationForapproval": chkforApproval,
         "configurationFordocument": chkforDocument,
@@ -1062,6 +1100,7 @@ export class AddManageformComponent implements OnInit {
         "statusdetails": [{ "url": statusUrl, "method": statusUrlMethod, "details": statusdetails, 'authDetails': [{ 'authType': statusAuthType, 'params': [{ 'userName': statusauthUsername, 'password': statusauthPass }] }] }],
         "iconChangeStatus": this.iconChangeStatus,
         "fileFormicon": this.fileFormicon
+        // "metaTemplateId":metaTemplateId
       };
 
 
@@ -1189,6 +1228,7 @@ export class AddManageformComponent implements OnInit {
     this.chkforWebsit = 0;
     this.selFormType = 0;
     this.txtTableName = null;
+    this.selMetaTemplateId='0';
   }
 
 
@@ -1204,7 +1244,7 @@ export class AddManageformComponent implements OnInit {
       let respData = response.RESPONSE_DATA;
       let respToken = response.RESPONSE_TOKEN;
       let res = JSON.parse(atob(respData));
-      console.log('jivan'+res);
+      console.log(res);
       if (res.status == 200) {
 
 
@@ -1217,6 +1257,7 @@ export class AddManageformComponent implements OnInit {
 
           this.selModuleName = this.formsList[0].intModuleId;
           this.txtFormName = this.formsList[0].vchProcessName;
+          this.selMetaTemplateId = this.formsList[0].metaTemplateId;
           this.formdescription = this.formsList[0].txtSchemeDescription;
           this.chkforPayment = this.formsList[0].intPayment;
           this.chkforApproval = this.formsList[0].intApproval;

@@ -1,354 +1,377 @@
 <!--===Page Title===-->
 <div class="page-title">
-   
+
     <h4>{{title | langReplace}}</h4>
-    </div>
-    <!--===Page Title===-->
-    <!--===controle section===-->
-    <div class="page-controls-section" id="page-content">
-                    <div class="card">
-                    <div class="controls-section-header">
-                       <ul class="nav nav-tabs nav-fill" role="tablist" >
-                          <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="letterID" [tabMessage]="tablist"></app-tabs>  
-                       </ul>
-                    <div class="indicatorslist">
-                       <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils> 
-                          </div>
-                          </div>
-                    
-                    <div class="card-body">
-                       <div class="controls-section">
-                         <div class="row">
-                                    <label class="col-md-4 col-lg-3">* {{"Parent Folder"| langReplace }} </label>
-                                    <div class="col-md-6 col-lg-4">
-                                        <div class="form-group">
-                                            <select class="form-select"   id="parentFId" [(ngModel)]="selParentFolderName" (change)="getPermissions($event)">
-                                                <option value="0">{{"Select"| langReplace }}  </option>
-                                                <option *ngFor="let flist of folderlist" [value]="flist.folderId">{{flist.folderName}}</option>
-                                               
-
-                                            </select>
-                                        </div>
-                                  
-
-                                    </div>
-                            
-<div class="col-md-6 col-lg-4">
-<div *ngIf="selParentFolderName > 0">
-    <div class="mb-1">
-        {{"Folder Space"| langReplace }}      : <span class="text-primary"> {{ formatBytes(parentSizeinKb, 2)}} </span>
-    
-                                               
-                                            </div>
-                                            <div>
-     {{"Available Space"| langReplace }}  : <span class="text-success"> {{ formatBytes(parentSizeinKb - childSizeInKb, 2)}} </span>
-    
-   
-    </div>
-    
-                                               </div>
 </div>
-                                    
-                                    </div> 
+<!--===Page Title===-->
+<!--===controle section===-->
+<div class="page-controls-section" id="page-content">
+    <div class="card">
+        <div class="controls-section-header">
+            <ul class="nav nav-tabs nav-fill" role="tablist">
+                <app-tabs *ngFor="let tablist of tablist; let i = index" [activeid]="letterID"
+                    [tabMessage]="tablist"></app-tabs>
+            </ul>
+            <div class="indicatorslist">
+                <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist"></app-utils>
+            </div>
+        </div>
 
-                                 
+        <div class="card-body">
+            <div class="controls-section">
+                <div class="row">
+                    <label class="col-md-4 col-lg-3">* {{"Parent Folder"| langReplace }} </label>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <select class="form-select" id="parentFId" [(ngModel)]="selParentFolderName"
+                                (change)="getPermissions($event)">
+                                <option value="0">{{"Select"| langReplace }} </option>
+                                <option *ngFor="let flist of folderlist" [value]="flist.folderId">{{flist.folderName}}
+                                </option>
 
 
-                                    <div class="row">
-                                            <label class="col-md-4 col-lg-3" >* {{"Folder Name"| langReplace }} </label>
-                                            <div class="col-md-6 col-lg-4">
-                                                <div class="form-group">
-                                                    <input type="text" id="txtfoldername" [(ngModel)]="txtFolderName" class="form-control">
-                                                </div>
+                            </select>
+                        </div>
+
+
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div *ngIf="selParentFolderName > 0">
+                            <div class="mb-1">
+                                {{"Folder Space"| langReplace }} : <span class="text-primary"> {{
+                                    formatBytes(parentSizeinKb, 2)}} </span>
+
+
+                            </div>
+                            <div>
+                                {{"Available Space"| langReplace }} : <span class="text-success"> {{
+                                    formatBytes(parentSizeinKb - childSizeInKb, 2)}} </span>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+                <div class="row">
+                    <label class="col-md-4 col-lg-3">* {{"Folder Name"| langReplace }} </label>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <input type="text" id="txtfoldername" [(ngModel)]="txtFolderName" class="form-control" maxlength="30" (keyup)="vldChkLst.blockSpecialCharacterAllPostion($event,false)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class="col-md-4 col-lg-3">* {{"Max Allow Folder Size"| langReplace }} </label>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <div class="d-flex">
+                                <input type="text" id="foldersize" [(ngModel)]="txtAllowSize" maxlength="5"
+                                    (keypress)="vldChkLst.isDecimal($event)" class="form-control">
+                                <select class="form-select ml-2 w-50" id="foldersizetype" [(ngModel)]="selSizeType">
+                                    <option value="0">{{"Select"| langReplace }}</option>
+                                    <option value="1">KB</option>
+                                    <option value="2">MB</option>
+                                    <option value="3">GB</option>
+                                    <option value="4">TB</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-4 col-lg-3">* {{"Max Allow File Size"| langReplace }} </label>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <div class="d-flex">
+                                <input type="text" id="allowfilesizesize" [(ngModel)]="txtAllowFileSize" maxlength="2"
+                                    (keypress)="vldChkLst.isNumberKey($event)" class="form-control">
+                                <select class="form-select ml-2 w-50" [(ngModel)]="selFileSizeType"
+                                    id="allowfilesizesizetype">
+                                    <option value="0">{{"Select"| langReplace }}</option>
+                                    <option value="1">KB</option>
+                                    <option value="2">MB</option>
+
+
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-md-4 col-lg-3">* {{"Department"| langReplace }} </label>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+
+                            <input class="form-control " *ngIf="selParentFolderName > 1" readonly
+                                [(ngModel)]="txtDepartmentName">
+                            <select class="form-select" *ngIf="selParentFolderName <= 1" id="seldept"
+                                [(ngModel)]="selDepartmentName" (change)="deptChange(selDepartmentName)">
+                                <option value="Select" selected>{{"Select"| langReplace }}</option>
+                                <option value="0">{{"All"| langReplace }}</option>
+                                <option *ngFor="let dlist of departmentsList" [value]="dlist.deptId">
+                                    {{dlist.departmentName}}</option>
+                                <option *ngIf="departmentsList?.length==0" value="3">Default</option>
+
+                            </select>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+
+
+                    <div *ngIf="(selParentFolderName == 1 || selParentFolderName == 0) && (rolelist?.length > 0)">
+                        <label class="mb-2">* {{"Permissions"| langReplace }} </label>
+                        <div class="table-responsive form-group">
+
+
+                            <table class="table table-bordered" *ngIf="rolelist?.length > 0">
+                                <thead>
+                                    <tr>
+                                        <th width="300px"> {{"Role"| langReplace }} </th>
+                                        <th class="text-center"> {{"Select All"| langReplace }} </th>
+                                        <th class="text-center"
+                                            *ngFor="let hdpermissions of permissionlistitems;let i=index;">
+                                            {{ hdpermissions.label | langReplace }}
+                                        </th>
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let roles of rolelist;let i=index;" id="rolerow_{{i}}">
+
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input chkrole" [checked]="roles.checked"
+                                                    (change)="roles.checked = !roles.checked;rolechange($event,i)"
+                                                    type="checkbox" id="chkPerRole_{{roles.roleId}}">
+                                                <label class="form-check-label" for="chkPerRole_{{roles.roleId}}">
+                                                    {{roles.roleName}}
+                                                </label>
                                             </div>
-                                            </div> 
 
-<div class="row">
-                                                            <label class="col-md-4 col-lg-3" >* {{"Max Allow Folder Size"| langReplace }} </label>
-                                                            <div class="col-md-6 col-lg-4">
-                                                                <div class="form-group">
-                                                                    <div class="d-flex">
-                                                                            <input type="text" id="foldersize" [(ngModel)]="txtAllowSize" maxlength="3" (keypress)="vldChkLst.isNumberKey($event)" class="form-control">
-                                                                            <select class="form-select ml-2 w-50"  id="foldersizetype" [(ngModel)]="selSizeType">
-                                                                                <option value="0"  >{{"Select"| langReplace }}</option>
-                                                                                <option value="1">KB</option>
-                                                                                <option value="2">MB</option>
-                                                                                <option value="3">GB</option>
-                                                                                <option value="4">TB</option>
-                                                                            </select>
-                                                                    </div>
-                                                                   
-                                                                </div>
-                                                            </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <label class="col-md-4 col-lg-3" >* {{"Max Allow File Size"| langReplace }} </label>
-                                                                <div class="col-md-6 col-lg-4">
-                                                                    <div class="form-group">
-                                                                        <div class="d-flex">
-                                                                                <input type="text" id="allowfilesizesize" [(ngModel)]="txtAllowFileSize" maxlength="2" (keypress)="vldChkLst.isNumberKey($event)" class="form-control">
-                                                                                <select class="form-select ml-2 w-50"  [(ngModel)]="selFileSizeType" id="allowfilesizesizetype">
-                                                                                        <option value="0">{{"Select"| langReplace }}</option>
-                                                                                    <option value="1">KB</option>
-                                                                                    <option value="2">MB</option>
-                                                                                   
-                                                                                    
-                                                                                </select>
-                                                                        </div>
-                                                                       
-                                                                    </div>
-                                                                </div>
-                                                                </div>
-                                                            <div class="row">
-                                                                <label class="col-md-4 col-lg-3" >* {{"Department"| langReplace }} </label>
-                                                                <div class="col-md-6 col-lg-4">
-                                                                    <div class="form-group">
-                                                                     
-                                                                           <input class="form-control " *ngIf="selParentFolderName > 1" readonly [(ngModel)]="txtDepartmentName">   
-                                                                        <select class="form-select" *ngIf="selParentFolderName <= 1" id="seldept" [(ngModel)]="selDepartmentName" (change)="deptChange(selDepartmentName)">
-                                                                            <option value="Select" selected>{{"Select"| langReplace }}</option>
-                                                                            <option value="0">{{"All"| langReplace }}</option>
-                                                                            <option *ngFor="let dlist of departmentsList" [value]="dlist.deptId">{{dlist.departmentName}}</option>
-                                                                           <option *ngIf="departmentsList?.length==0" value="3">Default</option>
-                        
-                                                                        </select>
-                                                                      
-                                                                       
-                                                                    </div>
-                                                                </div>
-                                                                </div>
-                                                            <div class="row" >
-                                                                    
+                                            <!-- <pre>{{ roles | json}} </pre>  -->
+
+                                        </td>
+                                        <td class="text-center">
+                                            <input class="form-check-input roleselectAll" type="checkbox"
+                                                (change)="checkUncheckAll($event,i)" id="chkSelectAll_{{i}}">
+                                        </td>
+                                        <td class="text-center"
+                                            *ngFor="let dpermissions of roles.permission;let pi=index">
+
+                                            <input class="form-check-input permissionChk"
+                                                [checked]="dpermissions.selected" type="checkbox"
+                                                (change)="checkchanged($event,i,pi)" id="{{dpermissions.label}}_{{i}}">
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
 
-                                                                    <div *ngIf="(selParentFolderName == 1 || selParentFolderName == 0) && (rolelist?.length > 0)" >
-                                                                            <label class="mb-2" >* {{"Permissions"| langReplace }} </label>
-                                                                            <div class="table-responsive form-group" >
+                    <div *ngIf="selParentFolderName > 1">
+                        <div *ngIf="rolewisepermissions?.length > 0">
 
-                                                                          
-                                                                            <table class="table table-bordered" *ngIf="rolelist?.length > 0">
-                                                                                <thead>
-                                                                                    <tr>
-                                                                                        <th width="300px"> {{"Role"| langReplace }}  </th>
-                                                                                        <th class="text-center"> {{"Select All"| langReplace }} </th>
-                                                                                        <th class="text-center" *ngFor="let hdpermissions of permissionlistitems;let i=index;">
-                                                                                            {{ hdpermissions.label | langReplace }}
-                                                                                        </th>
-    
-                                                                                    
-                                                                                    </tr>
-                                                                                </thead>
-                                                                                <tbody>
-                                                                                    <tr  *ngFor="let roles of rolelist;let i=index;" id="rolerow_{{i}}">
-                                                                                       
-                                                                                        <td ><div class="form-check">
-                                                                                                <input class="form-check-input chkrole" [checked]="roles.checked"
-                                                                                                (change)="roles.checked = !roles.checked;rolechange($event,i)"  type="checkbox" id="chkPerRole_{{roles.roleId}}">
-                                                                                                <label class="form-check-label" for="chkPerRole_{{roles.roleId}}">
-                                                                                                 {{roles.roleName}}
-                                                                                                </label>
-                                                                                               </div>
-    
-                                                                                               <!-- <pre>{{ roles | json}} </pre>  -->
-    
-                                                                                            </td>
-                                                                                            <td class="text-center">
-                                                                                                    <input class="form-check-input roleselectAll" 
-                                                                                                    type="checkbox" (change)="checkUncheckAll($event,i)"  id="chkSelectAll_{{i}}">
-                                                                                                </td>
-                                                                                            <td class="text-center" *ngFor="let dpermissions of roles.permission;let pi=index">
-    
-                                                                                          <input class="form-check-input permissionChk" [checked]="dpermissions.selected"
-                                                                                          type="checkbox" (change)="checkchanged($event,i,pi)"  id="{{dpermissions.label}}_{{i}}">
-                                                                                              </td>
-                                                                                        
-                                                                                    </tr>
-                                                                                </tbody>
-                                                                            </table>
-                                                                        </div>
-                                                                        </div>
-                                                                   
-                                                                   
-                                                                   <div *ngIf="selParentFolderName > 1">
-                                                                        <div *ngIf="rolewisepermissions?.length > 0">
-                                                                          
-                                                                                <label class="mb-2" >* {{"Permissions"| langReplace }}  </label>  
-                                                                                  
-                                                                                <div class="form-group">
-                                                                                  
-                                                                                   
-                                                                                        <table class="table table-bordered">
-                                                                                            <thead>
-                                                                                                <tr>
-                                                                                                    <th width="300px"> {{"Role"| langReplace }}  </th>
-                                                                                                    <th class="text-center"> {{"Select All"| langReplace }} </th>
-                                                                                                    <th class="text-center" *ngFor="let hdpermissions of permissionlistitems;let i=index;">
-                                                                                                        {{ hdpermissions.label | langReplace }}
-                                                                                                    </th>
-                                                                                                  
-                                                                                                </tr>
-                                                                                            </thead>
-                                                                                            <tbody>
-                                                                                                <tr  *ngFor="let roles of rolewisepermissions;let i=index" id="rolerow_{{i}}">
-                                                                                                   <!-- <pre>
+                            <label class="mb-2">* {{"Permissions"| langReplace }} </label>
+
+                            <div class="form-group">
+
+
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th width="300px"> {{"Role"| langReplace }} </th>
+                                            <th class="text-center"> {{"Select All"| langReplace }} </th>
+                                            <th class="text-center"
+                                                *ngFor="let hdpermissions of permissionlistitems;let i=index;">
+                                                {{ hdpermissions.label | langReplace }}
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let roles of rolewisepermissions;let i=index" id="rolerow_{{i}}">
+                                            <!-- <pre>
                                                                                                        {{roles | json}}
                                                                                                    </pre> -->
-                                                                                                    <td><div class="form-check">
-                                                                                                            <input class="form-check-input chkrole"   (change)="frolechange($event,i)"  [checked]="roles.checked"
-                                                                                                              type="checkbox" id="chkPerRole_{{roles.roleId}}">
-                                                                                                            <label class="form-check-label" for="chkPerRole_{{roles.roleId}}">
-                                                                                                             {{roles.roleName}}
-                                                                                                            </label>
-                                                                            
-                                                                                                          
-                                                                            
-                                                                                                          </div></td>
-                                                                                                          <td class="text-center">
-                                                                                                            <input class="form-check-input roleselectAll" 
-                                                                                                            type="checkbox" (change)="usercheckUncheckAll($event,i)" id="chkSelectAll_{{i}}">
-                                                                                                        </td>
-                                                                                                  
-    
-                                                                                                          <td class="text-center" *ngFor="let permissions of roles.permission;let pi=index">
-    
-                                                                                                             <input class="form-check-input permissionChk"  [checked]="permissions.selected"
-                                                                                                            type="checkbox"  (change)="fcheckchanged($event,i,pi)" id="{{permissions.label}}_{{i}}"> 
-                                                                                                                </td> 
-    
-                                                                                                </tr>
-                                                                                            </tbody>
-                                                                                        </table>
-                                                                                    </div>
-                                                                          
-                                                                       
-                                                      
-                                                    </div>
-                                                                   </div>
-                                                                       
-                                  <div>
+                                            <td>
+                                                <div class="form-check">
+                                                    <input class="form-check-input chkrole"
+                                                        (change)="frolechange($event,i)" [checked]="roles.checked"
+                                                        type="checkbox" id="chkPerRole_{{roles.roleId}}">
+                                                    <label class="form-check-label" for="chkPerRole_{{roles.roleId}}">
+                                                        {{roles.roleName}}
+                                                    </label>
 
-                                  </div>
-</div>
-          
-                                                 
-                                     
-                                  <!-- <ngx-dropzone-preview *ngFor="let f of files_dropped" [removable]="true" (removed)="onRemove(f)">
+
+
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <input class="form-check-input roleselectAll" type="checkbox"
+                                                    (change)="usercheckUncheckAll($event,i)" id="chkSelectAll_{{i}}">
+                                            </td>
+
+
+                                            <td class="text-center"
+                                                *ngFor="let permissions of roles.permission;let pi=index">
+
+                                                <input class="form-check-input permissionChk"
+                                                    [checked]="permissions.selected" type="checkbox"
+                                                    (change)="fcheckchanged($event,i,pi)"
+                                                    id="{{permissions.label}}_{{i}}">
+                                            </td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                    <div>
+
+                    </div>
+                </div>
+
+
+
+                <!-- <ngx-dropzone-preview *ngFor="let f of files_dropped" [removable]="true" (removed)="onRemove(f)">
                                   <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
                                 </ngx-dropzone-preview> -->
-                                
-                                <div class="row ">
-                                        <label class="col-md-4 col-lg-3"> </label>
-                                        <div class="col-md-9">
-                                             <button (click)="crateFolder()" class="btn btn-success " > {{ (folderId > 0 ? "Update" : "Save")  | langReplace }}</button> 
-                                             <button (click)="resetform()" class="btn btn-danger ml-2" >{{  (folderId > 0 ? "Cancel" : "Reset") | langReplace }} </button> 
-                                        </div>
-                                </div>
-                        </div>
-                  
-                    </div> 
-                    
+
+                <div class="row ">
+                    <label class="col-md-4 col-lg-3"> </label>
+                    <div class="col-md-9">
+                        <button (click)="crateFolder()" class="btn btn-success "> {{ (folderId > 0 ? "Update" : "Save")
+                            | langReplace }}</button>
+                        <button (click)="resetform()" class="btn btn-danger ml-2">{{ (folderId > 0 ? "Cancel" : "Reset")
+                            | langReplace }} </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
     </div>
     <div class="card">
-         <div class="controls-section-header">
+        <div class="controls-section-header">
             <h6 class="card-title mb-0">{{"View Folder List"| langReplace }} </h6>
         </div>
         <div class="card-body">
-                <div *ngIf="folderlist?.length > 0; else norecord">
-            <div class="d-flex justify-content-between mb-3 ">
-                <div>
-                    
+            <div *ngIf="folderlist?.length > 0; else norecord">
+                <div class="d-flex justify-content-between mb-3 ">
+                    <div>
+
+                    </div>
+                    <div class="d-flex align-items-center">
+
+
+
+
+
+                        <input class="form-control width400" type="search" placeholder="Search by folder name..."
+                            (keyup)="updateFilter($event)" aria-label="Search">
+
+                    </div>
                 </div>
-                <div class="d-flex align-items-center">
-                    
-                  
-                    
-                 
-
-                <input class="form-control width400" type="search" placeholder="Search by folder name..."  (keyup)="updateFilter($event)" aria-label="Search">
-                
-                </div>
-               </div>
 
 
-<div class="table-responsive">
-     
-               <ngx-datatable
-               #table
-               [rows]="rows"
-               class="bootstrap"
-               [loadingIndicator]="false"
-               [columnMode]="'force'"
-              
-               [rowHeight]="'auto'"
-               [columns]="columns"
-               [treeFromRelation]="'parentFolderId'"
-               [treeToRelation]="'folderId'"
-               
-               (treeAction)="onTreeAction($event)"
-             >
-             
-               <ngx-datatable-column name="{{'Name' | langReplace}} " prop="folderName"  [width]="350"  [isTreeColumn]="true"></ngx-datatable-column>
-              <ngx-datatable-column name="{{'Allocated Size' | langReplace}} " >
-                    <!-- <ng-template let-row="rows" ngx-datatable-cell-template>
+                <div class="table-responsive">
+
+                    <ngx-datatable #table [rows]="rows" class="bootstrap" [loadingIndicator]="false"
+                        [columnMode]="'force'" [rowHeight]="'auto'" [columns]="columns"
+                        [treeFromRelation]="'parentFolderId'" [treeToRelation]="'folderId'"
+                        (treeAction)="onTreeAction($event)">
+
+                        <ngx-datatable-column name="{{'Name' | langReplace}} " prop="folderName" [width]="350"
+                            [isTreeColumn]="true"></ngx-datatable-column>
+                        <ngx-datatable-column name="{{'Allocated Size' | langReplace}} ">
+                            <!-- <ng-template let-row="rows" ngx-datatable-cell-template>
                             {{rows.folderSize}} 
                         </ng-template>   -->
 
-                        <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex"  let-value="value" let-row="row">
-                              <span class="d-block text-right" >  {{formatBytes(row.parentSizeinKb, 2)}} </span> 
-                              </ng-template>
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                <span class="d-block text-right"> {{formatBytes(row.parentSizeinKb, 2)}} </span>
+                            </ng-template>
 
 
-              </ngx-datatable-column>
-             <ngx-datatable-column name="{{'Free Space'| langReplace}}" prop="childSizeInKb"> 
-                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
-                           
-                            <span class="d-block text-right text-success">
-                                    <span >
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="{{'Free Space'| langReplace}}" prop="childSizeInKb">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+
+                                <span class="d-block text-right text-success">
+                                    <span>
                                         {{formatBytes(row.parentSizeinKb - row.childSizeInKb, 2)}}
-                                        
+
                                     </span>
-                                   
-                                 </span>
+
+                                </span>
 
 
 
                             </ng-template>
-             </ngx-datatable-column>
-              <ngx-datatable-column name="{{'Created On'| langReplace}}" prop="createdAt"></ngx-datatable-column>
-              <ngx-datatable-column name="{{'Created By'| langReplace}} " prop="createdByName" ></ngx-datatable-column>
-              <ngx-datatable-column name="{{'Action'| langReplace}} " prop="folderId"  [width]="100">
-                <ng-template let-value="value" ngx-datatable-cell-template>
-                    <a class="text-primary" *ngIf="value > 1" title="Edit" href="javascript:void(0)" (click)="gotoEdit(value)"><i class="icon-edit-solid"></i></a>
-                    <a class="text-danger"  *ngIf="value > 1" title="Delete" href="javascript:void(0)" (click)="delete(value)"><i class="icon-trash-solid"></i></a> 
-                </ng-template>
-              </ngx-datatable-column>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="{{'Created On'| langReplace}}"
+                            prop="createdAt"></ngx-datatable-column>
+                        <ngx-datatable-column name="{{'Created By'| langReplace}} "
+                            prop="createdByName"></ngx-datatable-column>
+                        <ngx-datatable-column name="{{'Action'| langReplace}} " prop="folderId" [width]="100">
+                            <ng-template let-value="value" ngx-datatable-cell-template>
+                                <a class="text-primary" *ngIf="value > 1" title="Edit" href="javascript:void(0)"
+                                    (click)="gotoEdit(value)"><i class="icon-edit-solid"></i></a>
+                                <a class="text-danger" *ngIf="value > 1" title="Delete" href="javascript:void(0)"
+                                    (click)="delete(value)"><i class="icon-trash-solid"></i></a>
+                            </ng-template>
+                        </ngx-datatable-column>
 
-             </ngx-datatable>
-            </div>
+                    </ngx-datatable>
+                </div>
 
-             <!-- { prop: 'Name' }, 
+                <!-- { prop: 'Name' }, 
 { name: 'Allocetd Size' },
 { name: 'Free Space' },
 { name: 'Created On' },
 { name: 'Created By' },
 { name: 'Action' } -->
 
-           <!-- <app-pagination [page]="page" [count]="count" [tableSize]="tableSize" (callfunction)="onTableDataChange($event)"></app-pagination> -->
-        
+                <!-- <app-pagination [page]="page" [count]="count" [tableSize]="tableSize" (callfunction)="onTableDataChange($event)"></app-pagination> -->
 
 
 
 
 
-        </div>
-        <ng-template #norecord>
-           <h6 class="no-content"> {{"No Record Found"| langReplace }} </h6>
-       
-       </ng-template>
-        
+
+            </div>
+            <ng-template #norecord>
+                <h6 class="no-content"> {{"No Record Found"| langReplace }} </h6>
+
+            </ng-template>
+
         </div>
     </div>
     <div class="loader" *ngIf="loading">
-            <div class="loader-item"></div>
-            <p>Loading...</p>
-          </div> 
+        <div class="loader-item"></div>
+        <p>Loading...</p>
+    </div>

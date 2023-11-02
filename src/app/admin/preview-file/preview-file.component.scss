@@ -59,4 +59,13 @@ iframe{
     position: relative;
     min-height: 100px
   }
-  
+  .passwordshowbtn{
+		position: absolute;
+        right: 13px;
+        top: 7px;
+        font-size: 1.2rem;
+		color: var(--bs-gray-400);
+		&:hover{
+			color: var(--base-color);
+		}
+    }

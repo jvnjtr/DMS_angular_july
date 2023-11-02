@@ -19,7 +19,7 @@
                                                <label class="col-md-4 col-lg-3" >*  {{"Folder Name"| langReplace }}</label>
                                                <div class="col-md-6 col-lg-4">
                                                    <div class="form-group">
-                                                       <input type="text" id="txtFolderName" [(ngModel)]="txtFolderName" class="form-control">
+                                                       <input type="text" id="txtFolderName" [(ngModel)]="txtFolderName" class="form-control" maxlength="30">
                                                    </div>
                                                </div>
                                                </div> 
@@ -29,7 +29,7 @@
                                                                <div class="col-md-6 col-lg-4">
                                                                    <div class="form-group">
                                                                        <div class="d-flex">
-                                                                               <input type="text" [(ngModel)]="txtAllowSize"  maxlength="3" id="txtAllowSize" (keypress)="vldChkLst.isNumberKey($event)" class="form-control">
+                                                                               <input type="text" [(ngModel)]="txtAllowSize"  maxlength="3" id="txtAllowSize" (keypress)="vldChkLst.isDecimal($event)" class="form-control">
                                                                                <select class="form-select ml-2 w-50" id="selSizeType"  [(ngModel)]="selSizeType">
                                                                                        <option value="0">{{"Select"| langReplace }} </option>
                                                                                    <option value="1">KB</option>

@@ -199,23 +199,23 @@ this.getGroupList();
 
     // this.manage_users.value.enPassword = CryptoJS.HmacSHA256(txtPassword, environment.apiHashingKey).toString();
 
-    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtFullName, `Full Name Cannot be Blank!`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtFullName, `Full Name Cannot be Blank!`,'txtFullName'))) {
       errFlag = 1;
     }
 
-    if ((errFlag == 0) && (!this.vldChkLst.minLength(txtFullName, 2, `Full Name`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.minLength(txtFullName, 2, `Full Name`,'txtFullName'))) {
       errFlag = 1;
     }
 
-    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtFullName, 100, `Full Name`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtFullName, 100, `Full Name`,'txtFullName'))) {
       errFlag = 1;
     }
- if ((errFlag == 0) && (!this.vldChkLst.selectDropdown(selGender,  `Gender`))) {
+ if ((errFlag == 0) && (!this.vldChkLst.selectDropdown(selGender,  `Gender`,selGender))) {
       errFlag = 1;
     }
 
     
-    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtEmailId, `Email Id Cannot be Blank!`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtEmailId, `Email Id Cannot be Blank!`,'txtEmailId'))) {
       errFlag = 1;
     }
 
@@ -223,7 +223,7 @@ this.getGroupList();
       errFlag = 1;
     }
 
-    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtMobileNo, `Mobile No Cannot be Blank!`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtMobileNo, `Mobile No Cannot be Blank!`,'txtMobileNo'))) {
       errFlag = 1;
     }
 
@@ -236,19 +236,19 @@ this.getGroupList();
                                     }
 
 
-    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtrAddress, 500, `Address`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtrAddress, 500, `Address`,'txtrAddress'))) {
       errFlag = 1;
     }
-    if ((errFlag == 0) && (!this.vldChkLst.selectDropdown(selDepartment,  `Department`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.selectDropdown(selDepartment,  `Department`,'selDepartment'))) {
       errFlag = 1;
     }
-    if ((errFlag == 0) && (!this.vldChkLst.selectDropdown(selRole,  `Role`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.selectDropdown(selRole,  `Role`,'selRole'))) {
       errFlag = 1;
     }
-    if ((errFlag == 0) && (!this.vldChkLst.selectDropdown(selDesignation,  `Designation`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.selectDropdown(selDesignation,  `Designation`,'selDesignation'))) {
       errFlag = 1;
     }
-    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtUserId, `User Id Cannot be Blank!`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtUserId, `User Id Cannot be Blank!`,'txtUserId'))) {
       errFlag = 1;
     }
 
@@ -262,14 +262,14 @@ this.getGroupList();
 
  
      
-      if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtPassword, `Password Cannot be Blank!`))) {
+      if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtPassword, `Password Cannot be Blank!`,'txtPassword'))) {
         errFlag = 1;
       }
       if ((errFlag == 0) && (!this.vldChkLst.validPassword(txtPassword))) {
         errFlag = 1;
       }
 
-      if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtConfirmPassword, `Confirm Password Cannot be Blank!`))) {
+      if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtConfirmPassword, `Confirm Password Cannot be Blank!`,'txtConfirmPassword'))) {
         errFlag = 1;
       }
 

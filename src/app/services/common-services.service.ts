@@ -37,6 +37,16 @@ export class CommonServicesService {
     return desnResponse;
  
   }
+  public resetPassword(formParams:any):Observable<any> {
+
+    let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'manage_login/resetPassword';
+    let desnResponse = this.http.post(serviceURL, reqData);
+    return desnResponse;
+ 
+  }
 
   public getDesignation(formParams:any):Observable<any> {
 
@@ -125,13 +135,43 @@ export class CommonServicesService {
     return loginResponse;
 
   }
-  
+  public createMetaNew(formParams:any):Observable<any> {
+   
+    let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'meta_module/fileMetaConfigCreate';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    return loginResponse;
+
+  }
+  public viewMetaNew(formParams:any):Observable<any> {
+   
+    let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'meta_module/getFileMetaConfigList';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    console.log(loginResponse);
+    return loginResponse;
+
+  }
   public viewMeta(formParams:any):Observable<any> {
    
     let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
     let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
     let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
     let serviceURL = environment.serviceURL + 'file_module/getFileMetaConfigList';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    return loginResponse;
+
+  }
+  public viewDynFormList(formParams:any):Observable<any> {
+   
+    let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'meta_module/getPermissionWiseMetaFormNames';
     let loginResponse = this.http.post(serviceURL, reqData);
     return loginResponse;
 
@@ -143,6 +183,16 @@ export class CommonServicesService {
     let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
     let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
     let serviceURL = environment.serviceURL + 'file_module/deleteFileMetaConfigList';
+    let loginResponse = this.http.post(serviceURL, reqData);
+    return loginResponse;
+
+  }
+  public deleteMetaNew(formParams:any):Observable<any> {
+   
+    let requestParam =Buffer.from(JSON.stringify(formParams), 'utf8').toString('base64');
+    let requestToken = CryptoJS.HmacSHA256(requestParam, environment.apiHashingKey).toString();
+    let reqData = { 'REQUEST_DATA': requestParam, 'REQUEST_TOKEN': requestToken };
+    let serviceURL = environment.serviceURL + 'meta_module/deleteFileMetaConfigList';
     let loginResponse = this.http.post(serviceURL, reqData);
     return loginResponse;
 

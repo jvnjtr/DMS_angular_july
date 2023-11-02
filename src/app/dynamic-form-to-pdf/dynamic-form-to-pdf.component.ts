@@ -105,7 +105,7 @@ export class DynamicFormToPdfComponent implements OnInit {
   authorityRoleId: any = 0;
   logedinRoleId: any;
   roleArr: any = [];
-
+  processId:any;
 
 
   constructor(private route: Router,
@@ -142,15 +142,16 @@ export class DynamicFormToPdfComponent implements OnInit {
     this.viewMetaList()
     this.getFolders();
     let encSchemeId = this.router.snapshot.paramMap.get('id');
-    console.log(encSchemeId);
+    //console.log(encSchemeId);
     if (encSchemeId != "") {
       let schemeStr = this.encDec.decText(encSchemeId);
       let schemeArr: any = schemeStr.split(':');
-      console.log(schemeArr);
+      //console.log(schemeArr);
       // let urldetails: any = schemeArr[0];
       // console.log(urldetails);
       this.txtFileName = schemeArr[0];
         this.filetype = schemeArr[2];
+        this.processId = schemeArr[3];
 
         let filepath: any = environment.tempurl + this.txtFileName;
 
@@ -327,10 +328,16 @@ export class DynamicFormToPdfComponent implements OnInit {
   //\\ ======================== // get meta list // ======================== //\\
   viewMetaList() {
 
-
+     let processId;
+     if(this.processId > 0){
+      processId=this.processId;
+     }else{
+      processId=0;
+     }
 
     let dataParam = {
-      "intMetaId": ''
+      "intMetaId": '',
+      "processId": processId
     };
     this.commonserveice.viewMeta(dataParam).subscribe({
       next: (response) => {
@@ -343,13 +350,8 @@ export class DynamicFormToPdfComponent implements OnInit {
           let responseResult = JSON.parse(res)
 
           if (responseResult.status == 200) {
-
-
             this.metalist = responseResult.result;
-
-
-
-
+            console.log(this.metalist);
           }
           else if (responseResult.status == 501) {
 
@@ -393,7 +395,7 @@ export class DynamicFormToPdfComponent implements OnInit {
           if (responseResult.status == 200) {
 
             let metalist = responseResult.result;
-
+            console.log(metalist);
             let metaarrayList: any = [];
             metaarrayList = metalist[0].templateData;
 
@@ -502,7 +504,6 @@ export class DynamicFormToPdfComponent implements OnInit {
 
 
       this.loading = true;
-
       this.uploadfiles.finaluploadFile(uploadParams).subscribe({
         next: (response) => {
           let respData = response.RESPONSE_DATA;

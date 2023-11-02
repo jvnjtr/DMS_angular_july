@@ -120,7 +120,7 @@ btntext:any='Share';
     private encDec:EncrypyDecrpyService,
 public commonserveice:CommonServicesService,
 private authService:AuthenticationService,
-private vldChkLst:ValidatorchecklistService
+public vldChkLst:ValidatorchecklistService
     
   ) { }
 

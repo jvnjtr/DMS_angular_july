@@ -69,7 +69,7 @@ import { CommonPipeModule } from '../common-pipe/common-pipe.module';
     ManageUsersComponent,
     ViewsetRolePermissionComponent,
     SetRolePermissionComponent,
-    AdminconsoledashboardComponent
+    AdminconsoledashboardComponent,
   ],
   imports: [
     CommonModule,

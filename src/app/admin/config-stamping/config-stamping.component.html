@@ -72,7 +72,7 @@
                         </label>
                         <div class="col-md-6 col-lg-4">
                             <div class="form-group">
-                                <textarea class="form-control" id="txtStampingText" rows="3" [(ngModel)]="stampingText"></textarea>
+                                <textarea class="form-control" id="txtStampingText" rows="3" [(ngModel)]="stampingText" maxlength="100"></textarea>
                             </div>
 
 
@@ -90,7 +90,7 @@
                                             [(ngModel)]="txtcolorpicker">
                                     </div>
                                     <div class="col-9">
-                                        <input class="form-control" type="text" [(ngModel)]="txtsetcolorpicker" (input)="setColorValue(txtsetcolorpicker)">
+                                        <input class="form-control" type="text" [(ngModel)]="txtsetcolorpicker" (input)="setColorValue(txtsetcolorpicker)" maxlength="7">
                                     </div>
                                 </div>
 
@@ -118,9 +118,9 @@
                         <div class="form-group">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">x-axis</span>
-                                <input type="text" class="form-control" id="txtXaxis" [(ngModel)]="txtXaxis">
+                                <input type="text" class="form-control" id="txtXaxis" [(ngModel)]="txtXaxis" (keypress)="vldChkLst.isNumberKey($event)" maxlength="3">
                                 <span class="input-group-text">y-axis</span>
-                                <input type="text" class="form-control" id="txtYaxis" [(ngModel)]="txtYaxis">
+                                <input type="text" class="form-control" id="txtYaxis" [(ngModel)]="txtYaxis"  (keypress)="vldChkLst.isNumberKey($event)" maxlength="3">
                             </div>
                         </div>
                     </div>
@@ -140,7 +140,7 @@
                     <label for="" class="col-md-4 col-lg-3 form-label">* {{"Opacity"| langReplace}} </label>
                     <div class="col-md-6 col-lg-4">
                         <div class="form-group">
-                            <input type="text" class="form-control" id="txtOpacity" [(ngModel)]="txtOpacity">
+                            <input type="text" class="form-control" id="txtOpacity" [(ngModel)]="txtOpacity" (keypress)="vldChkLst.isNumberKey($event)" maxlength="2">
                         </div>
                     </div>
                 </div>

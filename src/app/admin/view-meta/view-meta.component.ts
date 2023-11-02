@@ -56,7 +56,6 @@ sortColumn: string = 'ticker';
 
 tablecollist=[
   {"name":"Template Name","cname":"templateName","sortable":true },
-    {"name":"Description","cname":"description","sortable":true },
    
   // {"name":"Type","cname":"metaType","sortable":true },
   
@@ -118,7 +117,7 @@ viewMetaLit(){
     "intMetaId": ''
     };
     this.loading=true
-    this.commonserveice.viewMeta(dataParam).subscribe({
+    this.commonserveice.viewMetaNew(dataParam).subscribe({
       next: (response) => {
         let respData = response.RESPONSE_DATA;
         let respToken = response.RESPONSE_TOKEN;
@@ -127,7 +126,7 @@ viewMetaLit(){
         if(respToken == verifyToken){
           let res:any = Buffer.from(respData,'base64'); 
           let responseResult = JSON.parse(res)
-           
+          console.log(responseResult); 
             if (responseResult.status == 200) {
               this.loading=false;
             this.metalist = responseResult.result;
@@ -135,7 +134,7 @@ viewMetaLit(){
             }
             else if(responseResult.status==501){
                 
-              this.authService.directlogout();
+               this.authService.directlogout();
             }
             else{
               this.loading=false;
@@ -144,7 +143,7 @@ viewMetaLit(){
         }
         else{
           this.loading = false;
-          this.authService.directlogout();
+           this.authService.directlogout();
         }
       },
       error: (msg) => {

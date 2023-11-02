@@ -74,6 +74,7 @@ import { ViewSignatureComponent } from './view-signature/view-signature.componen
 import { FormbuilderModule } from '../formbuilder/formbuilder.module';
 import { DynFormToPdfComponent } from './dyn-form-to-pdf/dyn-form-to-pdf.component';
 import { ViewStampingComponent } from './view-stamping/view-stamping.component';
+import { CreateFormTemplateComponent } from './create-form-template/create-form-template.component';
 
 
 
@@ -134,6 +135,7 @@ import { ViewStampingComponent } from './view-stamping/view-stamping.component';
                  ViewSignatureComponent,
                  DynFormToPdfComponent,
                  ViewStampingComponent,
+                 CreateFormTemplateComponent,
          
   ],
   imports: [

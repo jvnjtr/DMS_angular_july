@@ -88,8 +88,6 @@ export class LeftmenuComponent implements OnInit {
     this.config = SeetionParsed.CONFIG;
     this.roleName = SeetionParsed.ROLE_NAME;
 
-
-
   }
 
 

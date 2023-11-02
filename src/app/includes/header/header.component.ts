@@ -384,8 +384,8 @@ this.getPermissionLinks()
 
 
 
-console.log(this.notificationList)
-        console.log(this.notificationList);
+// console.log(this.notificationList)
+//         console.log(this.notificationList);
         this.totalNotificationCount=responseResult.result.totalNotification;
 
 

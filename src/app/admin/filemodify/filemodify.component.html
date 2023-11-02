@@ -8,7 +8,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>*  {{"Document Name" | langReplace}} </label>
+                            <label>* {{"Document Name" | langReplace}} </label>
                             <input type="text" class="form-control" readonly [(ngModel)]="txtFileName">
                         </div>
                     </div>
@@ -52,25 +52,30 @@
                             <label>{{"Set retention period of a file" | langReplace}} </label>
                             <div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="rdoSetretention" (click)="rtrdoClick($event)" [(ngModel)]="rdoSetretention" id="rdoSetretention1" value="1">
-                                    <label class="form-check-label" for="rdoSetretention1">{{'Yes' | langReplace}}</label>
-                                  </div>
-                                  <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="rdoSetretention" (click)="rtrdoClick($event)"  [(ngModel)]="rdoSetretention" id="rdoSetretention2" value="2" checked>
+                                    <input class="form-check-input" type="radio" name="rdoSetretention"
+                                        (click)="rtrdoClick($event)" [(ngModel)]="rdoSetretention" id="rdoSetretention1"
+                                        value="1">
+                                    <label class="form-check-label" for="rdoSetretention1">{{'Yes' |
+                                        langReplace}}</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="rdoSetretention"
+                                        (click)="rtrdoClick($event)" [(ngModel)]="rdoSetretention" id="rdoSetretention2"
+                                        value="2" checked>
                                     <label class="form-check-label" for="rdoSetretention2">{{'No'| langReplace}}</label>
-                                  </div>
+                                </div>
                             </div>
 
 
-                         
-                         </div>
+
+                        </div>
                     </div>
 
                     <div class="col-md-6" *ngIf="(rdoSetretention=='1' )&&( checkinoutstatus <= 1) ">
                         <div class="form-group">
                             <label>* {{"Retention Date" | langReplace}}</label>
-                            <input type="date" placeholder="DD-MM-YYYY"  min="{{currenttime | date:'yyyy-MM-dd'}}" id="expiryDate" class="form-control"
-                                [(ngModel)]="txtExpDate">
+                            <input type="date" placeholder="DD-MM-YYYY" min="{{currenttime | date:'yyyy-MM-dd'}}"
+                                id="expiryDate" class="form-control" [(ngModel)]="txtExpDate">
                             <!-- <div class="input-group ">
                                                                    <input type="text" readonly placeholder="DD-MM-YYYY" class="form-control" [(ngModel)]="txtExpDate" [minDate]="txtEfminDate" 
                                                                    #dp="bsDatepicker"
@@ -85,7 +90,8 @@
                     <div class="col-md-12" *ngIf="checkinoutstatus <= 1">
                         <div class="form-group">
                             <label>* {{"Subject" | langReplace}} </label>
-                            <textarea class="form-control" id="txtSubject" [(ngModel)]="txtSubject" cols="3" rows="3">
+                            <textarea class="form-control" id="txtSubject" [(ngModel)]="txtSubject" cols="3" rows="3"
+                                maxlength="100">
 
                                                         </textarea>
 
@@ -94,26 +100,27 @@
                     <div class="col-md-12" *ngIf="checkinoutstatus > 1 && checkinUpload">
                         <div *ngIf="fileeList?.length == 0">
                             <div class="custom-dropzone" ngx-dropzone (change)="onSelect($event)">
-                              <ngx-dropzone-label>
-                                <div>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="63" height="64" viewBox="0 0 63 64">
-                                    <g fill-rule="nonzero">
-                                      <path
-                                        d="M42.656 15.135a1.953 1.953 0 0 1-1.391-.578L31.5 4.795l-9.765 9.762a1.97 1.97 0 1 1-2.785-2.785L30.106.616a1.97 1.97 0 0 1 2.785 0l11.157 11.156a1.97 1.97 0 0 1-1.392 3.363z" />
-                                      <path
-                                        d="M31.5 36.791a1.97 1.97 0 0 1-1.969-1.969V2.01a1.97 1.97 0 0 1 3.938 0v32.812a1.97 1.97 0 0 1-1.969 1.969z" />
-                                      <path
-                                        d="M55.781 63.041H7.22A7.225 7.225 0 0 1 0 55.822V41.385a4.599 4.599 0 0 1 4.594-4.594h7.234a4.567 4.567 0 0 1 4.402 3.276l2.814 9.382a.658.658 0 0 0 .628.467h23.656a.658.658 0 0 0 .628-.467l2.814-9.385a4.572 4.572 0 0 1 4.402-3.273h7.234A4.599 4.599 0 0 1 63 41.385v14.437a7.225 7.225 0 0 1-7.219 7.219zM4.594 40.729a.656.656 0 0 0-.657.656v14.437a3.286 3.286 0 0 0 3.282 3.282H55.78a3.286 3.286 0 0 0 3.282-3.282V41.385a.656.656 0 0 0-.657-.656h-7.234a.65.65 0 0 0-.628.467L47.73 50.58a4.628 4.628 0 0 1-4.402 3.274H19.672a4.567 4.567 0 0 1-4.402-3.276l-2.814-9.382a.65.65 0 0 0-.628-.467H4.594z" />
-                                    </g>
-                                  </svg>
-                
-                                  <h3>{{"Drag and drop document here" | langReplace}} </h3>
-                                  <h3>{{"or" | langReplace}} </h3>
-                                  <label for="fileDropRef">{{"Browse for file" | langReplace}} </label>
-                                </div>
-                              </ngx-dropzone-label>
+                                <ngx-dropzone-label>
+                                    <div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="63" height="64"
+                                            viewBox="0 0 63 64">
+                                            <g fill-rule="nonzero">
+                                                <path
+                                                    d="M42.656 15.135a1.953 1.953 0 0 1-1.391-.578L31.5 4.795l-9.765 9.762a1.97 1.97 0 1 1-2.785-2.785L30.106.616a1.97 1.97 0 0 1 2.785 0l11.157 11.156a1.97 1.97 0 0 1-1.392 3.363z" />
+                                                <path
+                                                    d="M31.5 36.791a1.97 1.97 0 0 1-1.969-1.969V2.01a1.97 1.97 0 0 1 3.938 0v32.812a1.97 1.97 0 0 1-1.969 1.969z" />
+                                                <path
+                                                    d="M55.781 63.041H7.22A7.225 7.225 0 0 1 0 55.822V41.385a4.599 4.599 0 0 1 4.594-4.594h7.234a4.567 4.567 0 0 1 4.402 3.276l2.814 9.382a.658.658 0 0 0 .628.467h23.656a.658.658 0 0 0 .628-.467l2.814-9.385a4.572 4.572 0 0 1 4.402-3.273h7.234A4.599 4.599 0 0 1 63 41.385v14.437a7.225 7.225 0 0 1-7.219 7.219zM4.594 40.729a.656.656 0 0 0-.657.656v14.437a3.286 3.286 0 0 0 3.282 3.282H55.78a3.286 3.286 0 0 0 3.282-3.282V41.385a.656.656 0 0 0-.657-.656h-7.234a.65.65 0 0 0-.628.467L47.73 50.58a4.628 4.628 0 0 1-4.402 3.274H19.672a4.567 4.567 0 0 1-4.402-3.276l-2.814-9.382a.65.65 0 0 0-.628-.467H4.594z" />
+                                            </g>
+                                        </svg>
+
+                                        <h3>{{"Drag and drop document here" | langReplace}} </h3>
+                                        <h3>{{"or" | langReplace}} </h3>
+                                        <label for="fileDropRef">{{"Browse for file" | langReplace}} </label>
+                                    </div>
+                                </ngx-dropzone-label>
                             </div>
-                          </div>
+                        </div>
                     </div>
                     <div class="col-md-12" *ngIf="checkinoutstatus > 1">
                         <div class="form-group">
@@ -138,48 +145,83 @@
 
 
                     <div class="col-md-12" *ngIf="checkinoutstatus <= 1">
-                        <div class="form-group">
-                                                           
+                        <div class="form-group d-none">
+
 
                             <div class="row">
                                 <div class="col-6">
-                                        <label>*  {{"Select Template"| langReplace}}</label>
-                                    <select class="form-select" [(ngModel)]="selMeta" id="selMeta" (change)="getMetaType(selMeta)">
+                                    <label>* {{"Select Template"| langReplace}}</label>
+                                    <select class="form-select" [(ngModel)]="selMeta" id="selMeta"
+                                        (change)="getMetaType(selMeta)">
                                         <option value="0"> {{"Select"| langReplace}} </option>
-                                        <option *ngFor="let flist of metalist" [value]="flist.templateId">{{flist.templateName}}</option>
-                                      </select>   
-                                      
-                                     
-            
+                                        <option *ngFor="let flist of metalist" [value]="flist.templateId">
+                                            {{flist.templateName}}</option>
+                                    </select>
+
+
+
                                 </div>
-                             
-                            </div>  
-                        </div>
-                           <div class="p-3 bg-light mb-3" *ngIf="getmetaTypeList?.length > 0">
-                            <div class="row">
-                                    <div class="col-md-6" *ngFor="let gtype of getmetaTypeList;let x=index">
-                                        <div class="form-group">
-                                             <label>*  {{gtype.labelName}}</label>
-                                             <div *ngIf="gtype.metaType==1">
-                                               <input type="text" class="form-control" id="{{gtype.labelName}}" [(ngModel)]="gtype.value">
-                                            </div>
-                                            <div *ngIf="gtype.metaType==2">
-                                               <input type="date" class="form-control" id="{{gtype.labelName}}" max="2100-12-31" [(ngModel)]="gtype.value">
-                                            </div>
-                                            <div *ngIf="gtype.metaType==3">
-                                                <input type="number" class="form-control" id="{{gtype.labelName}}" [(ngModel)]="gtype.value">
-                                             </div>
-                                        </div>
-                                       
-                                    </div>
+
                             </div>
-                       
-                         
-                         
-            </div>
+                        </div>
+                        <div class="p-3 bg-light mb-3 d-none" *ngIf="getmetaTypeList?.length > 0">
+                            <div class="row">
+                                <div class="col-md-6" *ngFor="let gtype of getmetaTypeList;let x=index">
+                                    <div class="form-group">
+                                        <label>* {{gtype.labelName}}</label>
+                                        <div *ngIf="gtype.metaType==1">
+                                            <input type="text" class="form-control" id="{{gtype.labelName}}"
+                                                [(ngModel)]="gtype.value">
+                                        </div>
+                                        <div *ngIf="gtype.metaType==2">
+                                            <input type="date" class="form-control" id="{{gtype.labelName}}"
+                                                max="2100-12-31" [(ngModel)]="gtype.value">
+                                        </div>
+                                        <div *ngIf="gtype.metaType==3">
+                                            <input type="number" class="form-control" id="{{gtype.labelName}}"
+                                                [(ngModel)]="gtype.value">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                        <!--dynamic form load-->
+                    <div class="col-md-12">
+                        <div class="form-group">
+
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <label>* {{"Select Meta"| langReplace}}</label>
+                                    <select class="form-select" [(ngModel)]="processId" id="selDynForm"
+                                        (change)="showDynamicForm(processId)">
+                                        <option value="0"> {{"Select"| langReplace}} </option>
+                                        <option *ngFor="let flist of formlist" [value]="flist.processId">
+                                            {{flist.formName}}</option>
+                                    </select>
+
+
+
+                                </div>
+
+                            </div>
+                            
+                        </div>
+                        <div class="row" *ngIf="loadDynamicForm>0">
+                            <div class="col-md-12">
+                              <app-form-apply [fileeList]="fileeList" [fromadmin]="foradmin" [processId]="processId" [fileUpload]="fileUploadStatus" [fileUploadData]="fileUploadData" [intOnlineServiceIdFileEdit]="onlineServiceId" (fileUploadSuccess)="fileUploadSuccess($event)"></app-form-apply>
+                            </div>
+                          </div> 
+                    </div>
+                    <!--dynamic form load-->
+                        
                     </div>
 
-                  
+
 
 
                 </div>
@@ -194,12 +236,15 @@
 
                 <div class="" *ngIf="checkinoutstatus <= 1">
 
-                    <button class="btn btn-success" (click)="finalfileupload()">{{"Update" | langReplace}} </button> &nbsp;
-                    <button  type="button" class="btn btn-danger" (click)="resetform()" >{{"Cancel" | langReplace}} </button>  
+                    <button class="btn btn-success" (click)="finalfileupload()">{{"Update" | langReplace}} </button>
+                    &nbsp;
+                    <button type="button" class="btn btn-danger" (click)="resetform()">{{"Cancel" | langReplace}}
+                    </button>
                 </div>
                 <div class="" *ngIf="checkinoutstatus > 1">
 
-                    <button class="btn btn-success" (click)="checkinFile(fileid)">{{"Check In" | langReplace}} </button> &nbsp;
+                    <button class="btn btn-success" (click)="checkinFile(fileid)">{{"Check In" | langReplace}} </button>
+                    &nbsp;
                     <!-- <button  type="button" class="btn btn-danger" >Reset</button>   -->
                 </div>
             </div>
@@ -252,8 +297,8 @@
                                 <div class="form-group">
 
                                     <div class="input-group ">
-                                        <input type="password" placeholder="Enter File Password" id="txtPassword" class="form-control"
-                                            [(ngModel)]="txtPassword">
+                                        <input type="password" placeholder="Enter File Password" id="txtPassword"
+                                            class="form-control" [(ngModel)]="txtPassword">
 
 
 
@@ -264,7 +309,8 @@
 
 
 
-                                <button class="btn btn-primary" (click)="unsetPassword()">{{"Submit" | langReplace}} </button>
+                                <button class="btn btn-primary" (click)="unsetPassword()">{{"Submit" | langReplace}}
+                                </button>
                                 <!--  -->
 
                             </div>

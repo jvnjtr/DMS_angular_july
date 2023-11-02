@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input,Output,EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { UploadfilesService } from '../../services/uploadfiles.service';
@@ -11,6 +11,7 @@ import { EncrypyDecrpyService } from '../../services/encrypy-decrpy.service';
 import { ValidatorchecklistService } from '../../services/validatorchecklist.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Buffer } from 'buffer';
+import { FormApplyComponent } from 'src/app/formbuilder/form-apply/form-apply.component';
 
 @Component({
   selector: 'app-filemodify',
@@ -26,6 +27,7 @@ export class FilemodifyComponent implements OnInit {
   messaageslist: any;
   jsonurl = "assets/js/_configs/fileModify.config.json";
   @Input() fileid: any;
+
   @Input() folderid: any;
   @Input() filetype: any;
 
@@ -33,10 +35,11 @@ export class FilemodifyComponent implements OnInit {
   @Input() checkinFileId: any = 0;
   @Output("callfunction") callfunction: EventEmitter<any> = new EventEmitter();
   @Output("callfunction2") callfunction2: EventEmitter<any> = new EventEmitter();
+  @ViewChild(FormApplyComponent, { static: false }) formapplyItems: FormApplyComponent;
   userRemark: any;
-  checkinfileName:any;
+  checkinfileName: any;
   fileeList: any = [];
-  checkinUpload:any;
+  checkinUpload: any;
   letterID: any = "";
   files_dropped: File[] = [];
   file: any = null;
@@ -68,7 +71,7 @@ export class FilemodifyComponent implements OnInit {
   txtEtminDate: any = '';
   txtExpDate: any = null;
   selOcrLang: any = '0';
-  rdoSetretention:any='2';
+  rdoSetretention: any = '2';
   txtFileNumber: any = '';
   fileVersion: any;
   fileUploadingStatus: any = 0;
@@ -87,7 +90,7 @@ export class FilemodifyComponent implements OnInit {
   folderName: any;
   currenttime: Date = new Date();
   fileTypeitem: any;
-  checkinoutstatus:any;
+  checkinoutstatus: any;
   permissionlistitems: any = [
     { label: 'Read' },
     { label: 'Write' },
@@ -101,10 +104,18 @@ export class FilemodifyComponent implements OnInit {
 
 
   ];
-  getmetaTypeList:any=[];
+  getmetaTypeList: any = [];
   txtPassword: any;
   getfiletype: any;
   prevstatus: any;
+
+  loadDynamicForm: any;
+  foradmin: any = 'admin';
+  fileUploadStatus: any = 0;
+  formlist: any = [];
+  processId: any;
+  onlineServiceId: any;
+  fileUploadData:any=[];
   constructor(
     private route: Router,
     private httpClient: HttpClient,
@@ -124,8 +135,8 @@ export class FilemodifyComponent implements OnInit {
   ngOnInit(): void {
     if (this.checkinFileId > 1) {
       this.fileid = this.checkinFileId;
-      this.prevstatus=false;
-      this.checkinUpload=true;
+      this.prevstatus = false;
+      this.checkinUpload = true;
     }
     this.token = sessionStorage.getItem('TOKEN');
     //console.log(this.token);
@@ -142,25 +153,25 @@ export class FilemodifyComponent implements OnInit {
     this.loadconfig();
 
     this.getFolders(this.folderid);
-    this.viewMetaList()
+    // this.viewMetaList()
 
     this.viewFileDetails(this.fileid)
-
+    this.viewDynFormList();
 
   }
   //\\ ======================== // Config // ======================== //\\
   loadconfig() {
     this.httpClient.get<any>(this.jsonurl).subscribe({
       next: (data) => {
-         this.tablist=data[0].tabList;
-           this.utillist=data[0].utils
-           this.messaageslist=data[0].messages; 
-           this.title = data[0].pagetitle;
+        this.tablist = data[0].tabList;
+        this.utillist = data[0].utils
+        this.messaageslist = data[0].messages;
+        this.title = data[0].pagetitle;
       },
       error: (msg) => {
         this.authService.directlogout();
-     }
-   })
+      }
+    })
   }
   //\\ ======================== // Config // ======================== //\\
 
@@ -180,46 +191,46 @@ export class FilemodifyComponent implements OnInit {
     this.uploadfiles.uploadFile(newFile).subscribe({
       next: (response) => {
         let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        let responseResult = JSON.parse(res)
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
 
-        if (responseResult.status == 200) {
+          if (responseResult.status == 200) {
 
-          this.files_dropped.push(event.addedFiles);
-          this.txtFileName = responseResult.result.fileName;
-          this.checkinfileName=responseResult.result.fileName;
-          this.dcoSrc = responseResult.result.filePath;
-          let filetype = responseResult.result.fileType;
-          this.getfiletype = responseResult.result.fileType;
-          this.loadDocPreview(this.getfiletype, responseResult.result.filePath)
-          this.fileUploadingStatus = 1;
-          this.checkinUpload=false;
+            this.files_dropped.push(event.addedFiles);
+            this.txtFileName = responseResult.result.fileName;
+            this.checkinfileName = responseResult.result.fileName;
+            this.dcoSrc = responseResult.result.filePath;
+            let filetype = responseResult.result.fileType;
+            this.getfiletype = responseResult.result.fileType;
+            this.loadDocPreview(this.getfiletype, responseResult.result.filePath)
+            this.fileUploadingStatus = 1;
+            this.checkinUpload = false;
+          }
+          else if (responseResult.status == 400) {
+            this.commonserveice.swalfire('error', responseResult.message)
+          }
+          else if (responseResult.status == 501) {
+
+            this.authService.directlogout();
+          }
         }
-        else if (responseResult.status == 400) {
-          this.commonserveice.swalfire('error',responseResult.message)
-        }
-        else if (responseResult.status == 501) {
-
+        else {
+          this.loading = false;
           this.authService.directlogout();
         }
-      }
-      else {
-        this.loading = false;
-       this.authService.directlogout();
-      }
       },
       error: (msg) => {
-            this.authService.directlogout();
-     }
-   })
-   
+        this.authService.directlogout();
+      }
+    })
 
 
 
- 
+
+
 
 
 
@@ -240,10 +251,10 @@ export class FilemodifyComponent implements OnInit {
         if (respToken == verifyToken) {
           let res: any = Buffer.from(respData, 'base64');
           let responseResult = JSON.parse(res)
-  
-  
+
+
           if (responseResult.status == '200') {
-  
+
             this.folderlist = responseResult.result;
             if (this.folderlist.length > 0) {
               this.folderName = this.folderlist[0].folderName
@@ -253,22 +264,22 @@ export class FilemodifyComponent implements OnInit {
             // console.log(this.permissionlist)
           }
           else if (responseResult.status == 501) {
-  
+
             this.authService.directlogout();
           }
         }
         else {
           this.loading = false;
-         this.authService.directlogout();
+          this.authService.directlogout();
         }
-  
+
       },
       error: (msg) => {
-            this.authService.directlogout();
-     }
-   })
+        this.authService.directlogout();
+      }
+    })
 
- 
+
 
 
 
@@ -276,52 +287,54 @@ export class FilemodifyComponent implements OnInit {
   //\\ ======================== // get Folders // ======================== //\\
 
 
-   //\\ ======================== // get meta list // ======================== //\\
-   viewMetaList(){
+  //\\ ======================== // get meta list // ======================== //\\
+  viewMetaList() {
 
 
- 
+
     let dataParam = {
       "intMetaId": ''
-      };
-      this.commonserveice.viewMeta(dataParam).subscribe({
-        next: (response) => {    let respData = response.RESPONSE_DATA;
-          let respToken = response.RESPONSE_TOKEN;
-        
-          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-          if(respToken == verifyToken){
-            let res:any = Buffer.from(respData,'base64'); 
-            let responseResult = JSON.parse(res)
-           
-            if (responseResult.status == 200) {
-        
-              
-           this.metalist = responseResult.result;
+    };
+    this.commonserveice.viewMeta(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+
+          if (responseResult.status == 200) {
 
 
-   
-      
-            }
-            else if(responseResult.status==501){
-              
-              this.authService.directlogout();
-            }
+            this.metalist = responseResult.result;
+
+
+
+
           }
-          else{
-            this.loading = false;
-            this.authService.directlogout();
-          }},
-        error: (msg) => {
-          this.authService.directlogout();
-       }
-     })
+          else if (responseResult.status == 501) {
 
-  
-  
+            this.authService.directlogout();
+          }
+        }
+        else {
+          this.loading = false;
+          this.authService.directlogout();
+        }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+      }
+    })
+
+
+
   }
   //\\ ======================== // Get Mata Type // ======================== //\\
-  
-  
+
+
 
 
   //\\ ======================== // get Meta list // ======================== //\\
@@ -330,15 +343,15 @@ export class FilemodifyComponent implements OnInit {
 
   }
 
-  metavalid(){
+  metavalid() {
     let metavalidstatus = true;
-    for(let i=0;i<this.getmetaTypeList.length;i++){
-     
-      if(!this.vldChkLst.blankCheck(this.getmetaTypeList[i].value,this.commonserveice.langReplace(this.getmetaTypeList[i].labelName + " Can not be blank"),this.getmetaTypeList[i].labelName)){
-        metavalidstatus =  false;
+    for (let i = 0; i < this.getmetaTypeList.length; i++) {
+
+      if (!this.vldChkLst.blankCheck(this.getmetaTypeList[i].value, this.commonserveice.langReplace(this.getmetaTypeList[i].labelName + " Can not be blank"), this.getmetaTypeList[i].labelName)) {
+        metavalidstatus = false;
         break;
       }
-     
+
     }
     return metavalidstatus;
   }
@@ -348,26 +361,40 @@ export class FilemodifyComponent implements OnInit {
     let subject = this.txtSubject;
     let metaitems = this.metasellist;
     let tags = this.txtTags;
-    let templateid=this.selMeta;
+    let templateid = this.selMeta;
 
-    if (!this.vldChkLst.blankCheck(fileName, this.commonserveice.langReplace(this.messaageslist.filename),'txtFileName')) {}
-   else if((this.rdoSetretention == 1) && (!this.vldChkLst.blankCheck(this.txtExpDate,this.commonserveice.langReplace("Please select the retention date"),'expiryDate'))){} 
-   else if (!this.vldChkLst.blankCheck(subject, this.commonserveice.langReplace(this.messaageslist.subject),'txtSubject')) {}
-   else if(!this.vldChkLst.selectDropdown(templateid,this.commonserveice.langReplace(this.messaageslist.template),'selMeta')) { } 
-   else if(!this.metavalid()) { } 
+    if (!this.vldChkLst.blankCheck(fileName, this.commonserveice.langReplace(this.messaageslist.filename), 'txtFileName')) { }
+    else if ((this.rdoSetretention == 1) && (!this.vldChkLst.blankCheck(this.txtExpDate, this.commonserveice.langReplace("Please select the retention date"), 'expiryDate'))) { }
+    else if (!this.vldChkLst.blankCheck(subject, this.commonserveice.langReplace(this.messaageslist.subject), 'txtSubject')) { }
+    // else if (!this.vldChkLst.selectDropdown(templateid, this.commonserveice.langReplace(this.messaageslist.template), 'selMeta')) { }
+    else if (this.processId < 1) {
+      Swal.fire({
+
+        text: this.commonserveice.langReplace("Please Select Meta"),
+        icon: 'error',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: this.commonserveice.langReplace('Ok')
+      }).then((result) => {
+        window.setTimeout(function () { 
+          $('#selDynForm').focus(); 
+      }, 200); 
+      })
+    }
 
 
     else {
 
-let uploadParams = {
+      let uploadParams = {
         "fileId": this.fileid,
         "folderId": this.folderid,
         "fileName": fileName,
         "subject": this.txtSubject,
-        "templateId":this.selMeta,
-        "meta":this.getmetaTypeList,
+        "templateId": this.selMeta,
+        "meta": this.getmetaTypeList,
         "tags": this.txtTags,
         "indexing": 0,
+        "processId":this.processId,
+        "intOnlineServiceId": this.onlineServiceId,
         "expiryDate": this.txtExpDate,
         "ocrLanguage": this.selOcrLang,
         "fileVersion": this.fileVersion,
@@ -376,72 +403,73 @@ let uploadParams = {
       }
 
       // console.log(uploadParams)
-      this.loading = true;
+      // this.loading = true;
+      this.fileUploadData.push(uploadParams);
+      this.formapplyItems.doSchemeApply();
+      // this.uploadfiles.fileEdit(uploadParams).subscribe({
+      //   next: (response) => {
+      //     let respData = response.RESPONSE_DATA;
+      //     let respToken = response.RESPONSE_TOKEN;
+      //     //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
 
-      this.uploadfiles.fileEdit(uploadParams).subscribe({
-        next: (response) => {
-          let respData = response.RESPONSE_DATA;
-          let respToken = response.RESPONSE_TOKEN;
-          //let verifyToken = CryptoJS.HmacSHA256(letterParams, environment.apiHashingKey).toString();
-  
-          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-          if (respToken == verifyToken) {
-            let res: any = Buffer.from(respData, 'base64');
-            let responseResult = JSON.parse(res)
-  
-            if (responseResult.status == 200) {
-              this.loading = false;
-              Swal.fire({
-  
-                text: this.commonserveice.langReplace(this.messaageslist.successMsg),
-                icon: 'success',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: this.commonserveice.langReplace('Ok')
-              }).then((result) => {
-  
-  
-  
-  
-                let reData: any = this.folderid + ':' + '0'
-  
-                let encSchemeStr = this.encDec.encText(reData.toString());
-  
-                this.route.navigate(['/admin/viewupload', encSchemeStr])
-  
-                this.viewFileDetails(this.fileid);
-  
-              })
-  
-  
-            }
-            else if (responseResult.status == 400) {
-              this.loading = false;
-              this.commonserveice.swalfire('error',responseResult.message)
-            }
-            else if (responseResult.status == 500) {
-              this.loading = false;
-              this.commonserveice.swalfire('error',responseResult.message)
-            }
-            else if (responseResult.status == 501) {
-  
-              this.authService.directlogout();
-            }
-            else {
-              this.loading = false;
-              this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
-            }
-          }
-          else {
-            this.loading = false;
-            this.authService.directlogout();
-          }
-        },
-        error: (msg) => {
-          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
-       }
-     })
+      //     let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+      //     if (respToken == verifyToken) {
+      //       let res: any = Buffer.from(respData, 'base64');
+      //       let responseResult = JSON.parse(res)
 
-      
+      //       if (responseResult.status == 200) {
+      //         this.loading = false;
+      //         Swal.fire({
+
+      //           text: this.commonserveice.langReplace(this.messaageslist.successMsg),
+      //           icon: 'success',
+      //           confirmButtonColor: '#3085d6',
+      //           confirmButtonText: this.commonserveice.langReplace('Ok')
+      //         }).then((result) => {
+
+
+
+
+      //           let reData: any = this.folderid + ':' + '0'
+
+      //           let encSchemeStr = this.encDec.encText(reData.toString());
+
+      //           this.route.navigate(['/admin/viewupload', encSchemeStr])
+
+      //           this.viewFileDetails(this.fileid);
+
+      //         })
+
+
+      //       }
+      //       else if (responseResult.status == 400) {
+      //         this.loading = false;
+      //         this.commonserveice.swalfire('error', responseResult.message)
+      //       }
+      //       else if (responseResult.status == 500) {
+      //         this.loading = false;
+      //         this.commonserveice.swalfire('error', responseResult.message)
+      //       }
+      //       else if (responseResult.status == 501) {
+
+      //         this.authService.directlogout();
+      //       }
+      //       else {
+      //         this.loading = false;
+      //         this.commonserveice.swalfire('error', this.commonserveice.langReplace(environment.somethingWrong))
+      //       }
+      //     }
+      //     else {
+      //       this.loading = false;
+      //       this.authService.directlogout();
+      //     }
+      //   },
+      //   error: (msg) => {
+      //     this.commonserveice.swalfire('error', this.commonserveice.langReplace(environment.somethingWrong))
+      //   }
+      // })
+
+
 
 
 
@@ -453,7 +481,7 @@ let uploadParams = {
 
   resetform() {
     let encSchemeStr = this.encDec.encText(this.folderid.toString());
- 
+
     this.route.navigate(['/admin/viewupload', encSchemeStr])
     // this.txtFileName = '';
     // this.selFolderName = '0';
@@ -475,10 +503,10 @@ let uploadParams = {
   }
 
 
-  rtrdoClick(e:any){
-    let rdval=e.target.value;
-   
-    this.txtExpDate='';
+  rtrdoClick(e: any) {
+    let rdval = e.target.value;
+
+    this.txtExpDate = '';
   }
 
 
@@ -488,151 +516,168 @@ let uploadParams = {
       "fileId": fileid
 
     };
-this.loading = true;
-this.commonserveice.getFileDetails(dataParam).subscribe({
-  next: (response) => {
-    let respData = response.RESPONSE_DATA;
-    let respToken = response.RESPONSE_TOKEN;
-    let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-    if (respToken == verifyToken) {
-      let res: any = Buffer.from(respData, 'base64');
-      let responseResult = JSON.parse(res)
+    this.loading = true;
+    this.commonserveice.getFileDetails(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
 
-      if (responseResult.status == 200) {
+          if (responseResult.status == 200) {
 
-        this.loading = false;
-        this.filedetails = responseResult.result.fileDetails;
-        //this.files_dropped.push(this.filedetails);
+            this.loading = false;
+            this.filedetails = responseResult.result.fileDetails;
+            //this.files_dropped.push(this.filedetails);
 
-         console.log(this.filedetails)
+            console.log(this.filedetails)
 
-        this.txtFileName = this.filedetails.fileName;
-        this.selFolderName = this.filedetails.folderId;
-        this.txtFileNumber = this.filedetails.fileRefNo;
-        this.selOcrLang = this.filedetails.ocrLanguage ? this.filedetails.ocrLanguage :'0';
-        this.txtExpDate = this.filedetails.retentionDateDB;
-        this.txtSubject = this.filedetails.subject;
-        this.fileVersion = this.filedetails.fileVersion;
-this.checkinoutstatus=this.filedetails.checkInCheckoutStatus;
-this.selMeta=this.filedetails.templateId;
+            this.txtFileName = this.filedetails.fileName;
+            this.selFolderName = this.filedetails.folderId;
+            this.txtFileNumber = this.filedetails.fileRefNo;
+            this.selOcrLang = this.filedetails.ocrLanguage ? this.filedetails.ocrLanguage : '0';
+            this.txtExpDate = this.filedetails.retentionDateDB;
+            this.txtSubject = this.filedetails.subject;
+            this.fileVersion = this.filedetails.fileVersion;
+            this.processId = this.filedetails.processId;
+            this.onlineServiceId = this.filedetails.onlineServiceId;
+            
+            this.checkinoutstatus = this.filedetails.checkInCheckoutStatus;
+            this.selMeta = this.filedetails.templateId;
 
-if(!(this.txtExpDate == '' || this.txtExpDate == null)){
-this.rdoSetretention='1';
+            if (!(this.txtExpDate == '' || this.txtExpDate == null)) {
+              this.rdoSetretention = '1';
 
-}
-else{
-this.rdoSetretention='2';
+            }
+            else {
+              this.rdoSetretention = '2';
 
-}
-let metadetils:any=[];
-
-
-metadetils=this.filedetails.metaDetail;
-console.log(metadetils)
-setTimeout(() => {
-  this.txtTags = JSON.parse(this.filedetails.fileTags);
-
-  }, 2000)
+            }
+            let metadetils: any = [];
 
 
+            metadetils = this.filedetails.metaDetail;
+            // console.log(metadetils)
+            setTimeout(() => {
+              this.txtTags = JSON.parse(this.filedetails.fileTags);
 
-
-for(let i=0;i<metadetils.length;i++){
-  let obj:any={};
-  obj['metaId']=metadetils[i].metaId;
-  obj['labelName']=metadetils[i].labelName;
-  obj['metaType']=metadetils[i].metaType;
-  obj['value']=metadetils[i].metaDetails;
-  this.getmetaTypeList.push(obj);
-}
-
-        setTimeout(() => {
-
-
-          let selectIfElement: any = document.getElementById("selfolder");
+            }, 2000)
 
 
 
-          let foldrpermissions: any = JSON.parse(this.filedetails.filePermission)
-          let rolewisepermissions = foldrpermissions.rolebased;
-          let userwisepermissions = foldrpermissions.userbased;
 
-          for (let i = 0; i < rolewisepermissions.length; i++) {
-            let obj: any = {};
-            obj['roleName'] = rolewisepermissions[i].roleName;
-            obj['roleId'] = rolewisepermissions[i].roleId;
-            obj['checked'] = rolewisepermissions[i].checked;
-            obj['permission'] = rolewisepermissions[i].permission;
-            this.rolewisepermissions.push(obj);
+            for (let i = 0; i < metadetils.length; i++) {
+              let obj: any = {};
+              obj['metaId'] = metadetils[i].metaId;
+              obj['labelName'] = metadetils[i].labelName;
+              obj['metaType'] = metadetils[i].metaType;
+              obj['value'] = metadetils[i].metaDetails;
+              this.getmetaTypeList.push(obj);
+            }
+
+            setTimeout(() => {
+
+
+              let selectIfElement: any = document.getElementById("selfolder");
+
+
+
+              let foldrpermissions: any = JSON.parse(this.filedetails.filePermission)
+              let rolewisepermissions = foldrpermissions.rolebased;
+              let userwisepermissions = foldrpermissions.userbased;
+
+              for (let i = 0; i < rolewisepermissions.length; i++) {
+                let obj: any = {};
+                obj['roleName'] = rolewisepermissions[i].roleName;
+                obj['roleId'] = rolewisepermissions[i].roleId;
+                obj['checked'] = rolewisepermissions[i].checked;
+                obj['permission'] = rolewisepermissions[i].permission;
+                this.rolewisepermissions.push(obj);
+              }
+
+              for (let j = 0; j < userwisepermissions.length; j++) {
+
+
+
+                let obj: any = {};
+                obj['itemName'] = userwisepermissions[j].itemName;
+
+                obj['permission'] = userwisepermissions[j].permission;
+                obj['checked'] = userwisepermissions[j].checked;
+                this.userwisepermissions.push(obj);
+
+              }
+
+
+
+
+
+            }, 2000)
+
+
+
+            this.filepath = this.filedetails["filePath"];
+
+            this.fileTypeitem = this.filedetails["fileType"];
+            // console.log(datasrc)
+
+            if (this.lockstatus == 1) {
+              setTimeout(() => {
+
+              }, 200)
+            } else {
+              this.prevstatus = true;
+              this.downloadfils(fileid, this.filepath)
+            }
+
+            if (this.onlineServiceId > 0) {
+              this.loadDynamicForm = 1;
+              this.fileUploadStatus = this.processId;
+              let dynSchmCtrlParms = {
+                'intProcessId'       : this.processId,
+                'intOnlineServiceId' :this.onlineServiceId,
+                'sectionId'          :0,
+                'intProfileId'       :''
+              }
+              setTimeout(() => {
+               this.formapplyItems.loadDynamicCtrls(dynSchmCtrlParms);
+  
+              }, 5000)
+              
+            }
+
+            //  setTimeout(() => {
+            //   this.loadDocPreview(this.filedetails["fileType"],this.filepath)
+            // },2000)
+
+
           }
+          if (responseResult.status == 400) {
+            this.loading = false;
+            this.filedetails = responseResult.result;
+          }
+          else if (responseResult.status == 501) {
 
-          for (let j = 0; j < userwisepermissions.length; j++) {
-
-
-
-            let obj: any = {};
-            obj['itemName'] = userwisepermissions[j].itemName;
-
-            obj['permission'] = userwisepermissions[j].permission;
-            obj['checked'] = userwisepermissions[j].checked;
-            this.userwisepermissions.push(obj);
+            this.authService.directlogout();
+          }
+          else {
 
           }
-
-    
-
-
-
-        }, 2000)
-
-    
-
-        this.filepath = this.filedetails["filePath"];
-
-        this.fileTypeitem = this.filedetails["fileType"];
-        // console.log(datasrc)
-
-        if (this.lockstatus == 1) {
-          setTimeout(() => {
-
-          }, 200)
-        } else {
-          this.prevstatus = true;
-          this.downloadfils(fileid, this.filepath)
+        }
+        else {
+          this.loading = false;
+          this.authService.directlogout();
         }
 
-
-
-        //  setTimeout(() => {
-        //   this.loadDocPreview(this.filedetails["fileType"],this.filepath)
-        // },2000)
-
-
+      },
+      error: (msg) => {
+        this.commonserveice.swalfire('error', this.commonserveice.langReplace(environment.somethingWrong))
       }
-      if (responseResult.status == 400) {
-        this.loading = false;
-        this.filedetails = responseResult.result;
-      }
-      else if (responseResult.status == 501) {
+    })
 
-        this.authService.directlogout();
-      }
-      else {
 
-      }
-    }
-    else {
-      this.loading = false;
-     this.authService.directlogout();
-    }
-
-  },
-  error: (msg) => {
-    this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
- }
-})
-
- 
 
   }
 
@@ -646,112 +691,112 @@ for(let i=0;i<metadetils.length;i++){
     this.commonserveice.fileDownload(dataParam).subscribe({
       next: (response) => {
         let respData = response.RESPONSE_DATA;
-      let respToken = response.RESPONSE_TOKEN;
+        let respToken = response.RESPONSE_TOKEN;
 
-      this.fileLoading = true;
-      let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-      if (respToken == verifyToken) {
-        let res: any = Buffer.from(respData, 'base64');
-        let responseResult = JSON.parse(res)
+        this.fileLoading = true;
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
 
-        if (responseResult.status == 200) {
-
-
-          this.downloaditem = responseResult.result;
-          this.downloadlink = this.downloaditem.filePath;
-          this.dcoSrc = this.downloaditem.filePath;
-
-          this.fileLoading = false;
+          if (responseResult.status == 200) {
 
 
+            this.downloaditem = responseResult.result;
+            this.downloadlink = this.downloaditem.filePath;
+            this.dcoSrc = this.downloaditem.filePath;
 
-          if (this.filetype == "mp4") {
-            setTimeout(() => {
-              const video = document.createElement("video");
+            this.fileLoading = false;
 
-              // video.classList.add("frame");
-              video.controls = true;
-              video.muted = false;
 
-              if (video.canPlayType('video/mp4')) {
-                video.src = this.dcoSrc;
-              } else if (video.canPlayType('video/ogg')) {
-                video.src = this.dcoSrc;
-              } else {
-                // Provide video link to user  video.src = this.DemoDoc;
-              }
 
-              video.height = 380; // in px
-              video.width = 560;
+            if (this.filetype == "mp4") {
+              setTimeout(() => {
+                const video = document.createElement("video");
 
-              let element = <HTMLInputElement>document.getElementById("videopreviewdiv")
-              element.innerHTML = "";
-              element.appendChild(video)
+                // video.classList.add("frame");
+                video.controls = true;
+                video.muted = false;
+
+                if (video.canPlayType('video/mp4')) {
+                  video.src = this.dcoSrc;
+                } else if (video.canPlayType('video/ogg')) {
+                  video.src = this.dcoSrc;
+                } else {
+                  // Provide video link to user  video.src = this.DemoDoc;
+                }
+
+                video.height = 380; // in px
+                video.width = 560;
+
+                let element = <HTMLInputElement>document.getElementById("videopreviewdiv")
+                element.innerHTML = "";
+                element.appendChild(video)
+                this.fileLoading = false;
+              }, 200)
+
+            }
+            else if (this.filetype == "mp3") {
+              setTimeout(() => {
+
+                const audio = document.createElement("AUDIO");
+
+                audio.setAttribute("src", this.dcoSrc);
+                audio.setAttribute("controls", "controls");
+                document.body.appendChild(audio);
+
+                let element = <HTMLInputElement>document.getElementById("audiopreviewdiv")
+                element.innerHTML = "";
+                element.appendChild(audio)
+              }, 200)
               this.fileLoading = false;
-            }, 200)
+            }
+
+            else if (this.filetype == 'zip') {
+
+              setTimeout(() => {
+
+                const zip = document.createElement("A");
+                const t = document.createTextNode("Downlod .zip File");
+                zip.setAttribute("target", "_blank");
+                zip.setAttribute("href", this.dcoSrc);
+                zip.classList.add("text-primary");
+                zip.appendChild(t);
+                let element = <HTMLInputElement>document.getElementById("zipdiv")
+                element.classList.add("border", "bg-light", "p-4", "text-center");
+                element.innerHTML = "";
+                element.appendChild(zip)
+              }, 200)
+
+              this.fileLoading = false;
+            }
+            else {
+              let dangerouframeUrl = `${environment.iframeviewURL}?fileId=${this.fileid}+&token=${this.token}+&date=${this.currenttime}`;
+              this.publicurl = this.sanitizer.bypassSecurityTrustResourceUrl(dangerouframeUrl);
+            }
+
 
           }
-          else if (this.filetype == "mp3") {
-            setTimeout(() => {
+          else if (responseResult.status == 501) {
 
-              const audio = document.createElement("AUDIO");
-
-              audio.setAttribute("src", this.dcoSrc);
-              audio.setAttribute("controls", "controls");
-              document.body.appendChild(audio);
-
-              let element = <HTMLInputElement>document.getElementById("audiopreviewdiv")
-              element.innerHTML = "";
-              element.appendChild(audio)
-            }, 200)
-            this.fileLoading = false;
-          }
-
-          else if (this.filetype == 'zip') {
-
-            setTimeout(() => {
-
-              const zip = document.createElement("A");
-              const t = document.createTextNode("Downlod .zip File");
-              zip.setAttribute("target", "_blank");
-              zip.setAttribute("href", this.dcoSrc);
-              zip.classList.add("text-primary");
-              zip.appendChild(t);
-              let element = <HTMLInputElement>document.getElementById("zipdiv")
-              element.classList.add("border", "bg-light", "p-4", "text-center");
-              element.innerHTML = "";
-              element.appendChild(zip)
-            }, 200)
-
-            this.fileLoading = false;
+            this.authService.directlogout();
           }
           else {
-            let dangerouframeUrl = `${environment.iframeviewURL}?fileId=${this.fileid}+&token=${this.token}+&date=${this.currenttime}`;
-            this.publicurl = this.sanitizer.bypassSecurityTrustResourceUrl(dangerouframeUrl);
+            this.commonserveice.swalfire('error', this.commonserveice.langReplace(environment.somethingWrong))
           }
-
-
-        }
-        else if (responseResult.status == 501) {
-
-          this.authService.directlogout();
         }
         else {
-          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+          this.loading = false;
+          this.authService.directlogout();
         }
-      }
-      else {
-        this.loading = false;
-       this.authService.directlogout();
-      }
       },
       error: (msg) => {
-            this.authService.directlogout();
-     }
-   })
+        this.authService.directlogout();
+      }
+    })
 
 
-   
+
   }
   //\\ ======================== // Download File // ======================== //\\ 
   onError(error: any) {
@@ -845,7 +890,7 @@ for(let i=0;i<metadetils.length;i++){
     let password = this.txtPassword;
 
 
-    if (!this.vldChkLst.blankCheck(password, this.commonserveice.langReplace("Please Enter Password") ,'txtPassword')) {
+    if (!this.vldChkLst.blankCheck(password, this.commonserveice.langReplace("Please Enter Password"), 'txtPassword')) {
 
     }
 
@@ -859,40 +904,40 @@ for(let i=0;i<metadetils.length;i++){
       this.commonserveice.fileLockUnlock(formParams).subscribe({
         next: (response) => {
           let respData = response.RESPONSE_DATA;
-        let respToken = response.RESPONSE_TOKEN;
-        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-        if (respToken == verifyToken) {
-          let res: any = Buffer.from(respData, 'base64');
-          let responseResult = JSON.parse(res)
+          let respToken = response.RESPONSE_TOKEN;
+          let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+          if (respToken == verifyToken) {
+            let res: any = Buffer.from(respData, 'base64');
+            let responseResult = JSON.parse(res)
 
-          if (responseResult.status == 200) {
-            this.prevstatus = true;
-            // this.downloadfils(this.fileId,this.vfilepath)
-            this.downloadfils(this.fileid, this.filepath)
+            if (responseResult.status == 200) {
+              this.prevstatus = true;
+              // this.downloadfils(this.fileId,this.vfilepath)
+              this.downloadfils(this.fileid, this.filepath)
 
-          }
-          else if (responseResult.status == 400) {
-            this.commonserveice.swalfire('error',responseResult.message)
-          }
-          else if (responseResult.status == 501) {
+            }
+            else if (responseResult.status == 400) {
+              this.commonserveice.swalfire('error', responseResult.message)
+            }
+            else if (responseResult.status == 501) {
 
-            this.authService.directlogout();
+              this.authService.directlogout();
+            }
+            else {
+              this.commonserveice.swalfire('error', this.commonserveice.langReplace(environment.somethingWrong))
+            }
           }
           else {
-            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+            this.loading = false;
+            this.authService.directlogout();
           }
-        }
-        else {
-          this.loading = false;
-          this.authService.directlogout();
-        }
 
         },
         error: (msg) => {
-          this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
-       }
-     })
-  
+          this.commonserveice.swalfire('error', this.commonserveice.langReplace(environment.somethingWrong))
+        }
+      })
+
 
     }
 
@@ -903,14 +948,14 @@ for(let i=0;i<metadetils.length;i++){
 
     let remark = this.userRemark;
     let newfileName = this.checkinfileName;
-   
-    if (!this.vldChkLst.blankCheck(remark, this.commonserveice.langReplace("Please Enter Remark") ,'userRemark')) {
 
-    } else if (!this.vldChkLst.blankCheck(newfileName, this.commonserveice.langReplace("Please Upload the file"),'checkinfileName')) {
+    if (!this.vldChkLst.blankCheck(remark, this.commonserveice.langReplace("Please Enter Remark"), 'userRemark')) {
 
-    }else if(!this.vldChkLst.blankCheck(this.selOcrLang,this.commonserveice.langReplace("Please Select Ocr Language"),'selOcrLang')){
+    } else if (!this.vldChkLst.blankCheck(newfileName, this.commonserveice.langReplace("Please Upload the file"), 'checkinfileName')) {
 
-    }else {
+    } else if (!this.vldChkLst.blankCheck(this.selOcrLang, this.commonserveice.langReplace("Please Select Ocr Language"), 'selOcrLang')) {
+
+    } else {
 
       let formParams = {
         "fileId": fileId,
@@ -952,14 +997,14 @@ for(let i=0;i<metadetils.length;i++){
             });
           }
           else if (responseResult.status == 400) {
-            this.commonserveice.swalfire('error',responseResult.message)
+            this.commonserveice.swalfire('error', responseResult.message)
           }
           else if (responseResult.status == 501) {
 
             this.authService.directlogout();
           }
           else {
-            this.commonserveice.swalfire('error',this.commonserveice.langReplace(environment.somethingWrong ))
+            this.commonserveice.swalfire('error', this.commonserveice.langReplace(environment.somethingWrong))
           }
         }
         else {
@@ -975,71 +1020,154 @@ for(let i=0;i<metadetils.length;i++){
   }
 
 
-    //\\ ======================== // Get Mata Type // ======================== //\\
-    getMetaType(metaId:any){
-
-       this.getmetaTypeList=[];
-
-
-      let dataParam = {
-        "intMetaId": metaId
-        };
-        this.commonserveice.viewMeta(dataParam).subscribe({
-          next: (response) => {
-
-          
-
-            let respData = response.RESPONSE_DATA;
-            let respToken = response.RESPONSE_TOKEN;
-          
-            let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
-            if(respToken == verifyToken){
-              let res:any = Buffer.from(respData,'base64'); 
-              let responseResult = JSON.parse(res)
-               
-                if (responseResult.status == 200) {
-                  this.getmetaTypeList=[];
-                 
-                  let metalist = responseResult.result;
-  
-  
-  
-                 
-                  let metaarrayList:any=[];
-                  metaarrayList=metalist[0].templateData;
-                 
-                 
-
-                  for(let i=0;i<metaarrayList.length;i++){
-                    let obj:any={};
-                    obj['metaId']=metaarrayList[i].metaId;
-                    obj['labelName']=metaarrayList[i].labelName;
-                    obj['metaType']=metaarrayList[i].metaType;
-                    obj['value']='';
-                    this.getmetaTypeList.push(obj);
-                  }
-                  console.log(this.getmetaTypeList)
-                
-          
-                }
-                else if(responseResult.status==501){
-                  
-                  this.authService.directlogout();
-                }
-            }
-            else{
-              this.loading = false;
-              this.authService.directlogout();
-            }
-          },
-          error: (msg) => {
-            this.authService.directlogout();
-         }
-       })
-       
-  
-    
-    
-    }
   //\\ ======================== // Get Mata Type // ======================== //\\
+  getMetaType(metaId: any) {
+
+    this.getmetaTypeList = [];
+
+
+    let dataParam = {
+      "intMetaId": metaId
+    };
+    this.commonserveice.viewMeta(dataParam).subscribe({
+      next: (response) => {
+
+
+
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+
+          if (responseResult.status == 200) {
+            this.getmetaTypeList = [];
+
+            let metalist = responseResult.result;
+
+
+
+
+            let metaarrayList: any = [];
+            metaarrayList = metalist[0].templateData;
+
+
+
+            for (let i = 0; i < metaarrayList.length; i++) {
+              let obj: any = {};
+              obj['metaId'] = metaarrayList[i].metaId;
+              obj['labelName'] = metaarrayList[i].labelName;
+              obj['metaType'] = metaarrayList[i].metaType;
+              obj['value'] = '';
+              this.getmetaTypeList.push(obj);
+            }
+            console.log(this.getmetaTypeList)
+
+
+          }
+          else if (responseResult.status == 501) {
+
+            this.authService.directlogout();
+          }
+        }
+        else {
+          this.loading = false;
+          this.authService.directlogout();
+        }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+      }
+    })
+
+
+
+
+  }
+  //\\ ======================== // Get Mata Type // ======================== //\\
+  showDynamicForm(processId: any) {
+    if (processId > 1) {
+      this.fileUploadStatus = 1;
+      this.loadDynamicForm = 1;
+
+    } else {
+      this.fileUploadStatus = 0;
+      this.loadDynamicForm = 0;
+
+    }
+
+  }
+  //\\ ======================== // get Dyn FOrm Name // ======================== //\\
+  viewDynFormList() {
+
+
+    let dataParam = {
+      "processId": this.processId,
+    };
+    this.commonserveice.viewDynFormList(dataParam).subscribe({
+      next: (response) => {
+        let respData = response.RESPONSE_DATA;
+        let respToken = response.RESPONSE_TOKEN;
+
+        let verifyToken = CryptoJS.HmacSHA256(respData, environment.apiHashingKey).toString();
+        if (respToken == verifyToken) {
+          let res: any = Buffer.from(respData, 'base64');
+          let responseResult = JSON.parse(res)
+
+          if (responseResult.status == 200) {
+
+
+            this.formlist = responseResult.result;
+
+
+
+
+          }
+          else if (responseResult.status == 501) {
+
+            this.authService.directlogout();
+          }
+        }
+        else {
+          this.loading = false;
+          this.authService.directlogout();
+        }
+      },
+      error: (msg) => {
+        this.authService.directlogout();
+      }
+    })
+
+
+
+  }
+  //\\ ======================== // Get Dyn FOrm Name // ======================== //\\
+  fileUploadSuccess(event:any){
+    if(event>0){
+      Swal.fire({
+                
+        text: this.commonserveice.langReplace('File Upldated Successfully'),
+        icon: 'success',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: this.commonserveice.langReplace('Ok')
+      }).then((result) => {
+        
+       
+       let reData:any= this.folderid+':'+'0'
+        
+        let encSchemeStr = this.encDec.encText(reData.toString());
+       // this.route.navigate(['/admin/configuration/formPreview',encSchemeStr]);
+    
+        this.route.navigate(['/admin/viewupload',encSchemeStr])
+
+    
+      this.resetform();
+      })
+    }else{
+      
+      this.commonserveice.swalfire('error',this.commonserveice.langReplace('Error in File Upload'))
+    }
+  }
 }

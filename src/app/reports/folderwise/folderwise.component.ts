@@ -117,7 +117,7 @@ export class FolderwiseComponent implements OnInit {
       if (respToken == verifyToken) {
         let res: any = Buffer.from(respData, 'base64');
         let responseResult = JSON.parse(res)
-        console.log(responseResult)
+        //console.log(responseResult)
         if (responseResult.status == 200) {
           this.loading = false;
           

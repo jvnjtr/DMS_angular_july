@@ -101,15 +101,15 @@ constructor( private fb: FormBuilder,
  let txtAliasName = this.manage_employee_type.value.txtAliasName;
 
             
-if((errFlag == 0)  && (!this.vldChkLst.blankCheck(txtEmployeeType, `Employee Type Cannot be Blank!`))){
+if((errFlag == 0)  && (!this.vldChkLst.blankCheck(txtEmployeeType, `Employee Type Cannot be Blank!`,'txtEmployeeType'))){
                                 errFlag = 1; 
                               }
                               
-if((errFlag == 0) && (!this.vldChkLst.minLength(txtEmployeeType, 2,`Employee Type`))){
+if((errFlag == 0) && (!this.vldChkLst.minLength(txtEmployeeType, 2,`Employee Type`,'txtEmployeeType'))){
                                 errFlag = 1; 
                               }
                               
-if((errFlag == 0) && (!this.vldChkLst.maxLength(txtEmployeeType, 100,`Employee Type`))){
+if((errFlag == 0) && (!this.vldChkLst.maxLength(txtEmployeeType, 100,`Employee Type`,'txtEmployeeType'))){
                                 errFlag = 1; 
                               }
                               

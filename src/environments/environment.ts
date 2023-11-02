@@ -33,6 +33,7 @@ export const environment = {
   encryptIV: '26102021@qwI',
 
   somethingWrong: 'something went wrong',
+  invalidRequestMsg:'Invalid Request',
 
   invalidResponse: 'Invalid Response',
 
@@ -221,7 +222,8 @@ export const environment = {
 
     { name: 'bi bi-postage', groups: ['Stamping'] },
     { name: 'icon-file-code', groups: ['Create A Form'] },
-    { name: 'bi bi-postage', groups: ['Signature Configuration'] },
+    { name: 'icon-signature-solid', groups: ['Signature'] },
+    { name: 'icon-file-image', groups: ['Form Template'] },
 
 
   ],

@@ -1,0 +1,25 @@
+[
+      {
+        "pagetitle":"Login",
+        "tabList":[
+         
+                  
+                   {"tabName":"Add","tabUrl":"","tabClass":"active"}
+                  ],
+        "utils":[
+          {"utilName":"mandatory"},
+          {"utilName":"back"}
+         
+          ],
+        "messages":{
+          "InvalidUserId":"UserId Can not Be Blank",
+          "InvalidPassword":"please enter your password",
+          "errorMsg":"Error in database",
+          "warningtype":"print",
+          "sectionname":"please select section name",
+          "gridmsg":"Select Form Grid type"
+        }
+      }
+    ]
+
+

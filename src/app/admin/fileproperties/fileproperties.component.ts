@@ -82,6 +82,8 @@ export class FilepropertiesComponent implements OnInit {
   token: any;
   currenttime: Date = new Date();
   checkinfileName: any;
+  processId:any;
+  onlineServiceId:any;
   //for checkin and checckout
   constructor(private route: Router,
     private router: ActivatedRoute,
@@ -154,6 +156,8 @@ export class FilepropertiesComponent implements OnInit {
           this.txtSubject = this.filedetails.subject;
           this.filePath = this.filedetails.filePath;
           this.fileid = this.filedetails.fileId;
+          this.processId = this.filedetails.processId;
+          this.onlineServiceId = this.filedetails.onlineServiceId;
 
           this.createdby = this.filedetails.createdByName;
 

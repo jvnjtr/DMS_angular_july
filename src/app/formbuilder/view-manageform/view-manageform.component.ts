@@ -120,7 +120,7 @@ export class ViewManageformComponent implements OnInit {
       if(res.status==200){
         this.loading=false;
         this.formsList=res.result;
-//console.log(this.formsList)
+console.log(this.formsList)
       }
       else{
         
@@ -276,8 +276,9 @@ gotoFormConfig(formId:any){
   this.route.navigate(['/formbuilder/addForm',encSchemeStr]);
  }
  gotoLetterConfig(formId:any){
+  // console.log(formId);
   let encSchemeStr = this.encDec.encText(formId.toString());
-  this.route.navigate(['/admin/configuration/addLetterConfig',encSchemeStr]);
+  this.route.navigate(['/formbuilder/templateConfig',encSchemeStr]);
  }
 
  gotoMessageConfig(formId:any){

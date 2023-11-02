@@ -107,20 +107,20 @@ export class ManageRoleComponent {
     let txtRoleName = this.manage_role.value.txtRoleName;
     let deptId=this.manage_role.value.deptId;
     // let chkDesignation = this.manage_role.value.chkDesignation;
-   if ((errFlag == 0) && (!this.vldChkLst.selectDropdown(deptId, `Department`))) {
+   if ((errFlag == 0) && (!this.vldChkLst.selectDropdown(deptId, `Department`,'deptId'))) {
       errFlag = 1;
     }
 
 
-    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtRoleName, `Role Name Cannot be Blank!`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.blankCheck(txtRoleName, `Role Name Cannot be Blank!`,'txtRoleName'))) {
       errFlag = 1;
     }
 
-    if ((errFlag == 0) && (!this.vldChkLst.minLength(txtRoleName, 2, `Role Name`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.minLength(txtRoleName, 2, `Role Name`,'txtRoleName'))) {
       errFlag = 1;
     }
 
-    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtRoleName, 100, `Role Name`))) {
+    if ((errFlag == 0) && (!this.vldChkLst.maxLength(txtRoleName, 100, `Role Name`,'txtRoleName'))) {
       errFlag = 1;
     }
 

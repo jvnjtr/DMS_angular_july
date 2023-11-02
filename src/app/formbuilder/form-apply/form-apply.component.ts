@@ -27,6 +27,14 @@ export class FormApplyComponent {
   //@Output() onInitEvent = new EventEmitter();
   arrSelectedCheckbox: any[] = [];
   @Input() processId: any = 0;
+  @Input() formTemplateId: any = 0;
+  @Input() intOnlineServiceIdFileEdit: any = 0;
+  @Input() fileUpload: any = 0;
+  @Input() createDoc: any = 0;
+  @Input() fileUploadData: any = [];
+  @Input() fileeList: any = [];
+  @Input() createdDocument:any=0;
+  @Output('fileUploadSuccess') fileUploadSuccess: EventEmitter<any> = new EventEmitter();
   intProfileId: any = 0;
   dynamicCtrlDetails: any = [];
   dynamicCtrlDetKeys: any = [];
@@ -137,28 +145,35 @@ export class FormApplyComponent {
     this.secDisable = false;
     let schemeArr: any = [];
     let encSchemeId: any;
-   // console.log(this.processId);
+    //console.log(this.intOnlineServiceIdFileEdit);
+    if (this.intOnlineServiceIdFileEdit > 0) {
+      this.onlineServiceId = this.intOnlineServiceIdFileEdit;
+    }
+    // console.log(this.processId);
     // this.ckconfig = {
     //   // include any other configuration you want
     //   extraPlugins: [ this.customAdapterPlugin ]
     // };
     this.router.paramMap.subscribe((params: ParamMap) => {
       let encSchemeId = params.get('id')
-       console.log(encSchemeId)
-      if (encSchemeId != "") {
-        let schemeStr = this.encDec.decText(encSchemeId);
-        schemeArr = schemeStr.split(':');
-        console.log(schemeArr);
-        if(schemeArr[3]>0){
-          this.processId = schemeArr[3];
-          this.onlineServiceId = schemeArr[4];
-          this.currSecId = schemeArr[5];
-          // this.intProfileId = (schemeArr[3] == undefined) ? 0 : schemeArr[3];
-          this.intProfileId = 0;
+      // console.log(encSchemeId)
+      if(this.createdDocument==0){
+        if (encSchemeId != "") {
+          let schemeStr = this.encDec.decText(encSchemeId);
+          schemeArr = schemeStr.split(':');
+          //console.log(schemeArr);
+          if (schemeArr[3] > 0) {
+            this.processId = schemeArr[3];
+            this.onlineServiceId = schemeArr[4];
+            this.currSecId = schemeArr[5];
+            // this.intProfileId = (schemeArr[3] == undefined) ? 0 : schemeArr[3];
+            this.intProfileId = 0;
+          }
+  
         }
-        
       }
-      console.log(this.processId);
+      
+      //console.log(this.processId);
       if (this.processId > 0) {
         let dynSchmCtrlParms = {
           'intProcessId': this.processId,
@@ -845,8 +860,8 @@ export class FormApplyComponent {
   }
 
   doSchemeApply() {
-    console.log(this.dynamicCtrlDetails);
-    console.log(this.currSecTabKey);
+    // console.log(this.dynamicCtrlDetails);
+    // console.log(this.currSecTabKey);
     let schemeWiseFormDetails = this.dynamicCtrlDetails["sec_0"]['formDetails'];
     const formData = new FormData();
     let uploadFile: any;
@@ -1390,6 +1405,7 @@ export class FormApplyComponent {
     formData.append('secId', this.currSecId);
     formData.append('intOnlineServiceId', this.onlineServiceId);
     formData.append('intProfileId', this.intProfileId);
+    formData.append('fileData', JSON.stringify(this.fileUploadData));
 
     var object: any = {};
     // formData.forEach((value, key) => object[key] = value);
@@ -1399,57 +1415,134 @@ export class FormApplyComponent {
     //     formData.append('hmacFormData', hmacFormData);
 
     if (validatonStatus) {
-      //console.log(formData)   
-      this.WebCommonService.schemeApply(formData).subscribe((res: any) => {
-        let validationMsg = (res.result.validationMsg != '') ? res.result.validationMsg : 'error';
-        if (res.status == 200) {
-          this.onlineServiceId = res.result.intOnlineServiceId;
-          if (this.dynamicCtrlDetKeys.length > this.dynamicCtrlDetKeys.indexOf(this.currSecTabKey) + 1) {
-            let latestDynCtlkeyIndex = Number(this.dynamicCtrlDetKeys.indexOf(this.currSecTabKey)) + 1
-            this.currSecTabKey = this.dynamicCtrlDetKeys[latestDynCtlkeyIndex];
-            this.currSecId = this.dynamicCtrlDetails[this.currSecTabKey]['sectionid'];
-            this.prevdipStatus = '';
-            this.secDisable = false;
-            (<HTMLElement>document.getElementById("sec-tab-" + this.dynamicCtrlDetKeys[latestDynCtlkeyIndex])).click();
-            // this.secDisable   = true;
+      if(this.createDoc>0){
+        
+        this.WebCommonService.schemeApplyFileInsert(formData).subscribe((res: any) => {
+          let validationMsg = (res.result.validationMsg != '') ? res.result.validationMsg : 'error';
+          if (res.status == 200) {
+            this.fileUploadSuccess.emit(res.status);
+
           }
+
           else {
-            let formParms = this.processId + ':' + this.onlineServiceId + ':' + 1;
-            let encSchemeStr = this.encDec.encText(formParms.toString());
-            if (this.fromadmin == 'admin') {
-              // let formParms  = this.processId+':'+0+':'+0;
-              // let encSchemeStr = this.encDec.encText(formParms.toString());
+            Swal.fire({
+              icon: 'error',
+              text: validationMsg
+            });
+          }
+        });
+      }
+      if (this.fileUpload > 0 && this.createDoc==0) {
+        let filelistlength: any = this.fileeList.length;
+        let counter: any = 0;
+        // console.log(this.fileeList.length);
+        if (this.fileeList.length == 0) {
+          this.WebCommonService.schemeApplyEdit(formData).subscribe((res: any) => {
+            let validationMsg = (res.result.validationMsg != '') ? res.result.validationMsg : 'error';
+            if (res.status == 200) {
+              this.fileUploadSuccess.emit(res.status);
 
-              http://172.27.28.73:4200/#/admin/configuration/dynamicFormsPreview/VTJGc2RHVmtYMTlDM29tUTU2WXhDMGNadXVvZkZBNDltU3NZZmJ6SFNZcz0%3D
-              this.route.navigate(['./formbuilder/dynamicFormsPreview', encSchemeStr]);
-
-              //       this.route.navigate(['/website/formPreview',encSchemeStr]);
             }
+
+            else {
+              this.fileUploadSuccess.emit(res.status);
+              // Swal.fire({
+              //   icon: 'error',
+              //   text: validationMsg
+              // });
+            }
+          });
+        } else {
+          for (let i = 0; i < this.fileeList.length; i++) {
+            this.WebCommonService.schemeApplyFileInsert(formData).subscribe((res: any) => {
+              let validationMsg = (res.result.validationMsg != '') ? res.result.validationMsg : 'error';
+              if (res.status == 200) {
+                counter++
+                if (filelistlength == counter) {
+                  this.fileUploadSuccess.emit(res.status);
+                } else {
+                  this.fileUploadSuccess.emit(res.status);
+                }
+
+              }
+
+              else {
+                Swal.fire({
+                  icon: 'error',
+                  text: validationMsg
+                });
+              }
+            });
+          }
+        }
+
+      } else {
+        if(this.createDoc==0){
+          this.WebCommonService.schemeApply(formData).subscribe((res: any) => {
+            let validationMsg = (res.result.validationMsg != '') ? res.result.validationMsg : 'error';
+            if (res.status == 200) {
+              this.onlineServiceId = res.result.intOnlineServiceId;
+              if (this.dynamicCtrlDetKeys.length > this.dynamicCtrlDetKeys.indexOf(this.currSecTabKey) + 1) {
+                let latestDynCtlkeyIndex = Number(this.dynamicCtrlDetKeys.indexOf(this.currSecTabKey)) + 1
+                this.currSecTabKey = this.dynamicCtrlDetKeys[latestDynCtlkeyIndex];
+                this.currSecId = this.dynamicCtrlDetails[this.currSecTabKey]['sectionid'];
+                this.prevdipStatus = '';
+                this.secDisable = false;
+                (<HTMLElement>document.getElementById("sec-tab-" + this.dynamicCtrlDetKeys[latestDynCtlkeyIndex])).click();
+                // this.secDisable   = true;
+              }
+              else {
+                let formParms = this.processId + ':' + this.onlineServiceId + ':' + 1 + ':' + this.formTemplateId;
+                let encSchemeStr = this.encDec.encText(formParms.toString());
+                if (this.fromadmin == 'admin') {
+                  // let formParms  = this.processId+':'+0+':'+0;
+                  // let encSchemeStr = this.encDec.encText(formParms.toString());
+  
+                  http://172.27.28.73:4200/#/admin/configuration/dynamicFormsPreview/VTJGc2RHVmtYMTlDM29tUTU2WXhDMGNadXVvZkZBNDltU3NZZmJ6SFNZcz0%3D
+                  if (this.fileUpload > 0) {
+  
+                    // this.finalfileupload.emit(this.onlineServiceId);
+                  } else {
+                    this.route.navigate(['./formbuilder/dynamicFormsPreview', encSchemeStr]);
+                  }
+  
+  
+                  //       this.route.navigate(['/website/formPreview',encSchemeStr]);
+                }
+                else {
+  
+                  Swal.fire({
+                    icon: 'success',
+                    text: 'Success',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok'
+                  }).then((result) => {
+  
+                    let formParms = this.processId + ':' + 0 + ':' + 0;
+                    let encSchemeStr = this.encDec.encText(formParms.toString());
+  
+  
+                    this.route.navigate(['./formbuilder/dynamicFormsview', encSchemeStr]);
+                  });
+  
+  
+                }
+              }
+            }
+  
             else {
               Swal.fire({
-                icon: 'success',
-                text: 'Success',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Ok'
-              }).then((result) => {
-
-                let formParms = this.processId + ':' + 0 + ':' + 0;
-                let encSchemeStr = this.encDec.encText(formParms.toString());
-
-
-                this.route.navigate(['./formbuilder/dynamicFormsview', encSchemeStr]);
+                icon: 'error',
+                text: validationMsg
               });
             }
-          }
-        }
-
-        else {
-          Swal.fire({
-            icon: 'error',
-            text: validationMsg
           });
         }
-      });
+        
+      }
+
+      console.log(this.fileUploadData);
+
     }
   }
 

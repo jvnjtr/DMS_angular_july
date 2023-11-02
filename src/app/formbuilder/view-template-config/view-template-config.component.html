@@ -1,0 +1,190 @@
+<!--===Page Title===-->
+<div class="page-title">
+
+    <h4>{{title|langReplace}}</h4>
+  </div>
+  <!--===Page Title===-->
+  <!--===controle section===-->
+  <div class="page-controls-section" id="page-content">
+    <div class="card">
+      <div class="controls-section-header">
+        <ul class="nav nav-tabs nav-fill" role="tablist">
+          <app-tabs *ngFor="let tablist of tablist" [tabMessage]="tablist"></app-tabs>
+        </ul>
+        <div class="indicatorslist">
+          <!-- <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist" [pubUnpubStatus]="pubUnpStatus"
+          [processId]="processId"
+            [sendIds]="letterIdArray" [funType]="sevName" (callfunction)="viewItems(limit,offset)"
+            (callfunction2)='selectAll($event)'></app-utils> -->
+            <app-utils *ngFor="let utillist of utillist" [childMessage]="utillist" [sendIds]="letterIdArray" [funType]="sevName" [pubUnpubStatus]="pubUnpStatus" (callfunction)="viewItems(limit,offset)"></app-utils>
+        </div>
+  
+      </div>
+      <div class="card-body">
+  
+  
+        <div class="controls-section">
+          <!-- Search Panel -->
+          <div class="search-container active">
+  
+            <div class="search-sec">
+  
+              <div class="row">
+  
+                <div class="col-12 col-md-3 col-lg-3">
+                  <div class="form-group">
+                    <select class="form-select" [(ngModel)]="selFormName">
+                      <option value="0" disabled selected>Select Form Name</option>
+                      <option *ngFor="let formnames of formNames" [value]="formnames.intProcessId">{{
+                        formnames.vchProcessName }}</option>
+                    </select>
+                  </div>
+                </div>
+  
+                <div class="col-12 col-md-3 col-lg-3">
+                  <div class="form-group">
+                    <input type="text" class="form-control" [(ngModel)]="txtLetterName" placeholder="Letter Name">
+                  </div>
+                </div>
+  
+  
+                <div class="col-12 col-md-3 col-lg-3">
+                  <div class="form-group">
+                    <button class="btn btn-primary" (click)="viewSearchList()"> {{"Show"|langReplace}}</button>
+                    <button class="btn btn-danger ml-1" (click)="viewItems(limit,offset)"> {{"Reset"|langReplace}}</button>
+                  </div>
+                </div>
+              </div>
+  
+  
+            </div>
+  
+  
+          </div>
+          <!-- Search Panel -->
+          <div *ngIf="letterlist?.length > 0; else norecord">
+  
+            <div class="d-flex justify-content-between mb-3">
+              <div>
+                <ul class="legends">
+                  <li>
+                    <span class="bg-success"></span> {{"Publish"|langReplace}}
+                  </li>
+                  <li>
+                    <span class="bg-danger"></span> {{"Unpublish"|langReplace}}
+                  </li>
+                </ul>
+              </div>
+              <!-- <div>
+  
+                {{"Per Page"|langReplace}}:
+                <select (change)="onTableSizeChange($event)">
+                  <option *ngFor="let size of pageSizes" [ngValue]="size">
+                    {{ size }}
+                  </option>
+                </select>
+              </div> -->
+  
+            </div>
+  
+  
+  
+            <div class="table-responsive print-section">
+  
+  
+              <table data-toggle="table" class="table table-bordered valign-middle">
+                <thead>
+                  <tr>
+                    <th scope="col" style="width:40px" class="noPrint" >
+                      <div>
+                        <input class="form-check-input checkAll" type="checkbox" (click)='selectAll($event)' id="checkall"
+                          name="checkall" value="checkall">
+                      </div>
+                    </th>
+                    <th scope="col" style="width:40px">{{"Sl"|langReplace}}#</th>
+  
+                    <th scope="col">{{"Form Name"|langReplace}}</th>
+  
+                    <th scope="col">{{"Template Name"|langReplace}}</th>
+                    <th scope="col">{{"Created On"|langReplace}}</th>
+                    <th scope="col" class="noPrint">{{"View"|langReplace}}</th>
+                    <th scope="col" class="noPrint" style="width:80px" >{{"Action"|langReplace}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let letters of letterlist | paginate
+                                                                      : {
+                                                                          itemsPerPage: tableSize,
+                                                                          currentPage: page,
+                                                                          totalItems: count
+                                                                        };
+                                                                  let i = index">
+                    <td class="noPrint border-left-2" 
+                      [ngClass]="{'border-left-danger': letters.tinPublishStatus === 0 , 'border-left-success': letters.tinPublishStatus === 1 }">
+                      <div>
+                        <input class="form-check-input rowCheck" type="checkbox"
+                          [attr.pubstatus]="letters.tinPublishStatus"
+                          (change)="onChange(letters.intLetterConfigId, $event,letters.tinPublishStatus)"
+                          name="{{letters.intLetterConfigId }}" [id]="letters.intLetterConfigId"
+                          [value]="letters.intLetterConfigId">
+                      </div>
+                    </td>
+                    <td>{{i+1+indexNumber}} </td>
+                    <td>{{letters.vchFormName}}</td>
+                    <td>{{letters.vchLetterName}}</td>
+                    <td>{{letters.dtmCreatedOn}}</td>
+                    <td class="noPrint">
+                      <a type="button" class="text-info" data-bs-toggle="modal" [attr.data-bs-target]="'#previewModal'+i">
+                        {{"Preview"|langReplace}}
+                      </a>
+  
+                      <!-- Modal -->
+                      <div class="modal fade" id="previewModal{{i}}" tabindex="-1" aria-labelledby="previewModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title mb-0" id="previewModalLabel">{{"Letter Preview"|langReplace}}
+                              </h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <p>{{"Letter Name"|langReplace}} : {{letters.vchLetterName}}</p>
+                              <p>{{"Effective From"|langReplace}} : {{letters.vchEffectiveFrom}}</p>
+                              <p>{{"Effective To"|langReplace}} : {{letters.vchEffectiveTo}}</p>
+                              <div class="pdfContainer" innerHtml={{letters.txtLetterContent}}>
+  
+                              </div>
+                            </div>
+  
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="noPrint" ><a class="text-primary" data-toggle="tooltip" title="" data-original-title="Edit"
+                        (click)="editLetter(letters.intLetterConfigId+':'+letters.intformId)" ><i
+                          class="icon-edit-solid"></i></a>
+                      <a class="text-danger" data-toggle="tooltip" title="" data-original-title="Delete"
+                        (click)="deleteLetter(letters.intLetterConfigId)"><i class="icon-trash-solid"></i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <app-pagination [page]="page" [count]="count" [tableSize]="tableSize"
+              (callfunction)="onTableDataChange($event)"></app-pagination>
+          </div>
+          <ng-template #norecord>
+            <h6 class="no-content"> {{"No Record Found"|langReplace}}</h6>
+  
+          </ng-template>
+        </div>
+  
+      </div>
+  
+    </div>
+  </div>
+  <div class="loader" *ngIf="loading">
+    <div class="loader-item"></div>
+    <p>{{"Loading"|langReplace}}...</p>
+  </div>

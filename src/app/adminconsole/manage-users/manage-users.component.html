@@ -45,8 +45,8 @@
                                                             <div class="control-item">
                                                                   <input type="text"
                                                                         (keyup)="vldChkLst.blockSpecialCharacterAllPostion($event,false)"
-                                                                        formControlName="txtFullName" minlength="2"
-                                                                        maxlength="100" placeholder=""
+                                                                        id="txtFullName" formControlName="txtFullName" minlength="2"
+                                                                        maxlength="50" placeholder=""
                                                                         class="form-control ">
                                                             </div>
                                                       </div>
@@ -89,7 +89,7 @@
                                                                         class="text-danger">*</span> </label>
                                                             <div class="control-item"><input type="email"
                                                                         formControlName="txtEmailId" minlength=""
-                                                                        maxlength="" formControlName="txtEmailId"
+                                                                        maxlength="60" id="txtEmailId"
                                                                         placeholder="" class="form-control ">
                                                             </div>
                                                       </div>
@@ -101,8 +101,8 @@
                                                                         class="text-danger">*</span> </label>
                                                             <div class="control-item"><input type="tel"
                                                                         (keyup)="vldChkLst.blockSpecialCharacterAllPostion($event,false)"
-                                                                        formControlName="txtMobileNo" minlength=""
-                                                                        maxlength="" formControlName="txtMobileNo"
+                                                                        formControlName="txtMobileNo" minlength="10"
+                                                                        maxlength="10" id="txtMobileNo"
                                                                         placeholder="" class="form-control "
                                                                         (keypress)="vldChkLst.isNumberKey($event)">
                                                             </div>
@@ -116,8 +116,8 @@
                                                             <div class="control-item"><input type="tel"
                                                                         (keyup)="vldChkLst.blockSpecialCharacterAllPostion($event,false)"
                                                                         formControlName="txtAlternateMobileNumber"
-                                                                        minlength="" maxlength=""
-                                                                        formControlName="txtAlternateMobileNumber"
+                                                                        minlength="10" maxlength="10"
+                                                                        id="txtAlternateMobileNumber"
                                                                         placeholder="" class="form-control ">
                                                             </div>
                                                       </div>
@@ -328,7 +328,7 @@
                                                             class="text-danger">*</span> </label>
                                                 <div class="control-item"><input type="text" formControlName="txtUserId"
                                                             [readonly]="editId > 0 ? true : false" minlength=""
-                                                            maxlength="" formControlName="txtUserId" placeholder=""
+                                                            maxlength="" id="txtUserId" placeholder=""
                                                             class="form-control "
                                                             (keypress)="vldChkLst.isAlphaNumeric($event)">
                                                 </div>
@@ -340,8 +340,9 @@
                                                             class="text-danger">*</span>
                                                 </label>
                                                 <div class="control-item"><input type="password"
-                                                            formControlName="txtPassword" minlength="" maxlength=""
+                                                            formControlName="txtPassword" id="txtPassword" minlength="" maxlength=""
                                                             placeholder="" class="form-control ">
+                                                            
                                                 </div>
                                           </div>
                                     </div>
@@ -350,7 +351,7 @@
                                                 <label Class="w-full text-md ">Confirm Password <span
                                                             class="text-danger">*</span> </label>
                                                 <div class="control-item"><input type="password"
-                                                            formControlName="txtConfirmPassword" minlength=""
+                                                            formControlName="txtConfirmPassword" id="txtConfirmPassword" minlength=""
                                                             maxlength="" placeholder="" class="form-control ">
                                                 </div>
                                           </div>

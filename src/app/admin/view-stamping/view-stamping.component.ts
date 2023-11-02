@@ -62,10 +62,10 @@ export class ViewStampingComponent implements OnInit {
   configId: any = 0;
   tablecollist = [
     { "name": "Event Name", "cname": "stampEventName"},
-    { "name": "Signature Position", "cname": "signaturePosition"},
-    { "name": "Signature Rotation", "cname": "signatureRotation"},
-    { "name": "Signature Opacity", "cname": "signatureOpacity"},
-    { "name": "Signature Page", "cname": "signaturePage"},
+    { "name": "Stamping Position", "cname": "signaturePosition"},
+    { "name": "Stamping Rotation", "cname": "signatureRotation"},
+    { "name": "Stamping Opacity", "cname": "signatureOpacity"},
+    { "name": "Stamping Page", "cname": "signaturePage"},
 
     // {"name":"Type","cname":"metaType","sortable":true },
 

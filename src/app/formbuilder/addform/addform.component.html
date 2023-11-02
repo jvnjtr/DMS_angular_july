@@ -115,29 +115,15 @@
 
 
 
-                        <app-drag  class="control-list"> </app-drag> 
+                        <app-drag class="control-list"> </app-drag>
 
 
 
-                   <app-drop *ngIf="loadComponent" [dyformData]="dynamicForm" 
- 
-                                        [dynamicForm]="dynamicForm" 
- 
-                                        [txtFormId]="txtFormId" 
- 
-                                        [getsectionId]="getsectionId"
- 
-                                        [nextbtnval]="nextbtnDisabled"
- 
-                                        (callfunction)="createForm(getsectionId)"
- 
-                                        class="parent-dropzone"
- 
-                                        [arrsecColumnDetails]="arrsecColumnDetails"
- 
-                                        [tableExistsCheck]="tableExistsCheck"
- 
-                                        ></app-drop>
+                        <app-drop *ngIf="loadComponent" [dyformData]="dynamicForm" [dynamicForm]="dynamicForm"
+                            [txtFormId]="txtFormId" [getsectionId]="getsectionId" [nextbtnval]="nextbtnDisabled"
+                            [metaTemplateId]="metaTemplateId" (callfunction)="createForm(getsectionId)" class="parent-dropzone"
+                            [arrsecColumnDetails]="arrsecColumnDetails"
+                            [tableExistsCheck]="tableExistsCheck"></app-drop>
 
 
 
@@ -180,11 +166,9 @@
 
     </form>
 
-
-    <!-- <pre>
+<pre>
                       {{dynamicForm.value | json}}
-                    </pre> -->
-
+                    </pre> 
 
 </div>
 

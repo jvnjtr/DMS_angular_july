@@ -51,7 +51,7 @@ export class ViewDocumentComponent implements OnInit {
   tablist: any;
   utillist: any;
   messaageslist: any;
-  jsonurl = "assets/js/_configs/createdocument.config.json";
+  jsonurl = "assets/js/_configs/viewDocument.config.json";
   letterID: any = "";
   dimensions: any = [];
   dataArr: any = [];
@@ -185,7 +185,7 @@ export class ViewDocumentComponent implements OnInit {
   sortOrder: string = 'asc';
   sortColumn: string = 'ticker';
   tablecollist = [
-    { "name": "Document No", "cname": "fileRefNo", "sortable": true },
+    { "name": "Document No.", "cname": "fileRefNo", "sortable": true },
 
     { "name": "Name", "cname": "fileName", "sortable": true },
     { "name": "Version", "cname": "fileVersion", "sortable": false },
